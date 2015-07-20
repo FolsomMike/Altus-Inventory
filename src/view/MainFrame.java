@@ -16,6 +16,7 @@ package view;
 
 //-----------------------------------------------------------------------------
 
+import JSplitButton.JSplitButton;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,11 +33,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.BevelBorder;
 import toolkit.Tools;
 
 //-----------------------------------------------------------------------------
@@ -210,12 +214,26 @@ private JButton createCreateReportButton()
 {
     
     //create button
-    JButton btn = new JButton("Create Report");
-    btn.setAlignmentX(LEFT_ALIGNMENT);
+    JSplitButton btn = new JSplitButton("<html><center>Create<br>Report</html>", 
+                            createImageIcon("images/createReport.png"));
+    Tools.setSizes(btn, 70, 75);
+    btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+    btn.setHorizontalTextPosition(SwingConstants.CENTER);
     btn.setActionCommand("Create Report");
     btn.addActionListener(mainView);
     btn.setToolTipText("Create report.");
-    
+    btn.setAlignmentX(LEFT_ALIGNMENT);
+    btn.setFocusPainted(false);
+    btn.setMargin(new Insets(0,0,0,20));
+    btn.setArrowSize(10);
+    JPopupMenu menu = new JPopupMenu();
+    menu.add(new JMenuItem("Receiving Report"));
+    menu.add(new JMenuItem("Shipping Report"));
+    menu.add(new JMenuItem("Tally Report"));
+    menu.add(new JMenuItem("Rack Report"));
+    menu.add(new JMenuItem("Current Balance Report"));
+    menu.setBorder(new BevelBorder(BevelBorder.RAISED));
+    btn.setPopupMenu(menu);
     return btn;
 
 }// end of MainFrame::createCreateReportButton
@@ -245,7 +263,7 @@ private JPanel createMaterialButtonsPanel()
     receiveBtn.setToolTipText("Receive material into the yard.");
     receiveBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
     receiveBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-    receiveBtn.setFocusPainted(false); 
+    receiveBtn.setFocusPainted(false);
     panel.add(receiveBtn);
     
     //horizontal spacer
