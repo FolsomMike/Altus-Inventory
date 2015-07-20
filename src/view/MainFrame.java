@@ -135,10 +135,22 @@ private JPanel createControlPanel()
     panel.add(createMaterialButtonsPanel());
     
     //horizontal spacer
-    panel.add(Box.createRigidArea(new Dimension(20,0)));
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
     
     //add create report button
     panel.add(createCreateReportButton());
+    
+    //horizontal spacer
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
+    
+    //add create invoice button
+    panel.add(createCreateInvoiceButton());
+    
+    //horizontal spacer
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
+    
+    //add make payment button
+    panel.add(createMakePaymentButton());
     
     return panel;
 
@@ -205,6 +217,38 @@ protected static ImageIcon createImageIcon(String pPath)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// MainFrame::createCreateInvoiceButton
+//
+// Creates and returns the Create Invoice button.
+//
+
+private JButton createCreateInvoiceButton()
+{
+    
+    //create button
+    JSplitButton btn = new JSplitButton("<html><center>Create<br>Invoice</html>", 
+                            createImageIcon("images/createInvoice.png"));
+    Tools.setSizes(btn, 70, 75);
+    btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+    btn.setHorizontalTextPosition(SwingConstants.CENTER);
+    btn.setActionCommand("Create Invoice");
+    btn.addActionListener(mainView);
+    btn.setToolTipText("Create an invoice for a customer.");
+    btn.setAlignmentX(LEFT_ALIGNMENT);
+    btn.setFocusPainted(false);
+    btn.setMargin(new Insets(0,0,0,20));
+    btn.setArrowSize(10);
+    JPopupMenu menu = new JPopupMenu();
+    menu.add(new JMenuItem("Edit Invoice"));
+    menu.add(new JMenuItem("Delete Invoice"));
+    menu.setBorder(new BevelBorder(BevelBorder.RAISED));
+    btn.setPopupMenu(menu);
+    return btn;
+
+}// end of MainFrame::createCreateInvoiceButton
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 // MainFrame::createCreateReportButton
 //
 // Creates and returns the Create Report button.
@@ -240,6 +284,32 @@ private JButton createCreateReportButton()
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// MainFrame::createMakePaymentButton
+//
+// Creates and returns the Make Payment button.
+//
+
+private JButton createMakePaymentButton()
+{
+    
+    //create button
+    JButton btn = new JButton("<html><center>Make<br>Payment</html>", 
+                            createImageIcon("images/makePayment.png"));
+    Tools.setSizes(btn, 70, 75);
+    btn.setVerticalTextPosition(SwingConstants.BOTTOM);
+    btn.setHorizontalTextPosition(SwingConstants.CENTER);
+    btn.setActionCommand("Make Payment");
+    btn.addActionListener(mainView);
+    btn.setToolTipText("Record payment from customer.");
+    btn.setAlignmentX(LEFT_ALIGNMENT);
+    btn.setFocusPainted(false);
+    btn.setMargin(new Insets(0,0,0,0));
+    return btn;
+
+}// end of MainFrame::createMakePaymentButton
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 // MainFrame::createMaterialButtonsPanel
 //
 // Creates and returns a panel with buttons used for handling material.
@@ -267,7 +337,7 @@ private JPanel createMaterialButtonsPanel()
     panel.add(receiveBtn);
     
     //horizontal spacer
-    panel.add(Box.createRigidArea(new Dimension(5,0)));
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
     
     //add Ship Material button
     JButton shipBtn = new JButton("<html><center>Ship<br>Material</html>", 
@@ -284,7 +354,7 @@ private JPanel createMaterialButtonsPanel()
     panel.add(shipBtn);
     
     //horizontal spacer
-    panel.add(Box.createRigidArea(new Dimension(5,0)));
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
     
     //add Move Material button
     JButton moveBtn = new JButton("<html><center>Move<br>Material</html>", 
@@ -301,7 +371,7 @@ private JPanel createMaterialButtonsPanel()
     panel.add(moveBtn);
     
     //horizontal spacer
-    panel.add(Box.createRigidArea(new Dimension(5,0)));
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
     
     //add Transfer Material button
     JButton transferBtn = new JButton("<html><center>Transfer<br>Material</html>", 
@@ -318,7 +388,7 @@ private JPanel createMaterialButtonsPanel()
     panel.add(transferBtn);
     
     //horizontal spacer
-    panel.add(Box.createRigidArea(new Dimension(5,0)));
+    panel.add(Box.createRigidArea(new Dimension(10,0)));
     
     //add Reserve Material button
     JButton reserveBtn = new JButton("<html><center>Reserve<br>Material</html>", 
