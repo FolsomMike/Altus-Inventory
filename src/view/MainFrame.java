@@ -31,16 +31,22 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import toolkit.Tools;
 
 //-----------------------------------------------------------------------------
@@ -127,9 +133,7 @@ private JPanel createControlPanel()
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     panel.setAlignmentX(LEFT_ALIGNMENT);
-    
-    //horizontal spacer
-    panel.add(Box.createRigidArea(new Dimension(10,0)));
+    panel.setAlignmentY(TOP_ALIGNMENT);
     
     //add material buttons panel
     panel.add(createMaterialButtonsPanel());
@@ -155,6 +159,30 @@ private JPanel createControlPanel()
     return panel;
 
 }// end of MainFrame::createControlPanel
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// MainFrame::createDisplayPanel
+//
+// Creates and returns the display panel.
+//
+// The display panel dsiplays all of the pipe in the yard to the user.
+//
+
+private JPanel createDisplayPanel()
+{
+    
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+    panel.setAlignmentX(LEFT_ALIGNMENT);
+    panel.setAlignmentY(TOP_ALIGNMENT);
+    
+    //add materials table panel
+    panel.add(createMaterialsTablePanel());
+    
+    return panel;
+
+}// end of MainFrame::createDisplayPanel
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -241,6 +269,7 @@ private JButton createCreateInvoiceButton()
     JPopupMenu menu = new JPopupMenu();
     menu.add(new JMenuItem("Edit Invoice"));
     menu.add(new JMenuItem("Delete Invoice"));
+    menu.add(new JMenuItem("View All Invoices"));
     menu.setBorder(new BevelBorder(BevelBorder.RAISED));
     btn.setPopupMenu(menu);
     return btn;
@@ -256,7 +285,7 @@ private JButton createCreateInvoiceButton()
 
 private JButton createCreateReportButton()
 {
-    
+
     //create button
     JSplitButton btn = new JSplitButton("<html><center>Create<br>Report</html>", 
                             createImageIcon("images/createReport.png"));
@@ -410,6 +439,135 @@ private JPanel createMaterialButtonsPanel()
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// MainFrame::createMaterialsTablePanel
+//
+// Creates and returns the materials table panel.
+//
+// The materials table displays all of the pipe in the yard to the user.
+//
+
+private JPanel createMaterialsTablePanel()
+{
+    
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setAlignmentX(LEFT_ALIGNMENT);
+    panel.setAlignmentY(TOP_ALIGNMENT);
+    
+    //add view combo box
+    panel.add(createViewComboBox());
+    
+    //vertical spacer
+    panel.add(Box.createRigidArea(new Dimension(0,10)));
+    
+    //add table
+    JTable table = new JTable();
+    table.setBackground(Color.WHITE);
+    //change the background color of the header
+    table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
+    
+    //add the ID column
+    TableColumn id = new TableColumn();
+    id.setHeaderValue("ID");
+    table.addColumn(id);
+    
+    //add the Company column
+    TableColumn company = new TableColumn();
+    company.setHeaderValue("Company");
+    table.addColumn(company);
+    
+    //add the Date column
+    TableColumn date = new TableColumn();
+    date.setHeaderValue("Date");
+    table.addColumn(date);
+    
+    //add the Rack column
+    TableColumn rack = new TableColumn();
+    rack.setHeaderValue("Rack");
+    table.addColumn(rack);
+    
+    //add the Status column
+    TableColumn status = new TableColumn();
+    status.setHeaderValue("Status");
+    table.addColumn(status);
+    
+    //add the Quantity column
+    TableColumn quantity = new TableColumn();
+    quantity.setHeaderValue("Quantity");
+    table.addColumn(quantity);
+    
+    //add the Length column
+    TableColumn length = new TableColumn();
+    length.setHeaderValue("Length");
+    table.addColumn(length);
+    
+    //add the Diameter column
+    TableColumn diameter = new TableColumn();
+    diameter.setHeaderValue("Diameter");
+    table.addColumn(diameter);
+    
+    //add the Wall column
+    TableColumn wall = new TableColumn();
+    wall.setHeaderValue("Wall");
+    table.addColumn(wall);
+    
+    //add the Grade column
+    TableColumn grade = new TableColumn();
+    grade.setHeaderValue("Grade");
+    table.addColumn(grade);
+    
+    //add the Range column
+    TableColumn range = new TableColumn();
+    range.setHeaderValue("Range");
+    table.addColumn(range);
+    
+    //add the Facility column
+    TableColumn facility = new TableColumn();
+    facility.setHeaderValue("Facility");
+    table.addColumn(facility);
+    
+    //put the table in a scroll pane
+    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane.setAlignmentX(LEFT_ALIGNMENT);
+    scrollPane.setAlignmentY(TOP_ALIGNMENT);
+    panel.add(scrollPane);
+    
+    return panel;
+
+}// end of MainFrame::createMaterialsTablePanel
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// MainFrame::createViewComboBox
+//
+// Creates and returns the View combo box.
+//
+// The combo box is used to select what material the user wants to view.
+//      
+//
+
+private JComboBox createViewComboBox()
+{
+    
+    //populate an array of strings with items for the combo box
+    String[] strings = { "All Material in Yard", "Available in Stock", 
+                            "Reserved", "Shipped", "Moved", "Transferred" };
+
+    //Create the combo box, select item at index 0
+    JComboBox combo = new JComboBox(strings);
+    combo.setSelectedIndex(0);
+    Tools.setSizes(combo, 135, 20);
+    combo.setAlignmentX(LEFT_ALIGNMENT);
+    combo.setAlignmentY(TOP_ALIGNMENT);
+    combo.addActionListener(mainView);
+    combo.setActionCommand("Change View");
+    
+    return combo;
+
+}// end of MainFrame::createViewComboBox
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 // MainFrame::displayHelp
 //
 // Displays help information.
@@ -523,11 +681,28 @@ private void setupGui()
 
     mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
     
-    //vertical spacer
-    mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
+    //add padding/margins to the main panel
+    mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
     //add the control panel
     mainPanel.add(createControlPanel());
+    
+    //vertical spacer
+    mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
+    
+    //add a horizontal separator to separate the control panel
+    //and the display panel
+    JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
+    Dimension d = sep.getPreferredSize();
+    d.width = sep.getMaximumSize().width;
+    sep.setMaximumSize(d);
+    mainPanel.add(sep);
+    
+    //vertical spacer
+    mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
+    
+    //add the display panel
+    mainPanel.add(createDisplayPanel());
  
 }// end of MainFrame::setupGui
 //-----------------------------------------------------------------------------
