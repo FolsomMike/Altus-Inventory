@@ -1,5 +1,5 @@
 
-package JSplitButton;
+package jsplitbutton;
 
 import java.awt.event.ActionEvent;
 import java.util.EventListener;

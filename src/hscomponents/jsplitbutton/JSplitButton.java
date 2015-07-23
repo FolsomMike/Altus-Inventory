@@ -1,4 +1,4 @@
-package JSplitButton;
+package jsplitbutton;
 
 import java.awt.*;
 import java.awt.event.*;

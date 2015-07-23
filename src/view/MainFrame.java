@@ -16,7 +16,7 @@ package view;
 
 //-----------------------------------------------------------------------------
 
-import JSplitButton.JSplitButton;
+import jsplitbutton.JSplitButton;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -45,8 +45,13 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import toolkit.Tools;
 
 //-----------------------------------------------------------------------------
@@ -461,70 +466,41 @@ private JPanel createMaterialsTablePanel()
     panel.add(Box.createRigidArea(new Dimension(0,10)));
     
     //add table
-    JTable table = new JTable();
+    DefaultTableModel model = new DefaultTableModel();
+    JTable table = new JTable(model);
     table.setBackground(Color.WHITE);
     //change the background color of the header
     table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
+    //make it so that the user can't reorder the columns
+    table.getTableHeader().setReorderingAllowed(false);
     
-    //add the ID column
-    TableColumn id = new TableColumn();
-    id.setHeaderValue("ID");
-    table.addColumn(id);
+    //add columns to the table
+    model.addColumn("ID");
+    model.addColumn("Company");
+    model.addColumn("Date");
+    model.addColumn("Rack");
+    model.addColumn("Status");
+    model.addColumn("Quantity");
+    model.addColumn("Length");
+    model.addColumn("Diameter");
+    model.addColumn("Wall");
+    model.addColumn("Grade");
+    model.addColumn("Range");
+    model.addColumn("Facility");
     
-    //add the Company column
-    TableColumn company = new TableColumn();
-    company.setHeaderValue("Company");
-    table.addColumn(company);
+    //ZZZZZ
+    //assign each column a custom cell renderer
+    TableColumnModel mod = table.getColumnModel();
+    HSTableCellRenderer ren = new HSTableCellRenderer();
+    for (int i=0; i<mod.getColumnCount(); i++) {
+        mod.getColumn(i).setCellRenderer(ren);
+    }
     
-    //add the Date column
-    TableColumn date = new TableColumn();
-    date.setHeaderValue("Date");
-    table.addColumn(date);
+    //add a test row to the table -- //DEBUG HSS//
+    model.addRow(new String[] {"1234", "RG NDT", "07/21/15", "4D", "RESERVED", "25", "1000", "", "", "13-CR", "R2", ""});
+    model.addRow(new String[] {"1234", "RG NDT", "07/21/15", "4D", "RESERVED", "25", "1000", "", "", "13-CR", "R2", ""});
+    model.addRow(new String[] {"1234", "RG NDT", "07/21/15", "4D", "RESERVED", "25", "1000", "", "", "13-CR", "R2", ""});
     
-    //add the Rack column
-    TableColumn rack = new TableColumn();
-    rack.setHeaderValue("Rack");
-    table.addColumn(rack);
-    
-    //add the Status column
-    TableColumn status = new TableColumn();
-    status.setHeaderValue("Status");
-    table.addColumn(status);
-    
-    //add the Quantity column
-    TableColumn quantity = new TableColumn();
-    quantity.setHeaderValue("Quantity");
-    table.addColumn(quantity);
-    
-    //add the Length column
-    TableColumn length = new TableColumn();
-    length.setHeaderValue("Length");
-    table.addColumn(length);
-    
-    //add the Diameter column
-    TableColumn diameter = new TableColumn();
-    diameter.setHeaderValue("Diameter");
-    table.addColumn(diameter);
-    
-    //add the Wall column
-    TableColumn wall = new TableColumn();
-    wall.setHeaderValue("Wall");
-    table.addColumn(wall);
-    
-    //add the Grade column
-    TableColumn grade = new TableColumn();
-    grade.setHeaderValue("Grade");
-    table.addColumn(grade);
-    
-    //add the Range column
-    TableColumn range = new TableColumn();
-    range.setHeaderValue("Range");
-    table.addColumn(range);
-    
-    //add the Facility column
-    TableColumn facility = new TableColumn();
-    facility.setHeaderValue("Facility");
-    table.addColumn(facility);
     
     //put the table in a scroll pane
     JScrollPane scrollPane = new JScrollPane(table);
@@ -705,6 +681,68 @@ private void setupGui()
     mainPanel.add(createDisplayPanel());
  
 }// end of MainFrame::setupGui
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// MainFrame::HSTableCellRenderer
+//
+// This class is a custom table cell renderer, used to alternate the color of
+// rows
+//
+    
+class HSTableCellRenderer extends DefaultTableCellRenderer 
+                                            implements TableCellRenderer 
+{
+
+    @Override
+    public Component getTableCellRendererComponent 
+        (JTable pTable, Object pValue, boolean pIsSelected, boolean pHasFocus, 
+            int pRow, int pColumn) 
+    {
+        
+        setBackground(null);
+        
+        super.getTableCellRendererComponent
+                        (pTable, pValue, pIsSelected, pHasFocus, pRow, pColumn);
+        
+        //set the text of the cell
+        setText(String.valueOf(pValue));
+        
+        //give the cell no border
+        setBorder(noFocusBorder);
+        
+        //alternate the color of the rows
+        //row number is odd
+        if (pRow % 2 != 0) { setBackground(Color.decode("#E6E6E6")); }
+        //row number is even
+        else if (pRow % 2 == 0) { setBackground(Color.WHITE); }
+        
+        //if the cell is part of the selected row, highlight the cell
+        if (pTable.hasFocus() && pRow == pTable.getSelectedRow()) {  
+            setBackground(Color.BLUE);
+        }
+        
+        //force the table to r
+        if (!pTable.hasFocus()) {
+            TableModel mod = pTable.getModel();
+           // mod.getValueAt(TOP, TOP)
+            
+        }
+        
+        return this;
+        
+    }
+        
+    //This method updates the Row of table
+    public void updateRow(int index,String[] values)
+    {
+        for (int i = 0 ; i < values.length ; i++)
+        {
+            //setValueAt(values[i],index,i);
+        }
+    }
+    
+}// MainFrame::HSTableCellRenderer
 //-----------------------------------------------------------------------------
 
 }//end of class MainFrame
