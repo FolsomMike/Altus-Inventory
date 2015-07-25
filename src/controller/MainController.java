@@ -132,6 +132,10 @@ public class MainController implements EventHandler, Runnable
         if ("Display Help".equals(e.getActionCommand())) {
             displayHelp();
         }
+        
+        if ("Receive Material".equals(e.getActionCommand())) {
+            receiveMaterial();
+        }
 
         if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
@@ -353,6 +357,20 @@ public class MainController implements EventHandler, Runnable
 
 
     }//end of MainController::doTimerActions
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::receiveMaterial
+    //
+    // Displays the Receive Material window.
+    //
+
+    private void receiveMaterial()
+    {
+
+        view.receiveMaterial();
+
+    }//end of MainController::receiveMaterial
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
