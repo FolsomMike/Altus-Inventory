@@ -125,12 +125,12 @@ public class MainController implements EventHandler, Runnable
     public void actionPerformed(ActionEvent e)
     {
 
-        if ("Display Help".equals(e.getActionCommand())) {
-            displayHelp();
-        }
-
         if ("Display About".equals(e.getActionCommand())) {
             displayAbout();
+        }
+        
+        if ("Display Help".equals(e.getActionCommand())) {
+            displayHelp();
         }
 
         if ("Timer".equals(e.getActionCommand())) { 
