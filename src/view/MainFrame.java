@@ -17,7 +17,6 @@ package view;
 //-----------------------------------------------------------------------------
 
 import hscomponents.table.hsTable;
-import hscomponents.table.hsTableModel;
 import jsplitbutton.JSplitButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -50,11 +49,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import toolkit.Tools;
 
@@ -182,12 +177,18 @@ private JPanel createDisplayPanel()
 {
     
     JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.setAlignmentX(LEFT_ALIGNMENT);
     panel.setAlignmentY(TOP_ALIGNMENT);
     
+    //add view combo box
+    panel.add(createViewComboBox());
+    
+    //vertical spacer
+    panel.add(Box.createRigidArea(new Dimension(0,10)));
+    
     //add materials table panel
-    panel.add(createMaterialsTablePanel());
+    panel.add(createMaterialsTable());
     
     return panel;
 
@@ -448,14 +449,14 @@ private JPanel createMaterialButtonsPanel()
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-// MainFrame::createMaterialsTablePanel
+// MainFrame::createMaterialsTable
 //
-// Creates and returns the materials table panel.
+// Creates and returns the materials table.
 //
 // The materials table displays all of the pipe in the yard to the user.
 //
 
-private JPanel createMaterialsTablePanel()
+private JPanel createMaterialsTable()
 {
     
     JPanel panel = new JPanel();
@@ -463,37 +464,31 @@ private JPanel createMaterialsTablePanel()
     panel.setAlignmentX(LEFT_ALIGNMENT);
     panel.setAlignmentY(TOP_ALIGNMENT);
     
-    //add view combo box
-    panel.add(createViewComboBox());
-    
-    //vertical spacer
-    panel.add(Box.createRigidArea(new Dimension(0,10)));
-    
-    hsTable model = new hsTable();
-    model.init();
-    model.setAutoCreateRowSorter(true);
+    hsTable table = new hsTable();
+    table.init();
     
     //change the background color of the header
-    model.getTableHeader().setBackground(Color.decode("#C2E0FF"));
-    model.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
-    model.setRowHeight(25);
-    //make it so that the user can't reorder the columns
-    model.getTableHeader().setReorderingAllowed(false);
-    model.setSelectionBackground(Color.decode("#000099"));
-    model.setSelectionForeground(Color.WHITE);
+    table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
+    table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
+    table.setRowHeight(25);
     
-    model.addColumn("ID");
-    model.addColumn("Company");
-    model.addColumn("Date");
-    model.addColumn("Rack");
-    model.addColumn("Status");
-    model.addColumn("Quantity");
-    model.addColumn("Length");
-    model.addColumn("Diameter");
-    model.addColumn("Wall");
-    model.addColumn("Grade");
-    model.addColumn("Range");
-    model.addColumn("Facility");
+    //make it so that the user can't reorder the columns
+    table.getTableHeader().setReorderingAllowed(false);
+    table.setSelectionBackground(Color.decode("#000099"));
+    table.setSelectionForeground(Color.WHITE);
+    
+    table.addColumn("ID");
+    table.addColumn("Company");
+    table.addColumn("Date");
+    table.addColumn("Rack");
+    table.addColumn("Status");
+    table.addColumn("Quantity");
+    table.addColumn("Length");
+    table.addColumn("Diameter");
+    table.addColumn("Wall");
+    table.addColumn("Grade");
+    table.addColumn("Range");
+    table.addColumn("Facility");
     
     List<Object> row = new ArrayList<>();
     row.add("1111");
@@ -524,62 +519,54 @@ private JPanel createMaterialsTablePanel()
     row2.add("");
     
     //add test rows to the table -- //DEBUG HSS//
-    model.addRow(row);
-    model.addRow(row2);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    model.addRow(row);
-    
-    
-    
-    
-    
-    
-    //DEBUG HSS//
-    model.setBackground(Color.yellow);
+    table.addRow(row);
+    table.addRow(row2);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
+    table.addRow(row);
     
     //put the table in a scroll pane
-    JScrollPane scrollPane = new JScrollPane(model);
+    JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setAlignmentX(LEFT_ALIGNMENT);
     scrollPane.setAlignmentY(TOP_ALIGNMENT);
     panel.add(scrollPane);
     
     return panel;
 
-}// end of MainFrame::createMaterialsTablePanel
+}// end of MainFrame::createMaterialsTable
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
