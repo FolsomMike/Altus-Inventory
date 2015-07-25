@@ -16,6 +16,8 @@ package view;
 
 //-----------------------------------------------------------------------------
 
+import hscomponents.table.hsTable;
+import hscomponents.table.hsTableModel;
 import jsplitbutton.JSplitButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -25,7 +27,9 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -465,16 +469,19 @@ private JPanel createMaterialsTablePanel()
     //vertical spacer
     panel.add(Box.createRigidArea(new Dimension(0,10)));
     
-    //add table
-    DefaultTableModel model = new DefaultTableModel();
-    JTable table = new JTable(model);
-    table.setBackground(Color.WHITE);
-    //change the background color of the header
-    table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
-    //make it so that the user can't reorder the columns
-    table.getTableHeader().setReorderingAllowed(false);
+    hsTable model = new hsTable();
+    model.init();
+    model.setAutoCreateRowSorter(true);
     
-    //add columns to the table
+    //change the background color of the header
+    model.getTableHeader().setBackground(Color.decode("#C2E0FF"));
+    model.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
+    model.setRowHeight(25);
+    //make it so that the user can't reorder the columns
+    model.getTableHeader().setReorderingAllowed(false);
+    model.setSelectionBackground(Color.decode("#000099"));
+    model.setSelectionForeground(Color.WHITE);
+    
     model.addColumn("ID");
     model.addColumn("Company");
     model.addColumn("Date");
@@ -488,22 +495,84 @@ private JPanel createMaterialsTablePanel()
     model.addColumn("Range");
     model.addColumn("Facility");
     
-    //ZZZZZ
-    //assign each column a custom cell renderer
-    TableColumnModel mod = table.getColumnModel();
-    HSTableCellRenderer ren = new HSTableCellRenderer();
-    for (int i=0; i<mod.getColumnCount(); i++) {
-        mod.getColumn(i).setCellRenderer(ren);
-    }
+    List<Object> row = new ArrayList<>();
+    row.add("1111");
+    row.add("RG NDT");
+    row.add("07/21/15");
+    row.add("4D");
+    row.add("RESERVED");
+    row.add("25");
+    row.add("1000");
+    row.add("");
+    row.add("");
+    row.add("13-CR");
+    row.add("R2");
+    row.add("");
     
-    //add a test row to the table -- //DEBUG HSS//
-    model.addRow(new String[] {"1234", "RG NDT", "07/21/15", "4D", "RESERVED", "25", "1000", "", "", "13-CR", "R2", ""});
-    model.addRow(new String[] {"1234", "RG NDT", "07/21/15", "4D", "RESERVED", "25", "1000", "", "", "13-CR", "R2", ""});
-    model.addRow(new String[] {"1234", "RG NDT", "07/21/15", "4D", "RESERVED", "25", "1000", "", "", "13-CR", "R2", ""});
+    List<Object> row2 = new ArrayList<>();
+    row2.add("2222");
+    row2.add("RG NDT");
+    row2.add("07/21/15");
+    row2.add("4D");
+    row2.add("IN STOCKlsdflkasjdflka");
+    row2.add("25");
+    row2.add("1000");
+    row2.add("");
+    row2.add("");
+    row2.add("13-CR");
+    row2.add("R2");
+    row2.add("");
     
+    //add test rows to the table -- //DEBUG HSS//
+    model.addRow(row);
+    model.addRow(row2);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    model.addRow(row);
+    
+    
+    
+    
+    
+    
+    //DEBUG HSS//
+    model.setBackground(Color.yellow);
     
     //put the table in a scroll pane
-    JScrollPane scrollPane = new JScrollPane(table);
+    JScrollPane scrollPane = new JScrollPane(model);
     scrollPane.setAlignmentX(LEFT_ALIGNMENT);
     scrollPane.setAlignmentY(TOP_ALIGNMENT);
     panel.add(scrollPane);
