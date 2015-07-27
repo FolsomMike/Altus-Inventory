@@ -137,8 +137,8 @@ public class ReceiveMaterialFrame extends JFrame
         //add the mainView as a window listener
         addWindowListener(mainView);
 
-        //sets the default close operation
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //release the window's resources when it is closed
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         //add a JPanel to the frame to provide a familiar container
         mainPanel = new JPanel();
