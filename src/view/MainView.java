@@ -210,6 +210,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::displayMoveMaterialWindow
+    //
+    // Displays the Move Material window.
+    //
+
+    public void displayMoveMaterialWindow()
+    {
+
+        MoveMaterialFrame frame = new MoveMaterialFrame(this);
+        frame.init();
+
+    }//end of MainView::displayMoveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::displayReceiveMaterialWindow
     //
     // Displays the Receive Material window.
@@ -222,6 +237,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
         frame.init();
 
     }//end of MainView::displayReceiveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayShipMaterialWindow
+    //
+    // Displays the Ship Material window.
+    //
+
+    public void displayShipMaterialWindow()
+    {
+
+        ShipMaterialFrame frame = new ShipMaterialFrame(this);
+        frame.init();
+
+    }//end of MainFrame::displayShipMaterialWindow
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -254,21 +284,6 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
         mainFrame.init();
 
     }// end of MainView::setupMainFrame
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::shipMaterial
-    //
-    // Displays the Ship Material window.
-    //
-
-    public void shipMaterial()
-    {
-
-        ShipMaterialFrame frame = new ShipMaterialFrame(this);
-        frame.init();
-
-    }//end of MainFrame::shipMaterial
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

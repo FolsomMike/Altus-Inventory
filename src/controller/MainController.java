@@ -133,6 +133,10 @@ public class MainController implements EventHandler, Runnable
             displayHelp();
         }
         
+        if ("Move Material".equals(e.getActionCommand())) {
+            moveMaterial();
+        }
+        
         if ("Receive Material".equals(e.getActionCommand())) {
             receiveMaterial();
         }
@@ -362,6 +366,20 @@ public class MainController implements EventHandler, Runnable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainController::moveMaterial
+    //
+    // Displays the Move Material window.
+    //
+
+    private void moveMaterial()
+    {
+
+        view.displayMoveMaterialWindow();
+
+    }//end of MainController::moveMaterial
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainController::receiveMaterial
     //
     // Displays the Receive Material window.
@@ -384,7 +402,7 @@ public class MainController implements EventHandler, Runnable
     private void shipMaterial()
     {
 
-        view.shipMaterial();
+        view.displayShipMaterialWindow();
 
     }//end of MainController::shipMaterial
     //--------------------------------------------------------------------------
