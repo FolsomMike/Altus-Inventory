@@ -253,6 +253,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
     }//end of MainFrame::displayShipMaterialWindow
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayTransferMaterialWindow
+    //
+    // Displays the Transfer Material window.
+    //
+
+    public void displayTransferMaterialWindow()
+    {
+
+        TransferMaterialFrame frame = new TransferMaterialFrame(this);
+        frame.init();
+
+    }//end of MainFrame::displayTransferMaterialWindow
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::setupAndStartMainTimer

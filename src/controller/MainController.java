@@ -148,6 +148,10 @@ public class MainController implements EventHandler, Runnable
         if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
         }
+        
+        if ("Transfer Material".equals(e.getActionCommand())) {
+            transferMaterial();
+        }
 
     }//end of MainController::actionPerformed
     //--------------------------------------------------------------------------
@@ -438,6 +442,20 @@ public class MainController implements EventHandler, Runnable
         try {Thread.sleep(pSleepTime);} catch (InterruptedException e) { }
 
     }//end of MainController::threadSleep
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::transferMaterial
+    //
+    // Displays the Transfer Material window.
+    //
+
+    private void transferMaterial()
+    {
+
+        view.displayTransferMaterialWindow();
+
+    }//end of MainController::transferMaterial
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
