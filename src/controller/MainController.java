@@ -141,6 +141,10 @@ public class MainController implements EventHandler, Runnable
             receiveMaterial();
         }
         
+        if ("Reserve Material".equals(e.getActionCommand())) {
+            reserveMaterial();
+        }
+        
         if ("Ship Material".equals(e.getActionCommand())) {
             shipMaterial();
         }
@@ -395,6 +399,20 @@ public class MainController implements EventHandler, Runnable
         view.displayReceiveMaterialWindow();
 
     }//end of MainController::receiveMaterial
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::reserveMaterial
+    //
+    // Displays the Reserve Material window.
+    //
+
+    private void reserveMaterial()
+    {
+
+        view.displayReserveMaterialWindow();
+
+    }//end of MainController::reserveMaterial
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
