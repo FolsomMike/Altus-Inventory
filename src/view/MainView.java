@@ -196,7 +196,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainFrame::displayHelp
+    // MainView:displayHelp
     //
     // Displays help information.
     //
@@ -206,22 +206,22 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
         mainFrame.displayHelp();
 
-    }//end of MainFrame::displayHelp
+    }//end of MainView::displayHelp
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainFrame::receiveMaterial
+    // MainView::displayReceiveMaterialWindow
     //
     // Displays the Receive Material window.
     //
 
-    public void receiveMaterial()
+    public void displayReceiveMaterialWindow()
     {
 
         ReceiveMaterialFrame frame = new ReceiveMaterialFrame(this);
         frame.init();
 
-    }//end of MainFrame::receiveMaterial
+    }//end of MainView::displayReceiveMaterialWindow
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -254,6 +254,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
         mainFrame.init();
 
     }// end of MainView::setupMainFrame
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::shipMaterial
+    //
+    // Displays the Ship Material window.
+    //
+
+    public void shipMaterial()
+    {
+
+        ShipMaterialFrame frame = new ShipMaterialFrame(this);
+        frame.init();
+
+    }//end of MainFrame::shipMaterial
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

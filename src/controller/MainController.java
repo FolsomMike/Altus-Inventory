@@ -136,6 +136,10 @@ public class MainController implements EventHandler, Runnable
         if ("Receive Material".equals(e.getActionCommand())) {
             receiveMaterial();
         }
+        
+        if ("Ship Material".equals(e.getActionCommand())) {
+            shipMaterial();
+        }
 
         if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
@@ -196,8 +200,6 @@ public class MainController implements EventHandler, Runnable
     {
 
         //perform all shut down procedures
-
-        shutDown();
 
     }//end of MainController::windowClosing
     //--------------------------------------------------------------------------
@@ -368,9 +370,23 @@ public class MainController implements EventHandler, Runnable
     private void receiveMaterial()
     {
 
-        view.receiveMaterial();
+        view.displayReceiveMaterialWindow();
 
     }//end of MainController::receiveMaterial
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::shipMaterial
+    //
+    // Displays the Ship Material window.
+    //
+
+    private void shipMaterial()
+    {
+
+        view.shipMaterial();
+
+    }//end of MainController::shipMaterial
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

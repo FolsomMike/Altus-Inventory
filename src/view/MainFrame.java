@@ -671,7 +671,7 @@ public class MainFrame extends JFrame
         addWindowListener(mainView);
 
         //sets the default close operation
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //add a JPanel to the frame to provide a familiar container
         mainPanel = new JPanel();
