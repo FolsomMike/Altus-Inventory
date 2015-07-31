@@ -356,42 +356,45 @@ public class MainFrame extends JFrame
         table.addColumn("ID");
         table.addColumn("Company");
         table.addColumn("Date");
-        table.addColumn("Rack");
         table.addColumn("Status");
+        table.addColumn("Truck");
         table.addColumn("Quantity");
         table.addColumn("Length");
+        table.addColumn("Rack");
+        table.addColumn("Range");
+        table.addColumn("Grade");
         table.addColumn("Diameter");
         table.addColumn("Wall");
-        table.addColumn("Grade");
-        table.addColumn("Range");
         table.addColumn("Facility");
 
         List<Object> row = new ArrayList<>();
         row.add("1111");
         row.add("RG NDT");
         row.add("07/21/15");
-        row.add("4D");
-        row.add("RESERVED");
-        row.add("25");
-        row.add("1000");
+        row.add("IN STOCK");
+        row.add("Frogger Trucking");
+        row.add("29");
+        row.add("522");
         row.add("");
-        row.add("");
-        row.add("13-CR");
         row.add("R2");
+        row.add("13-CR");
         row.add("");
-
+        row.add("");
+        row.add("");
+        
         List<Object> row2 = new ArrayList<>();
         row2.add("2222");
-        row2.add("RG NDT");
-        row2.add("07/21/15");
-        row2.add("4D");
-        row2.add("IN STOCKlsdflkasjdflka");
-        row2.add("25");
-        row2.add("1000");
+        row2.add("Oil Frack Stack");
+        row2.add("07/25/15");
+        row2.add("RESERVED");
+        row2.add("Mountain Inc. Trucking");
+        row2.add("55");
+        row2.add("1210");
         row2.add("");
-        row2.add("");
+        row2.add("R3");
         row2.add("13-CR");
-        row2.add("R2");
+        row2.add("");
+        row2.add("");
         row2.add("");
 
         //add test rows to the table -- //DEBUG HSS//
