@@ -764,7 +764,6 @@ public class ReceiveMaterialFrame extends JFrame
 
         //add a JPanel to the frame to provide a familiar container
         mainPanel = new JPanel();
-        //Tools.setSizes(mainPanel, 300, 300);
         setContentPane(mainPanel);
 
     }// end of ReceiveMaterialFrame::setUpFrame
