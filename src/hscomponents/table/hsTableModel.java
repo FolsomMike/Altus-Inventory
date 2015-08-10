@@ -27,7 +27,7 @@ import javax.swing.table.AbstractTableModel;
 public class hsTableModel extends AbstractTableModel 
 {
     
-    List<String> columnNames = new ArrayList<>();
+    List<Object> columnNames = new ArrayList<>();
     
     //row by column (outer list is rows, inner list is columns)
     List<List<Object>> tableData = new ArrayList<>();
@@ -82,10 +82,11 @@ public class hsTableModel extends AbstractTableModel
     //
     
     @Override
-    public String getColumnName(int col)
+    public String getColumnName(int pCol)
     {
         
-        return columnNames.get(col);
+        //WIP HSS//
+        return columnNames.get(pCol).toString();
         
     }//end of hsTableModel::getColumnName
     //--------------------------------------------------------------------------
@@ -141,13 +142,29 @@ public class hsTableModel extends AbstractTableModel
     //--------------------------------------------------------------------------
     // hsTableModel::addColumn
     //
-    // Adds a column to the model, naming it the passed in string.
+    // Adds a column to the model, with the passed in object as the header.
     //
 
-    public void addColumn(String pName) 
+    public void addColumn(Object pName) 
     {
         
         columnNames.add(pName);
+        fireTableStructureChanged();
+
+    }//end of hsTableModel::addColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTableModel::addColumn
+    //
+    // Adds a column to the model at the specified location, with the passed in 
+    // object as the header.
+    //
+
+    public void addColumn(int pPos, Object pName) 
+    {
+        
+        columnNames.add(pPos, pName);
         fireTableStructureChanged();
 
     }//end of hsTableModel::addColumn

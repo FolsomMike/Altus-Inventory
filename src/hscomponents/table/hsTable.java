@@ -163,13 +163,28 @@ public class hsTable extends JTable
     //--------------------------------------------------------------------------
     // hsTable::addColumn
     //
-    // Adds a column to the table, with the passed in name.
+    // Adds a column to the table, with the passed in object as the header.
     //
 
-    public void addColumn(String pCol)
+    public void addColumn(Object pCol)
     {
         
         model.addColumn(pCol);
+
+    }//end of hsTable::addColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTable::addColumn
+    //
+    // Adds a column to the table at the passed in position, with the passed 
+    // in object as the header.
+    //
+
+    public void addColumn(int pPos, Object pCol)
+    {
+        
+        model.addColumn(pPos, pCol);
 
     }//end of hsTable::addColumn
     //--------------------------------------------------------------------------
