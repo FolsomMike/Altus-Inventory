@@ -19,6 +19,9 @@ package view;
 import hscomponents.table.hsTable;
 import jsplitbutton.JSplitButton;
 import java.awt.Color;
+import java.awt.Component;
+import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -31,11 +34,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -171,7 +176,7 @@ public class MainFrame extends JFrame
     //
     // Creates and returns the display panel.
     //
-    // The display panel dsiplays all of the pipe in the yard to the user.
+    // The display panel displays all of the pipe in the yard to the user.
     //
 
     private JPanel createDisplayPanel()
@@ -182,8 +187,8 @@ public class MainFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
 
-        //add view combo box
-        panel.add(createViewComboBox());
+        //add the filter panel box
+        panel.add(createFilterPanel());
 
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,10)));
@@ -235,7 +240,7 @@ public class MainFrame extends JFrame
                                 "<html><center>Create<br>Invoice</html>", 
                                 createImageIcon("images/createInvoice.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Create Invoice");
+        btn.setActionCommand("MainFrame::Create Invoice");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
         btn.setFocusPainted(false);
@@ -271,7 +276,7 @@ public class MainFrame extends JFrame
         JSplitButton btn = new JSplitButton(
                                 "<html><center>Create<br>Report</html>", 
                                 createImageIcon("images/createReport.png"));
-        btn.setActionCommand("Create Report");
+        btn.setActionCommand("MainFrame::Create Report");
         btn.addActionListener(mainView);
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
@@ -296,6 +301,94 @@ public class MainFrame extends JFrame
 
     }// end of MainFrame::createCreateReportButton
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ShipMaterialFrame::createFilterComboBoxesAndFilterTextField
+    //
+    // Creates and returns a JPanel containing the filter by combo box and the
+    // filter text box.
+    //
+
+    private JPanel createFilterComboBoxesAndFilterTextField()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        
+        //populate an array of strings with items for a combo box
+        String[] strings = { "All Material in Yard", "Available in Stock", 
+                                "Reserved", "Shipped", "Moved", "Transferred" };
+        //Create the combo box, select item at index 0
+        JComboBox combo = new JComboBox(strings);
+        combo.addActionListener(mainView);     
+        combo.setActionCommand("MainFrame::Change View");
+        combo.setAlignmentX(LEFT_ALIGNMENT);
+        combo.setAlignmentY(TOP_ALIGNMENT);
+        combo.setSelectedIndex(0);
+        Tools.setSizes(combo, 135, 20);
+        panel.add(combo);
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //populate an array of strings with items for a combo box
+        String[] strings2 = {"ID", "Company", "Date", "Status", "Truck", 
+                            "Quantity", "Length", "Rack", "Range", "Grade",
+                            "Diameter", "Wall", "Facility"};
+        //Create the combo box, select item at index 0
+        JComboBox combo2 = new JComboBox(strings2);
+        combo2.addActionListener(mainView);     
+        combo2.setActionCommand("MainFrame::Ship Material Change Filter By");
+        combo2.setAlignmentX(LEFT_ALIGNMENT);
+        combo2.setAlignmentY(TOP_ALIGNMENT);
+        combo2.setSelectedIndex(0);
+        Tools.setSizes(combo2, 90, 20);
+        panel.add(combo2);
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //create the filter text box
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setAlignmentY(TOP_ALIGNMENT);
+        field.setToolTipText("Type a phrase to filter the material by.");
+        Tools.setSizes(field, 200, 20);
+        panel.add(field);
+        
+        return panel;
+
+    }// end of ShipMaterialFrame::createFilterComboBoxesAndFilterTextField
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::creatFilterPanel
+    //
+    // Creates and returns the filter panel.
+    //
+
+    private JPanel createFilterPanel()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Filter:");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        //vertical spacer
+        panel.add(Box.createRigidArea(new Dimension(0,5)));
+        
+        panel.add(createFilterComboBoxesAndFilterTextField());
+        
+        return panel;
+
+    }// end of MainFrame::createFilterPanel
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainFrame::createMakePaymentButton
@@ -310,7 +403,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Make<br>Payment</html>", 
                                     createImageIcon("images/makePayment.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Make Payment");
+        btn.setActionCommand("MainFrame::Make Payment");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -353,6 +446,7 @@ public class MainFrame extends JFrame
         table.setSelectionBackground(Color.decode("#000099"));
         table.setSelectionForeground(Color.WHITE);
 
+        table.addColumn("");
         table.addColumn("ID");
         table.addColumn("Company");
         table.addColumn("Date");
@@ -368,6 +462,7 @@ public class MainFrame extends JFrame
         table.addColumn("Facility");
 
         List<Object> row = new ArrayList<>();
+        row.add(false);
         row.add("1111");
         row.add("RG NDT");
         row.add("07/21/15");
@@ -383,6 +478,7 @@ public class MainFrame extends JFrame
         row.add("");
         
         List<Object> row2 = new ArrayList<>();
+        row2.add(false);
         row2.add("2222");
         row2.add("Oil Frack Stack");
         row2.add("07/25/15");
@@ -461,7 +557,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Move<br>Material</html>", 
                                 createImageIcon("images/moveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Move Material");
+        btn.setActionCommand("MainFrame::Move Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -488,7 +584,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Receive<br>Material</html>", 
                                 createImageIcon("images/receiveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Receive Material");
+        btn.setActionCommand("MainFrame::Receive Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -515,7 +611,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Reserve<br>Material</html>", 
                                 createImageIcon("images/reserveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Reserve Material");
+        btn.setActionCommand("MainFrame::Reserve Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -542,7 +638,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Ship<br>Material</html>", 
                                 createImageIcon("images/shipMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Ship Material");
+        btn.setActionCommand("MainFrame::Ship Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -569,7 +665,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Transfer<br>Material</html>", 
                                 createImageIcon("images/transferMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Transfer Material");
+        btn.setActionCommand("MainFrame::Transfer Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -602,7 +698,7 @@ public class MainFrame extends JFrame
         //Create the combo box, select item at index 0
         JComboBox combo = new JComboBox(strings);
         combo.addActionListener(mainView);     
-        combo.setActionCommand("Change View");
+        combo.setActionCommand("MainFrame::Change View");
         combo.setAlignmentX(LEFT_ALIGNMENT);
         combo.setAlignmentY(TOP_ALIGNMENT);   
         combo.setSelectedIndex(0);

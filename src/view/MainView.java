@@ -295,7 +295,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
         //main timer has 2 second period
         mainTimer = new javax.swing.Timer (2000, this);
-        mainTimer.setActionCommand ("Timer");
+        mainTimer.setActionCommand ("MainView::Timer");
         mainTimer.start();
 
     }// end of MainView::setupAndStartMainTimer
