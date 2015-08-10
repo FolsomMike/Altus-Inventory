@@ -376,11 +376,13 @@ public class MainController implements EventHandler, Runnable
     //--------------------------------------------------------------------------
     // MainController::moveMaterial
     //
-    // //WIP HSS//
+    // Displays the Move Material Window.
     //
 
     private void moveMaterial()
     {
+        
+        view.displayMoveMaterialWindow();
 
     }//end of MainController::moveMaterial
     //--------------------------------------------------------------------------
