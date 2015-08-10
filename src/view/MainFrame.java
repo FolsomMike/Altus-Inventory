@@ -436,15 +436,13 @@ public class MainFrame extends JFrame
         hsTable table = new hsTable();
         table.init();
 
-        //change the background color of the header
+        //setup the table
         table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
         table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
-        table.setRowHeight(25);
-
-        //make it so that the user can't reorder the columns
         table.getTableHeader().setReorderingAllowed(false);
         table.setSelectionBackground(Color.decode("#000099"));
         table.setSelectionForeground(Color.WHITE);
+        table.setRowHeight(25);
 
         table.addColumn("");
         table.addColumn("ID");
