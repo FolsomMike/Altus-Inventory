@@ -210,6 +210,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::displayMakePaymentWindow
+    //
+    // Displays the Make Payment window.
+    //
+
+    public void displayMakePaymentWindow()
+    {
+
+        MakePaymentFrame frame = new MakePaymentFrame(this);
+        frame.init();
+
+    }//end of MainView::displayMakePaymentWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::displayMoveMaterialWindow
     //
     // Displays the Move Material window.

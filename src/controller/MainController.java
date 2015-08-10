@@ -133,6 +133,10 @@ public class MainController implements EventHandler, Runnable
             displayHelp();
         }
         
+        if ("MainFrame::Make Payment".equals(e.getActionCommand())) {
+            makePayment();
+        }
+        
         if ("MainFrame::Move Material".equals(e.getActionCommand())) {
             moveMaterial();
         }
@@ -371,6 +375,20 @@ public class MainController implements EventHandler, Runnable
 
 
     }//end of MainController::doTimerActions
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::makePayment
+    //
+    // Displays the Make Payment window.
+    //
+
+    private void makePayment()
+    {
+
+        view.displayMakePaymentWindow();
+
+    }//end of MainController::makePayment
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
