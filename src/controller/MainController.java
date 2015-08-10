@@ -133,28 +133,28 @@ public class MainController implements EventHandler, Runnable
             displayHelp();
         }
         
-        if ("Move Material".equals(e.getActionCommand())) {
+        if ("MainFrame::Move Material".equals(e.getActionCommand())) {
             moveMaterial();
         }
         
-        if ("Receive Material".equals(e.getActionCommand())) {
+        if ("MainFrame::Receive Material".equals(e.getActionCommand())) {
             receiveMaterial();
         }
         
-        if ("Reserve Material".equals(e.getActionCommand())) {
+        if ("MainFrame::Reserve Material".equals(e.getActionCommand())) {
             reserveMaterial();
         }
         
-        if ("Ship Material".equals(e.getActionCommand())) {
+        if ("MainFrame::Ship Material".equals(e.getActionCommand())) {
             shipMaterial();
+        }
+        
+        if ("MainFrame::Transfer Material".equals(e.getActionCommand())) {
+            transferMaterial();
         }
 
         if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
-        }
-        
-        if ("Transfer Material".equals(e.getActionCommand())) {
-            transferMaterial();
         }
 
     }//end of MainController::actionPerformed
@@ -376,13 +376,11 @@ public class MainController implements EventHandler, Runnable
     //--------------------------------------------------------------------------
     // MainController::moveMaterial
     //
-    // Displays the Move Material window.
+    // //WIP HSS//
     //
 
     private void moveMaterial()
     {
-
-        view.displayMoveMaterialWindow();
 
     }//end of MainController::moveMaterial
     //--------------------------------------------------------------------------
