@@ -532,6 +532,7 @@ public class MainFrame extends JFrame
         table.addRow(row);
         table.addRow(row);
         table.addRow(row);
+        //DEBUG HSS//
 
         //put the table in a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
@@ -559,6 +560,7 @@ public class MainFrame extends JFrame
         btn.addActionListener(mainView);
         btn.setActionCommand("MainFrame::Move Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -613,6 +615,7 @@ public class MainFrame extends JFrame
         btn.addActionListener(mainView);
         btn.setActionCommand("MainFrame::Reserve Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -640,6 +643,7 @@ public class MainFrame extends JFrame
         btn.addActionListener(mainView);
         btn.setActionCommand("MainFrame::Ship Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -667,6 +671,7 @@ public class MainFrame extends JFrame
         btn.addActionListener(mainView);
         btn.setActionCommand("MainFrame::Transfer Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -677,36 +682,6 @@ public class MainFrame extends JFrame
         return btn;
 
     }// end of MainFrame::createTransferMaterialButton
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::createViewComboBox
-    //
-    // Creates and returns the View combo box.
-    //
-    // The combo box is used to select what material the user wants to view.
-    //      
-    //
-
-    private JComboBox createViewComboBox()
-    {
-
-        //populate an array of strings with items for the combo box
-        String[] strings = { "All Material in Yard", "Available in Stock", 
-                                "Reserved", "Shipped", "Moved", "Transferred" };
-
-        //Create the combo box, select item at index 0
-        JComboBox combo = new JComboBox(strings);
-        combo.addActionListener(mainView);     
-        combo.setActionCommand("MainFrame::Change View");
-        combo.setAlignmentX(LEFT_ALIGNMENT);
-        combo.setAlignmentY(TOP_ALIGNMENT);   
-        combo.setSelectedIndex(0);
-        Tools.setSizes(combo, 135, 20);
-
-        return combo;
-
-    }// end of MainFrame::createViewComboBox
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
