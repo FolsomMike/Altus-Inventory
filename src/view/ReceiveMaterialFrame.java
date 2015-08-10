@@ -765,6 +765,9 @@ public class ReceiveMaterialFrame extends JFrame
         //add a JPanel to the frame to provide a familiar container
         mainPanel = new JPanel();
         setContentPane(mainPanel);
+        
+        //disable window resizing
+        setResizable(false);
 
     }// end of ReceiveMaterialFrame::setUpFrame
     //--------------------------------------------------------------------------
