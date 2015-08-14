@@ -16,8 +16,8 @@ package view;
 
 //------------------------------------------------------------------------------
 
+import hscomponents.jsplitbutton.JSplitButton;
 import hscomponents.table.hsTable;
-import jsplitbutton.JSplitButton;
 import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -25,6 +25,7 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -239,6 +240,7 @@ public class MainFrame extends JFrame
         JSplitButton btn = new JSplitButton(
                                 "<html><center>Create<br>Invoice</html>", 
                                 createImageIcon("images/createInvoice.png"));
+        btn.init();
         btn.addActionListener(mainView);
         btn.setActionCommand("MainFrame--Create Invoice");
         btn.setAlignmentX(LEFT_ALIGNMENT);
@@ -276,6 +278,7 @@ public class MainFrame extends JFrame
         JSplitButton btn = new JSplitButton(
                                 "<html><center>Create<br>Report</html>", 
                                 createImageIcon("images/createReport.png"));
+        btn.init();
         btn.setActionCommand("MainFrame--Create Report");
         btn.addActionListener(mainView);
         btn.setAlignmentX(LEFT_ALIGNMENT);
@@ -289,11 +292,45 @@ public class MainFrame extends JFrame
         
         //create a popup menu and add it to the button
         JPopupMenu menu = new JPopupMenu();
-        menu.add(new JMenuItem("Receiving Report"));
-        menu.add(new JMenuItem("Shipping Report"));
-        menu.add(new JMenuItem("Tally Report"));
-        menu.add(new JMenuItem("Rack Report"));
-        menu.add(new JMenuItem("Current Balance Report"));
+        
+        //Create Report/Receiving Report menu item
+        JMenuItem receivingReportMenuItem = new JMenuItem("Receiving Report");
+        receivingReportMenuItem.setToolTipText("Create a receiving report.");
+        receivingReportMenuItem.setActionCommand("MainFrame--Receiving Report");
+        receivingReportMenuItem.addActionListener(mainView);
+        menu.add(receivingReportMenuItem);
+        
+        //Create Report/Shipping Report menu item
+        JMenuItem shippingReportMenuItem = new JMenuItem("Shipping Report");
+        shippingReportMenuItem.setToolTipText("Create a shipping report.");
+        shippingReportMenuItem.setActionCommand("MainFrame--Shipping Report");
+        shippingReportMenuItem.addActionListener(mainView);
+        menu.add(shippingReportMenuItem);
+        
+        //Create Report/Tally Report menu item
+        JMenuItem tallyReportMenuItem = new JMenuItem("Tally Report");
+        tallyReportMenuItem.setToolTipText("Create a tally report.");
+        tallyReportMenuItem.setActionCommand("MainFrame--Tally Report");
+        tallyReportMenuItem.addActionListener(mainView);
+        menu.add(tallyReportMenuItem);
+        
+        //Create Report/Rack Report menu item
+        JMenuItem rackReportMenuItem = new JMenuItem("Rack Report");
+        rackReportMenuItem.setToolTipText("Create a rack report.");
+        rackReportMenuItem.setActionCommand("MainFrame--Rack Report");
+        rackReportMenuItem.addActionListener(mainView);
+        menu.add(rackReportMenuItem);
+        
+        //Create Report/Current Balance Report menu item
+        JMenuItem currentBalanceReportMenuItem = 
+                                        new JMenuItem("Current Balance Report");
+        currentBalanceReportMenuItem.setToolTipText
+                            ("Create a current balance report for a customer.");
+        currentBalanceReportMenuItem.setActionCommand
+                            ("MainFrame--Current Balance Report");
+        currentBalanceReportMenuItem.addActionListener(mainView);
+        menu.add(currentBalanceReportMenuItem);
+        
         menu.setBorder(new BevelBorder(BevelBorder.RAISED));
         btn.setPopupMenu(menu);
         
