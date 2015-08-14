@@ -1,22 +1,31 @@
+/*******************************************************************************
+* Title: SplitButtonActionListener.java
+* Author: Hunter Schoonover
+* Date: 08/14/15
+*
+* Purpose:
+*
+* The listener interface for receiving action events.
+* 
+* The class that is interested in processing an action event implements this 
+* interface, and the object created with that class is registered with a 
+* component, using the component's addSplitButtonActionListenermethod. When the
+* action event occurs, that object's buttonClicked or splitButtonClicked
+* method is invoked.
+* 
+* The source code used was largely based on the Google SplitButtonActionListner.
+*
+*/
+
+//------------------------------------------------------------------------------
 
 package hscomponents.jsplitbutton;
+
+//------------------------------------------------------------------------------
 
 import java.awt.event.ActionEvent;
 import java.util.EventListener;
 
-/**
- * The listener interface for receiving action events.
- * The class that is interested in processing an action event
- * implements this interface, and the object created with that
- * class is registered with a component, using the component's
- * <code>addSplitButtonActionListener</code> method. When the action event
- * occurs, that object's <code>buttonClicked</code> or <code>splitButtonClicked</code>
- * method is invoked.
- *
- * @see ActionEvent
- *
- * @author Naveed Quadri
- */
 public interface SplitButtonActionListener extends EventListener {
 
     /**
