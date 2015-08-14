@@ -164,6 +164,10 @@ public class MainController implements EventHandler, Runnable
         if ("MainMenu--Display Help".equals(e.getActionCommand())) {
             view.displayHelp();
         }
+        
+        if ("MainMenu--Exit".equals(e.getActionCommand())) {
+            shutDown();
+        }
 
         if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
@@ -360,8 +364,7 @@ public class MainController implements EventHandler, Runnable
     //--------------------------------------------------------------------------
     // MainController::shutDown
     //
-    // Disables chassis power and performs any other appropriate shut down
-    // operations.
+    // Performs appropriate shut down operations.
     //
     // This is done by setting a flag so that this class's thread can do the
     // actual work, thus avoiding thread contention.

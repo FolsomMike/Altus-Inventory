@@ -62,8 +62,8 @@ public MainMenu(ActionListener pActionListener)
     //File/Exit menu item
     exitMenuItem = new JMenuItem("Exit");
     exitMenuItem.setMnemonic(KeyEvent.VK_X);
-    exitMenuItem.setToolTipText("Exit");
-    exitMenuItem.setActionCommand("Exit");
+    exitMenuItem.setToolTipText("Exit the program.");
+    exitMenuItem.setActionCommand("MainMenu--Exit");
     exitMenuItem.addActionListener(actionListener);
     fileMenu.add(exitMenuItem);
 
