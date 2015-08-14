@@ -79,7 +79,7 @@ public MainMenu(ActionListener pActionListener)
     aboutMenuItem = new JMenuItem("About");
     aboutMenuItem.setMnemonic(KeyEvent.VK_A);
     aboutMenuItem.setToolTipText("Display the About window.");
-    aboutMenuItem.setActionCommand("Display About");
+    aboutMenuItem.setActionCommand("MainMenu--Display About");
     aboutMenuItem.addActionListener(actionListener);
     helpMenu.add(aboutMenuItem);
 
@@ -87,7 +87,7 @@ public MainMenu(ActionListener pActionListener)
     helpMenuItem = new JMenuItem("Help");
     helpMenuItem.setMnemonic(KeyEvent.VK_H);
     helpMenuItem.setToolTipText("Display the Help window.");
-    helpMenuItem.setActionCommand("Display Help");
+    helpMenuItem.setActionCommand("MainMenu--Display Help");
     helpMenuItem.addActionListener(actionListener);
     helpMenu.add(helpMenuItem);
 

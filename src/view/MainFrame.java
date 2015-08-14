@@ -240,7 +240,7 @@ public class MainFrame extends JFrame
                                 "<html><center>Create<br>Invoice</html>", 
                                 createImageIcon("images/createInvoice.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Create Invoice");
+        btn.setActionCommand("MainFrame--Create Invoice");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
         btn.setFocusPainted(false);
@@ -276,7 +276,7 @@ public class MainFrame extends JFrame
         JSplitButton btn = new JSplitButton(
                                 "<html><center>Create<br>Report</html>", 
                                 createImageIcon("images/createReport.png"));
-        btn.setActionCommand("MainFrame::Create Report");
+        btn.setActionCommand("MainFrame--Create Report");
         btn.addActionListener(mainView);
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
@@ -403,7 +403,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Make<br>Payment</html>", 
                                     createImageIcon("images/makePayment.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Make Payment");
+        btn.setActionCommand("MainFrame--Make Payment");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -556,7 +556,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Move<br>Material</html>", 
                                 createImageIcon("images/moveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Move Material");
+        btn.setActionCommand("MainFrame--Move Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setEnabled(false);
         btn.setFocusPainted(false);
@@ -584,7 +584,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Receive<br>Material</html>", 
                                 createImageIcon("images/receiveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Receive Material");
+        btn.setActionCommand("MainFrame--Receive Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -611,7 +611,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Reserve<br>Material</html>", 
                                 createImageIcon("images/reserveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Reserve Material");
+        btn.setActionCommand("MainFrame--Reserve Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setEnabled(false);
         btn.setFocusPainted(false);
@@ -639,7 +639,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Ship<br>Material</html>", 
                                 createImageIcon("images/shipMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Ship Material");
+        btn.setActionCommand("MainFrame--Ship Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setEnabled(false);
         btn.setFocusPainted(false);
@@ -667,7 +667,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Transfer<br>Material</html>", 
                                 createImageIcon("images/transferMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame::Transfer Material");
+        btn.setActionCommand("MainFrame--Transfer Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setEnabled(false);
         btn.setFocusPainted(false);

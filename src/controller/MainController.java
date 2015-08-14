@@ -124,45 +124,45 @@ public class MainController implements EventHandler, Runnable
     @Override
     public void actionPerformed(ActionEvent e)
     {
-
-        if ("Display About".equals(e.getActionCommand())) {
-            displayAbout();
+        
+        if ("MainFrame--Create Invoice".equals(e.getActionCommand())) {
+            view.displayCreateInvoiceWindow();
         }
         
-        if ("Display Help".equals(e.getActionCommand())) {
-            displayHelp();
-        }
-        
-        if ("MainFrame::Create Invoice".equals(e.getActionCommand())) {
-            createInvoice();
-        }
-        
-        if ("MainFrame::Create Report".equals(e.getActionCommand())) {
+        if ("MainFrame--Create Report".equals(e.getActionCommand())) {
             view.displayCreateReportWindow();
         }
         
-        if ("MainFrame::Make Payment".equals(e.getActionCommand())) {
-            makePayment();
+        if ("MainFrame--Make Payment".equals(e.getActionCommand())) {
+            view.displayMakePaymentWindow();
         }
         
-        if ("MainFrame::Move Material".equals(e.getActionCommand())) {
-            moveMaterial();
+        if ("MainFrame--Move Material".equals(e.getActionCommand())) {
+            view.displayMoveMaterialWindow();
         }
         
-        if ("MainFrame::Receive Material".equals(e.getActionCommand())) {
-            receiveMaterial();
+        if ("MainFrame--Receive Material".equals(e.getActionCommand())) {
+            view.displayReceiveMaterialWindow();
         }
         
-        if ("MainFrame::Reserve Material".equals(e.getActionCommand())) {
-            reserveMaterial();
+        if ("MainFrame--Reserve Material".equals(e.getActionCommand())) {
+            view.displayReserveMaterialWindow();
         }
         
-        if ("MainFrame::Ship Material".equals(e.getActionCommand())) {
-            shipMaterial();
+        if ("MainFrame--Ship Material".equals(e.getActionCommand())) {
+            view.displayShipMaterialWindow();
         }
         
-        if ("MainFrame::Transfer Material".equals(e.getActionCommand())) {
-            transferMaterial();
+        if ("MainFrame--Transfer Material".equals(e.getActionCommand())) {
+            view.displayTransferMaterialWindow();
+        }
+        
+        if ("MainMenu--Display About".equals(e.getActionCommand())) {
+            view.displayAbout();
+        }
+        
+        if ("MainMenu--Display Help".equals(e.getActionCommand())) {
+            view.displayHelp();
         }
 
         if ("Timer".equals(e.getActionCommand())) { 
@@ -253,34 +253,6 @@ public class MainController implements EventHandler, Runnable
 
     }//end of MainController::control
     //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::createInvoice
-    //
-    // Displays the Create Invoice window.
-    //
-
-    private void createInvoice()
-    {
-
-        view.displayCreateInvoiceWindow();
-
-    }//end of MainController::createInvoice
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::displayAbout
-    //
-    // Displays about information.
-    //
-
-    private void displayAbout()
-    {
-
-        view.displayAbout();
-
-    }//end of MainController::displayAbout
-    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainController::displayErrorMessage
@@ -294,20 +266,6 @@ public class MainController implements EventHandler, Runnable
         view.displayErrorMessage(pMessage);
 
     }//end of MainController::displayErrorMessage
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::displayHelp
-    //
-    // Displays help information.
-    //
-
-    private void displayHelp()
-    {
-
-        view.displayHelp();
-
-    }//end of MainController::displayHelp
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -398,76 +356,6 @@ public class MainController implements EventHandler, Runnable
 
     }//end of MainController::doTimerActions
     //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::makePayment
-    //
-    // Displays the Make Payment window.
-    //
-
-    private void makePayment()
-    {
-
-        view.displayMakePaymentWindow();
-
-    }//end of MainController::makePayment
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::moveMaterial
-    //
-    // Displays the Move Material Window.
-    //
-
-    private void moveMaterial()
-    {
-        
-        view.displayMoveMaterialWindow();
-
-    }//end of MainController::moveMaterial
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::receiveMaterial
-    //
-    // Displays the Receive Material window.
-    //
-
-    private void receiveMaterial()
-    {
-
-        view.displayReceiveMaterialWindow();
-
-    }//end of MainController::receiveMaterial
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::reserveMaterial
-    //
-    // Displays the Reserve Material window.
-    //
-
-    private void reserveMaterial()
-    {
-
-        view.displayReserveMaterialWindow();
-
-    }//end of MainController::reserveMaterial
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::shipMaterial
-    //
-    // Displays the Ship Material window.
-    //
-
-    private void shipMaterial()
-    {
-
-        view.displayShipMaterialWindow();
-
-    }//end of MainController::shipMaterial
-    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainController::shutDown
@@ -500,20 +388,6 @@ public class MainController implements EventHandler, Runnable
         try {Thread.sleep(pSleepTime);} catch (InterruptedException e) { }
 
     }//end of MainController::threadSleep
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::transferMaterial
-    //
-    // Displays the Transfer Material window.
-    //
-
-    private void transferMaterial()
-    {
-
-        view.displayTransferMaterialWindow();
-
-    }//end of MainController::transferMaterial
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
