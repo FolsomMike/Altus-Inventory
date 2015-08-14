@@ -17,6 +17,7 @@ package view;
 //------------------------------------------------------------------------------
 
 import hscomponents.jsplitbutton.JSplitButton;
+import hscomponents.jsplitbutton.SplitButtonActionListener;
 import hscomponents.table.hsTable;
 import java.awt.Color;
 import java.awt.Component;
@@ -25,7 +26,7 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -241,7 +242,7 @@ public class MainFrame extends JFrame
                                 "<html><center>Create<br>Invoice</html>", 
                                 createImageIcon("images/createInvoice.png"));
         btn.init();
-        btn.addActionListener(mainView);
+        btn.addSplitButtonActionListener(mainView);
         btn.setActionCommand("MainFrame--Create Invoice");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
@@ -279,8 +280,8 @@ public class MainFrame extends JFrame
                                 "<html><center>Create<br>Report</html>", 
                                 createImageIcon("images/createReport.png"));
         btn.init();
+        btn.addSplitButtonActionListener(mainView);
         btn.setActionCommand("MainFrame--Create Report");
-        btn.addActionListener(mainView);
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
         btn.setFocusPainted(false);
