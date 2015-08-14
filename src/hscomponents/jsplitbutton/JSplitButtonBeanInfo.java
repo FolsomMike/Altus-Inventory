@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package jsplitbutton;
+package hscomponents.jsplitbutton;
 
 import java.awt.Toolkit;
 import java.beans.*;
