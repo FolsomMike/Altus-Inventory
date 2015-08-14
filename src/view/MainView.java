@@ -195,6 +195,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
     }//end of MainView::displayCreateInvoiceWindow
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCreateReportWindow
+    //
+    // Displays the Create Report window.
+    //
+
+    public void displayCreateReportWindow()
+    {
+
+        CreateReportFrame frame = new CreateReportFrame(this);
+        frame.init();
+
+    }//end of MainView::displayCreateReportWindow
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayErrorMessage
