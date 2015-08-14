@@ -133,6 +133,10 @@ public class MainController implements EventHandler, Runnable
             displayHelp();
         }
         
+        if ("MainFrame::Create Invoice".equals(e.getActionCommand())) {
+            createInvoice();
+        }
+        
         if ("MainFrame::Make Payment".equals(e.getActionCommand())) {
             makePayment();
         }
@@ -244,6 +248,20 @@ public class MainController implements EventHandler, Runnable
         }
 
     }//end of MainController::control
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::createInvoice
+    //
+    // Displays the Create Invoice window.
+    //
+
+    private void createInvoice()
+    {
+
+        view.displayCreateInvoiceWindow();
+
+    }//end of MainController::createInvoice
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

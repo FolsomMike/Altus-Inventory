@@ -180,6 +180,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
     }//end of MainFrame::displayAbout
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCreateInvoiceWindow
+    //
+    // Displays the Create Invoice window.
+    //
+
+    public void displayCreateInvoiceWindow()
+    {
+
+        CreateInvoiceFrame frame = new CreateInvoiceFrame(this);
+        frame.init();
+
+    }//end of MainView::displayCreateInvoiceWindow
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayErrorMessage
