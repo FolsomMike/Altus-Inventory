@@ -253,10 +253,16 @@ public class MainFrame extends JFrame
         
         //create a popup menu and add it to the button
         JPopupMenu menu = new JPopupMenu();
-        menu.add(new JMenuItem("Edit Invoice"));
-        menu.add(new JMenuItem("Delete Invoice"));
-        menu.add(new JMenuItem("View All Invoices"));
         menu.setBorder(new BevelBorder(BevelBorder.RAISED));
+        
+        //Create Invoice/View All Invoices menu item
+        JMenuItem viewAllInvoicesItem = new JMenuItem("View All Invoices");
+        viewAllInvoicesItem.setToolTipText("View, edit, or delete invoices.");
+        viewAllInvoicesItem.setActionCommand
+                                ("MainFrame--Create Invoice/View All Invoices");
+        viewAllInvoicesItem.addActionListener(mainView);
+        menu.add(viewAllInvoicesItem);
+        
         btn.setPopupMenu(menu);
         
         return btn;
