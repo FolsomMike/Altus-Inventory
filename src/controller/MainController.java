@@ -129,6 +129,12 @@ public class MainController implements EventHandler, Runnable
             view.displayCreateInvoiceWindow();
         }
         
+        if ("MainFrame--Create Invoice/View All Invoices".equals
+            (e.getActionCommand())) 
+        {
+            view.displayInvoicesWindow();
+        }
+        
         if ("MainFrame--Create Report".equals(e.getActionCommand())) {
             view.displayCreateReportWindow();
         }
