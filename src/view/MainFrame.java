@@ -17,7 +17,6 @@ package view;
 //------------------------------------------------------------------------------
 
 import hscomponents.jsplitbutton.JSplitButton;
-import hscomponents.jsplitbutton.SplitButtonActionListener;
 import hscomponents.table.hsTable;
 import java.awt.Color;
 import java.awt.Component;
@@ -26,7 +25,6 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
