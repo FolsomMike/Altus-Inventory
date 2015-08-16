@@ -534,45 +534,11 @@ public class MainFrame extends JFrame
         row2.add("");
 
         //add test rows to the table -- //DEBUG HSS//
-        table.addRow(row);
-        table.addRow(row2);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        //DEBUG HSS//
+        for (int i=0; i<30; i++) {
+            if (i%2 == 0) { table.addRow(row);}
+            else { table.addRow(row2); }
+        }
+
 
         //put the table in a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
