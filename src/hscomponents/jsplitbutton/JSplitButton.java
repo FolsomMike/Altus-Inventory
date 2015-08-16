@@ -21,7 +21,6 @@ package hscomponents.jsplitbutton;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -32,7 +31,7 @@ import javax.swing.event.PopupMenuListener;
 //
 
 public class JSplitButton extends JButton implements MouseMotionListener, 
-                                    MouseListener, ActionListener,Serializable 
+                                MouseListener, ActionListener, PopupMenuListener
 {
 
     private int separatorSpacing = 4;
@@ -238,9 +237,64 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // JSplitButton::popupMenuCanceled
+    /**
+     * Called when the popup menu was canceled.
+     * Sets flags indicating that the popup menu is invisible.
+     * 
+     * @param pme   <code>PopupMenuEvent</code>
+     */
+    
+    @Override
+    public void popupMenuCanceled(PopupMenuEvent pme) {
+        
+        isShowingPopup = false;
+        if(onSplit || (alwaysDropDown&&onButton)) { hidePopup = true; }
+        
+    }// end of JSplitButton::popupMenuCanceled
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    // JSplitButton::popupMenuWillBecomeInvisible
+    /**
+     * Called when the popup menu is about to become invisible.
+     * Sets flags indicating that the popup menu is invisible.
+     * 
+     * @param pme   <code>PopupMenuEvent</code>
+     */
+    
+    @Override
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
+        
+        isShowingPopup = false;
+        if(onSplit || (alwaysDropDown&&onButton)) { hidePopup = true; }
+        
+    }// end of JSplitButton::popupMenuWillBecomeInvisible
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // JSplitButton::popupMenuWillBecomeVisible
+    /**
+     * Called when the popup menu is about to become visible.
+     * Sets flags indicating that the popup menu is visible.
+     * 
+     * @param pme   <code>PopupMenuEvent</code>
+     */
+    
+    @Override
+    public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
+        
+        isShowingPopup = true;
+        hidePopup = false;
+        
+    }// end of JSplitButton::popupMenuWillBecomeVisible
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // JSplitButton::addSplitButtonActionListener
     /**
      * Adds an <code>SplitButtonActionListener</code> to the button.
+     * 
      * 
      * @param pL the <code>ActionListener</code> to be added
      */
@@ -501,23 +555,14 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     //--------------------------------------------------------------------------
     // JSplitButton::hideOrShowPopup
     /**
-     * Either makes the menu popup visible or hidden.
+     * Either makes the dropdown menu visible or hidden.
      */
 
     private void hideOrShowPopup() 
     {
         
-        //WIP HSS//
-        if (hidePopup) {
-            //DEBUG HSS//
-            System.out.println("hidePopup was true");
-            
-            popupMenu.setVisible(false);
-        }
+        if (hidePopup) { popupMenu.setVisible(false); }
         else if (!isShowingPopup) {
-            //DEBUG HSS//
-            System.out.println("isShowingPopup was false");
-
             popupMenu.show(this, 
                     getWidth()-(int)popupMenu.getPreferredSize().getWidth(), 
                     getHeight());
@@ -693,34 +738,7 @@ public class JSplitButton extends JButton implements MouseMotionListener,
         
         popupMenu = pMenu;
         
-        //Add a popup menu listener to set flags when the menu
-        //becomes viible or invisible
-        popupMenu.addPopupMenuListener(new PopupMenuListener() {
-
-            @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                //DEBUG HSS//
-                System.out.println("popupMenuWillBecomeVisible");
-                isShowingPopup = true;
-                hidePopup = false;
-            }
-
-            @Override
-            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-                //DEBUG HSS//
-                System.out.println("popupMenuWillBecomeInvisible");
-                isShowingPopup = false;
-                if(onSplit || (alwaysDropDown&&onButton)) { hidePopup = true; }
-            }
-
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {
-                //DEBUG HSS//
-                System.out.println("popupMenuCanceled");
-                isShowingPopup = false;
-                if(onSplit || (alwaysDropDown&&onButton)) { hidePopup = true; }
-            }
-        });
+        popupMenu.addPopupMenuListener(this);
         
         image = null; //to repaint the arrow image
         
