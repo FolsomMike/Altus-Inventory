@@ -23,6 +23,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -36,10 +38,13 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     private int separatorSpacing = 4;
     private int splitWidth = 22;
     private int arrowSize = 8;
+    private boolean onButton;
     private boolean onSplit;
     private Rectangle splitRectangle;
     private JPopupMenu popupMenu;
     private boolean alwaysDropDown;
+    private boolean isShowingPopup;
+    private boolean hidePopup;
     private Color arrowColor = Color.BLACK;
     private Color disabledArrowColor = Color.GRAY;
     private Image image;
@@ -136,61 +141,19 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     @Override
     public void actionPerformed(ActionEvent e) 
     {
-        if (popupMenu == null) {
-            
-            //DEBUG HSS//
-            System.out.println("if (popupMenu == null)");
-            fireButtonClicked(e);
-            
-        } 
+        
+        if (popupMenu == null) { fireButtonClicked(e); }
         else if (alwaysDropDown) {
-            
-            //DEBUG HSS//
-            System.out.println("else if (alwaysDropDown)");
-            popupMenu.show(this, 
-                        getWidth()-(int)popupMenu.getPreferredSize().getWidth(),
-                        getHeight());
+            hideOrShowPopup();
             fireButtonClicked(e);
-            
-        } 
-        else if (onSplit) {
-            
-            popupMenu.show(this, 
-                        getWidth()-(int)popupMenu.getPreferredSize().getWidth(), 
-                        getHeight());
-            //DEBUG HSS//
-            System.out.println("else if (onSplit)");
-            fireSplitbuttonClicked(new ActionEvent(e.getSource(),e.getID(),"jj"));
-            
-        } 
-        else {
-            
-            //DEBUG HSS//
-            System.out.println("else");
-            fireButtonClicked(e);
-            
         }
+        else if (onSplit) {
+            hideOrShowPopup();
+            fireSplitbuttonClicked(e);
+        }
+        else { fireButtonClicked(e); }
         
     }// end of JSplitButton::actionPerformed
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // JSplitButton::mouseMoved
-    /**
-     * Called when the mouse moves.
-     * 
-     * @param e <code>MouseEvent</code>
-     */
-    
-    @Override
-    public void mouseMoved(MouseEvent e) 
-    {
-        
-        if (splitRectangle.contains(e.getPoint())) { onSplit = true; } 
-        else { onSplit = false; }
-        repaint(splitRectangle);
-        
-    }// end of JSplitButton::mouseMoved
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -205,10 +168,33 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     public void mouseExited(MouseEvent e) 
     {
         
+        onButton = false;
         onSplit = false;
         repaint(splitRectangle);
         
     }// end of JSplitButton::mouseExited
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // JSplitButton::mouseMoved
+    /**
+     * Called when the mouse moves.
+     * 
+     * @param e <code>MouseEvent</code>
+     */
+    
+    @Override
+    public void mouseMoved(MouseEvent e) 
+    {
+        
+        if (contains(e.getPoint())) { onButton = true; }
+        else { onButton = false; }
+        
+        if (splitRectangle.contains(e.getPoint())) { onSplit = true; } 
+        else { onSplit = false; }
+        repaint(splitRectangle);
+        
+    }// end of JSplitButton::mouseMoved
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -513,6 +499,39 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // JSplitButton::hideOrShowPopup
+    /**
+     * Either makes the menu popup visible or hidden.
+     */
+
+    private void hideOrShowPopup() 
+    {
+        
+        //WIP HSS//
+        if (hidePopup) {
+            //DEBUG HSS//
+            System.out.println("hidePopup was true");
+            
+            popupMenu.setVisible(false);
+        }
+        else if (!isShowingPopup) {
+            //DEBUG HSS//
+            System.out.println("isShowingPopup was false");
+
+            popupMenu.show(this, 
+                    getWidth()-(int)popupMenu.getPreferredSize().getWidth(), 
+                    getHeight());
+        }
+        else if (isShowingPopup && (onSplit || (alwaysDropDown&&onButton))) {  
+            popupMenu.setVisible(false); 
+        }
+        
+        hidePopup = false;
+        
+    }// end of JSplitButton::hideOrShowPopup
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // JSplitButton::isAlwaysDropDown
     /**
      * If true, then the dropdown menu, if attached, is always shown even if the
@@ -673,6 +692,36 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     {
         
         popupMenu = pMenu;
+        
+        //Add a popup menu listener to set flags when the menu
+        //becomes viible or invisible
+        popupMenu.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                //DEBUG HSS//
+                System.out.println("popupMenuWillBecomeVisible");
+                isShowingPopup = true;
+                hidePopup = false;
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                //DEBUG HSS//
+                System.out.println("popupMenuWillBecomeInvisible");
+                isShowingPopup = false;
+                if(onSplit || (alwaysDropDown&&onButton)) { hidePopup = true; }
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                //DEBUG HSS//
+                System.out.println("popupMenuCanceled");
+                isShowingPopup = false;
+                if(onSplit || (alwaysDropDown&&onButton)) { hidePopup = true; }
+            }
+        });
+        
         image = null; //to repaint the arrow image
         
     }// end of JSplitButton::setPopupMenu
@@ -714,18 +763,23 @@ public class JSplitButton extends JButton implements MouseMotionListener,
     
     // <editor-fold defaultstate="collapsed" desc="Unused Listeners">
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+    
+    @Override
     public void mouseDragged(MouseEvent e) {
     }
 
-    public void mouseClicked(MouseEvent e) {
-    }
-
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 // </editor-fold>
