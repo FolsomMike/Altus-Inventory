@@ -32,6 +32,20 @@ public class hsTableModel extends AbstractTableModel
     //row by column (outer list is rows, inner list is columns)
     List<List<Object>> tableData = new ArrayList<>();
     
+    boolean editableDefault = false;
+    //row by column (outer is rows, inner is columns)
+    //used to contain booleans determining whether or
+    //not a cell is editable
+    List<List<Boolean>> editableCell = new ArrayList<>();
+    
+    //used to store booleans representing whether or
+    //not each row should be editable
+    List<Boolean> editableRow = new ArrayList<>();
+    
+    //used to store booleans representing whether or
+    //not each column should be editable
+    List<Boolean> editableColumn = new ArrayList<>();
+    
     //--------------------------------------------------------------------------
     // hsTableModel::init
     //
@@ -85,7 +99,7 @@ public class hsTableModel extends AbstractTableModel
     public String getColumnName(int pCol)
     {
         
-        //WIP HSS//
+        //WIP HSS// -- you need to fix this
         return columnNames.get(pCol).toString();
         
     }//end of hsTableModel::getColumnName
@@ -122,6 +136,21 @@ public class hsTableModel extends AbstractTableModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // hsTableModel::isCellEditable
+    //
+    // Return true if the cell at the specified row and column is editable;
+    // false if not.
+    //
+    
+    @Override
+    public boolean isCellEditable(int pRow, int pCol) {
+
+        return editableCell.get(pRow).get(pCol);
+        
+    }//end of hsTableModel::isCellEditable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // hsTableModel::setValueAt
     //
     // Sets the value of the specified cell to the passed in object
@@ -149,6 +178,7 @@ public class hsTableModel extends AbstractTableModel
     {
         
         columnNames.add(pName);
+        addColumnToEditables();
         fireTableStructureChanged();
 
     }//end of hsTableModel::addColumn
@@ -165,9 +195,26 @@ public class hsTableModel extends AbstractTableModel
     {
         
         columnNames.add(pPos, pName);
+        addColumnToEditables();
         fireTableStructureChanged();
 
     }//end of hsTableModel::addColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTableModel::addColumnToEditables
+    //
+    // Adds a new column to the editable lists.
+    //
+
+    private void addColumnToEditables() 
+    {
+        
+        editableColumn.add(editableDefault);
+        
+        for (List<Boolean> col : editableCell) { col.add(editableDefault); }
+
+    }//end of hsTableModel::addColumnToEditables
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -180,9 +227,30 @@ public class hsTableModel extends AbstractTableModel
     {
         
         tableData.add(pVals);
+        
+        addRowToEditables();
+        
         fireTableRowsInserted(tableData.size()-1, tableData.size()-1);
 
     }//end of hsTableModel::addRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTableModel::addRowToEditables
+    //
+    // Adds a new row to the editable lists.
+    //
+
+    private void addRowToEditables() 
+    {
+        
+        editableRow.add(editableDefault);
+        
+        List<Boolean> cols = new ArrayList();
+        for (Boolean b : editableColumn) { cols.add(b); }
+        editableCell.add(cols);
+
+    }//end of hsTableModel::addRowToEditables
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -214,6 +282,51 @@ public class hsTableModel extends AbstractTableModel
         return tableData.get(pRow);
         
     }//end of hsTableModel::getValuesOfRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTableModel::setCellEditable
+    //
+    // Sets the cell at the specified row and column to editable or uneditable.
+    //
+    
+    public void setCellEditable(int pRow, int pCol, boolean pBool) {
+
+        editableCell.get(pRow).set(pCol, pBool);
+        
+    }//end of hsTableModel::setCellEditable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTableModel::setColumnEditable
+    //
+    // Sets all of the cells in the specified column to editable or uneditable.
+    //
+    
+    public void setColumnEditable(int pCol, boolean pBool) {
+        
+        editableColumn.set(pCol, pBool);
+
+        for (List<Boolean> l : editableCell) { l.set(pCol, pBool); }
+        
+    }//end of hsTableModel::setColumnEditable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTableModel::setRowEditable
+    //
+    // Sets all of the cells in the specified row to editable or uneditable.
+    //
+    
+    public void setRowEditable(int pRow, boolean pBool) {
+        
+        editableRow.set(pRow, pBool);
+        
+        for (int i=0; i<editableCell.get(pRow).size(); i++) {
+            editableCell.get(pRow).set(i, pBool);
+        }
+        
+    }//end of hsTableModel::setRowEditable
     //--------------------------------------------------------------------------
         
 }//end of class hsTableModel
