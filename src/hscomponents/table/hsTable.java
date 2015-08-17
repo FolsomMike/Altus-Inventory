@@ -52,9 +52,6 @@ public class hsTable extends JTable
     boolean alternateRowForegrounds = false;
     List<Color> alternateRowForegroundColors = new ArrayList<>();
     
-    //DEBUG HSS//
-    public void populate() { model.populate(); }
-    
     //--------------------------------------------------------------------------
     // hsTable::hsTable (constructor)
     //

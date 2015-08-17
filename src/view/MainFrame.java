@@ -490,6 +490,7 @@ public class MainFrame extends JFrame
         table.setRowHeight(25);
         
         table.addColumn("");
+        table.setColumnEditable(0, true);
         table.addColumn("ID");
         table.addColumn("Company");
         table.addColumn("Date");
