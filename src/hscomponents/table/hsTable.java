@@ -102,6 +102,23 @@ public class hsTable extends JTable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // hsTable::isCellEditable
+    //
+    // Return true if the cell at the specified row and column is editable;
+    // false if not.
+    //
+    
+    @Override
+    public boolean isCellEditable(int pRow, int pCol) {
+        
+        //WIP HSS//
+        
+        return model.isCellEditable(pRow, pCol);
+        
+    }//end of hsTable::isCellEditable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // hsTable::prepareRenderer
     //
     // Changes the background color and text color of the row depending on
@@ -163,13 +180,28 @@ public class hsTable extends JTable
     //--------------------------------------------------------------------------
     // hsTable::addColumn
     //
-    // Adds a column to the table, with the passed in name.
+    // Adds a column to the table, with the passed in object as the header.
     //
 
-    public void addColumn(String pCol)
+    public void addColumn(Object pCol)
     {
         
         model.addColumn(pCol);
+
+    }//end of hsTable::addColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTable::addColumn
+    //
+    // Adds a column to the table at the passed in position, with the passed 
+    // in object as the header.
+    //
+
+    public void addColumn(int pPos, Object pCol)
+    {
+        
+        model.addColumn(pPos, pCol);
 
     }//end of hsTable::addColumn
     //--------------------------------------------------------------------------
@@ -305,6 +337,32 @@ public class hsTable extends JTable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // hsTable::setCellEditable
+    //
+    // Sets the cell at the specified row and column to editable or uneditable.
+    //
+    
+    public void setCellEditable(int pRow, int pCol, boolean pBool) {
+
+        model.setCellEditable(pRow, pCol, pBool);
+        
+    }//end of hsTable::setCellEditable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTable::setColumnEditable
+    //
+    // Sets all of the cells in the specified column to editable or uneditable.
+    //
+    
+    public void setColumnEditable(int pCol, boolean pBool) {
+
+        model.setColumnEditable(pCol, pBool);
+        
+    }//end of hsTable::setColumnEditable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // hsTable::setForegroundColorOfRow
     //
     // Determines and sets the foreground color of the passed in row/JComponent.
@@ -340,6 +398,19 @@ public class hsTable extends JTable
         }
 
     }//end of hsTable::setForegroundColorOfRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // hsTable::setRowEditable
+    //
+    // Sets all of the cells in the specified row to editable or uneditable.
+    //
+    
+    public void setRowEditable(int pRow, boolean pBool) {
+        
+        model.setRowEditable(pRow, pBool);
+        
+    }//end of hsTable::setRowEditable
     //--------------------------------------------------------------------------
 
 }//end of class hsTable

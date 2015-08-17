@@ -59,27 +59,11 @@ public MainMenu(ActionListener pActionListener)
     fileMenu.setToolTipText("File");
     add(fileMenu);
 
-    //File/New
-    newFile = new JMenuItem("New File");
-    newFile.setMnemonic(KeyEvent.VK_N);
-    newFile.setToolTipText("Create a new blank file.");
-    newFile.setActionCommand("New File");
-    newFile.addActionListener(actionListener);
-    fileMenu.add(newFile);
-
-    //File/Open
-    openFile = new JMenuItem("Open File");
-    openFile.setMnemonic(KeyEvent.VK_O);
-    openFile.setToolTipText("Open an existing file");
-    openFile.setActionCommand("Open File");
-    openFile.addActionListener(actionListener);
-    fileMenu.add(openFile);
-
     //File/Exit menu item
     exitMenuItem = new JMenuItem("Exit");
     exitMenuItem.setMnemonic(KeyEvent.VK_X);
-    exitMenuItem.setToolTipText("Exit");
-    exitMenuItem.setActionCommand("Exit");
+    exitMenuItem.setToolTipText("Exit the program.");
+    exitMenuItem.setActionCommand("MainMenu--Exit");
     exitMenuItem.addActionListener(actionListener);
     fileMenu.add(exitMenuItem);
 
@@ -95,7 +79,7 @@ public MainMenu(ActionListener pActionListener)
     aboutMenuItem = new JMenuItem("About");
     aboutMenuItem.setMnemonic(KeyEvent.VK_A);
     aboutMenuItem.setToolTipText("Display the About window.");
-    aboutMenuItem.setActionCommand("Display About");
+    aboutMenuItem.setActionCommand("MainMenu--Display About");
     aboutMenuItem.addActionListener(actionListener);
     helpMenu.add(aboutMenuItem);
 
@@ -103,7 +87,7 @@ public MainMenu(ActionListener pActionListener)
     helpMenuItem = new JMenuItem("Help");
     helpMenuItem.setMnemonic(KeyEvent.VK_H);
     helpMenuItem.setToolTipText("Display the Help window.");
-    helpMenuItem.setActionCommand("Display Help");
+    helpMenuItem.setActionCommand("MainMenu--Display Help");
     helpMenuItem.addActionListener(actionListener);
     helpMenu.add(helpMenuItem);
 
