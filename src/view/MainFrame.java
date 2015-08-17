@@ -18,6 +18,7 @@ package view;
 
 import hscomponents.jsplitbutton.JSplitButton;
 import hscomponents.table.hsTable;
+import hscomponents.table.hsTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -40,11 +41,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.TableModel;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -477,7 +480,7 @@ public class MainFrame extends JFrame
 
         hsTable table = new hsTable();
         table.init();
-
+        
         //setup the table
         table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
         table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
@@ -485,9 +488,8 @@ public class MainFrame extends JFrame
         table.setSelectionBackground(Color.decode("#000099"));
         table.setSelectionForeground(Color.WHITE);
         table.setRowHeight(25);
-
+        
         table.addColumn("");
-        table.setColumnEditable(0, true);
         table.addColumn("ID");
         table.addColumn("Company");
         table.addColumn("Date");
@@ -536,10 +538,9 @@ public class MainFrame extends JFrame
 
         //add test rows to the table -- //DEBUG HSS//
         for (int i=0; i<30; i++) {
-            if (i%2 == 0) { table.addRow(row);}
-            else { table.addRow(row2); }
+            if (i%2 == 0) { table.addRow(new ArrayList(row));}
+            else { table.addRow(new ArrayList(row2)); }
         }
-
 
         //put the table in a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
