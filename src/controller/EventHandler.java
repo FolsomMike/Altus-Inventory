@@ -20,12 +20,15 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableModelEvent;
 
 public interface EventHandler {
 
     public void actionPerformed(ActionEvent e);
     
     public void stateChanged(ChangeEvent ce);
+    
+    public void tableChanged(TableModelEvent tme);
 
     public void windowClosing(WindowEvent e);
     public void windowActivated(WindowEvent e);

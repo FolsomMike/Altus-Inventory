@@ -36,6 +36,8 @@ import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -44,7 +46,7 @@ import toolkit.Tools;
 //
 
 public class MainView implements ActionListener, WindowListener, ChangeListener,
-        SplitButtonActionListener
+        SplitButtonActionListener, TableModelListener
 {
 
     private MainFrame mainFrame;
@@ -133,6 +135,18 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }//end of MainView::stateChanged
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::tableChanged
+    //
+    
+    @Override
+    public void tableChanged(TableModelEvent tme) {
+        
+        eventHandler.tableChanged(tme);
+        
+    }//end of MainView::tableChanged
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::windowClosing
@@ -146,7 +160,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         eventHandler.windowClosing(e);
 
-    }//end of Controller::windowClosing
+    }//end of MainView::windowClosing
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::checkBoxChanged
+    //
+    // Calls a handling function in MainFrame.
+    //
+
+    public void checkBoxChanged(int pRow)
+    {
+
+        mainFrame.checkBoxChanged(pRow);
+
+    }//end of MainView::checkBoxChanged
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -185,7 +213,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // MainFrame::displayAbout
+    // MainView::displayAbout
     //
     // Displays about information.
     //
@@ -195,7 +223,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         mainFrame.displayAbout();
 
-    }//end of MainFrame::displayAbout
+    }//end of MainView::displayAbout
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -372,7 +400,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         //main timer has 2 second period
         mainTimer = new javax.swing.Timer (2000, this);
-        mainTimer.setActionCommand ("MainView::Timer");
+        mainTimer.setActionCommand("MainView::Timer");
         mainTimer.start();
 
     }// end of MainView::setupAndStartMainTimer

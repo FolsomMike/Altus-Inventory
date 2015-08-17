@@ -45,6 +45,7 @@ import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableModelEvent;
 import model.Options;
 import view.MainView;
 
@@ -217,10 +218,23 @@ public class MainController implements EventHandler, Runnable
 
     @Override
     public void stateChanged(ChangeEvent ce)
-
     {
 
     }//end of MainController::stateChanged
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::tableChanged
+    //
+    
+    @Override
+    public void tableChanged(TableModelEvent tme) {
+        
+        int col = tme.getColumn();
+        int row = tme.getFirstRow();
+        if (col == 0) { view.checkBoxChanged(row); }
+        
+    }//end of MainController::tableChanged
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

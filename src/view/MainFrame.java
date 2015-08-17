@@ -18,7 +18,6 @@ package view;
 
 import hscomponents.jsplitbutton.JSplitButton;
 import hscomponents.table.hsTable;
-import hscomponents.table.hsTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -41,13 +40,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
-import javax.swing.table.TableModel;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -64,6 +61,15 @@ public class MainFrame extends JFrame
     private GuiUpdater guiUpdater;
     private Help help;
     private About about;
+    
+    hsTable table = new hsTable();
+    
+    int numRowsChecked = 0;
+    
+    JButton btnMoveMaterial;
+    JButton btnReserveMaterial;
+    JButton btnShipMaterial;
+    JButton btnTransferMaterial;
 
     //--------------------------------------------------------------------------
     // MainFrame::MainFrame (constructor)
@@ -105,6 +111,42 @@ public class MainFrame extends JFrame
         setVisible(true);
 
     }// end of MainFrame::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::checkBoxChanged
+    //
+    // Enables/disables the material action buttons based on the number of 
+    // checkboxes checked.
+    //
+    // Checks whether or not the checkbox in the passed in row is checked (true)
+    // or unchecked (false).
+    //
+    // If it is checked, the 1 is added to numRowsChecked; if it's not then 1 is
+    // subtracted.
+    //
+
+    public void checkBoxChanged(int pRow)
+    {
+
+        if ((boolean)table.getValueAt(pRow, 0)) { 
+            //DEBUG HSS//
+            System.out.println("checkbox checked");
+            ++numRowsChecked; 
+        }
+        else { 
+            //DEBUG HSS//
+            System.out.println("checkbox NOT checked");
+            --numRowsChecked; 
+        }
+        
+        //DEBUG HSS//
+        System.out.println("numRowsChecked: " + numRowsChecked);
+        
+        if (numRowsChecked <= 0) { enableMaterialActionButtons(false); }
+        else { enableMaterialActionButtons(true); }
+
+    }//end of MainFrame::checkBoxChanged
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -478,16 +520,16 @@ public class MainFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
 
-        hsTable table = new hsTable();
         table.init();
         
         //setup the table
+        table.getModel().addTableModelListener(mainView);
         table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
         table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
         table.getTableHeader().setReorderingAllowed(false);
+        table.setRowHeight(25);
         table.setSelectionBackground(Color.decode("#000099"));
         table.setSelectionForeground(Color.WHITE);
-        table.setRowHeight(25);
         
         table.addColumn("");
         table.setColumnEditable(0, true);
@@ -564,20 +606,20 @@ public class MainFrame extends JFrame
     {
 
         //create button
-        JButton btn = new JButton("<html><center>Move<br>Material</html>", 
+        btnMoveMaterial = new JButton("<html><center>Move<br>Material</html>", 
                                 createImageIcon("images/moveMaterial.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Move Material");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setEnabled(false);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("Move material to a different rack.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
+        btnMoveMaterial.addActionListener(mainView);
+        btnMoveMaterial.setActionCommand("MainFrame--Move Material");
+        btnMoveMaterial.setAlignmentX(LEFT_ALIGNMENT);
+        btnMoveMaterial.setEnabled(false);
+        btnMoveMaterial.setFocusPainted(false);
+        btnMoveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnMoveMaterial.setMargin(new Insets(0,0,0,0));
+        btnMoveMaterial.setToolTipText("Move material to a different rack.");
+        btnMoveMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        Tools.setSizes(btnMoveMaterial, 70, 75);
         
-        return btn;
+        return btnMoveMaterial;
 
     }// end of MainFrame::createMoveMaterialButton
     //--------------------------------------------------------------------------
@@ -619,20 +661,21 @@ public class MainFrame extends JFrame
     {
 
         //create button
-        JButton btn = new JButton("<html><center>Reserve<br>Material</html>", 
+        btnReserveMaterial = new JButton
+                                ("<html><center>Reserve<br>Material</html>", 
                                 createImageIcon("images/reserveMaterial.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Reserve Material");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setEnabled(false);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("Reserve material for future use.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
+        btnReserveMaterial.addActionListener(mainView);
+        btnReserveMaterial.setActionCommand("MainFrame--Reserve Material");
+        btnReserveMaterial.setAlignmentX(LEFT_ALIGNMENT);
+        btnReserveMaterial.setEnabled(false);
+        btnReserveMaterial.setFocusPainted(false);
+        btnReserveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnReserveMaterial.setMargin(new Insets(0,0,0,0));
+        btnReserveMaterial.setToolTipText("Reserve material for future use.");
+        btnReserveMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        Tools.setSizes(btnReserveMaterial, 70, 75);
         
-        return btn;
+        return btnReserveMaterial;
 
     }// end of MainFrame::createReserveMaterialButton
     //--------------------------------------------------------------------------
@@ -647,20 +690,20 @@ public class MainFrame extends JFrame
     {
 
         //create button
-        JButton btn = new JButton("<html><center>Ship<br>Material</html>", 
+        btnShipMaterial = new JButton("<html><center>Ship<br>Material</html>", 
                                 createImageIcon("images/shipMaterial.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Ship Material");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setEnabled(false);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("Ship material from the yard.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
+        btnShipMaterial.addActionListener(mainView);
+        btnShipMaterial.setActionCommand("MainFrame--Ship Material");
+        btnShipMaterial.setAlignmentX(LEFT_ALIGNMENT);
+        btnShipMaterial.setEnabled(false);
+        btnShipMaterial.setFocusPainted(false);
+        btnShipMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnShipMaterial.setMargin(new Insets(0,0,0,0));
+        btnShipMaterial.setToolTipText("Ship material from the yard.");
+        btnShipMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        Tools.setSizes(btnShipMaterial, 70, 75);
         
-        return btn;
+        return btnShipMaterial;
 
     }// end of MainFrame::createShipMaterialButton
     //--------------------------------------------------------------------------
@@ -675,22 +718,41 @@ public class MainFrame extends JFrame
     {
 
         //create button
-        JButton btn = new JButton("<html><center>Transfer<br>Material</html>", 
+        btnTransferMaterial = new JButton("<html><center>Transfer<br>Material</html>", 
                                 createImageIcon("images/transferMaterial.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Transfer Material");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setEnabled(false);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("Transfer material from one customer to another.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
+        btnTransferMaterial.addActionListener(mainView);
+        btnTransferMaterial.setActionCommand("MainFrame--Transfer Material");
+        btnTransferMaterial.setAlignmentX(LEFT_ALIGNMENT);
+        btnTransferMaterial.setEnabled(false);
+        btnTransferMaterial.setFocusPainted(false);
+        btnTransferMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnTransferMaterial.setMargin(new Insets(0,0,0,0));
+        btnTransferMaterial.setToolTipText
+                            ("Transfer material from one customer to another.");
+        btnTransferMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        Tools.setSizes(btnTransferMaterial, 70, 75);
         
-        return btn;
+        return btnTransferMaterial;
 
     }// end of MainFrame::createTransferMaterialButton
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::enableMaterialActionButtons
+    //
+    // Enables/disables the material action buttons based on the passed in
+    // boolean.
+    //
+
+    private void enableMaterialActionButtons(boolean pEnable)
+    {
+
+        btnMoveMaterial.setEnabled(pEnable);
+        btnReserveMaterial.setEnabled(pEnable);
+        btnShipMaterial.setEnabled(pEnable);
+        btnTransferMaterial.setEnabled(pEnable);
+
+    }//end of MainFrame::enableMaterialActionButtons
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
