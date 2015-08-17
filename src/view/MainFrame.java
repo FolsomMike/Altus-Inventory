@@ -16,9 +16,12 @@ package view;
 
 //------------------------------------------------------------------------------
 
+import hscomponents.jsplitbutton.JSplitButton;
 import hscomponents.table.hsTable;
-import jsplitbutton.JSplitButton;
 import java.awt.Color;
+import java.awt.Component;
+import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -31,11 +34,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -171,7 +176,7 @@ public class MainFrame extends JFrame
     //
     // Creates and returns the display panel.
     //
-    // The display panel dsiplays all of the pipe in the yard to the user.
+    // The display panel displays all of the pipe in the yard to the user.
     //
 
     private JPanel createDisplayPanel()
@@ -182,8 +187,8 @@ public class MainFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
 
-        //add view combo box
-        panel.add(createViewComboBox());
+        //add the filter panel box
+        panel.add(createFilterPanel());
 
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,10)));
@@ -234,8 +239,9 @@ public class MainFrame extends JFrame
         JSplitButton btn = new JSplitButton(
                                 "<html><center>Create<br>Invoice</html>", 
                                 createImageIcon("images/createInvoice.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("Create Invoice");
+        btn.init();
+        btn.addSplitButtonActionListener(mainView);
+        btn.setActionCommand("MainFrame--Create Invoice");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
         btn.setFocusPainted(false);
@@ -247,10 +253,16 @@ public class MainFrame extends JFrame
         
         //create a popup menu and add it to the button
         JPopupMenu menu = new JPopupMenu();
-        menu.add(new JMenuItem("Edit Invoice"));
-        menu.add(new JMenuItem("Delete Invoice"));
-        menu.add(new JMenuItem("View All Invoices"));
         menu.setBorder(new BevelBorder(BevelBorder.RAISED));
+        
+        //Create Invoice/View All Invoices menu item
+        JMenuItem viewAllInvoicesItem = new JMenuItem("View All Invoices");
+        viewAllInvoicesItem.setToolTipText("View, edit, or delete invoices.");
+        viewAllInvoicesItem.setActionCommand
+                                ("MainFrame--Create Invoice/View All Invoices");
+        viewAllInvoicesItem.addActionListener(mainView);
+        menu.add(viewAllInvoicesItem);
+        
         btn.setPopupMenu(menu);
         
         return btn;
@@ -271,8 +283,9 @@ public class MainFrame extends JFrame
         JSplitButton btn = new JSplitButton(
                                 "<html><center>Create<br>Report</html>", 
                                 createImageIcon("images/createReport.png"));
-        btn.setActionCommand("Create Report");
-        btn.addActionListener(mainView);
+        btn.init();
+        btn.addSplitButtonActionListener(mainView);
+        btn.setActionCommand("MainFrame--Create Report");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setArrowSize(10);
         btn.setFocusPainted(false);
@@ -284,17 +297,139 @@ public class MainFrame extends JFrame
         
         //create a popup menu and add it to the button
         JPopupMenu menu = new JPopupMenu();
-        menu.add(new JMenuItem("Receiving Report"));
-        menu.add(new JMenuItem("Shipping Report"));
-        menu.add(new JMenuItem("Tally Report"));
-        menu.add(new JMenuItem("Rack Report"));
-        menu.add(new JMenuItem("Current Balance Report"));
+        
+        //Create Report/Receiving Report menu item
+        JMenuItem receivingReportMenuItem = new JMenuItem("Receiving Report");
+        receivingReportMenuItem.setToolTipText("Create a receiving report.");
+        receivingReportMenuItem.setActionCommand("MainFrame--Receiving Report");
+        receivingReportMenuItem.addActionListener(mainView);
+        menu.add(receivingReportMenuItem);
+        
+        //Create Report/Shipping Report menu item
+        JMenuItem shippingReportMenuItem = new JMenuItem("Shipping Report");
+        shippingReportMenuItem.setToolTipText("Create a shipping report.");
+        shippingReportMenuItem.setActionCommand("MainFrame--Shipping Report");
+        shippingReportMenuItem.addActionListener(mainView);
+        menu.add(shippingReportMenuItem);
+        
+        //Create Report/Tally Report menu item
+        JMenuItem tallyReportMenuItem = new JMenuItem("Tally Report");
+        tallyReportMenuItem.setToolTipText("Create a tally report.");
+        tallyReportMenuItem.setActionCommand("MainFrame--Tally Report");
+        tallyReportMenuItem.addActionListener(mainView);
+        menu.add(tallyReportMenuItem);
+        
+        //Create Report/Rack Report menu item
+        JMenuItem rackReportMenuItem = new JMenuItem("Rack Report");
+        rackReportMenuItem.setToolTipText("Create a rack report.");
+        rackReportMenuItem.setActionCommand("MainFrame--Rack Report");
+        rackReportMenuItem.addActionListener(mainView);
+        menu.add(rackReportMenuItem);
+        
+        //Create Report/Current Balance Report menu item
+        JMenuItem currentBalanceReportMenuItem = 
+                                        new JMenuItem("Current Balance Report");
+        currentBalanceReportMenuItem.setToolTipText
+                            ("Create a current balance report for a customer.");
+        currentBalanceReportMenuItem.setActionCommand
+                            ("MainFrame--Current Balance Report");
+        currentBalanceReportMenuItem.addActionListener(mainView);
+        menu.add(currentBalanceReportMenuItem);
+        
         menu.setBorder(new BevelBorder(BevelBorder.RAISED));
         btn.setPopupMenu(menu);
         
         return btn;
 
     }// end of MainFrame::createCreateReportButton
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ShipMaterialFrame::createFilterComboBoxesAndFilterTextField
+    //
+    // Creates and returns a JPanel containing the filter by combo box and the
+    // filter text box.
+    //
+
+    private JPanel createFilterComboBoxesAndFilterTextField()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        
+        //populate an array of strings with items for a combo box
+        String[] strings = { "All Material in Yard", "Available in Stock", 
+                                "Reserved", "Shipped", "Moved", "Transferred" };
+        //Create the combo box, select item at index 0
+        JComboBox combo = new JComboBox(strings);
+        combo.addActionListener(mainView);     
+        combo.setActionCommand("MainFrame::Change View");
+        combo.setAlignmentX(LEFT_ALIGNMENT);
+        combo.setAlignmentY(TOP_ALIGNMENT);
+        combo.setSelectedIndex(0);
+        Tools.setSizes(combo, 135, 20);
+        panel.add(combo);
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //populate an array of strings with items for a combo box
+        String[] strings2 = {"ID", "Company", "Date", "Status", "Truck", 
+                            "Quantity", "Length", "Rack", "Range", "Grade",
+                            "Diameter", "Wall", "Facility"};
+        //Create the combo box, select item at index 0
+        JComboBox combo2 = new JComboBox(strings2);
+        combo2.addActionListener(mainView);     
+        combo2.setActionCommand("MainFrame::Ship Material Change Filter By");
+        combo2.setAlignmentX(LEFT_ALIGNMENT);
+        combo2.setAlignmentY(TOP_ALIGNMENT);
+        combo2.setSelectedIndex(0);
+        Tools.setSizes(combo2, 90, 20);
+        panel.add(combo2);
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //create the filter text box
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setAlignmentY(TOP_ALIGNMENT);
+        field.setToolTipText("Type a phrase to filter the material by.");
+        Tools.setSizes(field, 200, 20);
+        panel.add(field);
+        
+        return panel;
+
+    }// end of ShipMaterialFrame::createFilterComboBoxesAndFilterTextField
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::creatFilterPanel
+    //
+    // Creates and returns the filter panel.
+    //
+
+    private JPanel createFilterPanel()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Filter:");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        //vertical spacer
+        panel.add(Box.createRigidArea(new Dimension(0,5)));
+        
+        panel.add(createFilterComboBoxesAndFilterTextField());
+        
+        return panel;
+
+    }// end of MainFrame::createFilterPanel
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -310,7 +445,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Make<br>Payment</html>", 
                                     createImageIcon("images/makePayment.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Make Payment");
+        btn.setActionCommand("MainFrame--Make Payment");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -343,96 +478,68 @@ public class MainFrame extends JFrame
         hsTable table = new hsTable();
         table.init();
 
-        //change the background color of the header
+        //setup the table
         table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
         table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
-        table.setRowHeight(25);
-
-        //make it so that the user can't reorder the columns
         table.getTableHeader().setReorderingAllowed(false);
         table.setSelectionBackground(Color.decode("#000099"));
         table.setSelectionForeground(Color.WHITE);
+        table.setRowHeight(25);
 
+        table.addColumn("");
+        table.setColumnEditable(0, true);
         table.addColumn("ID");
         table.addColumn("Company");
         table.addColumn("Date");
-        table.addColumn("Rack");
         table.addColumn("Status");
+        table.addColumn("Truck");
         table.addColumn("Quantity");
         table.addColumn("Length");
+        table.addColumn("Rack");
+        table.addColumn("Range");
+        table.addColumn("Grade");
         table.addColumn("Diameter");
         table.addColumn("Wall");
-        table.addColumn("Grade");
-        table.addColumn("Range");
         table.addColumn("Facility");
 
         List<Object> row = new ArrayList<>();
+        row.add(false);
         row.add("1111");
         row.add("RG NDT");
         row.add("07/21/15");
-        row.add("4D");
-        row.add("RESERVED");
-        row.add("25");
-        row.add("1000");
+        row.add("IN STOCK");
+        row.add("Frogger Trucking");
+        row.add("29");
+        row.add("522");
         row.add("");
-        row.add("");
-        row.add("13-CR");
         row.add("R2");
+        row.add("13-CR");
         row.add("");
-
+        row.add("");
+        row.add("");
+        
         List<Object> row2 = new ArrayList<>();
+        row2.add(false);
         row2.add("2222");
-        row2.add("RG NDT");
-        row2.add("07/21/15");
-        row2.add("4D");
-        row2.add("IN STOCKlsdflkasjdflka");
-        row2.add("25");
-        row2.add("1000");
+        row2.add("Oil Frack Stack");
+        row2.add("07/25/15");
+        row2.add("RESERVED");
+        row2.add("Mountain Inc. Trucking");
+        row2.add("55");
+        row2.add("1210");
         row2.add("");
-        row2.add("");
+        row2.add("R3");
         row2.add("13-CR");
-        row2.add("R2");
+        row2.add("");
+        row2.add("");
         row2.add("");
 
         //add test rows to the table -- //DEBUG HSS//
-        table.addRow(row);
-        table.addRow(row2);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
-        table.addRow(row);
+        for (int i=0; i<30; i++) {
+            if (i%2 == 0) { table.addRow(row);}
+            else { table.addRow(row2); }
+        }
+
 
         //put the table in a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
@@ -458,8 +565,9 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Move<br>Material</html>", 
                                 createImageIcon("images/moveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Move Material");
+        btn.setActionCommand("MainFrame--Move Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -485,7 +593,7 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Receive<br>Material</html>", 
                                 createImageIcon("images/receiveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Receive Material");
+        btn.setActionCommand("MainFrame--Receive Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -512,8 +620,9 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Reserve<br>Material</html>", 
                                 createImageIcon("images/reserveMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Reserve Material");
+        btn.setActionCommand("MainFrame--Reserve Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -539,8 +648,9 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Ship<br>Material</html>", 
                                 createImageIcon("images/shipMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Ship Material");
+        btn.setActionCommand("MainFrame--Ship Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -566,8 +676,9 @@ public class MainFrame extends JFrame
         JButton btn = new JButton("<html><center>Transfer<br>Material</html>", 
                                 createImageIcon("images/transferMaterial.png"));
         btn.addActionListener(mainView);
-        btn.setActionCommand("Transfer Material");
+        btn.setActionCommand("MainFrame--Transfer Material");
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setEnabled(false);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
@@ -578,36 +689,6 @@ public class MainFrame extends JFrame
         return btn;
 
     }// end of MainFrame::createTransferMaterialButton
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::createViewComboBox
-    //
-    // Creates and returns the View combo box.
-    //
-    // The combo box is used to select what material the user wants to view.
-    //      
-    //
-
-    private JComboBox createViewComboBox()
-    {
-
-        //populate an array of strings with items for the combo box
-        String[] strings = { "All Material in Yard", "Available in Stock", 
-                                "Reserved", "Shipped", "Moved", "Transferred" };
-
-        //Create the combo box, select item at index 0
-        JComboBox combo = new JComboBox(strings);
-        combo.addActionListener(mainView);     
-        combo.setActionCommand("Change View");
-        combo.setAlignmentX(LEFT_ALIGNMENT);
-        combo.setAlignmentY(TOP_ALIGNMENT);   
-        combo.setSelectedIndex(0);
-        Tools.setSizes(combo, 135, 20);
-
-        return combo;
-
-    }// end of MainFrame::createViewComboBox
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

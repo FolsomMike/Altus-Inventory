@@ -25,6 +25,7 @@ package view;
 //------------------------------------------------------------------------------
 
 import controller.EventHandler;
+import hscomponents.jsplitbutton.SplitButtonActionListener;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -42,7 +43,8 @@ import toolkit.Tools;
 // class MainView
 //
 
-public class MainView implements ActionListener, WindowListener, ChangeListener
+public class MainView implements ActionListener, WindowListener, ChangeListener,
+        SplitButtonActionListener
 {
 
     private MainFrame mainFrame;
@@ -104,7 +106,22 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
     }//end of MainView::actionPerformed
     //--------------------------------------------------------------------------
-
+    
+    //--------------------------------------------------------------------------
+    // MainView::buttonClicked
+    //
+    // Called when the button part of a JSplitbutton is clicked.
+    //
+    
+    @Override
+    public void buttonClicked(ActionEvent e) {
+        
+        eventHandler.actionPerformed(e);
+        
+    }
+    //end of MainView::buttonClicked
+    //--------------------------------------------------------------------------
+    
     //--------------------------------------------------------------------------
     // MainView::stateChanged
     //
@@ -180,6 +197,36 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
     }//end of MainFrame::displayAbout
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCreateInvoiceWindow
+    //
+    // Displays the Create Invoice window.
+    //
+
+    public void displayCreateInvoiceWindow()
+    {
+
+        CreateInvoiceFrame frame = new CreateInvoiceFrame(this);
+        frame.init();
+
+    }//end of MainView::displayCreateInvoiceWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCreateReportWindow
+    //
+    // Displays the Create Report window.
+    //
+
+    public void displayCreateReportWindow()
+    {
+
+        CreateReportFrame frame = new CreateReportFrame(this);
+        frame.init();
+
+    }//end of MainView::displayCreateReportWindow
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayErrorMessage
@@ -207,6 +254,36 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
         mainFrame.displayHelp();
 
     }//end of MainView::displayHelp
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayInvoicesWindow
+    //
+    // Displays the Invoices window.
+    //
+
+    public void displayInvoicesWindow()
+    {
+
+        InvoicesFrame frame = new InvoicesFrame(this);
+        frame.init();
+
+    }//end of MainView::displayInvoicesWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayMakePaymentWindow
+    //
+    // Displays the Make Payment window.
+    //
+
+    public void displayMakePaymentWindow()
+    {
+
+        MakePaymentFrame frame = new MakePaymentFrame(this);
+        frame.init();
+
+    }//end of MainView::displayMakePaymentWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -295,7 +372,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
         //main timer has 2 second period
         mainTimer = new javax.swing.Timer (2000, this);
-        mainTimer.setActionCommand ("Timer");
+        mainTimer.setActionCommand ("MainView::Timer");
         mainTimer.start();
 
     }// end of MainView::setupAndStartMainTimer
@@ -342,6 +419,11 @@ public class MainView implements ActionListener, WindowListener, ChangeListener
 
     //end of MainView::(various window listener functions)
     //--------------------------------------------------------------------------
+
+    //Must be overriden because of the SplitButtonActionListener interface.
+    //Currently has no functionality.
+    @Override
+    public void splitButtonClicked(ActionEvent e) {}
 
 }//end of class MainView
 //------------------------------------------------------------------------------
