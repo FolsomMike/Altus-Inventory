@@ -66,10 +66,22 @@ public class MainFrame extends JFrame
     
     int numRowsChecked = 0;
     
-    JButton btnMoveMaterial;
-    JButton btnReserveMaterial;
-    JButton btnShipMaterial;
-    JButton btnTransferMaterial;
+    //material action buttons
+    private JButton btnMoveMaterial;
+    private JButton btnReserveMaterial;
+    private JButton btnShipMaterial;
+    private JButton btnTransferMaterial;
+    //material action buttons tool tips
+    private final String disabledToolTipAddon 
+                        = " Check a material in the table below to enable.";
+    private final String moveMaterialToolTip 
+                        = "Move material to a different rack.";
+    private final String reserveMaterialToolTip 
+                        = "Reserve material for future use.";
+    private final String shipMaterialToolTip 
+                        = "Ship material from the yard.";
+    private final String transferMaterialToolTip 
+                        = "Transfer material from one customer to another.";
 
     //--------------------------------------------------------------------------
     // MainFrame::MainFrame (constructor)
@@ -604,7 +616,8 @@ public class MainFrame extends JFrame
         btnMoveMaterial.setFocusPainted(false);
         btnMoveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnMoveMaterial.setMargin(new Insets(0,0,0,0));
-        btnMoveMaterial.setToolTipText("Move material to a different rack.");
+        btnMoveMaterial.setToolTipText(moveMaterialToolTip 
+                                                        + disabledToolTipAddon);
         btnMoveMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
         Tools.setSizes(btnMoveMaterial, 70, 75);
         
@@ -660,7 +673,8 @@ public class MainFrame extends JFrame
         btnReserveMaterial.setFocusPainted(false);
         btnReserveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnReserveMaterial.setMargin(new Insets(0,0,0,0));
-        btnReserveMaterial.setToolTipText("Reserve material for future use.");
+        btnReserveMaterial.setToolTipText(reserveMaterialToolTip 
+                                                        + disabledToolTipAddon);
         btnReserveMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
         Tools.setSizes(btnReserveMaterial, 70, 75);
         
@@ -688,7 +702,8 @@ public class MainFrame extends JFrame
         btnShipMaterial.setFocusPainted(false);
         btnShipMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnShipMaterial.setMargin(new Insets(0,0,0,0));
-        btnShipMaterial.setToolTipText("Ship material from the yard.");
+        btnShipMaterial.setToolTipText(shipMaterialToolTip 
+                                                        + disabledToolTipAddon);
         btnShipMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
         Tools.setSizes(btnShipMaterial, 70, 75);
         
@@ -716,8 +731,8 @@ public class MainFrame extends JFrame
         btnTransferMaterial.setFocusPainted(false);
         btnTransferMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnTransferMaterial.setMargin(new Insets(0,0,0,0));
-        btnTransferMaterial.setToolTipText
-                            ("Transfer material from one customer to another.");
+        btnTransferMaterial.setToolTipText(transferMaterialToolTip 
+                                                        + disabledToolTipAddon);
         btnTransferMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
         Tools.setSizes(btnTransferMaterial, 70, 75);
         
@@ -740,6 +755,24 @@ public class MainFrame extends JFrame
         btnReserveMaterial.setEnabled(pEnable);
         btnShipMaterial.setEnabled(pEnable);
         btnTransferMaterial.setEnabled(pEnable);
+        
+        //determine which tool tips to use
+        if (pEnable) {
+            btnMoveMaterial.setToolTipText(moveMaterialToolTip);
+            btnReserveMaterial.setToolTipText(reserveMaterialToolTip);
+            btnShipMaterial.setToolTipText(shipMaterialToolTip);
+            btnTransferMaterial.setToolTipText(transferMaterialToolTip);
+        }
+        else {
+            btnMoveMaterial.setToolTipText
+                            (moveMaterialToolTip + disabledToolTipAddon);
+            btnReserveMaterial.setToolTipText
+                            (reserveMaterialToolTip + disabledToolTipAddon);
+            btnShipMaterial.setToolTipText
+                            (shipMaterialToolTip + disabledToolTipAddon);
+            btnTransferMaterial.setToolTipText
+                            (transferMaterialToolTip + disabledToolTipAddon);
+        }
 
     }//end of MainFrame::enableMaterialActionButtons
     //--------------------------------------------------------------------------
