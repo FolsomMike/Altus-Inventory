@@ -33,7 +33,6 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import toolkit.Tools;
-import static view.MainFrame.createImageIcon;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -507,7 +506,9 @@ public class ReceiveMaterialFrame extends JFrame
         
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText("Give the material a reference ID.");
+        field.setToolTipText("Give the material a reference ID. This will be "
+                                + "automatically generated when the company "
+                                + "and date fields are filled in.");
         Tools.setSizes(field, 100, 24);
         panel.add(field);
 
