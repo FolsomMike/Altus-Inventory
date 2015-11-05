@@ -129,19 +129,8 @@ public class MainFrame extends JFrame
     public void checkBoxChanged(int pRow)
     {
 
-        if ((boolean)table.getValueAt(pRow, 0)) { 
-            //DEBUG HSS//
-            System.out.println("checkbox checked");
-            ++numRowsChecked; 
-        }
-        else { 
-            //DEBUG HSS//
-            System.out.println("checkbox NOT checked");
-            --numRowsChecked; 
-        }
-        
-        //DEBUG HSS//
-        System.out.println("numRowsChecked: " + numRowsChecked);
+        if ((boolean)table.getValueAt(pRow, 0)) { ++numRowsChecked; }
+        else { --numRowsChecked; }
         
         if (numRowsChecked <= 0) { enableMaterialActionButtons(false); }
         else { enableMaterialActionButtons(true); }
