@@ -132,7 +132,8 @@ public class ReceiveMaterialFrame extends JFrame
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setToolTipText("Cancel.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        btn.setVerticalTextPosition(SwingConstants.BOTTOM);  
+        Tools.setSizes(btn, 80, 30);
         panel.add(btn);
         
         //horizontal spacer
@@ -146,7 +147,8 @@ public class ReceiveMaterialFrame extends JFrame
         btn2.setFocusPainted(false);
         btn2.setHorizontalTextPosition(SwingConstants.CENTER);
         btn2.setToolTipText("Receive the material.");
-        btn2.setVerticalTextPosition(SwingConstants.BOTTOM);    
+        btn2.setVerticalTextPosition(SwingConstants.BOTTOM);
+        Tools.setSizes(btn2, 80, 30);
         panel.add(btn2);
         
         //horizontal center 
