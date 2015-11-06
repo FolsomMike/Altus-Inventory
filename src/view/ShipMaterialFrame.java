@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import mksystems.mswing.MFloatSpinner;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -321,6 +322,12 @@ public class ShipMaterialFrame extends JFrame
         panel.add(createRow4());
         
         //vertical spacer
+        panel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 5
+        panel.add(createRow5());
+        
+        //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,30)));
         
         //add the Cancel Ship panel
@@ -332,12 +339,76 @@ public class ShipMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // ShipMaterialFrame::createQuantityInputPanel
+    //
+    // Creates and returns the Quantity input panel.
+    //
+
+    private JPanel createQuantityInputPanel()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Quantity");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        //WIP HSS// -- Float spinner value and max should be set according to
+        //              the material that is being shipped
+        MFloatSpinner spinner 
+                        = new MFloatSpinner(1000, 0, 1000, 1, "##0", 75, 30);
+        //DEBUG HSS//cuttingHeadPositionSpinner.addChangeListener(this);
+        spinner.setName("ShipMaterialFrame--Quantity Spinner");
+        spinner.setToolTipText("How many pieces of material would you like to"
+                                + " ship?");
+        spinner.centerText();
+        spinner.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(spinner);
+
+        return panel;
+
+    }// end of ShipMaterialFrame::createQuantityInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // ShipMaterialFrame::createRow1
+    //
+    // Creates and returns a JPanel containing the Quantity input panel.
+    //
+    
+    private JPanel createRow1() {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        //horizontal center 
+        //-- only works to "push" to the center if another glue is used
+        panel.add(Box.createHorizontalGlue());
+        
+        //add Quantity input panel
+        panel.add(createQuantityInputPanel());
+        
+        //horizontal center 
+        //-- only works to "push" to the center if another glue is used
+        panel.add(Box.createHorizontalGlue());
+
+        return panel;
+        
+    }// end of ShipMaterialFrame::createRow1
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ShipMaterialFrame::createRow2
     //
     // Creates and returns a JPanel containing the Destination input panel.
     //
 
-    private JPanel createRow1()
+    private JPanel createRow2()
     {
 
         JPanel panel = new JPanel();
@@ -350,17 +421,17 @@ public class ShipMaterialFrame extends JFrame
 
         return panel;
 
-    }// end of ShipMaterialFrame::createRow1
+    }// end of ShipMaterialFrame::createRow2
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow2
+    // ShipMaterialFrame::createRow3
     //
     // Creates and returns a JPanel containing the Truck Company, Truck Number,
     // and Truck Driver input panels.
     //
 
-    private JPanel createRow2()
+    private JPanel createRow3()
     {
 
         JPanel panel = new JPanel();
@@ -385,17 +456,17 @@ public class ShipMaterialFrame extends JFrame
 
         return panel;
 
-    }// end of ShipMaterialFrame::createRow2
+    }// end of ShipMaterialFrame::createRow3
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow3
+    // ShipMaterialFrame::createRow4
     //
     // Creates and returns a JPanel containing the Address Line 1 and Address
     // Line 2 input panels.
     //
 
-    private JPanel createRow3()
+    private JPanel createRow4()
     {
 
         JPanel panel = new JPanel();
@@ -414,17 +485,17 @@ public class ShipMaterialFrame extends JFrame
 
         return panel;
 
-    }// end of ShipMaterialFrame::createRow3
+    }// end of ShipMaterialFrame::createRow4
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow4
+    // ShipMaterialFrame::createRow5
     //
     // Creates and returns a JPanel containing the City, State, and Zip Code
     // input panels.
     //
 
-    private JPanel createRow4()
+    private JPanel createRow5()
     {
 
         JPanel panel = new JPanel();
@@ -449,7 +520,7 @@ public class ShipMaterialFrame extends JFrame
 
         return panel;
 
-    }// end of ShipMaterialFrame::createRow4
+    }// end of ShipMaterialFrame::createRow5
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
