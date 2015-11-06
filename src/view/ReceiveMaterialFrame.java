@@ -406,6 +406,12 @@ public class ReceiveMaterialFrame extends JFrame
         panel.add(createRow4());
         
         //vertical spacer
+        panel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 5
+        panel.add(createRow5());
+        
+        //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,30)));
         
         //add the cancel receive panel
@@ -572,8 +578,8 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createRow2
     //
-    // Creates and returns a JPanel containing the Truck, Quantity, and Length
-    // input panels.
+    // Creates and returns a JPanel containing the Truck Company, Truck Number, 
+    // and Truck Driver input panels.
     //
 
     private JPanel createRow2()
@@ -584,20 +590,20 @@ public class ReceiveMaterialFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        //add Truck input panel
-        panel.add(createTruckInputPanel());
+        //add Truck Company input panel
+        panel.add(createTruckCompanyInputPanel());
         
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
         
-        //add Quantity input panel
-        panel.add(createQuantityInputPanel());
+        //add Truck Number input panel
+        panel.add(createTruckNumberInputPanel());
         
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
         
-        //add Length input panel
-        panel.add(createLengthInputPanel());
+        //add Truck Driver input panel
+        panel.add(createTruckDriverInputPanel());
 
         return panel;
 
@@ -607,7 +613,7 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createRow3
     //
-    // Creates and returns a JPanel containing the Rack, Range, and Grade
+    // Creates and returns a JPanel containing the Quantity, Length, and Rack
     // input panels.
     //
 
@@ -619,20 +625,20 @@ public class ReceiveMaterialFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
+        //add Quantity input panel
+        panel.add(createQuantityInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Length input panel
+        panel.add(createLengthInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
         //add Rack input panel
         panel.add(createRackInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Range input panel
-        panel.add(createRangeInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Grade input panel
-        panel.add(createGradeInputPanel());
 
         return panel;
 
@@ -642,7 +648,7 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createRow4
     //
-    // Creates and returns a JPanel containing the Diameter, Wall, and Facility
+    // Creates and returns a JPanel containing the Range, Grade, and Diameter
     // input panels.
     //
 
@@ -654,11 +660,40 @@ public class ReceiveMaterialFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        //add Diameter input panel
-        panel.add(createDiameterInputPanel());
+        //add Range input panel
+        panel.add(createRangeInputPanel());
         
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Grade input panel
+        panel.add(createGradeInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Diameter input panel
+        panel.add(createDiameterInputPanel());
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createRow4
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createRow5
+    //
+    // Creates and returns a JPanel containing the Wall and Facility input 
+    // panels.
+    //
+
+    private JPanel createRow5()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
         
         //add Wall input panel
         panel.add(createWallInputPanel());
@@ -671,16 +706,16 @@ public class ReceiveMaterialFrame extends JFrame
 
         return panel;
 
-    }// end of ReceiveMaterialFrame::createRow4
+    }// end of ReceiveMaterialFrame::createRow5
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createTruckInputPanel
+    // ReceiveMaterialFrame::createTruckCompanyInputPanel
     //
-    // Creates and returns the truck input panel.
+    // Creates and returns the Truck Company input panel.
     //
 
-    private JPanel createTruckInputPanel()
+    private JPanel createTruckCompanyInputPanel()
     {
 
         JPanel panel = new JPanel();
@@ -688,19 +723,80 @@ public class ReceiveMaterialFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        JLabel label = new JLabel("Truck");
+        JLabel label = new JLabel("Truck Company");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(label);
         
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText("What truck brought the material to the yard?");
+        field.setToolTipText
+                    ("What truck company brought the material to the yard?");
         Tools.setSizes(field, 100, 24);
         panel.add(field);
 
         return panel;
 
-    }// end of ReceiveMaterialFrame::createTruckInputPanel
+    }// end of ReceiveMaterialFrame::createTruckCompanyInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createTruckDriverInputPanel
+    //
+    // Creates and returns the Truck Driver input panel.
+    //
+
+    private JPanel createTruckDriverInputPanel()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Truck Driver");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setToolTipText("Who was the driver of the truck that brought the"
+                                + " material to the yard?");
+        Tools.setSizes(field, 100, 24);
+        panel.add(field);
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createTruckDriverInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createTruckNumberInputPanel
+    //
+    // Creates and returns the Truck Number input panel.
+    //
+
+    private JPanel createTruckNumberInputPanel()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Truck Number");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setToolTipText("What is the number of the truck that brought the"
+                                + " material to the yard?");
+        Tools.setSizes(field, 100, 24);
+        panel.add(field);
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createTruckNumberInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
