@@ -179,7 +179,7 @@ public class  MoveMaterialFrame extends JFrame
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,30)));
         
-        //add the Cancel Ship panel
+        //add the Cancel Move panel
         panel.add(createCancelMovePanel());
 
         return panel;
