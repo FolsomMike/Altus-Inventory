@@ -284,61 +284,6 @@ public class ShipMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createInputPanel
-    //
-    // Creates and returns the input panel.
-    //
-
-    private JPanel createInputPanel()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 1
-        panel.add(createRow1());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 2
-        panel.add(createRow2());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 3
-        panel.add(createRow3());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 4
-        panel.add(createRow4());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 5
-        panel.add(createRow5());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,30)));
-        
-        //add the Cancel Ship panel
-        panel.add(createCancelShipPanel());
-
-        return panel;
-
-    }// end of ShipMaterialFrame::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // ShipMaterialFrame::createQuantityInputPanel
     //
     // Creates and returns the Quantity input panel.
@@ -728,8 +673,41 @@ public class ShipMaterialFrame extends JFrame
         //add padding/margins to the main panel
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        //add the input panel
-        mainPanel.add(createInputPanel());
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 1
+        mainPanel.add(createRow1());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 2
+        mainPanel.add(createRow2());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 3
+        mainPanel.add(createRow3());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 4
+        mainPanel.add(createRow4());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 5
+        mainPanel.add(createRow5());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
+        
+        //add the Cancel Ship panel
+        mainPanel.add(createCancelShipPanel());
 
     }// end of ShipMaterialFrame::setupGui
     //--------------------------------------------------------------------------

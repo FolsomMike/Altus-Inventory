@@ -157,37 +157,6 @@ public class  MoveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialFrame::createInputPanel
-    //
-    // Creates and returns the input panel.
-    //
-
-    private JPanel createInputPanel()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 1
-        panel.add(createRow1());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,30)));
-        
-        //add the Cancel Move panel
-        panel.add(createCancelMovePanel());
-
-        return panel;
-
-    }// end of MoveMaterialFrame::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MoveMaterialFrame::createQuantityInputPanel
     //
     // Creates and returns the Quantity input panel.
@@ -334,8 +303,17 @@ public class  MoveMaterialFrame extends JFrame
         //add padding/margins to the main panel
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        //add the input panel
-        mainPanel.add(createInputPanel());
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 1
+        mainPanel.add(createRow1());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
+        
+        //add the Cancel Move panel
+        mainPanel.add(createCancelMovePanel());
 
     }// end of  MoveMaterialFrame::setupGui
     //--------------------------------------------------------------------------

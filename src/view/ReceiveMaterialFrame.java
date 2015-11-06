@@ -367,64 +367,6 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createInputPanel
-    //
-    // Creates and returns the input panel.
-    //
-
-    private JPanel createInputPanel()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //add the Load from TallyZap button
-        panel.add(createLoadFromTallyZapButtonPanel());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,30)));
-        
-        //add Row 1
-        panel.add(createRow1());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-
-        //add Row 2
-        panel.add(createRow2());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 3
-        panel.add(createRow3());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 4
-        panel.add(createRow4());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 5
-        panel.add(createRow5());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,30)));
-        
-        //add the cancel receive panel
-        panel.add(createCancelReceivePanel());
-
-        return panel;
-
-    }// end of ReceiveMaterialFrame::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createIDInputPanel
     //
     // Creates and returns the ID input panel.
@@ -883,8 +825,44 @@ public class ReceiveMaterialFrame extends JFrame
         //add padding/margins to the main panel
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        //add the input panel
-        mainPanel.add(createInputPanel());
+        //add the Load from TallyZap button
+        mainPanel.add(createLoadFromTallyZapButtonPanel());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
+        
+        //add Row 1
+        mainPanel.add(createRow1());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+
+        //add Row 2
+        mainPanel.add(createRow2());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 3
+        mainPanel.add(createRow3());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 4
+        mainPanel.add(createRow4());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 5
+        mainPanel.add(createRow5());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
+        
+        //add the cancel receive panel
+        mainPanel.add(createCancelReceivePanel());
 
     }// end of ReceiveMaterialFrame::setupGui
     //--------------------------------------------------------------------------

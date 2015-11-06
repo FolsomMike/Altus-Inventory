@@ -187,37 +187,6 @@ public class  TransferMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::createInputPanel
-    //
-    // Creates and returns the input panel.
-    //
-
-    private JPanel createInputPanel()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,20)));
-        
-        //add Row 1
-        panel.add(createRow1());
-        
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,30)));
-        
-        //add the Cancel Transfer panel
-        panel.add(createCancelTransferPanel());
-
-        return panel;
-
-    }// end of TransferMaterialFrame::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // TransferMaterialFrame::createQuantityInputPanel
     //
     // Creates and returns the Quantity input panel.
@@ -335,8 +304,17 @@ public class  TransferMaterialFrame extends JFrame
         //add padding/margins to the main panel
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        //add the input panel
-        mainPanel.add(createInputPanel());
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,20)));
+        
+        //add Row 1
+        mainPanel.add(createRow1());
+        
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,30)));
+        
+        //add the Cancel Transfer panel
+        mainPanel.add(createCancelTransferPanel());
         
     }// end of  TransferMaterialFrame::setupGui
     //--------------------------------------------------------------------------
