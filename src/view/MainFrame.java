@@ -421,7 +421,7 @@ public class MainFrame extends JFrame
         panel.add(Box.createRigidArea(new Dimension(10,0)));
         
         //populate an array of strings with items for a combo box
-        String[] strings2 = {"ID", "Company", "Date", "Status", "Truck", 
+        String[] strings2 = {"ID", "Customer", "Date", "Status", "Truck", 
                             "Quantity", "Length", "Rack", "Range", "Grade",
                             "Diameter", "Wall", "Facility"};
         //Create the combo box, select item at index 0
@@ -535,7 +535,7 @@ public class MainFrame extends JFrame
         table.addColumn("");
         table.setColumnEditable(0, true);
         table.addColumn("ID");
-        table.addColumn("Company");
+        table.addColumn("Customer");
         table.addColumn("Date");
         table.addColumn("Status");
         table.addColumn("Truck");

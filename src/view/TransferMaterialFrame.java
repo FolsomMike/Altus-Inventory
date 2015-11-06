@@ -157,12 +157,12 @@ public class  TransferMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::createCompanyInputPanel
+    // TransferMaterialFrame::createCustomerInputPanel
     //
-    // Creates and returns the Company input panel.
+    // Creates and returns the Customer input panel.
     //
 
-    private JPanel createCompanyInputPanel()
+    private JPanel createCustomerInputPanel()
     {
 
         JPanel panel = new JPanel();
@@ -170,20 +170,20 @@ public class  TransferMaterialFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        JLabel label = new JLabel("Company");
+        JLabel label = new JLabel("Customer");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(label);
         
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText("What company is the material being transferred"
+        field.setToolTipText("What customer is the material being transferred"
                                 + " to?");
         Tools.setSizes(field, 100, 30);
         panel.add(field);
 
         return panel;
 
-    }// end of TransferMaterialFrame::createCompanyInputPanel
+    }// end of TransferMaterialFrame::createCustomerInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -255,7 +255,7 @@ public class  TransferMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     // TransferMaterialFrame::createRow1
     //
-    // Creates and returns a JPanel containing the Quantity and Company input 
+    // Creates and returns a JPanel containing the Quantity and Customer input 
     // panels.
     //
     
@@ -272,8 +272,8 @@ public class  TransferMaterialFrame extends JFrame
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
         
-        //add Company input panel
-        panel.add(createCompanyInputPanel());
+        //add Customer input panel
+        panel.add(createCustomerInputPanel());
 
         return panel;
         

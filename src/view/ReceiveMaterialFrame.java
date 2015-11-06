@@ -161,12 +161,12 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createCompanyInputPanel
+    // ReceiveMaterialFrame::createCustomerInputPanel
     //
-    // Creates and returns the company name input panel.
+    // Creates and returns the Customer input panel.
     //
 
-    private JPanel createCompanyInputPanel()
+    private JPanel createCustomerInputPanel()
     {
 
         JPanel panel = new JPanel();
@@ -174,19 +174,19 @@ public class ReceiveMaterialFrame extends JFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        JLabel label = new JLabel("Company");
+        JLabel label = new JLabel("Customer");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(label);
         
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText("What company owns the material?");
+        field.setToolTipText("What customer owns the material?");
         Tools.setSizes(field, 100, 24);
         panel.add(field);
 
         return panel;
 
-    }// end of ReceiveMaterialFrame::createCompanyInputPanel
+    }// end of ReceiveMaterialFrame::createCustomerInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -444,9 +444,7 @@ public class ReceiveMaterialFrame extends JFrame
         
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText("Give the material a reference ID. This will be "
-                                + "automatically generated when the company "
-                                + "and date fields are filled in.");
+        field.setToolTipText("Give the material a reference ID.");
         Tools.setSizes(field, 100, 24);
         panel.add(field);
 
@@ -545,7 +543,7 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createRow1
     //
-    // Creates and returns a JPanel containing the ID, company, and date input
+    // Creates and returns a JPanel containing the ID, Customer, and Date input
     // panels.
     //
 
@@ -563,8 +561,8 @@ public class ReceiveMaterialFrame extends JFrame
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
         
-        //add company input panel
-        panel.add(createCompanyInputPanel());
+        //add Customer input panel
+        panel.add(createCustomerInputPanel());
         
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
