@@ -246,41 +246,6 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createDiameterWallAndFacilityRow
-    //
-    // Creates and returns a JPanel containing the Diameter, Wall, and Facility
-    // input panels.
-    //
-
-    private JPanel createDiameterWallAndFacilityRow()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //add Diameter input panel
-        panel.add(createDiameterInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Wall input panel
-        panel.add(createWallInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Facility input panel
-        panel.add(createFacilityInputPanel());
-
-        return panel;
-
-    }// end of ReceiveMaterialFrame::createDiameterWallAndFacilityRow
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createFacilityInputPanel
     //
     // Creates and returns the facility input panel.
@@ -336,41 +301,6 @@ public class ReceiveMaterialFrame extends JFrame
         return panel;
 
     }// end of ReceiveMaterialFrame::createGradeInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createIDCompanyAndDateRow
-    //
-    // Creates and returns a JPanel containing the ID, company, and date input
-    // panels.
-    //
-
-    private JPanel createIDCompanyAndDateRow()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //add ID input panel
-        panel.add(createIDInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add company input panel
-        panel.add(createCompanyInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add date input panel
-        panel.add(createDateInputPanel());
-
-        return panel;
-
-    }// end of ReceiveMaterialFrame::createIDCompanyAndDateRow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -454,26 +384,26 @@ public class ReceiveMaterialFrame extends JFrame
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,30)));
         
-        //add ID, company, and date row
-        panel.add(createIDCompanyAndDateRow());
+        //add Row 1
+        panel.add(createRow1());
         
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,20)));
 
-        //add Truck, Quantity, and Length Row
-        panel.add(createTruckQuantityAndLengthRow());
+        //add Row 2
+        panel.add(createRow2());
         
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,20)));
         
-        //add Rack, Range, and Grade Row
-        panel.add(createRackRangeAndGradeRow());
+        //add Row 3
+        panel.add(createRow3());
         
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,20)));
         
-        //add Diameter, Wall, and Facility Row
-        panel.add(createDiameterWallAndFacilityRow());
+        //add Row 4
+        panel.add(createRow4());
         
         //vertical spacer
         panel.add(Box.createRigidArea(new Dimension(0,30)));
@@ -547,41 +477,6 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createRackRangeAndGradeRow
-    //
-    // Creates and returns a JPanel containing the Rack, Range, and Grade
-    // input panels.
-    //
-
-    private JPanel createRackRangeAndGradeRow()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //add Rack input panel
-        panel.add(createRackInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Range input panel
-        panel.add(createRangeInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Grade input panel
-        panel.add(createGradeInputPanel());
-
-        return panel;
-
-    }// end of ReceiveMaterialFrame::createRackRangeAndGradeRow
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createRackInputPanel
     //
     // Creates and returns the rack input panel.
@@ -640,6 +535,146 @@ public class ReceiveMaterialFrame extends JFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createRow1
+    //
+    // Creates and returns a JPanel containing the ID, company, and date input
+    // panels.
+    //
+
+    private JPanel createRow1()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        //add ID input panel
+        panel.add(createIDInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add company input panel
+        panel.add(createCompanyInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add date input panel
+        panel.add(createDateInputPanel());
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createRow1
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createRow2
+    //
+    // Creates and returns a JPanel containing the Truck, Quantity, and Length
+    // input panels.
+    //
+
+    private JPanel createRow2()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        //add Truck input panel
+        panel.add(createTruckInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Quantity input panel
+        panel.add(createQuantityInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Length input panel
+        panel.add(createLengthInputPanel());
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createRow2
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createRow3
+    //
+    // Creates and returns a JPanel containing the Rack, Range, and Grade
+    // input panels.
+    //
+
+    private JPanel createRow3()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        //add Rack input panel
+        panel.add(createRackInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Range input panel
+        panel.add(createRangeInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Grade input panel
+        panel.add(createGradeInputPanel());
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createRow3
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialFrame::createRow4
+    //
+    // Creates and returns a JPanel containing the Diameter, Wall, and Facility
+    // input panels.
+    //
+
+    private JPanel createRow4()
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        //add Diameter input panel
+        panel.add(createDiameterInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Wall input panel
+        panel.add(createWallInputPanel());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Facility input panel
+        panel.add(createFacilityInputPanel());
+
+        return panel;
+
+    }// end of ReceiveMaterialFrame::createRow4
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // ReceiveMaterialFrame::createTruckInputPanel
     //
     // Creates and returns the truck input panel.
@@ -666,41 +701,6 @@ public class ReceiveMaterialFrame extends JFrame
         return panel;
 
     }// end of ReceiveMaterialFrame::createTruckInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReceiveMaterialFrame::createTruckQuantityAndLengthRow
-    //
-    // Creates and returns a JPanel containing the Truck, Quantity, and Length
-    // input panels.
-    //
-
-    private JPanel createTruckQuantityAndLengthRow()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //add Truck input panel
-        panel.add(createTruckInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Quantity input panel
-        panel.add(createQuantityInputPanel());
-        
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        //add Length input panel
-        panel.add(createLengthInputPanel());
-
-        return panel;
-
-    }// end of ReceiveMaterialFrame::createTruckQuantityAndLengthRow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
