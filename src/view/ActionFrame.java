@@ -27,7 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mksystems.mswing.MFloatSpinner;
-import skoonie.components.frame.SkoonieFrame;
+import skooniecomponents.frame.SkoonieFrame;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------

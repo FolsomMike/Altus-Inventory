@@ -23,7 +23,7 @@
 
 //-----------------------------------------------------------------------------
 
-package skoonie.components.frame;
+package skooniecomponents.frame;
 
 import java.awt.*;
 import javax.swing.*;

@@ -42,7 +42,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-import skoonie.components.frame.SkoonieFrame;
+import skooniecomponents.frame.SkoonieFrame;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
