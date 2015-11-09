@@ -33,7 +33,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -42,9 +41,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
+import skoonie.components.frame.SkoonieFrame;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -52,13 +50,11 @@ import toolkit.Tools;
 // class MainFrame
 //
 
-public class MainFrame extends JFrame
+public class MainFrame extends SkoonieFrame
 {
     
     private final MainView mainView;
-    private JPanel mainPanel;
 
-    private GuiUpdater guiUpdater;
     private Help help;
     private About about;
     
@@ -89,40 +85,50 @@ public class MainFrame extends JFrame
 
     public MainFrame(MainView pMainView)
     {
+        
+        super("Altus Invnetory", "MainFrame", pMainView, pMainView);
 
         mainView = pMainView;
+        
+        //exit the program when the window closes
+        defaultCloseOperation = EXIT_ON_CLOSE;
 
     }//end of MainFrame::MainFrame (constructor)
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainFrame::init
+    // MainFrame::createGui
     //
-    // Initializes the object. Must be called immediately after instantiation.
+    // Creates and adds the GUI to the mainPanel.
     //
-
-    public void init()
+    
+    @Override
+    protected void createGui() 
     {
+        
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        setUpFrame();
+        //add the control panel
+        mainPanel.add(createControlPanel());
 
-        //create an object to handle thread safe updates of GUI components
-        guiUpdater = new GuiUpdater(this);
-        guiUpdater.init();
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
 
-        //add a menu to the main form, passing this as the action listener
-        setJMenuBar(new MainMenu(mainView));
+        //add a horizontal separator to separate the control panel
+        //and the display panel
+        JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
+        Dimension d = sep.getPreferredSize();
+        d.width = sep.getMaximumSize().width;
+        sep.setMaximumSize(d);
+        mainPanel.add(sep);
 
-        //create user interface: buttons, displays, etc.
-        setupGui();
+        //vertical spacer
+        mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
 
-        //arrange all the GUI items
-        pack();
-
-        //display the main frame
-        setVisible(true);
-
-    }// end of MainFrame::init
+        //add the display panel
+        mainPanel.add(createDisplayPanel());
+        
+    }//end of MainFrame::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -807,84 +813,6 @@ public class MainFrame extends JFrame
         help = null;
 
     }//end of MainFrame::displayHelp
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::setUpFrame
-    //
-    // Sets up the JFrame by setting various options and styles.
-    //
-
-    private void setUpFrame()
-    {
-
-        //set the title of the frame
-        setTitle("TallyZap Inventory Software");
-
-        //turn off default bold for Metal look and feel
-        UIManager.put("swing.boldMetal", Boolean.FALSE);
-
-        //force "look and feel" to Java style
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException | UnsupportedLookAndFeelException e) {
-            System.out.println("Could not set Look and Feel");
-        }
-
-        //add the mainView as a window listener
-        addWindowListener(mainView);
-
-        //sets the default close operation
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        //add a JPanel to the frame to provide a familiar container
-        mainPanel = new JPanel();
-        setContentPane(mainPanel);
-
-        //maximize the jframe
-        setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
-
-    }// end of MainFrame::setUpFrame
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::setupGUI
-    //
-    // Sets up the user interface on the mainPanel: buttons, displays, etc.
-    //
-
-    private void setupGui()
-    {
-
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-        //add padding/margins to the main panel
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        //add the control panel
-        mainPanel.add(createControlPanel());
-
-        //vertical spacer
-        mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
-
-        //add a horizontal separator to separate the control panel
-        //and the display panel
-        JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
-        Dimension d = sep.getPreferredSize();
-        d.width = sep.getMaximumSize().width;
-        sep.setMaximumSize(d);
-        mainPanel.add(sep);
-
-        //vertical spacer
-        mainPanel.add(Box.createRigidArea(new Dimension(0,10)));
-
-        //add the display panel
-        mainPanel.add(createDisplayPanel());
-
-    }// end of MainFrame::setupGui
     //--------------------------------------------------------------------------
 
 }//end of class MainFrame

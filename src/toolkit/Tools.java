@@ -27,62 +27,75 @@ import javax.swing.JOptionPane;
 
 public class Tools extends Object{
 
+    //-----------------------------------------------------------------------------
+    // Tools::Toolls (constructor)
+    //
 
-//-----------------------------------------------------------------------------
-// Tools::Toolls (constructor)
-//
-
-public Tools()
-{
-
-
-}//end of Tools::Tools (constructor)
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// Tools::init
-//
-// Initializes the object.  MUST be called by sub classes after instantiation.
-//
-
-public void init()
-{
+    public Tools()
+    {
 
 
-}//end of Tools::init
-//-----------------------------------------------------------------------------
+    }//end of Tools::Tools (constructor)
+    //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Tools::setSizes
-//
-// Sets the min, max, and preferred sizes of pComponent to pWidth and pHeight.
-//
+    //-----------------------------------------------------------------------------
+    // Tools::init
+    //
+    // Initializes the object.  MUST be called by sub classes after instantiation.
+    //
 
-static public void setSizes(Component pComponent, int pWidth, int pHeight)
-{
+    public void init()
+    {
 
-    pComponent.setMinimumSize(new Dimension(pWidth, pHeight));
-    pComponent.setPreferredSize(new Dimension(pWidth, pHeight));
-    pComponent.setMaximumSize(new Dimension(pWidth, pHeight));
 
-}//end of Tools::setSizes
-//-----------------------------------------------------------------------------
+    }//end of Tools::init
+    //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Tools::displayErrorMessage
-//
-// Displays an error dialog with message pMessage.
-//
+    //-----------------------------------------------------------------------------
+    // Tools::setSizes
+    //
+    // Sets the min, max, and preferred sizes of pComponent to pWidth and pHeight.
+    //
 
-static public void displayErrorMessage(String pMessage, JFrame pMainFrame)
-{
+    static public void setSizes(Component pComponent, int pWidth, int pHeight)
+    {
 
-    JOptionPane.showMessageDialog(pMainFrame, pMessage,
-                                            "Error", JOptionPane.ERROR_MESSAGE);
+        pComponent.setMinimumSize(new Dimension(pWidth, pHeight));
+        pComponent.setPreferredSize(new Dimension(pWidth, pHeight));
+        pComponent.setMaximumSize(new Dimension(pWidth, pHeight));
 
-}//end of Tools::displayErrorMessage
-//-----------------------------------------------------------------------------
+    }//end of Tools::setSizes
+    //-----------------------------------------------------------------------------
 
+    //-----------------------------------------------------------------------------
+    // Tools::generateActionCommand
+    //
+    // Generates and returns an action command using pActionId and pCommand.
+    //
+
+    public static String generateActionCommand (String pActionId, 
+                                                String pCommand)
+    {
+
+        return pActionId + "->" + pCommand;
+
+    }// end of Tools::generateActionCommand
+    //-----------------------------------------------------------------------------
+
+    //-----------------------------------------------------------------------------
+    // Tools::displayErrorMessage
+    //
+    // Displays an error dialog with message pMessage.
+    //
+
+    static public void displayErrorMessage(String pMessage, JFrame pMainFrame)
+    {
+
+        JOptionPane.showMessageDialog(pMainFrame, pMessage,
+                                                "Error", JOptionPane.ERROR_MESSAGE);
+
+    }//end of Tools::displayErrorMessage
+    //-----------------------------------------------------------------------------
 
 }//end of class Tools
 //-----------------------------------------------------------------------------
