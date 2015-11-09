@@ -106,6 +106,9 @@ public class MainFrame extends SkoonieFrame
     protected void createGui() 
     {
         
+        //add a menu
+        setJMenuBar(new MainMenu(mainView));
+        
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         //add the control panel
