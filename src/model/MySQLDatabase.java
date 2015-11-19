@@ -221,35 +221,48 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getCompanies
+    // MySQLDatabase::getCustomers
     //
-    // Gets and returns the compainies from the database.
-    //
-    // //WIP HSS// -- this needs to be changed epically; right now it only 
-    //                  returns company names
+    // Gets and returns all of the customers in the CUSTOMERS table and stores
+    // all of the data pertaining to a customer in a Customer object. All of 
+    // the Customer objects are returned in an array list.
     //
 
-    public ArrayList<String> getCompanies()
+    public ArrayList<Customer> getCustomers()
     {
         
-        ArrayList<String> names = new ArrayList();
+        ArrayList<Customer> customers = new ArrayList();
 
-        String cmd = "SELECT `display_name` FROM `Customers`"
-                        + " ORDER BY `display_name` ASC";
+        String cmd = "SELECT * FROM `CUSTOMERS` ORDER BY `display_name` ASC";
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set = performQuery(stmt);
         
-        try { while (set.next()) { names.add(set.getString("display_name")); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 242"); }
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String id       = set.getString("id");
+                String name     = set.getString("display_name");
+                String line1    = set.getString("address_line_1");
+                String line2    = set.getString("address_line_2");
+                String city     = set.getString("city");
+                String state    = set.getString("state");
+                String zip      = set.getString("zip_code");
+                
+                //store the customer information
+                customers.add(new Customer(id, name, line1, line2, 
+                                                city, state, zip));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 256"); }
         
         //clean up environment
         closeResultSet(set);
         closePreparedStatement(stmt);
         closeDatabaseConnection();
         
-        return names;
+        return customers;
 
-    }//end of MySQLDatabase::getCompanies
+    }//end of MySQLDatabase::getCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

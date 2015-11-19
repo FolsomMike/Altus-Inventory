@@ -60,6 +60,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import model.Customer;
 import model.MySQLDatabase;
 
 //------------------------------------------------------------------------------
@@ -127,10 +128,18 @@ public class MainController implements EventHandler, Runnable
         //DEBUG HSS// -- this stuff has to be done somewhere else as needed
         MySQLDatabase db = new MySQLDatabase();
         db.init();
-        ArrayList<String> names = db.getCompanies();
+        ArrayList<Customer> customers = db.getCustomers();
         
-        for (String name : names) {
-            System.out.println("Company name: " + name);
+        System.out.println("--------------------------------------------");
+        for (Customer c : customers) {
+            System.out.println("Id: " + c.getId());
+            System.out.println("Company name: " + c.getDisplayName());
+            System.out.println("Address Line 1: " + c.getAddressLine1());
+            System.out.println("Address Line 2: " + c.getAddressLine2());
+            System.out.println("City: " + c.getCity());
+            System.out.println("State: " + c.getState());
+            System.out.println("Zip Code: " + c.getZipCode());
+            System.out.println("--------------------------------------------");
         }
         //DEBUG HSS//
 
