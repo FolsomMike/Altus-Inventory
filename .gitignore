@@ -17,6 +17,9 @@ Log Files/*.*
 # ignore any jar file which might be in the executable directory
 *.jar
 
+#make sure that the Connector/J library is not ignored
+!mysql-connector-java-5.1.37-bin.jar
+
 Error Messages.txt
 
 # ignore any zip files in the executable directory
