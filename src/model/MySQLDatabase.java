@@ -221,6 +221,48 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getBatches
+    //
+    // Gets and returns all of the batches in the BATCHES table and stores all
+    // of the data pertaining to a batch in a Batch object. All of the Batch 
+    // objects are returned in an array list.
+    //
+
+    public ArrayList<Batch> getBatches()
+    {
+        
+        ArrayList<Batch> batches = new ArrayList();
+
+        String cmd = "SELECT * FROM `BATCHES` ORDER BY `id` ASC"; //WIP HSS// -- order by should be specified by user
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String id       = set.getString("id");
+                String date     = set.getString("date_created");
+                String quantity = set.getString("quantity");
+                String length   = set.getString("total_length");
+                String cusId    = set.getString("customer_id");
+                
+                //store the customer information
+                batches.add(new Batch(id, date, quantity, length, cusId));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 253"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return batches;
+
+    }//end of MySQLDatabase::getBatches
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getCustomers
     //
     // Gets and returns all of the customers in the CUSTOMERS table and stores
@@ -253,7 +295,7 @@ public class MySQLDatabase
                                                 city, state, zip));
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 256"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 298"); }
         
         //clean up environment
         closeResultSet(set);
@@ -263,36 +305,6 @@ public class MySQLDatabase
         return customers;
 
     }//end of MySQLDatabase::getCustomers
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getNumberOfBatchesInYard
-    //
-    // Gets and returns the number of batches in the yard by counting all of 
-    // the batches in the Batches table with a quantity greater than 0.
-    //
-
-    public int getNumberOfBatchesInYard()
-    {
-        
-        int batches = 0;
-        
-        try { 
-            String cmd = "SELECT COUNT(*) FROM BATCHES WHERE QUANTITY > 0";
-            PreparedStatement stmt = createPreparedStatement(cmd);
-            ResultSet set = performQuery(stmt);
-            while (set.next()) { batches = set.getInt(1); } 
-            
-            //clean up environment
-            closeResultSet(set);
-            closePreparedStatement(stmt);
-            closeDatabaseConnection();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 277"); }
-        
-        return batches;
-
-    }//end of MySQLDatabase::getNumberOfBatchesInYard
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
