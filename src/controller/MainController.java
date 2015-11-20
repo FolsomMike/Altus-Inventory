@@ -54,16 +54,11 @@ import javax.swing.event.TableModelEvent;
 import model.Options;
 import view.MainView;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import model.Batch;
-import model.Customer;
-import model.MySQLDatabase;
-import model.Rack;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -126,45 +121,6 @@ public class MainController implements EventHandler, Runnable
         new Thread(this).start();
 
         view.setupAndStartMainTimer();
-        
-        //DEBUG HSS// -- this stuff has to be done somewhere else as needed
-        MySQLDatabase db = new MySQLDatabase();
-        db.init();
-        /*ArrayList<Customer> customers = db.getCustomers();
-        
-        System.out.println("--------------------------------------------");
-        for (Customer c : customers) {
-            System.out.println("Id: " + c.getId());
-            System.out.println("Company name: " + c.getDisplayName());
-            System.out.println("Address Line 1: " + c.getAddressLine1());
-            System.out.println("Address Line 2: " + c.getAddressLine2());
-            System.out.println("City: " + c.getCity());
-            System.out.println("State: " + c.getState());
-            System.out.println("Zip Code: " + c.getZipCode());
-            System.out.println("--------------------------------------------");
-        }*/
-        
-        ArrayList<Batch> batches = db.getBatches();
-        
-        System.out.println("--------------------------------------------");
-        for (Batch b : batches) {
-            System.out.println("Id: " + b.getId());
-            System.out.println("Date Created: " + b.getDateCreated());
-            System.out.println("Quantity: " + b.getQuantity());
-            System.out.println("Total Length: " + b.getTotalLength());
-            System.out.println("Customer Id: " + b.getCustomerId());
-            System.out.println("Rack: " + b.getRack());
-            System.out.println("--------------------------------------------");
-        }
-        
-        /*ArrayList<Rack> racks = db.getRacks();
-        
-        System.out.println("--------------------------------------------");
-        for (Rack r : racks) {
-            System.out.println("Name: " + r.getName());
-            System.out.println("--------------------------------------------");
-        }*/
-        //DEBUG HSS//
 
     }// end of MainController::init
     //--------------------------------------------------------------------------
