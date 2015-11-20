@@ -246,7 +246,7 @@ public class MySQLDatabase
                 String length   = set.getString("total_length");
                 String cusId    = set.getString("customer_id");
                 
-                //store the customer information
+                //store the batch information
                 batches.add(new Batch(id, date, quantity, length, cusId));
             }
         }
@@ -305,6 +305,44 @@ public class MySQLDatabase
         return customers;
 
     }//end of MySQLDatabase::getCustomers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::getBatches
+    //
+    // Gets and returns all of the batches in the BATCHES table and stores all
+    // of the data pertaining to a batch in a Batch object. All of the Batch 
+    // objects are returned in an array list.
+    //
+
+    public ArrayList<Rack> getRacks()
+    {
+        
+        ArrayList<Rack> racks = new ArrayList();
+
+        String cmd = "SELECT * FROM `RACKS` ORDER BY `name` ASC";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String name = set.getString("name");
+                
+                //store the rack information
+                racks.add(new Rack(name));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 336"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return racks;
+
+    }//end of MySQLDatabase::getRacks
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
