@@ -241,16 +241,17 @@ public class MySQLDatabase
         try {
             while (set.next()) { 
                 String id       = set.getString("id");
+                String cusId    = set.getString("customer_id");
                 String date     = set.getString("date_created");
                 String quantity = set.getString("quantity");
+                String rack     = set.getString("rack");
                 String length   = set.getString("total_length");
-                String cusId    = set.getString("customer_id");
                 
                 //store the batch information
-                batches.add(new Batch(id, date, quantity, length, cusId));
+                batches.add(new Batch(id, cusId, date, quantity, rack, length));
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 253"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 254"); }
         
         //clean up environment
         closeResultSet(set);
