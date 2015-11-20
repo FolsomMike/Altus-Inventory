@@ -60,6 +60,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import model.Batch;
 import model.Customer;
 import model.MySQLDatabase;
 
@@ -128,7 +129,7 @@ public class MainController implements EventHandler, Runnable
         //DEBUG HSS// -- this stuff has to be done somewhere else as needed
         MySQLDatabase db = new MySQLDatabase();
         db.init();
-        ArrayList<Customer> customers = db.getCustomers();
+        /*ArrayList<Customer> customers = db.getCustomers();
         
         System.out.println("--------------------------------------------");
         for (Customer c : customers) {
@@ -139,6 +140,18 @@ public class MainController implements EventHandler, Runnable
             System.out.println("City: " + c.getCity());
             System.out.println("State: " + c.getState());
             System.out.println("Zip Code: " + c.getZipCode());
+            System.out.println("--------------------------------------------");
+        }*/
+        
+        ArrayList<Batch> batches = db.getBatches();
+        
+        System.out.println("--------------------------------------------");
+        for (Batch b : batches) {
+            System.out.println("Id: " + b.getId());
+            System.out.println("Date Created: " + b.getDateCreated());
+            System.out.println("Quantity: " + b.getQuantity());
+            System.out.println("Total Length: " + b.getTotalLength());
+            System.out.println("Customer Id: " + b.getCustomerId());
             System.out.println("--------------------------------------------");
         }
         //DEBUG HSS//
