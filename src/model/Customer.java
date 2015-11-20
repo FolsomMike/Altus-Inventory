@@ -8,8 +8,6 @@
 * This class stores information about a customer:
 *       ID, Display Name, Address Line 1, Address Line 2, City, State, Zip Code
 *
-* The class can store and retrieve those options which must be non-volatile.
-*
 */
 
 //------------------------------------------------------------------------------
