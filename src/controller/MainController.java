@@ -144,7 +144,7 @@ public class MainController implements EventHandler, Runnable
             System.out.println("--------------------------------------------");
         }*/
         
-        /*ArrayList<Batch> batches = db.getBatches();
+        ArrayList<Batch> batches = db.getBatches();
         
         System.out.println("--------------------------------------------");
         for (Batch b : batches) {
@@ -153,16 +153,17 @@ public class MainController implements EventHandler, Runnable
             System.out.println("Quantity: " + b.getQuantity());
             System.out.println("Total Length: " + b.getTotalLength());
             System.out.println("Customer Id: " + b.getCustomerId());
+            System.out.println("Rack: " + b.getRack());
             System.out.println("--------------------------------------------");
-        }*/
+        }
         
-        ArrayList<Rack> racks = db.getRacks();
+        /*ArrayList<Rack> racks = db.getRacks();
         
         System.out.println("--------------------------------------------");
         for (Rack r : racks) {
             System.out.println("Name: " + r.getName());
             System.out.println("--------------------------------------------");
-        }
+        }*/
         //DEBUG HSS//
 
     }// end of MainController::init
