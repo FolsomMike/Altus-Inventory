@@ -27,7 +27,6 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -107,7 +106,9 @@ public class MainFrame extends SkoonieFrame
     {
         
         //add a menu
-        setJMenuBar(new MainMenu(mainView));
+        MainMenu m = new MainMenu(mainView);
+        m.init();
+        setJMenuBar(m);
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
