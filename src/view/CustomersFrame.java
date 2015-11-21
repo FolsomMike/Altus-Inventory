@@ -135,6 +135,21 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // CustomersFrame::cancelCreateCustomer
+    //
+    // Cancels the create customer process by disposing of the Create Customer
+    // window.
+    //
+    
+    public void cancelCreateCustomer() 
+    {
+
+        createCustomerDialog.dispose();
+        
+    }// end of CustomersFrame::cancelCreateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // CustomersFrame::cancelEditCustomer
     //
     // Cancels the changes made in the Edit Customer window by just disposing

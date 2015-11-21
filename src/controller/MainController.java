@@ -153,6 +153,11 @@ public class MainController implements EventHandler, Runnable
             view.displayEditCustomerWindow();
         }
         
+        s = Tools.generateActionCommand("CreateCustomerDialog", "Cancel");
+        if (s.equals(e.getActionCommand())) {
+            view.cancelCreateCustomer();
+        }
+        
         s = Tools.generateActionCommand("CreateCustomerDialog", "Confirm");
         if (s.equals(e.getActionCommand())) {
             view.confirmCreateCustomer();

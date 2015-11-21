@@ -165,6 +165,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::cancelCreateCustomer
+    //
+    // Cancels the create customer process.
+    //
+
+    public void cancelCreateCustomer()
+    {
+
+        customersFrame.cancelCreateCustomer();
+
+    }//end of MainView::cancelCreateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::cancelEditCustomer
     //
     // Cancels the changes made in the Edit Customer window.
