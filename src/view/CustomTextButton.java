@@ -7,6 +7,11 @@
 *
 * This class is a customized JButton, with a preset look and feel specifically
 * designed for text.
+* 
+* NOTE:
+*       To set the size of the button, pass in a width and height through the
+*       constructor. To let the button just wrap around the text, pass in -1
+*       for both pWidth and pHeight.
 *
 */
 
@@ -20,6 +25,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -29,14 +35,20 @@ import javax.swing.SwingConstants;
 public class CustomTextButton extends JButton
 {
     
+    private final int width;
+    private final int height;
+    
     //--------------------------------------------------------------------------
     // CustomTextButton::CustomTextButton (constructor)
     //
 
-    public CustomTextButton(String pText)
+    public CustomTextButton(String pText, int pWidth, int pHeight)
     {
         
         super(pText);
+        
+        width = pWidth;
+        height = pHeight;
 
     }//end of CustomTextButton::CustomTextButton (constructor)
     //--------------------------------------------------------------------------
@@ -55,7 +67,11 @@ public class CustomTextButton extends JButton
         setFocusPainted(false);
         setHorizontalTextPosition(SwingConstants.CENTER);
         setVerticalTextPosition(SwingConstants.BOTTOM);
-        setMargin(new Insets(5, 10, 5, 10));
+        
+        //set the margin if the width and height are not meant to be set,
+        //otherwise set the width and height
+        if (width == -1 || height == -1) {setMargin(new Insets(5, 10, 5, 10));}
+        else { Tools.setSizes(this, width, height); }
 
     }//end of CustomTextButton::init
     //--------------------------------------------------------------------------
