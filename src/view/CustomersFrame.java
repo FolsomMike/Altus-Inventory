@@ -16,17 +16,21 @@ package view;
 
 //------------------------------------------------------------------------------
 
+import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
-import java.awt.Font;
-import java.awt.Insets;
+import java.awt.Dialog;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import model.Customer;
@@ -88,6 +92,11 @@ public class CustomersFrame extends SkoonieFrame
         setupCustomersTable();
         
         super.init();
+        
+        //DEBUG HSS//
+        EditCustomerDialog d = new EditCustomerDialog(mainView, this);
+        d.init();
+        //DEBUG HSS//
         
     }// end of CustomersFrame::init
     //--------------------------------------------------------------------------
@@ -224,6 +233,197 @@ public class CustomersFrame extends SkoonieFrame
     }// end of CustomersFrame::setupCustomersTable
     //--------------------------------------------------------------------------
 
-}//end of class  CustomersFrame
+}//end of class CustomersFrame
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// class EditCustomerDialog
+//
+// This class is used for the Edit Customer window.
+//
+//
+
+class EditCustomerDialog extends JDialog
+{
+    
+    private final MainView mainView;
+    private final JFrame parent;
+    
+    private final String actionId = "EditCustomerDialog";
+    
+    private JPanel mainPanel;
+    
+    //--------------------------------------------------------------------------
+    // EditCustomerDialog::EditCustomerDialog (constructor)
+    //
+
+    public EditCustomerDialog(MainView pMainView, JFrame pParent)
+    {
+
+        super(pParent);
+        
+        mainView    = pMainView;
+        parent      = pParent;
+
+    }//end of EditCustomerDialog::EditCustomerDialog (constructor)
+    //-------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditCustomerDialog::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+    
+    public void init() 
+    {
+        
+        setTitle("Edit Customer");
+        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        setResizable(false);
+        
+        //add a JPanel to the dialog to provide a familiar container
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setContentPane(mainPanel);
+        
+        createGui();
+        
+        //arrange all the GUI items
+        pack();
+        
+        Tools.centerJDialog(this, parent);
+        setVisible(true);
+        
+    }// end of EditCustomerDialog::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ActionFrame::createCancelConfirmPanel
+    //
+    // Creates and returns a Cancel/Confirm panel.
+    //
+
+    private JPanel createCancelConfirmPanel()
+    {
+
+        CancelConfirmPanel panel = new CancelConfirmPanel("Confirm", 
+                                                    "Confirm the changes made.", 
+                                                    actionId, mainView);
+        panel.init();
+
+        return panel;
+
+    }// end of ActionFrame::createCancelConfirmPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditCustomerDialog::createGui
+    //
+    // Creates the gui for the dialog and adds it to the mainPanel.
+    //
+    
+    private void createGui() 
+    {
+        
+        //add padding to the main panel
+        int padding = 10;
+        mainPanel.setBorder(BorderFactory.createEmptyBorder
+                                        (padding, padding, padding, padding));
+        
+        int rowSpacer = 20;
+        
+        //add the Id and Customer Name row
+        mainPanel.add(createRow(new JPanel[] {
+            createInputPanel("Id", "The id used for the customer.", 100),
+            createInputPanel("Name", "The customer's name.", 200)
+        }));
+        
+        mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
+        
+        //add the Address Line 1 and Address Line 2 row
+        mainPanel.add(createRow(new JPanel[] {
+            createInputPanel("Address Line 1",
+                                "Address line 1 for the customer's location.",
+                                200),
+            createInputPanel("Address Line 2",
+                                "Address line 2 for the customer's location.",
+                                200)
+        }));
+        
+        mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
+        
+        int w = 130;
+        //add the City, State, and Zip Code row
+        mainPanel.add(createRow(new JPanel[] {
+            createInputPanel("City", "City for the customer's location.", w),
+            createInputPanel("State", "State for the customer's location.", w),
+            createInputPanel("Zip Code",
+                                "Zip code for the customer's location.", w)
+        }));
+        
+        mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
+        
+        mainPanel.add(createCancelConfirmPanel());
+        
+    }// end of EditCustomerDialog::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditCustomerDialog::createInputPanel
+    //
+    // Creates and returns an input panel.
+    //
+
+    protected final JPanel createInputPanel(String pLabelText, String pToolTip,
+                                                int pWidth)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel(pLabelText);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setToolTipText(pToolTip);
+        Tools.setSizes(field, pWidth, 25);
+        panel.add(field);
+
+        return panel;
+
+    }// end of EditCustomerDialog::createInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ActionFrame::createRow
+    //
+    // Creates and returns a row using pArray.
+    //
+
+    protected final JPanel createRow(JPanel[] pInputPanels)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        for (int i=0; i<pInputPanels.length; i++) {
+            if (i>0) { panel.add(Tools.createHorizontalSpacer(10)); }
+            panel.add(pInputPanels[i]);
+        }
+        
+        return panel;
+
+    }// end of ActionFrame::createRow
+    //--------------------------------------------------------------------------
+    
+}//end of class EditCustomerDialog
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
