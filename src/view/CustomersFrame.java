@@ -347,8 +347,8 @@ class EditCustomerDialog extends JDialog
     private JPanel createCancelConfirmPanel()
     {
 
-        CancelConfirmPanel panel = new CancelConfirmPanel("Confirm", 
-                                                    "Confirm the changes made.", 
+        CancelConfirmPanel panel = new CancelConfirmPanel("Apply", 
+                                                    "Apply the changes made.", 
                                                     actionId, mainView);
         panel.init();
 
