@@ -347,6 +347,55 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::insertCustomer
+    //
+    // Inserts pCustomer into the database.
+    //
+
+    public void insertCustomer(Customer pCustomer)
+    {
+        
+        String cmd = "INSERT INTO `CUSTOMERS` ("
+                        + "`id`,`display_name`,"
+                        + "`address_line_1`,`address_line_2`,"
+                        + "`city`,`state`,`zip_code`) "
+                        + "VALUES ("
+                        + "?,"  //placeholder 1     Id
+                        + "?,"  //placeholder 2     Display Name
+                        + "?,"  //placeholder 3     Address Line 1
+                        + "?,"  //placeholder 4     Address Line 2
+                        + "?,"  //placeholder 5     City
+                        + "?,"  //placeholder 6     State
+                        + "?)"; //placeholder 7     Zip Code
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pCustomer.getId());
+            stmt.setString(2, pCustomer.getDisplayName());
+            stmt.setString(3, pCustomer.getAddressLine1());
+            stmt.setString(4, pCustomer.getAddressLine2());
+            stmt.setString(5, pCustomer.getCity());
+            stmt.setString(6, pCustomer.getState());
+            stmt.setString(7, pCustomer.getZipCode());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) {
+            //DEBUG HSS//
+            System.out.println("Exception" + e.getMessage());
+            logSevere(e.getMessage() + " - Error: 385");
+        }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }//end of MySQLDatabase::insertCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::logSevere
     //
     // Logs pMessage with level SEVERE using the Java logger.
