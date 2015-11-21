@@ -93,11 +93,6 @@ public class CustomersFrame extends SkoonieFrame
         
         super.init();
         
-        //DEBUG HSS//
-        EditCustomerDialog d = new EditCustomerDialog(mainView, this);
-        d.init();
-        //DEBUG HSS//
-        
     }// end of CustomersFrame::init
     //--------------------------------------------------------------------------
     
@@ -171,6 +166,21 @@ public class CustomersFrame extends SkoonieFrame
         return panel;
         
     }// end of CustomersFrame::createButtonsPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::displayEditCustomersDialog
+    //
+    // Displays the Edit Customers dialog.
+    //
+    
+    public void displayEditCustomersDialog() 
+    {
+        
+        EditCustomerDialog d = new EditCustomerDialog(mainView, this);
+        d.init();
+        
+    }// end of CustomersFrame::displayEditCustomersDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

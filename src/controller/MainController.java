@@ -59,6 +59,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -139,6 +140,13 @@ public class MainController implements EventHandler, Runnable
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        
+        String s;
+        
+        s = Tools.generateActionCommand("CustomersFrame", "Edit Customer");
+        if (s.equals(e.getActionCommand())) {
+            view.displayEditCustomerWindow();
+        }
         
         if ("MainFrame--Create Invoice".equals(e.getActionCommand())) {
             view.displayCreateInvoiceWindow();

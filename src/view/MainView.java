@@ -50,6 +50,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 {
 
     private MainFrame mainFrame;
+    private CustomersFrame customersFrame;
 
     private GuiUpdater guiUpdater;
 
@@ -265,10 +266,24 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void displayCustomersWindow()
     {
 
-        CustomersFrame frame = new CustomersFrame(this);
-        frame.init();
+        customersFrame = new CustomersFrame(this);
+        customersFrame.init();
 
     }//end of MainView::displayCustomersWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayEditCustomerWindow
+    //
+    // Displays the Edit Customer dialog.
+    //
+
+    public void displayEditCustomerWindow()
+    {
+
+        customersFrame.displayEditCustomersDialog();
+
+    }//end of MainView::displayEditCustomerWindow
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
