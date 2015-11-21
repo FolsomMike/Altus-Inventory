@@ -22,11 +22,10 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import model.Customer;
 import model.MySQLDatabase;
@@ -40,6 +39,9 @@ import toolkit.Tools;
 
 public class CustomersFrame extends SkoonieFrame
 {
+    
+    private CustomTable customersTable;
+    private DefaultTableModel model;
     
     //declared as object so that they can be easily added to the table
     private List<String> customerIds = new ArrayList<>();
@@ -57,7 +59,7 @@ public class CustomersFrame extends SkoonieFrame
         //don't maximize
         maximize = false;
         
-        //don't all resize
+        //don't allow resize
         resizable = false;
         
         //center the frame
@@ -95,32 +97,10 @@ public class CustomersFrame extends SkoonieFrame
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         
-        String[] columnNames = {"Id", "Customer"};
-        
-        String[][] data = new String[customerIds.size()][];
-        
-        for (int i=0; i<data.length; i++) {
-            data[i] = new String[]{customerIds.get(i), customerNames.get(i)};
-        }
-        
-        CustomTable table = new CustomTable(data, columnNames, false);
-        
-        //setup the table
-        table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
-        table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setRowHeight(25);
-        table.setSelectionBackground(Color.decode("#000099"));
-        table.setSelectionForeground(Color.WHITE);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        //set the widths of the columns
-        TableColumnModel m =  table.getColumnModel();
-        m.getColumn(0).setPreferredWidth(100);
-        m.getColumn(1).setPreferredWidth(300);
+        setupCustomersTable();
         
         //put the table in a scroll pane
-        JScrollPane sp = new JScrollPane(table);
+        JScrollPane sp = new JScrollPane(customersTable);
         sp.setAlignmentX(LEFT_ALIGNMENT);
         sp.setAlignmentY(TOP_ALIGNMENT);
         //sp.setBorder(BorderFactory.createEmptyBorder());
@@ -151,7 +131,42 @@ public class CustomersFrame extends SkoonieFrame
         
     }// end of CustomersFrame::getCustomerInfoFromDatabase
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::setupCustomersTable
+    //
+    // Initializes customersTable and sets it up for use.
+    //
+    
+    private void setupCustomersTable() 
+    {
+        
+        String[] columnNames = {"Id", "Customer"};
+        
+        String[][] data = new String[customerIds.size()][];
+        
+        for (int i=0; i<data.length; i++) {
+            data[i] = new String[]{customerIds.get(i), customerNames.get(i)};
+        }
+        
+        //create a model that allows no editable cells
+        model = new DefaultTableModel(data, columnNames) {
+            @Override public boolean isCellEditable(int pR, int pC) {
+                return false;
+            }
+        };
+        
+        customersTable = new CustomTable(model);
+        customersTable.init();
+        
+        //set the widths of the columns
+        TableColumnModel m =  customersTable.getColumnModel();
+        m.getColumn(0).setPreferredWidth(100);
+        m.getColumn(1).setPreferredWidth(300);
+        
+    }// end of CustomersFrame::setupCustomersTable
+    //--------------------------------------------------------------------------
 
 }//end of class  CustomersFrame
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
