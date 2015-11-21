@@ -26,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
 import model.Customer;
 import model.MySQLDatabase;
@@ -102,7 +103,7 @@ public class CustomersFrame extends SkoonieFrame
             data[i] = new String[]{customerIds.get(i), customerNames.get(i)};
         }
         
-        CustomTable table = new CustomTable(data, columnNames);
+        CustomTable table = new CustomTable(data, columnNames, false);
         
         //setup the table
         table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
@@ -111,7 +112,7 @@ public class CustomersFrame extends SkoonieFrame
         table.setRowHeight(25);
         table.setSelectionBackground(Color.decode("#000099"));
         table.setSelectionForeground(Color.WHITE);
-        table.setBorder(BorderFactory.createEmptyBorder());
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         //set the widths of the columns
         TableColumnModel m =  table.getColumnModel();
