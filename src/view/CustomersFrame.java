@@ -48,6 +48,8 @@ public class CustomersFrame extends SkoonieFrame
     
     protected final MainView mainView;
     
+    private final MySQLDatabase db = new MySQLDatabase();
+    private ArrayList<Customer> customers;
     private CustomTable customersTable;
     private DefaultTableModel model;
     
@@ -87,6 +89,9 @@ public class CustomersFrame extends SkoonieFrame
     @Override
     public void init() 
     {
+        
+        //initialize database
+        db.init();
         
         getCustomerInfoFromDatabase();
         setupCustomersTable();
@@ -177,7 +182,9 @@ public class CustomersFrame extends SkoonieFrame
     public void displayEditCustomersDialog() 
     {
         
-        EditCustomerDialog d = new EditCustomerDialog(mainView, this);
+        
+        EditCustomerDialog d = new EditCustomerDialog(getSelectedCustomer(), 
+                                                        this, mainView);
         d.init();
         
     }// end of CustomersFrame::displayEditCustomersDialog
@@ -193,16 +200,36 @@ public class CustomersFrame extends SkoonieFrame
     private void getCustomerInfoFromDatabase() 
     {
         
-        MySQLDatabase db = new MySQLDatabase();
-        db.init();
-        
-        ArrayList<Customer> customers = db.getCustomers();
+        customers = db.getCustomers();
         for (Customer c : customers) {
             customerIds.add(c.getId());
             customerNames.add(c.getDisplayName());
         }
         
     }// end of CustomersFrame::getCustomerInfoFromDatabase
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::getSelectedCustomer
+    //
+    // Gets and returns the customer that is selected in the table.
+    //
+    
+    private Customer getSelectedCustomer() 
+    {
+        
+        int row = customersTable.getSelectedRow();
+        String id = (String)customersTable.getValueAt(row, 0);
+        
+        //look for the customer that matches the selected id
+        for (Customer c : customers) {
+            if (id.equals(c.getId())) { return c; }
+        }
+        
+        //no customer was found so return null
+        return null;
+        
+    }// end of CustomersFrame::getSelectedCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -260,6 +287,7 @@ class EditCustomerDialog extends JDialog
     
     private final MainView mainView;
     private final JFrame parent;
+    private final Customer customer;
     
     private final String actionId = "EditCustomerDialog";
     
@@ -269,11 +297,12 @@ class EditCustomerDialog extends JDialog
     // EditCustomerDialog::EditCustomerDialog (constructor)
     //
 
-    public EditCustomerDialog(MainView pMainView, JFrame pParent)
+    public EditCustomerDialog(Customer pC, JFrame pParent, MainView pMainView)
     {
 
         super(pParent);
         
+        customer    = pC;
         mainView    = pMainView;
         parent      = pParent;
 
@@ -346,18 +375,20 @@ class EditCustomerDialog extends JDialog
         
         //add the Id and Customer Name row
         mainPanel.add(createRow(new JPanel[] {
-            createInputPanel("Id", "The id used for the customer.", 100),
-            createInputPanel("Name", "The customer's name.", 200)
+            createInputPanel("Id", customer.getId(),
+                                "The id used for the customer.", 100),
+            createInputPanel("Name", customer.getDisplayName(),
+                                "The customer's name.", 200)
         }));
         
         mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
         
         //add the Address Line 1 and Address Line 2 row
         mainPanel.add(createRow(new JPanel[] {
-            createInputPanel("Address Line 1",
+            createInputPanel("Address Line 1", customer.getAddressLine1(),
                                 "Address line 1 for the customer's location.",
                                 200),
-            createInputPanel("Address Line 2",
+            createInputPanel("Address Line 2", customer.getAddressLine2(),
                                 "Address line 2 for the customer's location.",
                                 200)
         }));
@@ -367,9 +398,11 @@ class EditCustomerDialog extends JDialog
         int w = 130;
         //add the City, State, and Zip Code row
         mainPanel.add(createRow(new JPanel[] {
-            createInputPanel("City", "City for the customer's location.", w),
-            createInputPanel("State", "State for the customer's location.", w),
-            createInputPanel("Zip Code",
+            createInputPanel("City", customer.getCity(),
+                                "City for the customer's location.", w),
+            createInputPanel("State", customer.getState(),
+                                "State for the customer's location.", w),
+            createInputPanel("Zip Code", customer.getZipCode(),
                                 "Zip code for the customer's location.", w)
         }));
         
@@ -386,8 +419,9 @@ class EditCustomerDialog extends JDialog
     // Creates and returns an input panel.
     //
 
-    protected final JPanel createInputPanel(String pLabelText, String pToolTip,
-                                                int pWidth)
+    private JPanel createInputPanel(String pLabelText, 
+                                            String pInputFieldText,
+                                            String pToolTip, int pWidth)
     {
 
         JPanel panel = new JPanel();
@@ -402,6 +436,7 @@ class EditCustomerDialog extends JDialog
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
         field.setToolTipText(pToolTip);
+        field.setText(pInputFieldText);
         Tools.setSizes(field, pWidth, 25);
         panel.add(field);
 
