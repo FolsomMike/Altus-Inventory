@@ -18,10 +18,15 @@ package view;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
+import java.awt.Font;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import model.Customer;
@@ -36,6 +41,8 @@ import toolkit.Tools;
 
 public class CustomersFrame extends SkoonieFrame
 {
+    
+    protected final MainView mainView;
     
     private CustomTable customersTable;
     private DefaultTableModel model;
@@ -52,6 +59,8 @@ public class CustomersFrame extends SkoonieFrame
     {
 
         super("Customers", "CustomersFrame", pMainView, pMainView);
+        
+        mainView = pMainView;
         
         //don't maximize
         maximize = false;
@@ -102,9 +111,57 @@ public class CustomersFrame extends SkoonieFrame
         Tools.setSizes(sp, 400, 300);
         mainPanel.add(sp);
         
+        mainPanel.add(this.createHorizontalSpacer(10));
         
+        mainPanel.add(createButtonsPanel());
         
     }// end of CustomersFrame::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::createButton
+    //
+    // Creates and returns a JButton for the Buttons Panel, using the parameters
+    // for individuality.
+    //
+    
+    private JButton createButton(String pText, String pTip) 
+    {
+        
+        CustomTextButton btn = new CustomTextButton(pText);
+        btn.init();
+        btn.addActionListener(mainView);
+        btn.setToolTipText(pTip);
+        btn.setActionCommand(Tools.generateActionCommand(actionId, pText));
+        btn.setAlignmentX(LEFT_ALIGNMENT);
+        
+        return btn;
+        
+    }// end of CustomersFrame::createButton
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::createButtonsPanel
+    //
+    // Creates and returns a JPanel containing all of the buttons for the
+    // window.
+    //
+    
+    private JPanel createButtonsPanel() 
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        //Edit Customer button
+        panel.add(createButton("Edit Customer", "Edit information about the "
+                                                    + "selected customer."));
+        
+        return panel;
+        
+    }// end of CustomersFrame::createButtonsPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
