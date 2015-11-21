@@ -108,20 +108,6 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersFrame::confirmEditCustomer
-    //
-    // Confirms the changes made in the Edit Customer window.
-    //
-    
-    public void confirmEditCustomer() 
-    {
-
-        editCustomerDialog.confirm();
-        
-    }// end of CustomersFrame::confirmEditCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // CustomersFrame::createGui
     //
     // Creates and adds the GUI to the mainPanel.
@@ -145,6 +131,35 @@ public class CustomersFrame extends SkoonieFrame
         mainPanel.add(createButtonsPanel());
         
     }// end of CustomersFrame::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::cancelEditCustomer
+    //
+    // Cancels the changes made in the Edit Customer window by just disposing
+    // of it.
+    //
+    
+    public void cancelEditCustomer() 
+    {
+
+        editCustomerDialog.dispose();
+        
+    }// end of CustomersFrame::cancelEditCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::confirmEditCustomer
+    //
+    // Confirms the changes made in the Edit Customer window.
+    //
+    
+    public void confirmEditCustomer() 
+    {
+
+        editCustomerDialog.confirm();
+        
+    }// end of CustomersFrame::confirmEditCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
