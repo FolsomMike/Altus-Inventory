@@ -16,15 +16,12 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Color;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import model.Customer;
@@ -44,8 +41,8 @@ public class CustomersFrame extends SkoonieFrame
     private DefaultTableModel model;
     
     //declared as object so that they can be easily added to the table
-    private List<String> customerIds = new ArrayList<>();
-    private List<String> customerNames = new ArrayList<>();
+    private final List<String> customerIds = new ArrayList<>();
+    private final List<String> customerNames = new ArrayList<>();
 
     //--------------------------------------------------------------------------
     // CustomersFrame::CustomersFrame (constructor)
@@ -79,6 +76,7 @@ public class CustomersFrame extends SkoonieFrame
     {
         
         getCustomerInfoFromDatabase();
+        setupCustomersTable();
         
         super.init();
         
@@ -95,17 +93,16 @@ public class CustomersFrame extends SkoonieFrame
     protected void createGui() 
     {
         
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        
-        setupCustomersTable();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         
         //put the table in a scroll pane
         JScrollPane sp = new JScrollPane(customersTable);
         sp.setAlignmentX(LEFT_ALIGNMENT);
         sp.setAlignmentY(TOP_ALIGNMENT);
-        //sp.setBorder(BorderFactory.createEmptyBorder());
         Tools.setSizes(sp, 400, 300);
         mainPanel.add(sp);
+        
+        
         
     }// end of CustomersFrame::createGui
     //--------------------------------------------------------------------------
