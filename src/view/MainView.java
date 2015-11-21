@@ -212,6 +212,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }// end of MainView::createFonts
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::confirmEditCustomer
+    //
+    // Confirms the changes made in the Edit Customer window.
+    //
+
+    public void confirmEditCustomer()
+    {
+
+        customersFrame.confirmEditCustomer();
+
+    }//end of MainView::confirmEditCustomer
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayAbout
@@ -281,7 +295,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void displayEditCustomerWindow()
     {
 
-        customersFrame.displayEditCustomersDialog();
+        customersFrame.displayEditCustomerDialog();
 
     }//end of MainView::displayEditCustomerWindow
     //--------------------------------------------------------------------------

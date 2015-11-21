@@ -21,7 +21,9 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dialog;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -56,6 +58,8 @@ public class CustomersFrame extends SkoonieFrame
     //declared as object so that they can be easily added to the table
     private final List<String> customerIds = new ArrayList<>();
     private final List<String> customerNames = new ArrayList<>();
+    
+    private EditCustomerDialog editCustomerDialog;
 
     //--------------------------------------------------------------------------
     // CustomersFrame::CustomersFrame (constructor)
@@ -99,6 +103,20 @@ public class CustomersFrame extends SkoonieFrame
         super.init();
         
     }// end of CustomersFrame::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::confirmEditCustomer
+    //
+    // Confirms the changes made in the Edit Customer window.
+    //
+    
+    public void confirmEditCustomer() 
+    {
+
+        editCustomerDialog.confirm();
+        
+    }// end of CustomersFrame::confirmEditCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -174,20 +192,20 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersFrame::displayEditCustomersDialog
+    // CustomersFrame::displayEditCustomerDialog
     //
-    // Displays the Edit Customers dialog.
+    // Displays the Edit Customer dialog.
     //
     
-    public void displayEditCustomersDialog() 
+    public void displayEditCustomerDialog() 
     {
         
         
-        EditCustomerDialog d = new EditCustomerDialog(getSelectedCustomer(), 
+        editCustomerDialog = new EditCustomerDialog(getSelectedCustomer(), 
                                                         this, mainView);
-        d.init();
+        editCustomerDialog.init();
         
-    }// end of CustomersFrame::displayEditCustomersDialog
+    }// end of CustomersFrame::displayEditCustomerDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -291,7 +309,10 @@ class EditCustomerDialog extends JDialog
     
     private final String actionId = "EditCustomerDialog";
     
+    private final MySQLDatabase db = new MySQLDatabase();
+    
     private JPanel mainPanel;
+    private final Map<String, JTextField> inputFields = new HashMap<>();
     
     //--------------------------------------------------------------------------
     // EditCustomerDialog::EditCustomerDialog (constructor)
@@ -320,7 +341,11 @@ class EditCustomerDialog extends JDialog
         
         setTitle("Edit Customer");
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
+        
+        //initialize the database
+        db.init();
         
         //add a JPanel to the dialog to provide a familiar container
         mainPanel = new JPanel();
@@ -414,6 +439,25 @@ class EditCustomerDialog extends JDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // EditCustomerDialog::confirm
+    //
+    // Confirms the changes made to the customer by getting all of the user
+    // inputs and sending them to the database.
+    //
+
+    public void confirm()
+    {
+
+        String oldId = customer.getId();
+        
+        getUserInput();
+        
+        db.updateCustomer(oldId, customer);
+
+    }// end of EditCustomerDialog::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // EditCustomerDialog::createInputPanel
     //
     // Creates and returns an input panel.
@@ -438,6 +482,8 @@ class EditCustomerDialog extends JDialog
         field.setToolTipText(pToolTip);
         field.setText(pInputFieldText);
         Tools.setSizes(field, pWidth, 25);
+        //store a reference to the field
+        inputFields.put(pLabelText, field);
         panel.add(field);
 
         return panel;
@@ -446,12 +492,12 @@ class EditCustomerDialog extends JDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ActionFrame::createRow
+    // EditCustomerDialog::createRow
     //
     // Creates and returns a row using pArray.
     //
 
-    protected final JPanel createRow(JPanel[] pInputPanels)
+    private JPanel createRow(JPanel[] pInputPanels)
     {
 
         JPanel panel = new JPanel();
@@ -466,7 +512,33 @@ class EditCustomerDialog extends JDialog
         
         return panel;
 
-    }// end of ActionFrame::createRow
+    }// end of EditCustomerDialog::createRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditCustomerDialog::getUserInput
+    //
+    // Gets the user input from the text fields and stores it in the Customer.
+    //
+
+    private void getUserInput()
+    {
+
+        customer.setId(inputFields.get("Id").getText());
+        
+        customer.setDisplayName(inputFields.get("Name").getText());
+        
+        customer.setAddressLine1(inputFields.get("Address Line 1").getText());
+        
+        customer.setAddressLine2(inputFields.get("Address Line 2").getText());
+        
+        customer.setCity(inputFields.get("City").getText());
+        
+        customer.setState(inputFields.get("State").getText());
+        
+        customer.setZipCode(inputFields.get("Zip Code").getText());
+
+    }// end of EditCustomerDialog::getUserInput
     //--------------------------------------------------------------------------
     
 }//end of class EditCustomerDialog
