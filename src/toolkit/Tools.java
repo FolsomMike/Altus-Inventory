@@ -20,6 +20,8 @@ package toolkit;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.Box;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -96,6 +98,64 @@ public class Tools extends Object{
 
     }//end of Tools::displayErrorMessage
     //-----------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Tools::centerJDialog
+    //
+    // Centers a passed in JDialog according to the location and size of the 
+    // passed in parent frame and the JDialog's size.
+    //
+
+    static public void centerJDialog(JDialog pDialog, JFrame pParentFrame)
+    {
+
+        int parentFrameXPos = (int)pParentFrame.getX();
+        int parentFrameHalfWidth = (int)pParentFrame.getWidth()/2;
+
+        int parentFrameYPos = (int)pParentFrame.getY();
+        int parentFrameHalfHeight = (int)pParentFrame.getHeight()/2;
+
+        int parentFrameXCenter = parentFrameXPos + parentFrameHalfWidth;
+        int parentFrameYCenter = parentFrameYPos + parentFrameHalfHeight;
+
+        int dialogWidthCenter = (int)pDialog.getWidth()/2;
+        int dialogHeightCenter = (int)pDialog.getHeight()/2;
+
+        int xPosition = parentFrameXCenter - dialogWidthCenter;
+        int yPosition = parentFrameYCenter - dialogHeightCenter;
+
+        pDialog.setLocation(xPosition, yPosition);
+
+    }// end of Tools::centerJDialog
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Tools::createHorizontalSpacer
+    //
+    // Creates and returns a horizontal spacer using pWidth.
+    //
+
+    static public Component createHorizontalSpacer(int pWidth)
+    {
+
+        return Box.createRigidArea(new Dimension(pWidth, 0));
+
+    }// end of Tools::createHorizontalSpacer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Tools::createVerticalSpacer
+    //
+    // Creates and returns a vertical spacer using pHeight.
+    //
+
+    static public Component createVerticalSpacer(int pHeight)
+    {
+
+        return Box.createRigidArea(new Dimension(0, pHeight));
+
+    }// end of Tools::createVerticalSpacer
+    //--------------------------------------------------------------------------
 
 }//end of class Tools
 //-----------------------------------------------------------------------------
