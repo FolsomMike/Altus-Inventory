@@ -85,7 +85,7 @@ public class MainFrame extends SkoonieFrame
     public MainFrame(MainView pMainView)
     {
         
-        super("Altus Invnetory", "MainFrame", pMainView, pMainView);
+        super("Altus Inventory", "MainFrame", pMainView, pMainView);
 
         mainView = pMainView;
         
