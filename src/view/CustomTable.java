@@ -17,13 +17,14 @@ package view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -51,6 +52,42 @@ public class CustomTable extends JTable
         });
 
     }//end of CustomTable::CustomTable (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomTable::CustomTable (constructor)
+    //
+
+    public CustomTable(TableModel pModel)
+    {
+        
+        super(pModel);
+
+    }//end of CustomTable::CustomTable (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomTable::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+
+    public void init()
+    {
+        
+        setRowHeight(25);
+        
+        //header specific settings
+        getTableHeader().setBackground(Color.decode("#C2E0FF"));
+        getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
+        getTableHeader().setReorderingAllowed(false);
+        
+        //selection specific settings
+        setSelectionBackground(Color.decode("#000099"));
+        setSelectionForeground(Color.WHITE);
+        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    }//end of CustomTable::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
