@@ -22,13 +22,11 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dialog;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -54,10 +52,6 @@ public class CustomersFrame extends SkoonieFrame
     private ArrayList<Customer> customers;
     private CustomTable customersTable;
     private DefaultTableModel model;
-    
-    //declared as object so that they can be easily added to the table
-    private final List<String> customerIds = new ArrayList<>();
-    private final List<String> customerNames = new ArrayList<>();
     
     private EditCustomerDialog editCustomerDialog;
 
@@ -97,8 +91,16 @@ public class CustomersFrame extends SkoonieFrame
         //initialize database
         db.init();
         
-        getCustomerInfoFromDatabase();
+        //initialize model
+        //create a model that allows no editable cells
+        model = new DefaultTableModel() {
+            @Override public boolean isCellEditable(int pR, int pC) {
+                return false;
+            }
+        };
+        
         setupCustomersTable();
+        retrieveCustomerInfoFromDatabase();
         
         super.init();
         
@@ -209,25 +211,6 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersFrame::getCustomerInfoFromDatabase
-    //
-    // Retrieves the customer info from the MySQL database and stores the
-    // ids and names.
-    //
-    
-    private void getCustomerInfoFromDatabase() 
-    {
-        
-        customers = db.getCustomers();
-        for (Customer c : customers) {
-            customerIds.add(c.getId());
-            customerNames.add(c.getDisplayName());
-        }
-        
-    }// end of CustomersFrame::getCustomerInfoFromDatabase
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // CustomersFrame::getSelectedCustomer
     //
     // Gets and returns the customer that is selected in the table.
@@ -251,6 +234,46 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // CustomersFrame::retrieveCustomerInfoFromDatabase
+    //
+    // Retrieves the customer info from the MySQL database and stores the
+    // ids and names in the table model
+    //
+    
+    public void retrieveCustomerInfoFromDatabase() 
+    {
+        
+        //get customers from the database
+        customers = db.getCustomers();
+        
+        String[] columnNames = {"Id", "Customer"};
+        
+        String[][] data = new String[customers.size()][];
+        
+        //extract ids and names from customers
+        for (int i=0; i<data.length; i++) {
+            data[i] = new String[]{customers.get(i).getId(), 
+                                    customers.get(i).getDisplayName()};
+        }
+        
+        model.setDataVector(data, columnNames);
+        
+        //now that we've put data in the model, we can set some table settings
+        
+        //select the first row of the table
+        if (customersTable.getRowCount() > 0) { 
+            customersTable.setRowSelectionInterval(0, 0);
+        }
+        
+        //set the widths of the columns
+        TableColumnModel m =  customersTable.getColumnModel();
+        m.getColumn(0).setPreferredWidth(100);
+        m.getColumn(1).setPreferredWidth(300);
+        
+    }// end of CustomersFrame::retrieveCustomerInfoFromDatabase
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // CustomersFrame::setupCustomersTable
     //
     // Initializes customersTable and sets it up for use.
@@ -259,31 +282,8 @@ public class CustomersFrame extends SkoonieFrame
     private void setupCustomersTable() 
     {
         
-        String[] columnNames = {"Id", "Customer"};
-        
-        String[][] data = new String[customerIds.size()][];
-        
-        for (int i=0; i<data.length; i++) {
-            data[i] = new String[]{customerIds.get(i), customerNames.get(i)};
-        }
-        
-        //create a model that allows no editable cells
-        model = new DefaultTableModel(data, columnNames) {
-            @Override public boolean isCellEditable(int pR, int pC) {
-                return false;
-            }
-        };
-        
         customersTable = new CustomTable(model);
         customersTable.init();
-        
-        //select the first row of the table
-        customersTable.setRowSelectionInterval(0, 0);
-        
-        //set the widths of the columns
-        TableColumnModel m =  customersTable.getColumnModel();
-        m.getColumn(0).setPreferredWidth(100);
-        m.getColumn(1).setPreferredWidth(300);
         
     }// end of CustomersFrame::setupCustomersTable
     //--------------------------------------------------------------------------
@@ -304,7 +304,7 @@ class EditCustomerDialog extends JDialog
 {
     
     private final MainView mainView;
-    private final JFrame parent;
+    private final CustomersFrame parent;
     private final Customer customer;
     
     private final String actionId = "EditCustomerDialog";
@@ -318,7 +318,8 @@ class EditCustomerDialog extends JDialog
     // EditCustomerDialog::EditCustomerDialog (constructor)
     //
 
-    public EditCustomerDialog(Customer pC, JFrame pParent, MainView pMainView)
+    public EditCustomerDialog(Customer pC, CustomersFrame pParent, 
+                                MainView pMainView)
     {
 
         super(pParent);
@@ -453,6 +454,13 @@ class EditCustomerDialog extends JDialog
         getUserInput();
         
         db.updateCustomer(oldId, customer);
+        
+        //tell the Customers window to reload its data from the server since
+        //we changed some stuff there
+        parent.retrieveCustomerInfoFromDatabase();
+        
+        //dispose of the window and its resources
+        dispose();
 
     }// end of EditCustomerDialog::confirm
     //--------------------------------------------------------------------------
