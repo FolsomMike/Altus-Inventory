@@ -172,7 +172,7 @@ public class CustomersFrame extends SkoonieFrame
     private JButton createButton(String pText, String pTip) 
     {
         
-        CustomTextButton btn = new CustomTextButton(pText);
+        CustomTextButton btn = new CustomTextButton(pText, 150, 30);
         btn.init();
         btn.addActionListener(mainView);
         btn.setToolTipText(pTip);
@@ -199,9 +199,15 @@ public class CustomersFrame extends SkoonieFrame
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
+        //Create Customer button
+        panel.add(createButton("Create Customer", "Create a new customer."));
+        
+        panel.add(Tools.createVerticalSpacer(20));
+        
         //Edit Customer button
         panel.add(createButton("Edit Customer", "Edit information about the "
                                                     + "selected customer."));
+        
         
         return panel;
         
