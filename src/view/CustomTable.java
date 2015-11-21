@@ -20,7 +20,9 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 
 //------------------------------------------------------------------------------
@@ -38,10 +40,15 @@ public class CustomTable extends JTable
     // CustomTable::CustomTable (constructor)
     //
 
-    public CustomTable(Object[][] pRowData, Object[] pColumnNames)
+    public CustomTable(Object[][] pRowData, Object[] pColumnNames, 
+                            final boolean pEditable)
     {
         
-        super(pRowData, pColumnNames);
+        super(new DefaultTableModel(pRowData, pColumnNames) {
+            @Override public boolean isCellEditable(int pR, int pC) {
+                return pEditable;
+            }
+        });
 
     }//end of CustomTable::CustomTable (constructor)
     //--------------------------------------------------------------------------
