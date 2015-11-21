@@ -1,157 +1,191 @@
-/******************************************************************************
+/*******************************************************************************
 * Title: MainMenu.java
-* Author: Mike Schoonover
-* Date: 11/15/12
+* Author: Hunter Schoonover
+* Date: 11/20/12
 *
 * Purpose:
 *
 * This class creates the main menu and sub-menus for the main form.
 *
-*
-* Open Source Policy:
-*
-* This source code is Public Domain and free to any interested party.  Any
-* person, company, or organization may do with it as they please.
-*
 */
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 package view;
+
+//------------------------------------------------------------------------------
 
 import java.awt.event.*;
 import javax.swing.*;
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // class MainMenu
 //
 // This class creates the main menu and sub menus for the main form.
 //
 
-public class MainMenu extends JMenuBar{
+public class MainMenu extends JMenuBar
+{
 
     ActionListener actionListener;
 
     JMenu fileMenu;
-    JMenuItem newFile;
-    JMenuItem openFile;
-    JMenuItem saveFile;
-    JMenuItem saveFileAs;
+    JMenuItem exitMenuItem;
     
     JMenu customerMenu;
-    JMenuItem viewAllCustomers;
+    JMenuItem viewAllCustomersMenuItem;
 
     JMenu helpMenu;
-    JMenuItem logMenuItem, aboutMenuItem, helpMenuItem, exitMenuItem;
+    JMenuItem aboutMenuItem, helpMenuItem;
 
-//-----------------------------------------------------------------------------
-// MainMenu::MainMenu (constructor)
-//
+    //--------------------------------------------------------------------------
+    // MainMenu::MainMenu (constructor)
+    //
 
-String language;
+    String language;
 
-public MainMenu(ActionListener pActionListener)
-{
-
-    actionListener = pActionListener;
-
-    //File menu
-    fileMenu = new JMenu("File");
-    fileMenu.setMnemonic(KeyEvent.VK_F);
-    fileMenu.setToolTipText("File");
-    add(fileMenu);
-
-    //File/Exit menu item
-    exitMenuItem = new JMenuItem("Exit");
-    exitMenuItem.setMnemonic(KeyEvent.VK_X);
-    exitMenuItem.setToolTipText("Exit the program.");
-    exitMenuItem.setActionCommand("MainMenu--Exit");
-    exitMenuItem.addActionListener(actionListener);
-    fileMenu.add(exitMenuItem);
-    
-    //Customer menu
-    customerMenu = new JMenu("Customer");
-    customerMenu.setMnemonic(KeyEvent.VK_C);
-    customerMenu.setToolTipText("Customer");
-    add(customerMenu);
-    
-    //Customer/View All Customers menu item
-    viewAllCustomers = new JMenuItem("View All Customers");
-    viewAllCustomers.setToolTipText("View all customers.");
-    viewAllCustomers.setActionCommand("MainMenu--View All Customers");
-    viewAllCustomers.addActionListener(actionListener);
-    customerMenu.add(viewAllCustomers);
-
-    //Help menu
-    helpMenu = new JMenu("Help");
-    helpMenu.setMnemonic(KeyEvent.VK_H);
-    helpMenu.setToolTipText("Help");
-    add(helpMenu);
-
-    //Help menu items and submenus
-
-    //option to display the "About" window
-    aboutMenuItem = new JMenuItem("About");
-    aboutMenuItem.setMnemonic(KeyEvent.VK_A);
-    aboutMenuItem.setToolTipText("Display the About window.");
-    aboutMenuItem.setActionCommand("MainMenu--Display About");
-    aboutMenuItem.addActionListener(actionListener);
-    helpMenu.add(aboutMenuItem);
-
-    //option to display the "About" window
-    helpMenuItem = new JMenuItem("Help");
-    helpMenuItem.setMnemonic(KeyEvent.VK_H);
-    helpMenuItem.setToolTipText("Display the Help window.");
-    helpMenuItem.setActionCommand("MainMenu--Display Help");
-    helpMenuItem.addActionListener(actionListener);
-    helpMenu.add(helpMenuItem);
-
-}//end of MainMenu::MainMenu (constructor)
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// MainMenu::refreshMenuSettings
-//
-// Sets menu items such as checkboxes and radio buttons to match their
-// associated option values.  This function can be called after the variables
-// have been loaded to force the menu items to match.
-//
-
-public void refreshMenuSettings()
-{
-
-
-}//end of MainMenu::refreshMenuSettings
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-// MainMenu::isSelected
-//
-// Returns true is any of the top level menu items are selected.
-//
-// NOTE: this is a workaround for JMenuBar.isSelected which once true never
-// seems to go back false when the menu is no longer selected.
-//
-
-@Override
-public boolean isSelected()
-{
-
-    //return true if any top level menu item is selected
-
-    if (fileMenu.isSelected() 
-            || helpMenu.isSelected() 
-            || customerMenu.isSelected())
+    public MainMenu(ActionListener pActionListener)
     {
-        return(true);
-    }
 
-    return false;
+        actionListener = pActionListener;
 
-}//end of MainMenu::isSelected
-//-----------------------------------------------------------------------------
+    }//end of MainMenu::MainMenu (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+
+    public void init()
+    {
+        
+        createFileMenu();
+
+        createCustomerMenu();
+
+        createHelpMenu();
+
+    }//end of MainMenu::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::isSelected
+    //
+    // Returns true is any of the top level menu items are selected.
+    //
+    // NOTE: this is a workaround for JMenuBar.isSelected which once true never
+    // seems to go back false when the menu is no longer selected.
+    //
+
+    @Override
+    public boolean isSelected()
+    {
+
+        //return true if any top level menu item is selected
+
+        boolean selected = false;
+
+        if (fileMenu.isSelected() 
+                || helpMenu.isSelected() 
+                || customerMenu.isSelected())
+        {
+            selected = true;
+        }
+
+        return selected;
+
+    }//end of MainMenu::isSelected
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::createCustomerMenu
+    //
+    // Creates the Customer menu and adds it to the menu bar.
+    //
+
+    private void createCustomerMenu()
+    {
+        
+        //Customer menu
+        customerMenu = new JMenu("Customer");
+        customerMenu.setMnemonic(KeyEvent.VK_C);
+        customerMenu.setToolTipText("Customer");
+        add(customerMenu);
+
+        //Customer/View All Customers menu item
+        viewAllCustomersMenuItem = new JMenuItem("View All Customers");
+        viewAllCustomersMenuItem.setToolTipText("View all customers.");
+        viewAllCustomersMenuItem.setActionCommand
+                                            ("MainMenu--View All Customers");
+        viewAllCustomersMenuItem.addActionListener(actionListener);
+        customerMenu.add(viewAllCustomersMenuItem);
+
+    }//end of MainMenu::createCustomerMenu
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::createFileMenu
+    //
+    // Creates the File menu and adds it to the menu bar.
+    //
+
+    private void createFileMenu()
+    {
+        
+        //File menu
+        fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+        fileMenu.setToolTipText("File");
+        add(fileMenu);
+
+        //File/Exit menu item
+        exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.setMnemonic(KeyEvent.VK_X);
+        exitMenuItem.setToolTipText("Exit the program.");
+        exitMenuItem.setActionCommand("MainMenu--Exit");
+        exitMenuItem.addActionListener(actionListener);
+        fileMenu.add(exitMenuItem);
+
+    }//end of MainMenu::createFileMenu
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::createHelpMenu
+    //
+    // Creates the Help menu and adds it to the menu bar.
+    //
+
+    private void createHelpMenu()
+    {
+        
+        //Help menu
+        helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic(KeyEvent.VK_H);
+        helpMenu.setToolTipText("Help");
+        add(helpMenu);
+
+        //Help/About menu item
+        aboutMenuItem = new JMenuItem("About");
+        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
+        aboutMenuItem.setToolTipText("Display the About window.");
+        aboutMenuItem.setActionCommand("MainMenu--Display About");
+        aboutMenuItem.addActionListener(actionListener);
+        helpMenu.add(aboutMenuItem);
+
+        //Help/Help menu item
+        helpMenuItem = new JMenuItem("Help");
+        helpMenuItem.setMnemonic(KeyEvent.VK_H);
+        helpMenuItem.setToolTipText("Display the Help window.");
+        helpMenuItem.setActionCommand("MainMenu--Display Help");
+        helpMenuItem.addActionListener(actionListener);
+        helpMenu.add(helpMenuItem);
+
+    }//end of MainMenu::createHelpMenu
+    //--------------------------------------------------------------------------
 
 }//end of class MainMenu
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
