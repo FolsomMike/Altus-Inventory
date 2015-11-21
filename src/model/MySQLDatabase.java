@@ -376,24 +376,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::registerJDBCDriver
-    //
-    // Loads and registers the JDBC driver.
-    //
-
-    private void registerJDBCDriver()
-    {
-        
-        //Register JDBC driver
-        try { Class.forName("com.mysql.jdbc.Driver"); }
-        catch (ClassNotFoundException e) { 
-            logSevere(e.getMessage() + " - Error: 325"); 
-        }
-
-    }//end of MySQLDatabase::registerJDBCDriver
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::performQuery
     //
     // Performs a query on the database using the passed in PreparedStatment. 
@@ -414,11 +396,73 @@ public class MySQLDatabase
         if (!connectToDatabase()) { return set; }
         
         try { set = pStatement.executeQuery(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 352"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 399"); }
         
         return set;
 
     }//end of MySQLDatabase::performQuery
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::registerJDBCDriver
+    //
+    // Loads and registers the JDBC driver.
+    //
+
+    private void registerJDBCDriver()
+    {
+        
+        //Register JDBC driver
+        try { Class.forName("com.mysql.jdbc.Driver"); }
+        catch (ClassNotFoundException e) { 
+            logSevere(e.getMessage() + " - Error: 418"); 
+        }
+
+    }//end of MySQLDatabase::registerJDBCDriver
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateCustomer
+    //
+    // Updates the customer associated with pId by extracting the data in
+    // pCustomer.
+    //
+
+    public void updateCustomer(String pId, Customer pCustomer)
+    {
+        
+        String cmd = "UPDATE `CUSTOMERS` SET "
+                        + "`id`=?,"             //placeholder 1
+                        + "`display_name`=?,"   //placeholder 2
+                        + "`address_line_1`=?," //placeholder 3
+                        + "`address_line_2`=?," //placeholder 4
+                        + "`city`=?,"           //placeholder 5
+                        + "`state`=?,"          //placeholder 6
+                        + "`zip_code`=? "       //placeholder 7
+                        + "WHERE `id`=?";       //placeholder 8
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pCustomer.getId());
+            stmt.setString(2, pCustomer.getDisplayName());
+            stmt.setString(3, pCustomer.getAddressLine1());
+            stmt.setString(4, pCustomer.getAddressLine2());
+            stmt.setString(5, pCustomer.getCity());
+            stmt.setString(6, pCustomer.getState());
+            stmt.setString(7, pCustomer.getZipCode());
+            stmt.setString(8, pId);
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) {logSevere(e.getMessage() + " - Error: 458");}
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }//end of MySQLDatabase::updateCustomer
     //--------------------------------------------------------------------------
     
 }//end of class MySQLDatabase
