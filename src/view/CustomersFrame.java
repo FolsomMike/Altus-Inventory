@@ -159,6 +159,9 @@ public class CustomersFrame extends SkoonieFrame
         customersTable = new CustomTable(model);
         customersTable.init();
         
+        //select the first row of the table
+        customersTable.setRowSelectionInterval(0, 0);
+        
         //set the widths of the columns
         TableColumnModel m =  customersTable.getColumnModel();
         m.getColumn(0).setPreferredWidth(100);
