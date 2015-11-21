@@ -38,6 +38,9 @@ public class MainMenu extends JMenuBar{
     JMenuItem openFile;
     JMenuItem saveFile;
     JMenuItem saveFileAs;
+    
+    JMenu customerMenu;
+    JMenuItem viewAllCustomers;
 
     JMenu helpMenu;
     JMenuItem logMenuItem, aboutMenuItem, helpMenuItem, exitMenuItem;
@@ -66,6 +69,19 @@ public MainMenu(ActionListener pActionListener)
     exitMenuItem.setActionCommand("MainMenu--Exit");
     exitMenuItem.addActionListener(actionListener);
     fileMenu.add(exitMenuItem);
+    
+    //Customer menu
+    customerMenu = new JMenu("Customer");
+    customerMenu.setMnemonic(KeyEvent.VK_C);
+    customerMenu.setToolTipText("Customer");
+    add(customerMenu);
+    
+    //Customer/View All Customers menu item
+    viewAllCustomers = new JMenuItem("View All Customers");
+    viewAllCustomers.setToolTipText("View all customers.");
+    viewAllCustomers.setActionCommand("MainMenu--View All Customers");
+    viewAllCustomers.addActionListener(actionListener);
+    customerMenu.add(viewAllCustomers);
 
     //Help menu
     helpMenu = new JMenu("Help");
@@ -124,7 +140,10 @@ public boolean isSelected()
 
     //return true if any top level menu item is selected
 
-    if (fileMenu.isSelected() || helpMenu.isSelected()) {
+    if (fileMenu.isSelected() 
+            || helpMenu.isSelected() 
+            || customerMenu.isSelected())
+    {
         return(true);
     }
 
