@@ -76,6 +76,7 @@ public class CustomTable extends JTable
     {
         
         setRowHeight(25);
+        setFont(new Font("Arial", Font.PLAIN, 12));
         
         //header specific settings
         getTableHeader().setBackground(Color.decode("#C2E0FF"));
