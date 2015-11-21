@@ -255,6 +255,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }//end of MainView::displayCreateReportWindow
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCustomersWindow
+    //
+    // Displays the Customers window.
+    //
+
+    public void displayCustomersWindow()
+    {
+
+        CustomersFrame frame = new CustomersFrame(this);
+        frame.init();
+
+    }//end of MainView::displayCustomersWindow
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayErrorMessage

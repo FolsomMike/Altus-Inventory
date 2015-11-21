@@ -189,6 +189,10 @@ public class MainController implements EventHandler, Runnable
         if ("MainMenu--Exit".equals(e.getActionCommand())) {
             shutDown();
         }
+        
+        if ("MainMenu--View All Customers".equals(e.getActionCommand())) {
+            view.displayCustomersWindow();
+        }
 
         if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
