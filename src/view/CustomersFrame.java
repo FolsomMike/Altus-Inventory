@@ -53,6 +53,7 @@ public class CustomersFrame extends SkoonieFrame
     private CustomTable customersTable;
     private DefaultTableModel model;
     
+    private CreateCustomerDialog createCustomerDialog;
     private EditCustomerDialog editCustomerDialog;
 
     //--------------------------------------------------------------------------
@@ -149,6 +150,21 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // CustomersFrame::confirmCreateCustomer
+    //
+    // Confirms that the user wants to use the inputs in the Create Customer
+    // window to create a new customer.
+    //
+
+    public void confirmCreateCustomer()
+    {
+
+        createCustomerDialog.confirm();
+
+    }//end of CustomersFrame::confirmCreateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // CustomersFrame::confirmEditCustomer
     //
     // Confirms the changes made in the Edit Customer window.
@@ -212,6 +228,22 @@ public class CustomersFrame extends SkoonieFrame
         return panel;
         
     }// end of CustomersFrame::createButtonsPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersFrame::displayCreateCustomerDialog
+    //
+    // Displays the Create Customer dialog.
+    //
+    
+    public void displayCreateCustomerDialog() 
+    {
+        
+        
+        createCustomerDialog = new CreateCustomerDialog(this, mainView);
+        createCustomerDialog.init();
+        
+    }// end of CustomersFrame::displayCreateCustomerDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -310,6 +342,250 @@ public class CustomersFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
 
 }//end of class CustomersFrame
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// class CreateCustomerDialog
+//
+// This class is used for the Create Customer window.
+//
+//
+
+class CreateCustomerDialog extends JDialog
+{
+    
+    private final MainView mainView;
+    private final CustomersFrame parent;
+    
+    private final String actionId = "CreateCustomerDialog";
+    
+    private final MySQLDatabase db = new MySQLDatabase();
+    
+    private JPanel mainPanel;
+    private final Map<String, JTextField> inputFields = new HashMap<>();
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::CreateCustomerDialog (constructor)
+    //
+
+    public CreateCustomerDialog(CustomersFrame pParent, MainView pMainView)
+    {
+
+        super(pParent);
+        
+        mainView    = pMainView;
+        parent      = pParent;
+
+    }//end of CreateCustomerDialog::CreateCustomerDialog (constructor)
+    //-------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+    
+    public void init() 
+    {
+        
+        setTitle("Create Customer");
+        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        
+        //initialize the database
+        db.init();
+        
+        //add a JPanel to the dialog to provide a familiar container
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setContentPane(mainPanel);
+        
+        createGui();
+        
+        //arrange all the GUI items
+        pack();
+        
+        Tools.centerJDialog(this, parent);
+        setVisible(true);
+        
+    }// end of CreateCustomerDialog::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ActionFrame::createCancelConfirmPanel
+    //
+    // Creates and returns a Cancel/Confirm panel.
+    //
+
+    private JPanel createCancelConfirmPanel()
+    {
+
+        CancelConfirmPanel panel = new CancelConfirmPanel("Create", 
+                                                    "Create the new customer.", 
+                                                    actionId, mainView);
+        panel.init();
+
+        return panel;
+
+    }// end of ActionFrame::createCancelConfirmPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::createGui
+    //
+    // Creates the gui for the dialog and adds it to the mainPanel.
+    //
+    
+    private void createGui() 
+    {
+        
+        //add padding to the main panel
+        int padding = 10;
+        mainPanel.setBorder(BorderFactory.createEmptyBorder
+                                        (padding, padding, padding, padding));
+        
+        int rowSpacer = 20;
+        
+        //add the Id and Customer Name row
+        mainPanel.add(createRow(new JPanel[] {
+            createInputPanel("Id", "The id used for the customer.", 100),
+            createInputPanel("Name", "The customer's name.", 200)
+        }));
+        
+        mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
+        
+        //add the Address Line 1 and Address Line 2 row
+        mainPanel.add(createRow(new JPanel[] {
+            createInputPanel("Address Line 1",
+                                "Address line 1 for the customer's location.",
+                                200),
+            createInputPanel("Address Line 2",
+                                "Address line 2 for the customer's location.",
+                                200)
+        }));
+        
+        mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
+        
+        int w = 130;
+        //add the City, State, and Zip Code row
+        mainPanel.add(createRow(new JPanel[] {
+            createInputPanel("City", "City for the customer's location.", w),
+            createInputPanel("State", "State for the customer's location.", w),
+            createInputPanel("Zip Code", 
+                                "Zip code for the customer's location.", w)
+        }));
+        
+        mainPanel.add(Tools.createVerticalSpacer(rowSpacer));
+        
+        mainPanel.add(createCancelConfirmPanel());
+        
+    }// end of CreateCustomerDialog::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::confirm
+    //
+    // Confirms that the user wants to use the inputs to create a new customer.
+    //
+
+    public void confirm()
+    {
+        
+        //use the user input to insert a customer into the database
+        db.insertCustomer(getUserInput());
+        
+        //tell the Customers window to reload its data from the server since
+        //we changed some stuff there
+        parent.retrieveCustomerInfoFromDatabase();
+        
+        //dispose of the window and its resources
+        dispose();
+
+    }// end of CreateCustomerDialog::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::createInputPanel
+    //
+    // Creates and returns an input panel.
+    //
+
+    private JPanel createInputPanel(String pLabelText, String pToolTip,
+                                        int pWidth)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel(pLabelText);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setToolTipText(pToolTip);
+        Tools.setSizes(field, pWidth, 25);
+        //store a reference to the field
+        inputFields.put(pLabelText, field);
+        panel.add(field);
+
+        return panel;
+
+    }// end of CreateCustomerDialog::createInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::createRow
+    //
+    // Creates and returns a row using pArray.
+    //
+
+    private JPanel createRow(JPanel[] pInputPanels)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        for (int i=0; i<pInputPanels.length; i++) {
+            if (i>0) { panel.add(Tools.createHorizontalSpacer(10)); }
+            panel.add(pInputPanels[i]);
+        }
+        
+        return panel;
+
+    }// end of CreateCustomerDialog::createRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateCustomerDialog::getUserInput
+    //
+    // Gets the user input from the text fields and returns it in a Customer.
+    //
+
+    private Customer getUserInput()
+    {
+
+        return new Customer (
+                        inputFields.get("Id").getText(), 
+                        inputFields.get("Name").getText(),
+                        inputFields.get("Address Line 1").getText(),
+                        inputFields.get("Address Line 2").getText(),
+                        inputFields.get("City").getText(),
+                        inputFields.get("State").getText(),
+                        inputFields.get("Zip Code").getText()
+                    );
+
+    }// end of CreateCustomerDialog::getUserInput
+    //--------------------------------------------------------------------------
+    
+}//end of class CreateCustomerDialog
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 

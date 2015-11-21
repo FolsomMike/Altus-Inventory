@@ -228,6 +228,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::confirmCreateCustomer
+    //
+    // Confirms that the user wants to use the inputs in the Create Customer
+    // window to create a new customer.
+    //
+
+    public void confirmCreateCustomer()
+    {
+
+        customersFrame.confirmCreateCustomer();
+
+    }//end of MainView::confirmCreateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::confirmEditCustomer
     //
     // Confirms the changes made in the Edit Customer window.
@@ -253,6 +268,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
         mainFrame.displayAbout();
 
     }//end of MainView::displayAbout
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCreateCustomerWindow
+    //
+    // Displays the Create Customer dialog.
+    //
+
+    public void displayCreateCustomerWindow()
+    {
+
+        customersFrame.displayCreateCustomerDialog();
+
+    }//end of MainView::displayCreateCustomerWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
