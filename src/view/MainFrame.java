@@ -17,16 +17,12 @@ package view;
 //------------------------------------------------------------------------------
 
 import hscomponents.jsplitbutton.JSplitButton;
-import hscomponents.table.hsTable;
-import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -41,6 +37,9 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
+import model.Batch;
+import model.MySQLDatabase;
 import skooniecomponents.frame.SkoonieFrame;
 import toolkit.Tools;
 
@@ -57,9 +56,10 @@ public class MainFrame extends SkoonieFrame
     private Help help;
     private About about;
     
-    hsTable table = new hsTable();
-    
-    int numRowsChecked = 0;
+    private final MySQLDatabase db = new MySQLDatabase();
+    private ArrayList<Batch> batches;
+    private CustomTable batchesTable;
+    private DefaultTableModel model;
     
     //material action buttons
     private JButton btnMoveMaterial;
@@ -68,7 +68,7 @@ public class MainFrame extends SkoonieFrame
     private JButton btnTransferMaterial;
     //material action buttons tool tips
     private final String disabledToolTipAddon 
-                        = " Check a material in the table below to enable.";
+                        = " Select a material in the table below to enable.";
     private final String moveMaterialToolTip 
                         = "Move material to a different rack.";
     private final String reserveMaterialToolTip 
@@ -93,6 +93,35 @@ public class MainFrame extends SkoonieFrame
         defaultCloseOperation = EXIT_ON_CLOSE;
 
     }//end of MainFrame::MainFrame (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+    
+    @Override
+    public void init() 
+    {
+        
+        //initialize database
+        db.init();
+        
+        //initialize model
+        //create a model that allows no editable cells
+        model = new DefaultTableModel() {
+            @Override public boolean isCellEditable(int pR, int pC) {
+                return false;
+            }
+        };
+        
+        initializeBatchesTable();
+        retrieveBatchesFromDatabase();
+        
+        super.init();
+        
+    }// end of MainFrame::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -136,28 +165,33 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainFrame::checkBoxChanged
+    // MainFrame::createDisplayPanel
     //
-    // Enables/disables the material action buttons based on the number of 
-    // checkboxes checked.
+    // Creates and returns the display panel.
     //
-    // Checks whether or not the checkbox in the passed in row is checked (true)
-    // or unchecked (false).
-    //
-    // If it is checked, the 1 is added to numRowsChecked; if it's not then 1 is
-    // subtracted.
+    // The display panel displays all of the pipe in the yard to the user.
     //
 
-    public void checkBoxChanged(int pRow)
+    private JPanel createDisplayPanel()
     {
 
-        if ((boolean)table.getValueAt(pRow, 0)) { ++numRowsChecked; }
-        else { --numRowsChecked; }
-        
-        if (numRowsChecked <= 0) { enableMaterialActionButtons(false); }
-        else { enableMaterialActionButtons(true); }
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
 
-    }//end of MainFrame::checkBoxChanged
+        //add the filter panel box
+        panel.add(createFilterPanel());
+
+        //vertical spacer
+        panel.add(Box.createRigidArea(new Dimension(0,10)));
+
+        //add Batches table panel
+        panel.add(createBatchesTablePanel());
+
+        return panel;
+
+    }// end of MainFrame::createDisplayPanel
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -228,33 +262,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // MainFrame::createDisplayPanel
+    // MainFrame::createBatchesTablePanel
     //
-    // Creates and returns the display panel.
-    //
-    // The display panel displays all of the pipe in the yard to the user.
+    // Creates and returns the scroll pane containing the Batches table.
     //
 
-    private JPanel createDisplayPanel()
+    private JScrollPane createBatchesTablePanel()
     {
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
+        JScrollPane sp = new JScrollPane(batchesTable);
+        sp.setAlignmentX(LEFT_ALIGNMENT);
+        sp.setAlignmentY(TOP_ALIGNMENT);
+        
+        return sp;
 
-        //add the filter panel box
-        panel.add(createFilterPanel());
-
-        //vertical spacer
-        panel.add(Box.createRigidArea(new Dimension(0,10)));
-
-        //add materials table panel
-        panel.add(createMaterialsTable());
-
-        return panel;
-
-    }// end of MainFrame::createDisplayPanel
+    }// end of MainFrame::createBatchesTablePanel
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -514,98 +536,6 @@ public class MainFrame extends SkoonieFrame
 
     }// end of MainFrame::createMakePaymentButton
     //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::createMaterialsTable
-    //
-    // Creates and returns the materials table.
-    //
-    // The materials table displays all of the pipe in the yard to the user.
-    //
-
-    private JPanel createMaterialsTable()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-
-        table.init();
-        
-        //setup the table
-        table.getModel().addTableModelListener(mainView);
-        table.getTableHeader().setBackground(Color.decode("#C2E0FF"));
-        table.getTableHeader().setFont(new Font("Times Roman", Font.BOLD, 15));
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setRowHeight(25);
-        table.setSelectionBackground(Color.decode("#000099"));
-        table.setSelectionForeground(Color.WHITE);
-        
-        table.addColumn("");
-        table.setColumnEditable(0, true);
-        table.addColumn("ID");
-        table.addColumn("Customer");
-        table.addColumn("Date");
-        table.addColumn("Status");
-        table.addColumn("Truck");
-        table.addColumn("Quantity");
-        table.addColumn("Length");
-        table.addColumn("Rack");
-        table.addColumn("Range");
-        table.addColumn("Grade");
-        table.addColumn("Diameter");
-        table.addColumn("Wall");
-        table.addColumn("Facility");
-
-        List<Object> row = new ArrayList<>();
-        row.add(false);
-        row.add("1111");
-        row.add("RG NDT");
-        row.add("07/21/15");
-        row.add("IN STOCK");
-        row.add("Frogger Trucking");
-        row.add("29");
-        row.add("522");
-        row.add("");
-        row.add("R2");
-        row.add("13-CR");
-        row.add("");
-        row.add("");
-        row.add("");
-        
-        List<Object> row2 = new ArrayList<>();
-        row2.add(false);
-        row2.add("2222");
-        row2.add("Oil Frack Stack");
-        row2.add("07/25/15");
-        row2.add("RESERVED");
-        row2.add("Mountain Inc. Trucking");
-        row2.add("55");
-        row2.add("1210");
-        row2.add("");
-        row2.add("R3");
-        row2.add("13-CR");
-        row2.add("");
-        row2.add("");
-        row2.add("");
-
-        //add test rows to the table -- //DEBUG HSS//
-        for (int i=0; i<30; i++) {
-            if (i%2 == 0) { table.addRow(new ArrayList(row));}
-            else { table.addRow(new ArrayList(row2)); }
-        }
-
-        //put the table in a scroll pane
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setAlignmentX(LEFT_ALIGNMENT);
-        scrollPane.setAlignmentY(TOP_ALIGNMENT);
-        panel.add(scrollPane);
-
-        return panel;
-
-    }// end of MainFrame::createMaterialsTable
-    //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
     // MainFrame::createMoveMaterialButton
@@ -622,7 +552,6 @@ public class MainFrame extends SkoonieFrame
         btnMoveMaterial.addActionListener(mainView);
         btnMoveMaterial.setActionCommand("MainFrame--Move Material");
         btnMoveMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnMoveMaterial.setEnabled(false);
         btnMoveMaterial.setFocusPainted(false);
         btnMoveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnMoveMaterial.setMargin(new Insets(0,0,0,0));
@@ -679,7 +608,6 @@ public class MainFrame extends SkoonieFrame
         btnReserveMaterial.addActionListener(mainView);
         btnReserveMaterial.setActionCommand("MainFrame--Reserve Material");
         btnReserveMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnReserveMaterial.setEnabled(false);
         btnReserveMaterial.setFocusPainted(false);
         btnReserveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnReserveMaterial.setMargin(new Insets(0,0,0,0));
@@ -708,7 +636,6 @@ public class MainFrame extends SkoonieFrame
         btnShipMaterial.addActionListener(mainView);
         btnShipMaterial.setActionCommand("MainFrame--Ship Material");
         btnShipMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnShipMaterial.setEnabled(false);
         btnShipMaterial.setFocusPainted(false);
         btnShipMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnShipMaterial.setMargin(new Insets(0,0,0,0));
@@ -737,7 +664,6 @@ public class MainFrame extends SkoonieFrame
         btnTransferMaterial.addActionListener(mainView);
         btnTransferMaterial.setActionCommand("MainFrame--Transfer Material");
         btnTransferMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnTransferMaterial.setEnabled(false);
         btnTransferMaterial.setFocusPainted(false);
         btnTransferMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
         btnTransferMaterial.setMargin(new Insets(0,0,0,0));
@@ -749,42 +675,6 @@ public class MainFrame extends SkoonieFrame
         return btnTransferMaterial;
 
     }// end of MainFrame::createTransferMaterialButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::enableMaterialActionButtons
-    //
-    // Enables/disables the material action buttons based on the passed in
-    // boolean.
-    //
-
-    private void enableMaterialActionButtons(boolean pEnable)
-    {
-
-        btnMoveMaterial.setEnabled(pEnable);
-        btnReserveMaterial.setEnabled(pEnable);
-        btnShipMaterial.setEnabled(pEnable);
-        btnTransferMaterial.setEnabled(pEnable);
-        
-        //determine which tool tips to use
-        if (pEnable) {
-            btnMoveMaterial.setToolTipText(moveMaterialToolTip);
-            btnReserveMaterial.setToolTipText(reserveMaterialToolTip);
-            btnShipMaterial.setToolTipText(shipMaterialToolTip);
-            btnTransferMaterial.setToolTipText(transferMaterialToolTip);
-        }
-        else {
-            btnMoveMaterial.setToolTipText
-                            (moveMaterialToolTip + disabledToolTipAddon);
-            btnReserveMaterial.setToolTipText
-                            (reserveMaterialToolTip + disabledToolTipAddon);
-            btnShipMaterial.setToolTipText
-                            (shipMaterialToolTip + disabledToolTipAddon);
-            btnTransferMaterial.setToolTipText
-                            (transferMaterialToolTip + disabledToolTipAddon);
-        }
-
-    }//end of MainFrame::enableMaterialActionButtons
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -817,6 +707,63 @@ public class MainFrame extends SkoonieFrame
         help = null;
 
     }//end of MainFrame::displayHelp
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::initializeBatchesTable
+    //
+    // Initializes the Batches table.
+    //
+    // The batches table displays all of the batches to the user.
+    //
+
+    private void initializeBatchesTable()
+    {
+        
+        batchesTable = new CustomTable(model);
+        batchesTable.init();
+
+    }// end of MainFrame::initializeBatchesTable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::retrieveBatchesFromDatabase
+    //
+    // Retrieves and stores the batches from the MySQL database.
+    //
+    
+    public void retrieveBatchesFromDatabase() 
+    {
+        
+        //get batches from the database
+        batches = db.getBatches();
+        
+        String[] columnNames = {"Id", "Date", "Quantity", 
+                                    "Total Length", "Owner"};
+        
+        String[][] data = new String[batches.size()][];
+        
+        //extract ids and names from customers
+        for (int i=0; i<data.length; i++) {
+            String cusName = db.getCustomer(batches.get(i).getCustomerId())
+                                                            .getDisplayName();
+            data[i] = new String[]{batches.get(i).getId(), 
+                                    batches.get(i).getDateCreated(),
+                                    batches.get(i).getQuantity(),
+                                    batches.get(i).getTotalLength(),
+                                    cusName};
+        }
+        
+        model.setDataVector(data, columnNames);
+        
+        //now that we've put data in the model, we can set some table settings
+        
+        //select the first row of the table
+        if (batchesTable.getRowCount() > 0) { 
+            batchesTable.setRowSelectionInterval(0, 0);
+        }
+        
+    }// end of MainFrame::retrieveBatchesFromDatabase
     //--------------------------------------------------------------------------
 
 }//end of class MainFrame

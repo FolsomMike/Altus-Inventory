@@ -201,8 +201,6 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void checkBoxChanged(int pRow)
     {
 
-        mainFrame.checkBoxChanged(pRow);
-
     }//end of MainView::checkBoxChanged
     //--------------------------------------------------------------------------
 
