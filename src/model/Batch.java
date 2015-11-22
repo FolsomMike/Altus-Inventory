@@ -6,12 +6,8 @@
 * Purpose:
 *
 * This class stores information about a batch:
-*       Id, Date Created, Quantity, Total Length, Customer Id, Rack //WIP HSS// -- store more stuff man
+*       Skoonie Key, Id, Date Created, Quantity, Total Length, Customer Key
 * 
-* NOTES:
-*       The id will always be the first parameter in the constructor. After 
-*       that, the parameters should be organized alphabetically according to
-*       the column name in the database.
 *
 */
 
@@ -26,24 +22,16 @@ package model;
 // class Batch
 //
 
-public class Batch 
+public class Batch extends Record
 {
     
-    private String id;
-    public String getId() { return id; }
-    public void setId(String pId) { id = pId; }
-    
-    private String customerId;
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String pId) { customerId = pId; }
+    private String customerKey;
+    public String getCustomerKey() { return customerKey; }
+    public void setCustomerKey(String pKey) { customerKey = pKey; }
     
     private String dateCreated;
     public String getDateCreated() { return dateCreated; }
     public void setDateCreated(String pDate) { dateCreated = pDate; }
-    
-    private String rack;
-    public String getRack() { return rack; }
-    public void setRack(String pRack) { rack = pRack; }
     
     private String quantity;
     public String getQuantity() { return quantity; }
@@ -57,16 +45,16 @@ public class Batch
     // Batch::Batch (constructor)
     //
 
-    public Batch(String pId, String pCustomerId, String pDate, String pQuantity,
-                    String pRack, String pLength)
+    public Batch(String pSkoonieKey, String pId, String pDate, String pQuantity, 
+                    String pLength, String pCustomerKey)
     {
         
-        id              = pId;
-        customerId      = pCustomerId;
+        super(pSkoonieKey, pId);
+        
         dateCreated     = pDate;
         quantity        = pQuantity;
-        rack            = pRack;
         totalLength     = pLength;
+        customerKey     = pCustomerKey;
 
     }//end of Batch::Batch (constructor)
     //--------------------------------------------------------------------------

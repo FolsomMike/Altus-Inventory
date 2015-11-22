@@ -745,8 +745,8 @@ public class MainFrame extends SkoonieFrame
         
         //extract ids and names from customers
         for (int i=0; i<data.length; i++) {
-            String cusName = db.getCustomer(batches.get(i).getCustomerId())
-                                                            .getDisplayName();
+            String cusName = db.getCustomer(batches.get(i).getCustomerKey())
+                                                            .getName();
             data[i] = new String[]{batches.get(i).getId(), 
                                     batches.get(i).getDateCreated(),
                                     batches.get(i).getQuantity(),
@@ -755,8 +755,6 @@ public class MainFrame extends SkoonieFrame
         }
         
         model.setDataVector(data, columnNames);
-        
-        //now that we've put data in the model, we can set some table settings
         
         //select the first row of the table
         if (batchesTable.getRowCount() > 0) { 

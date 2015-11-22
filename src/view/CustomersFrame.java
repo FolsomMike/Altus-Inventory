@@ -60,7 +60,7 @@ public class CustomersFrame extends SkoonieFrame
     // CustomersFrame::CustomersFrame (constructor)
     //
 
-    public  CustomersFrame(MainView pMainView)
+    public CustomersFrame(MainView pMainView)
     {
 
         super("Customers", "CustomersFrame", pMainView, pMainView);
@@ -321,7 +321,7 @@ public class CustomersFrame extends SkoonieFrame
         //extract ids and names from customers
         for (int i=0; i<data.length; i++) {
             data[i] = new String[]{customers.get(i).getId(), 
-                                    customers.get(i).getDisplayName()};
+                                        customers.get(i).getName()};
         }
         
         model.setDataVector(data, columnNames);
@@ -587,7 +587,9 @@ class CreateCustomerDialog extends JDialog
     private Customer getUserInput()
     {
 
+        //leave skoonie key blank because it will be created by database
         return new Customer (
+                        "",
                         inputFields.get("Id").getText(), 
                         inputFields.get("Name").getText(),
                         inputFields.get("Address Line 1").getText(),
@@ -715,7 +717,7 @@ class EditCustomerDialog extends JDialog
         mainPanel.add(createRow(new JPanel[] {
             createInputPanel("Id", customer.getId(),
                                 "The id used for the customer.", 100),
-            createInputPanel("Name", customer.getDisplayName(),
+            createInputPanel("Name", customer.getName(),
                                 "The customer's name.", 200)
         }));
         
@@ -760,12 +762,10 @@ class EditCustomerDialog extends JDialog
 
     public void confirm()
     {
-
-        String oldId = customer.getId();
         
         getUserInput();
         
-        db.updateCustomer(oldId, customer);
+        db.updateCustomer(customer);
         
         //tell the Customers window to reload its data from the server since
         //we changed some stuff there
@@ -846,7 +846,7 @@ class EditCustomerDialog extends JDialog
 
         customer.setId(inputFields.get("Id").getText());
         
-        customer.setDisplayName(inputFields.get("Name").getText());
+        customer.setName(inputFields.get("Name").getText());
         
         customer.setAddressLine1(inputFields.get("Address Line 1").getText());
         

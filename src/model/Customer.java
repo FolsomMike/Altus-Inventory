@@ -21,16 +21,12 @@ package model;
 // class Customer
 //
 
-public class Customer 
+public class Customer extends Record
 {
     
-    private String id;
-    public String getId() { return id; }
-    public void setId(String pId) { id = pId; }
-    
-    private String displayName;
-    public String getDisplayName() { return displayName; }
-    public void setDisplayName(String pName) { displayName = pName; }
+    private String name;
+    public String getName() { return name; }
+    public void setName(String pName) { name = pName; }
     
     private String addressLine1;
     public String getAddressLine1() { return addressLine1; }
@@ -56,17 +52,19 @@ public class Customer
     // Customer::Customer (constructor)
     //
 
-    public Customer(String pId, String pName, String pAdLine1, String pAdLine2,
-                        String pCity, String pState, String pZip)
+    public Customer(String pSkoonieKey, String pId, String pName, 
+                        String pAdLine1, String pAdLine2, String pCity, 
+                        String pState, String pZip)
     {
         
-        id = pId;
-        displayName = pName;
-        addressLine1 = pAdLine1;
-        addressLine2 = pAdLine2;
-        city = pCity;
-        state = pState;
-        zipCode = pZip;
+        super(pSkoonieKey, pId);
+        
+        name            = pName;
+        addressLine1    = pAdLine1;
+        addressLine2    = pAdLine2;
+        city            = pCity;
+        state           = pState;
+        zipCode         = pZip;
 
     }//end of Customer::Customer (constructor)
     //--------------------------------------------------------------------------

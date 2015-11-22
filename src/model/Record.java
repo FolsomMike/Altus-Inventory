@@ -1,12 +1,17 @@
 /*******************************************************************************
-* Title: Rack.java
+* Title: Record.java
 * Author: Hunter Schoonover
-* Date: 11/20/15
+* Date: 11/21/15
 *
 * Purpose:
 *
-* This class stores information about a rack:
-*       Name
+* This class stores information about a record in a database table.
+* 
+* Currently stores:
+*       Skoonie Key, Id
+* 
+* Children classes can extend this to store more values, depending on the 
+* record type (Customer, Batch, etc.).
 *
 */
 
@@ -18,28 +23,33 @@ package model;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class Rack
+// class Record
 //
 
-public class Rack 
+public class Record 
 {
     
-    private String name;
-    public String getName() { return name; }
-    public void setName(String pName) { name = pName; }
+    private String skoonieKey;
+    public String getSkoonieKey() { return skoonieKey; }
+    public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
+    
+    private String id;
+    public String getId() { return id; }
+    public void setId(String pId) { id = pId; }
     
     //--------------------------------------------------------------------------
-    // Rack::Rack (constructor)
+    // Record::Record (constructor)
     //
 
-    public Rack(String pName)
+    public Record(String pSkoonieKey, String pId)
     {
         
-        name = pName;
+        skoonieKey  = pSkoonieKey;
+        id          = pId;
 
-    }//end of Rack::Rack (constructor)
+    }//end of Record::Record (constructor)
     //--------------------------------------------------------------------------
     
-}//end of class Rack
+}//end of class Record
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

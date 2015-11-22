@@ -240,15 +240,15 @@ public class MySQLDatabase
         //extract the data from the ResultSet
         try {
             while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
                 String id       = set.getString("id");
-                String cusId    = set.getString("customer_id");
                 String date     = set.getString("date_created");
                 String quantity = set.getString("quantity");
-                String rack     = set.getString("rack");
                 String length   = set.getString("total_length");
+                String cKey     = set.getString("customer_key");
                 
                 //store the batch information
-                batches.add(new Batch(id, cusId, date, quantity, rack, length));
+                batches.add(new Batch(sKey, id, date, quantity, length, cKey));
             }
         }
         catch (SQLException e) { logSevere(e.getMessage() + " - Error: 254"); }
@@ -266,28 +266,29 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::getCustomer
     //
-    // Gets and returns the customer associated with pId from the CUSTOMERS 
-    // table in a Customer object.
+    // Gets and returns the customer associated with pSkoonieKey from the 
+    // CUSTOMERS table in a Customer object.
     //
 
-    public Customer getCustomer(String pId)
+    public Customer getCustomer(String pSkoonieKey)
     {
         
         Customer c = null;
 
-        String cmd = "SELECT * FROM `CUSTOMERS` WHERE `id` = ?";
+        String cmd = "SELECT * FROM `CUSTOMERS` WHERE `skoonie_key` = ?";
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set;
         
         //perform query
         try {
-            stmt.setString(1, pId);
+            stmt.setString(1, pSkoonieKey);
             set = performQuery(stmt);
             
             //extract the data from the ResultSet
             while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
                 String id       = set.getString("id");
-                String name     = set.getString("display_name");
+                String name     = set.getString("name");
                 String line1    = set.getString("address_line_1");
                 String line2    = set.getString("address_line_2");
                 String city     = set.getString("city");
@@ -295,13 +296,14 @@ public class MySQLDatabase
                 String zip      = set.getString("zip_code");
                 
                 //store the customer information
-                c = new Customer(id, name, line1, line2, city, state, zip);
+                c = new Customer(sKey, id, name, line1, line2, 
+                                    city, state, zip);
             }
             
             //clean up environment
             closeResultSet(set);
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 298"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 306"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -325,15 +327,16 @@ public class MySQLDatabase
         
         ArrayList<Customer> customers = new ArrayList();
 
-        String cmd = "SELECT * FROM `CUSTOMERS` ORDER BY `display_name` ASC";
+        String cmd = "SELECT * FROM `CUSTOMERS` ORDER BY `name` ASC";
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set = performQuery(stmt);
         
         //extract the data from the ResultSet
         try {
             while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
                 String id       = set.getString("id");
-                String name     = set.getString("display_name");
+                String name     = set.getString("name");
                 String line1    = set.getString("address_line_1");
                 String line2    = set.getString("address_line_2");
                 String city     = set.getString("city");
@@ -341,11 +344,11 @@ public class MySQLDatabase
                 String zip      = set.getString("zip_code");
                 
                 //store the customer information
-                customers.add(new Customer(id, name, line1, line2, 
+                customers.add(new Customer(sKey, id, name, line1, line2, 
                                                 city, state, zip));
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 298"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 351"); }
         
         //clean up environment
         closeResultSet(set);
@@ -358,44 +361,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getRacks
-    //
-    // Gets and returns all of the batches in the BATCHES table and stores all
-    // of the data pertaining to a batch in a Batch object. All of the Batch 
-    // objects are returned in an array list.
-    //
-
-    public ArrayList<Rack> getRacks()
-    {
-        
-        ArrayList<Rack> racks = new ArrayList();
-
-        String cmd = "SELECT * FROM `RACKS` ORDER BY `name` ASC";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String name = set.getString("name");
-                
-                //store the rack information
-                racks.add(new Rack(name));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 336"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return racks;
-
-    }//end of MySQLDatabase::getRacks
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::insertCustomer
     //
     // Inserts pCustomer into the database.
@@ -405,12 +370,12 @@ public class MySQLDatabase
     {
         
         String cmd = "INSERT INTO `CUSTOMERS` ("
-                        + "`id`,`display_name`,"
+                        + "`id`,`name`,"
                         + "`address_line_1`,`address_line_2`,"
                         + "`city`,`state`,`zip_code`) "
                         + "VALUES ("
                         + "?,"  //placeholder 1     Id
-                        + "?,"  //placeholder 2     Display Name
+                        + "?,"  //placeholder 2     Name
                         + "?,"  //placeholder 3     Address Line 1
                         + "?,"  //placeholder 4     Address Line 2
                         + "?,"  //placeholder 5     City
@@ -421,7 +386,7 @@ public class MySQLDatabase
         
         try {
             stmt.setString(1, pCustomer.getId());
-            stmt.setString(2, pCustomer.getDisplayName());
+            stmt.setString(2, pCustomer.getName());
             stmt.setString(3, pCustomer.getAddressLine1());
             stmt.setString(4, pCustomer.getAddressLine2());
             stmt.setString(5, pCustomer.getCity());
@@ -431,11 +396,7 @@ public class MySQLDatabase
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) {
-            //DEBUG HSS//
-            System.out.println("Exception" + e.getMessage());
-            logSevere(e.getMessage() + " - Error: 385");
-        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 399"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -494,7 +455,7 @@ public class MySQLDatabase
         if (!connectToDatabase()) { return set; }
         
         try { set = pStatement.executeQuery(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 399"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 458"); }
         
         return set;
 
@@ -513,7 +474,7 @@ public class MySQLDatabase
         //Register JDBC driver
         try { Class.forName("com.mysql.jdbc.Driver"); }
         catch (ClassNotFoundException e) { 
-            logSevere(e.getMessage() + " - Error: 418"); 
+            logSevere(e.getMessage() + " - Error: 477"); 
         }
 
     }//end of MySQLDatabase::registerJDBCDriver
@@ -522,39 +483,38 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateCustomer
     //
-    // Updates the customer associated with pId by extracting the data in
-    // pCustomer.
+    // Updates pCustomer in the database.
     //
 
-    public void updateCustomer(String pId, Customer pCustomer)
+    public void updateCustomer(Customer pCustomer)
     {
         
         String cmd = "UPDATE `CUSTOMERS` SET "
-                        + "`id`=?,"             //placeholder 1
-                        + "`display_name`=?,"   //placeholder 2
-                        + "`address_line_1`=?," //placeholder 3
-                        + "`address_line_2`=?," //placeholder 4
-                        + "`city`=?,"           //placeholder 5
-                        + "`state`=?,"          //placeholder 6
-                        + "`zip_code`=? "       //placeholder 7
-                        + "WHERE `id`=?";       //placeholder 8
+                        + "`id`=?,"                 //placeholder 1
+                        + "`name`=?,"               //placeholder 2
+                        + "`address_line_1`=?,"     //placeholder 3
+                        + "`address_line_2`=?,"     //placeholder 4
+                        + "`city`=?,"               //placeholder 5
+                        + "`state`=?,"              //placeholder 6
+                        + "`zip_code`=? "           //placeholder 7
+                        + "WHERE `skoonie_key`=?";  //placeholder 8
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
             stmt.setString(1, pCustomer.getId());
-            stmt.setString(2, pCustomer.getDisplayName());
+            stmt.setString(2, pCustomer.getName());
             stmt.setString(3, pCustomer.getAddressLine1());
             stmt.setString(4, pCustomer.getAddressLine2());
             stmt.setString(5, pCustomer.getCity());
             stmt.setString(6, pCustomer.getState());
             stmt.setString(7, pCustomer.getZipCode());
-            stmt.setString(8, pId);
+            stmt.setString(8, pCustomer.getSkoonieKey());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) {logSevere(e.getMessage() + " - Error: 458");}
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 517"); }
         
         //clean up environment
         closePreparedStatement(stmt);
