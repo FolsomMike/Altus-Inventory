@@ -264,6 +264,55 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getCustomer
+    //
+    // Gets and returns the customer associated with pId from the CUSTOMERS 
+    // table in a Customer object.
+    //
+
+    public Customer getCustomer(String pId)
+    {
+        
+        Customer c = null;
+
+        String cmd = "SELECT * FROM `CUSTOMERS` WHERE `id` = ?";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set;
+        
+        //perform query
+        try {
+            stmt.setString(1, pId);
+            set = performQuery(stmt);
+            
+            //extract the data from the ResultSet
+            while (set.next()) { 
+                String id       = set.getString("id");
+                String name     = set.getString("display_name");
+                String line1    = set.getString("address_line_1");
+                String line2    = set.getString("address_line_2");
+                String city     = set.getString("city");
+                String state    = set.getString("state");
+                String zip      = set.getString("zip_code");
+                
+                //store the customer information
+                c = new Customer(id, name, line1, line2, city, state, zip);
+            }
+            
+            //clean up environment
+            closeResultSet(set);
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 298"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return c;
+
+    }//end of MySQLDatabase::getCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getCustomers
     //
     // Gets and returns all of the customers in the CUSTOMERS table and stores
@@ -309,7 +358,7 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getBatches
+    // MySQLDatabase::getRacks
     //
     // Gets and returns all of the batches in the BATCHES table and stores all
     // of the data pertaining to a batch in a Batch object. All of the Batch 
