@@ -23,18 +23,8 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Color;
-import static java.awt.Component.LEFT_ALIGNMENT;
-import static java.awt.Component.TOP_ALIGNMENT;
-import java.awt.Insets;
-import java.awt.font.TextAttribute;
-import java.util.HashMap;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -109,58 +99,6 @@ public class ShipMaterialWindow extends ActionFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialWindow::createNewIDInputPanel
-    //
-    // Creates and returns the ID input panel.
-    //
-
-    private JPanel createNewIDInputPanel()
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        /*JLabel label = new JLabel("New ID");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(label);*/ //DEBUG HSS//
-        
-        JButton btn = new JButton("What's this?");
-        HashMap<TextAttribute, Object> textAttrMap = new HashMap<>();
-        textAttrMap.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        textAttrMap.put(TextAttribute.FOREGROUND, Color.BLUE);
-        btn.setFont(btn.getFont().deriveFont(textAttrMap));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("ShipMaterialFrame--What's this?");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setFocusPainted(false);
-        btn.setMargin(new Insets(0, 0, 0, 0));
-        btn.setContentAreaFilled(false);
-        btn.setBorderPainted(false);
-        btn.setOpaque(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setToolTipText("Learn more about why you need a new ID.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);  
-        btn.setForeground(Color.BLUE);
-  
-        Tools.setSizes(btn, 80, 30);
-        panel.add(btn);
-        
-        JTextField field = new JTextField();
-        field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText("You are splitting up the material into two"
-                                + " separate batches. What would you like the"
-                                + " ID for the new batch to be?.");
-        Tools.setSizes(field, 100, 24);
-        panel.add(field);
-
-        return panel;
-
-    }// end of ShipMaterialWindow::createNewIDInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // ShipMaterialWindow::createRow1
     //
     // Creates and returns Row 1.
@@ -170,10 +108,8 @@ public class ShipMaterialWindow extends ActionFrame
         
         String tip = "How many pieces of material would you like to ship?";
         JPanel input1 = createQuantityInputPanel(tip);
-        
-        JPanel input2 = createNewIDInputPanel();
 
-        return createRow(new JPanel[]{input1, input2});
+        return createRow(new JPanel[]{input1});
         
     }// end of ShipMaterialWindow::createRow1
     //--------------------------------------------------------------------------
