@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Title:  TransferMaterialFrame.java
+* Title:  TransferMaterialWindow.java
 * Author: Hunter Schoonover
 * Date: 07/26/15
 *
@@ -7,6 +7,11 @@
 *
 * This class is the Transfer Material window.
 *
+* It presents the user with input fields to specify the quantity of the material
+* and what customer to transfer it to.
+* 
+* Currently, it has input fields for:
+*       Quantity, Customer
 */
 
 //------------------------------------------------------------------------------
@@ -20,26 +25,26 @@ import javax.swing.JPanel;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class  TransferMaterialFrame
+// class TransferMaterialWindow
 //
 
-public class  TransferMaterialFrame extends ActionFrame
+public class TransferMaterialWindow extends ActionFrame
 {
 
     //--------------------------------------------------------------------------
-    //  TransferMaterialFrame:: TransferMaterialFrame (constructor)
+    // TransferMaterialWindow::TransferMaterialWindow (constructor)
     //
 
-    public  TransferMaterialFrame(MainView pMainView)
+    public  TransferMaterialWindow(MainView pMainView)
     {
 
         super("Transfer Material", "TransferMaterialFrame", pMainView);
 
-    }//end of  TransferMaterialFrame:: TransferMaterialFrame (constructor)
+    }//end of TransferMaterialWindow::TransferMaterialWindow (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::createGui
+    // TransferMaterialWindow::createGui
     //
     // Creates and adds the GUI to the mainPanel.
     //
@@ -63,11 +68,11 @@ public class  TransferMaterialFrame extends ActionFrame
         mainPanel.add(createCancelConfirmPanel("Transfer", 
                                                 "Transfer the material."));
         
-    }// end of TransferMaterialFrame::createGui
+    }// end of TransferMaterialWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::createRow1
+    // TransferMaterialWindow::createRow1
     //
     // Creates and returns a JPanel containing the Quantity and Customer input 
     // panels.
@@ -85,9 +90,9 @@ public class  TransferMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2});
         
-    }// end of TransferMaterialFrame::createRow1
+    }// end of TransferMaterialWindow::createRow1
     //--------------------------------------------------------------------------
 
-}//end of class  TransferMaterialFrame
+}//end of class TransferMaterialWindow
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
