@@ -785,6 +785,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayReceiveMaterialWindow
+    //
+    // Displays the Receive Material window.
+    //
+    
+    public void displayReceiveMaterialWindow() 
+    {
+        
+        ReceiveMaterialWindow w = new ReceiveMaterialWindow(this, mainView);
+        w.init();
+        
+    }// end of MainFrame::displayReceiveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::initializeBatchesTable
     //
     // Initializes the Batches table.

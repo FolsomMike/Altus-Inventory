@@ -405,9 +405,8 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     public void displayReceiveMaterialWindow()
     {
-
-        ReceiveMaterialFrame frame = new ReceiveMaterialFrame(this);
-        frame.init();
+        
+        mainFrame.displayReceiveMaterialWindow();
 
     }//end of MainView::displayReceiveMaterialWindow
     //--------------------------------------------------------------------------
