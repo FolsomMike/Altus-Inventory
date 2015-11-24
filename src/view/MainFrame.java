@@ -830,6 +830,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayTransferMaterialWindow
+    //
+    // Displays the Transfer Material window.
+    //
+    
+    public void displayTransferMaterialWindow() 
+    {
+        
+        TransferMaterialWindow w = new TransferMaterialWindow(this, mainView);
+        w.init();
+        
+    }// end of MainFrame::displayTransferMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::initializeBatchesTable
     //
     // Initializes the Batches table.

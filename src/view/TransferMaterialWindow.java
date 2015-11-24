@@ -28,17 +28,20 @@ import javax.swing.JPanel;
 // class TransferMaterialWindow
 //
 
-public class TransferMaterialWindow extends ActionFrame
+public class TransferMaterialWindow extends AltusJDialog
 {
+    
+    static private final String actionId = "TransferMaterialWindow";
+    static public String getActionId() { return actionId; }
 
     //--------------------------------------------------------------------------
     // TransferMaterialWindow::TransferMaterialWindow (constructor)
     //
 
-    public  TransferMaterialWindow(MainView pMainView)
+    public TransferMaterialWindow(MainFrame pMainFrame, MainView pMainView)
     {
 
-        super("Transfer Material", "TransferMaterialFrame", pMainView);
+        super("Transfer Material", pMainFrame, pMainView);
 
     }//end of TransferMaterialWindow::TransferMaterialWindow (constructor)
     //--------------------------------------------------------------------------
@@ -53,44 +56,24 @@ public class TransferMaterialWindow extends ActionFrame
     protected void createGui() 
     {
         
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(20));
+        //add the Quantity and Customer row
+        addToMainPanel(createRow(new JPanel[] {
+            createQuantityInputPanel("How many pieces of material would you "
+                                        + "like to ship?"),
+            createInputPanel("Customer", "", "What customer is the material "
+                                    + "being transferred to?", 130)
+        }));
         
-        //add Row 1
-        mainPanel.add(createRow1());
-        
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(30));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
         //add the Cancel/Confirm panel
-        mainPanel.add(createCancelConfirmPanel("Transfer", 
-                                                "Transfer the material."));
+        addToMainPanel(createCancelConfirmPanel("Transfer", 
+                                                    "Transfer the material."));
         
     }// end of TransferMaterialWindow::createGui
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // TransferMaterialWindow::createRow1
-    //
-    // Creates and returns a JPanel containing the Quantity and Customer input 
-    // panels.
-    //
-    
-    private JPanel createRow1() {
-        
-        String tip = "How many pieces of material would you like to transfer?";
-        JPanel input1 = createQuantityInputPanel(tip);
-        
-        JPanel input2 
-                    = createInputPanel("Customer", 
-                        "What customer is the material being transferred to?", 
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-
-        return createRow(new JPanel[]{input1, input2});
-        
-    }// end of TransferMaterialWindow::createRow1
     //--------------------------------------------------------------------------
 
 }//end of class TransferMaterialWindow
