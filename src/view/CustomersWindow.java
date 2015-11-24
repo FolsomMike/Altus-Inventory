@@ -347,8 +347,6 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     protected void createGui() 
     {
         
-        int rowSpacer = 20;
-        
         //add the Id and Customer Name row
         addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Id", customer.getId(),
@@ -357,7 +355,8 @@ class CreateOrEditCustomerWindow extends AltusJDialog
                                 "The customer's name.", 200)
         }));
         
-        addToMainPanel(Tools.createVerticalSpacer(rowSpacer));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
         //add the Address Line 1 and Address Line 2 row
         addToMainPanel(createRow(new JPanel[] {
@@ -369,7 +368,8 @@ class CreateOrEditCustomerWindow extends AltusJDialog
                                 200)
         }));
         
-        addToMainPanel(Tools.createVerticalSpacer(rowSpacer));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
         int w = 130;
         //add the City, State, and Zip Code row
@@ -382,8 +382,10 @@ class CreateOrEditCustomerWindow extends AltusJDialog
                                 "Zip code for the customer's location.", w)
         }));
         
-        addToMainPanel(Tools.createVerticalSpacer(rowSpacer));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
+        //add the Cancel/Confirm panel
         addToMainPanel(createCancelConfirmPanel(confirmButtonText, 
                                                     confirmButtonToolTip));
 
