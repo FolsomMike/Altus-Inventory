@@ -435,8 +435,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void displayShipMaterialWindow()
     {
 
-        ShipMaterialWindow frame = new ShipMaterialWindow(this);
-        frame.init();
+        mainFrame.displayShipMaterialWindow();
 
     }//end of MainFrame::displayShipMaterialWindow
     //--------------------------------------------------------------------------

@@ -31,17 +31,20 @@ import javax.swing.JPanel;
 // class ShipMaterialWindow
 //
 
-public class ShipMaterialWindow extends ActionFrame
+public class ShipMaterialWindow extends AltusJDialog
 {
+    
+    static private final String actionId = "ShipMaterialWindow";
+    static public String getActionId() { return actionId; }
 
     //--------------------------------------------------------------------------
     // ShipMaterialWindow::ShipMaterialWindow (constructor)
     //
 
-    public ShipMaterialWindow(MainView pMainView)
+    public ShipMaterialWindow(MainFrame pMainFrame, MainView pMainView)
     {
 
-        super("Ship Material", "ShipMaterialFrame", pMainView);
+        super("Ship Material", pMainFrame, pMainView);
 
     }//end of ShipMaterialWindow::ShipMaterialWindow (constructor)
     //--------------------------------------------------------------------------
@@ -56,171 +59,75 @@ public class ShipMaterialWindow extends ActionFrame
     protected void createGui() 
     {
         
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(20));
-
-        //add Row 1
-        mainPanel.add(createRow1());
+        int w = 130;
         
-        //row spacer
-        mainPanel.add(createRowSpacer());
-
-        //add Row 2
-        mainPanel.add(createRow2());
+        //add the Quantity row
+        addToMainPanel(createRow(new JPanel[] {
+            createQuantityInputPanel("How many pieces of material would you "
+                                        + "like to ship?")             
+        }));
         
-        //row spacer
-        mainPanel.add(createRowSpacer());
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+                
+        //add the Destination row
+        addToMainPanel(createRow(new JPanel[] {
+            createInputPanel("Destination", "", 
+                                "What destination is the material being "
+                                    + "shipped to?", 410),
+        }));
         
-        //add Row 3
-        mainPanel.add(createRow3());
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
-        //row spacer
-        mainPanel.add(createRowSpacer());
+        //add the Address Line 1 and Address Line 2 row
+        addToMainPanel(createRow(new JPanel[] {
+            createInputPanel("Address Line 1", "", 
+                                "Address line 1 of the destination the "
+                                    + "material is being shipped to.", 200),
+            createInputPanel("Address Line 2", "", 
+                                "Address line 2 of the destination the "
+                                    + "material is being shipped to.", 200),             
+        }));
         
-        //add Row 4
-        mainPanel.add(createRow4());
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
-        //row spacer
-        mainPanel.add(createRowSpacer());
+        //add the City, State, and Zip Code row
+        addToMainPanel(createRow(new JPanel[] {
+            createInputPanel("City", "", "What city is the material being "
+                                    + "shipped to?", w),
+            createInputPanel("State", "", "What state is the material being "
+                                    + "shipped to?", w),
+            createInputPanel("Zip Code", "", "What zip code is the material "
+                                    + "being shipped to?", w),
+        }));
         
-        //add Row 5
-        mainPanel.add(createRow5());
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+                
+        //add the Truck Company, Truck Number, and Truck Driver row
+        addToMainPanel(createRow(new JPanel[] {
+            createInputPanel("Truck Company", "", 
+                                "What truck company brought the material to "
+                                        + "the yard?", w),
+            createInputPanel("Truck Number", "", 
+                                "What is the number of the truck that brought "
+                                        + "the material to the yard?", w),
+            createInputPanel("Truck Driver", "", 
+                                "Who was the driver of the truck that brought"
+                                        + " the material to the yard?", w)               
+        }));
         
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(30));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
         //add the Cancel/Confirm panel
-        mainPanel.add(createCancelConfirmPanel("Ship", 
-                                                "Ship the material."));
+        addToMainPanel(createCancelConfirmPanel("Ship", "Ship the material."));
         
     }// end of ShipMaterialWindow::createGui
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ShipMaterialWindow::createRow1
-    //
-    // Creates and returns Row 1.
-    //
-    
-    private JPanel createRow1() {
-        
-        String tip = "How many pieces of material would you like to ship?";
-        JPanel input1 = createQuantityInputPanel(tip);
-
-        return createRow(new JPanel[]{input1});
-        
-    }// end of ShipMaterialWindow::createRow1
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ShipMaterialWindow::createRow2
-    //
-    // Creates and returns Row 2.
-    //
-
-    private JPanel createRow2()
-    {
-        
-        JPanel input1 = createInputPanel("Destination", 
-                                "What destination is the material being shipped"
-                                    + " to?",
-                                TEXT_FIELD_WIDTH_FULL, textFieldHeight);
-
-        return createRow(new JPanel[]{input1});
-
-    }// end of ShipMaterialWindow::createRow2
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ShipMaterialWindow::createRow3
-    //
-    // Creates and returns a JPanel containing the Truck Company, Truck Number,
-    // and Truck Driver input panels.
-    //
-
-    private JPanel createRow3()
-    {
-        
-        JPanel input1 
-                = createInputPanel("Truck Company", 
-                        "What truck company is taking the material to the"
-                            + " destination?",
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-        
-        JPanel input2 
-                = createInputPanel("Truck Number", 
-                        "What is the number of the truck that is taking"
-                            + " the material to the destination?",
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-        
-        JPanel input3 
-                = createInputPanel("Truck Driver", 
-                       "Who is the driver of the truck that is taking the"
-                            + " material to the destination?",
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-
-        return createRow(new JPanel[]{input1, input2, input3});
-        
-    }// end of ShipMaterialWindow::createRow3
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ShipMaterialWindow::createRow4
-    //
-    // Creates and returns a JPanel containing the Address Line 1 and Address
-    // Line 2 input panels.
-    //
-
-    private JPanel createRow4()
-    {
-        
-        JPanel input1 
-                = createInputPanel("Address Line 1", 
-                        "Address line 1 of the destination the material is"
-                            + " being shipped to.",
-                        TEXT_FIELD_WIDTH_HALF, textFieldHeight);
-        
-        JPanel input2 
-                = createInputPanel("Address Line 2", 
-                        "Address line 2 of the destination the material is"
-                            + " being shipped to.",
-                        TEXT_FIELD_WIDTH_HALF, textFieldHeight);
-
-        return createRow(new JPanel[]{input1, input2});
-
-    }// end of ShipMaterialWindow::createRow4
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ShipMaterialWindow::createRow5
-    //
-    // Creates and returns a JPanel containing the City, State, and Zip Code
-    // input panels.
-    //
-
-    private JPanel createRow5()
-    {
-        
-        JPanel input1 
-                = createInputPanel("City", 
-                        "What city is the material being shipped to?",
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-        
-        JPanel input2 
-                = createInputPanel("State", 
-                        "What state is the material being shipped to?",
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-        
-        JPanel input3 
-                = createInputPanel("Zip Code", 
-                        "What zip code is the material being shipped to?",
-                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
-
-        return createRow(new JPanel[]{input1, input2, input3});
-
-    }// end of ShipMaterialWindow::createRow5
     //--------------------------------------------------------------------------
 
 }//end of class ShipMaterialWindow

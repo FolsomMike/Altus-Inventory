@@ -800,6 +800,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayShipMaterialWindow
+    //
+    // Displays the Ship Material window.
+    //
+    
+    public void displayShipMaterialWindow() 
+    {
+        
+        ShipMaterialWindow w = new ShipMaterialWindow(this, mainView);
+        w.init();
+        
+    }// end of MainFrame::displayShipMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::initializeBatchesTable
     //
     // Initializes the Batches table.
