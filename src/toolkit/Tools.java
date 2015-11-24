@@ -103,6 +103,36 @@ public class Tools extends Object{
     // Tools::centerJDialog
     //
     // Centers a passed in JDialog according to the location and size of the 
+    // passed in parent dialog and the JDialog's size.
+    //
+
+    static public void centerJDialog(JDialog pDialog, JDialog pParent)
+    {
+
+        int parentFrameXPos = (int)pParent.getX();
+        int parentFrameHalfWidth = (int)pParent.getWidth()/2;
+
+        int parentFrameYPos = (int)pParent.getY();
+        int parentFrameHalfHeight = (int)pParent.getHeight()/2;
+
+        int parentFrameXCenter = parentFrameXPos + parentFrameHalfWidth;
+        int parentFrameYCenter = parentFrameYPos + parentFrameHalfHeight;
+
+        int dialogWidthCenter = (int)pDialog.getWidth()/2;
+        int dialogHeightCenter = (int)pDialog.getHeight()/2;
+
+        int xPosition = parentFrameXCenter - dialogWidthCenter;
+        int yPosition = parentFrameYCenter - dialogHeightCenter;
+
+        pDialog.setLocation(xPosition, yPosition);
+
+    }// end of Tools::centerJDialog
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Tools::centerJDialog
+    //
+    // Centers a passed in JDialog according to the location and size of the 
     // passed in parent frame and the JDialog's size.
     //
 
