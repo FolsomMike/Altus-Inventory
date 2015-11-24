@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Title: ShipMaterialFrame.java
+* Title: ShipMaterialWindow.java
 * Author: Hunter Schoonover
 * Date: 07/25/15
 *
@@ -7,6 +7,14 @@
 *
 * This class is the Ship Material window.
 *
+* It presents the user with input fields to specify information about the
+* destination a material is being shipped to, including the address and the 
+* truck company that is taking it there, and the quantity of the material.
+* 
+* Currently, it has input fields for:
+*       Quantity, Destination, Address Line 1, Address Line 2, City, State,
+*       Zip Code, Truck Company, Truck Driver
+* 
 */
 
 //------------------------------------------------------------------------------
@@ -30,26 +38,26 @@ import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class ShipMaterialFrame
+// class ShipMaterialWindow
 //
 
-public class ShipMaterialFrame extends ActionFrame
+public class ShipMaterialWindow extends ActionFrame
 {
 
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::ShipMaterialFrame (constructor)
+    // ShipMaterialWindow::ShipMaterialWindow (constructor)
     //
 
-    public ShipMaterialFrame(MainView pMainView)
+    public ShipMaterialWindow(MainView pMainView)
     {
 
         super("Ship Material", "ShipMaterialFrame", pMainView);
 
-    }//end of ShipMaterialFrame::ShipMaterialFrame (constructor)
+    }//end of ShipMaterialWindow::ShipMaterialWindow (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createGui
+    // ShipMaterialWindow::createGui
     //
     // Creates and adds the GUI to the mainPanel.
     //
@@ -97,11 +105,11 @@ public class ShipMaterialFrame extends ActionFrame
         mainPanel.add(createCancelConfirmPanel("Ship", 
                                                 "Ship the material."));
         
-    }// end of ShipMaterialFrame::createGui
+    }// end of ShipMaterialWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createNewIDInputPanel
+    // ShipMaterialWindow::createNewIDInputPanel
     //
     // Creates and returns the ID input panel.
     //
@@ -149,11 +157,11 @@ public class ShipMaterialFrame extends ActionFrame
 
         return panel;
 
-    }// end of ShipMaterialFrame::createNewIDInputPanel
+    }// end of ShipMaterialWindow::createNewIDInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow1
+    // ShipMaterialWindow::createRow1
     //
     // Creates and returns Row 1.
     //
@@ -167,11 +175,11 @@ public class ShipMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2});
         
-    }// end of ShipMaterialFrame::createRow1
+    }// end of ShipMaterialWindow::createRow1
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow2
+    // ShipMaterialWindow::createRow2
     //
     // Creates and returns Row 2.
     //
@@ -186,11 +194,11 @@ public class ShipMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1});
 
-    }// end of ShipMaterialFrame::createRow2
+    }// end of ShipMaterialWindow::createRow2
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow3
+    // ShipMaterialWindow::createRow3
     //
     // Creates and returns a JPanel containing the Truck Company, Truck Number,
     // and Truck Driver input panels.
@@ -219,11 +227,11 @@ public class ShipMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2, input3});
         
-    }// end of ShipMaterialFrame::createRow3
+    }// end of ShipMaterialWindow::createRow3
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow4
+    // ShipMaterialWindow::createRow4
     //
     // Creates and returns a JPanel containing the Address Line 1 and Address
     // Line 2 input panels.
@@ -246,11 +254,11 @@ public class ShipMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2});
 
-    }// end of ShipMaterialFrame::createRow4
+    }// end of ShipMaterialWindow::createRow4
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ShipMaterialFrame::createRow5
+    // ShipMaterialWindow::createRow5
     //
     // Creates and returns a JPanel containing the City, State, and Zip Code
     // input panels.
@@ -276,9 +284,9 @@ public class ShipMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2, input3});
 
-    }// end of ShipMaterialFrame::createRow5
+    }// end of ShipMaterialWindow::createRow5
     //--------------------------------------------------------------------------
 
-}//end of class ShipMaterialFrame
+}//end of class ShipMaterialWindow
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
