@@ -30,6 +30,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import mksystems.mswing.MFloatSpinner;
 import model.MySQLDatabase;
 import toolkit.Tools;
 
@@ -56,6 +57,7 @@ public abstract class AltusJDialog extends JDialog
     private final MySQLDatabase db = new MySQLDatabase();
     public final MySQLDatabase getDatabase() { return db; }
     
+    private final int inputFieldHeight = 25;
     private final Map<String, JTextField> inputFields = new HashMap<>();
     public final Map<String, JTextField> getInputFields() {return inputFields;}
     
@@ -239,7 +241,7 @@ public abstract class AltusJDialog extends JDialog
         field.setAlignmentX(LEFT_ALIGNMENT);
         field.setToolTipText(pToolTip);
         field.setText(pInputFieldText);
-        Tools.setSizes(field, pWidth, 25);
+        Tools.setSizes(field, pWidth, inputFieldHeight);
         //store a reference to the field
         inputFields.put(pLabelText, field);
         panel.add(field);
@@ -247,6 +249,45 @@ public abstract class AltusJDialog extends JDialog
         return panel;
 
     }// end of AltusJDialog::createInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::createQuantityInputPanel
+    //
+    // Creates and returns a Quantity input panel.
+    //
+    // This is only designed to be added to a dialog one time. Any more will
+    // create spinners with the same name, making the spinners 
+    // indistinguishable.
+    //
+
+    protected final JPanel createQuantityInputPanel(String pToolTip)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Quantity");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        //WIP HSS// -- Float spinner value and max should be set according to
+        //              the material that is being quantified
+        MFloatSpinner spinner = new MFloatSpinner(1000, 0, 1000, 1, "##0", 75, 
+                                                    inputFieldHeight);
+        spinner.addChangeListener(mainView);
+        spinner.setName(Tools.generateActionCommand(actionId, 
+                                                        "Quantity Spinner"));
+        spinner.setToolTipText(pToolTip);
+        spinner.centerText();
+        spinner.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(spinner);
+
+        return panel;
+
+    }// end of AltusJDialog::createQuantityInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
