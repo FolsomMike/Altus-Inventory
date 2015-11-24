@@ -1,11 +1,17 @@
 /*******************************************************************************
-* Title:  MoveMaterialFrame.java
+* Title:  MoveMaterialWindow.java
 * Author: Hunter Schoonover
 * Date: 07/26/15
 *
 * Purpose:
 *
 * This class is the Move Material window.
+* 
+* It presents the user with input fields to specify the quantity of the material
+* and what rack to move it to.
+* 
+* Currently, it has input fields for:
+*       Quantity, Rack
 *
 */
 
@@ -20,26 +26,26 @@ import javax.swing.JPanel;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class  MoveMaterialFrame
+// class  MoveMaterialWindow
 //
 
-public class  MoveMaterialFrame extends ActionFrame
+public class  MoveMaterialWindow extends ActionFrame
 {
 
     //--------------------------------------------------------------------------
-    //  MoveMaterialFrame:: MoveMaterialFrame (constructor)
+    //  MoveMaterialWindow:: MoveMaterialWindow (constructor)
     //
 
-    public  MoveMaterialFrame(MainView pMainView)
+    public  MoveMaterialWindow(MainView pMainView)
     {
 
         super("Move Material", "MoveMaterialFrame", pMainView);
 
-    }//end of  MoveMaterialFrame:: MoveMaterialFrame (constructor)
+    }//end of  MoveMaterialWindow:: MoveMaterialWindow (constructor)
     //-------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialFrame::createGui
+    // MoveMaterialWindow::createGui
     //
     // Creates and adds the GUI to the mainPanel.
     //
@@ -62,11 +68,11 @@ public class  MoveMaterialFrame extends ActionFrame
         //add the Cancel/Confirm panel
         mainPanel.add(createCancelConfirmPanel("Move", "Move the material."));
         
-    }// end of MoveMaterialFrame::createGui
+    }// end of MoveMaterialWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialFrame::createRow1
+    // MoveMaterialWindow::createRow1
     //
     // Creates and returns Row 1.
     //
@@ -84,9 +90,9 @@ public class  MoveMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2});
         
-    }// end of MoveMaterialFrame::createRow1
+    }// end of MoveMaterialWindow::createRow1
     //--------------------------------------------------------------------------
 
-}//end of class  MoveMaterialFrame
+}//end of class  MoveMaterialWindow
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
