@@ -785,6 +785,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayMoveMaterialWindow
+    //
+    // Displays the Move Material window.
+    //
+    
+    public void displayMoveMaterialWindow() 
+    {
+        
+        MoveMaterialWindow w = new MoveMaterialWindow(this, mainView);
+        w.init();
+        
+    }// end of MainFrame::displayMoveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayReceiveMaterialWindow
     //
     // Displays the Receive Material window.

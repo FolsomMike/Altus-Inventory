@@ -26,22 +26,25 @@ import javax.swing.JPanel;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class  MoveMaterialWindow
+// class MoveMaterialWindow
 //
 
-public class  MoveMaterialWindow extends ActionFrame
+public class  MoveMaterialWindow extends AltusJDialog
 {
+    
+    static private final String actionId = "MoveMaterialWindow";
+    static public String getActionId() { return actionId; }
 
     //--------------------------------------------------------------------------
-    //  MoveMaterialWindow:: MoveMaterialWindow (constructor)
+    // MoveMaterialWindow::MoveMaterialWindow (constructor)
     //
 
-    public  MoveMaterialWindow(MainView pMainView)
+    public  MoveMaterialWindow(MainFrame pMainFrame, MainView pMainView)
     {
 
-        super("Move Material", "MoveMaterialFrame", pMainView);
+        super("Move Material", pMainFrame, pMainView);
 
-    }//end of  MoveMaterialWindow:: MoveMaterialWindow (constructor)
+    }//end of  MoveMaterialWindow::MoveMaterialWindow (constructor)
     //-------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -54,45 +57,25 @@ public class  MoveMaterialWindow extends ActionFrame
     protected void createGui() 
     {
         
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(20));
+        //add the Quantity and Rack row
+        addToMainPanel(createRow(new JPanel[] {
+            createQuantityInputPanel("How many pieces of material would you "
+                                        + "like to ship?"),
+            createInputPanel("Rack", "", "What rack is the material being "
+                                    + "moved to?", 130)
+        }));
         
-        //add Row 1
-        mainPanel.add(createRow1());
-        
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(30));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
         //add the Cancel/Confirm panel
-        mainPanel.add(createCancelConfirmPanel("Move", "Move the material."));
+        addToMainPanel(createCancelConfirmPanel("Move", "Move the material."));
         
     }// end of MoveMaterialWindow::createGui
     //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createRow1
-    //
-    // Creates and returns Row 1.
-    //
-    
-    private JPanel createRow1() 
-    {
-        
-        String tip = "How many pieces of material would you like to move?";
-        JPanel input1 = createQuantityInputPanel(tip);
-        
-        JPanel input2 
-                    = createInputPanel("Rack", 
-                            "What rack is the material being moved to?", 
-                            TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
 
-        return createRow(new JPanel[]{input1, input2});
-        
-    }// end of MoveMaterialWindow::createRow1
-    //--------------------------------------------------------------------------
-
-}//end of class  MoveMaterialWindow
+}//end of class MoveMaterialWindow
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
