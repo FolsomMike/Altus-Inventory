@@ -39,7 +39,7 @@ public class  MoveMaterialWindow extends AltusJDialog
     // MoveMaterialWindow::MoveMaterialWindow (constructor)
     //
 
-    public  MoveMaterialWindow(MainFrame pMainFrame, MainView pMainView)
+    public MoveMaterialWindow(MainFrame pMainFrame, MainView pMainView)
     {
 
         super("Move Material", pMainFrame, pMainView);
