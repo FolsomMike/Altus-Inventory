@@ -58,6 +58,8 @@ public abstract class AltusJDialog extends JDialog
     
     private final Map<String, JTextField> inputFields = new HashMap<>();
     public final Map<String, JTextField> getInputFields() {return inputFields;}
+    
+    private final int rowSpacer = 20;
 
     //--------------------------------------------------------------------------
     // AltusJDialog::AltusJDialog (constructor)
@@ -191,7 +193,7 @@ public abstract class AltusJDialog extends JDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ActionFrame::createCancelConfirmPanel
+    // AltusJDialog::createCancelConfirmPanel
     //
     // Creates and returns a Cancel/Confirm panel.
     //
@@ -207,11 +209,11 @@ public abstract class AltusJDialog extends JDialog
 
         return panel;
 
-    }// end of ActionFrame::createCancelConfirmPanel
+    }// end of AltusJDialog::createCancelConfirmPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CreateOrEditCustomerWindow::createInputPanel
+    // AltusJDialog::createInputPanel
     //
     // Creates and returns an input panel.
     //
@@ -244,11 +246,11 @@ public abstract class AltusJDialog extends JDialog
 
         return panel;
 
-    }// end of CreateOrEditCustomerWindow::createInputPanel
+    }// end of AltusJDialog::createInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CreateOrEditCustomerWindow::createRow
+    // AltusJDialog::createRow
     //
     // Creates and returns a row of input panels using pInputPanels.
     //
@@ -268,11 +270,25 @@ public abstract class AltusJDialog extends JDialog
         
         return panel;
 
-    }// end of CreateOrEditCustomerWindow::createRow
+    }// end of AltusJDialog::createRow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ActionFrame::setMainPanelLayout
+    // AltusJDialog::createRowSpacer
+    //
+    // Creates and returns a vertical spacer the height of rowSpacer.
+    //
+
+    protected final Component createRowSpacer()
+    {
+
+        return Tools.createVerticalSpacer(rowSpacer);
+
+    }// end of AltusJDialog::createRowSpacer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::setMainPanelLayout
     //
     // Sets the layout of mainPanel to pLayout.
     //
@@ -282,7 +298,7 @@ public abstract class AltusJDialog extends JDialog
 
         mainPanel.setLayout(new BoxLayout(mainPanel, pLayout));
 
-    }// end of ActionFrame::createCancelConfirmPanel
+    }// end of AltusJDialog::setMainPanelLayout
     //--------------------------------------------------------------------------
 
 }//end of class AltusJDialog
