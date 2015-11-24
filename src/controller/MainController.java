@@ -60,6 +60,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import toolkit.Tools;
+import view.AltusJDialog;
+import view.CustomersWindow;
+import view.MainFrame;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -141,37 +144,37 @@ public class MainController implements EventHandler, Runnable
     public void actionPerformed(ActionEvent e)
     {
         
-        String s;
+        //AltusJDialog action commands
+        if (Tools.generateActionCommand(AltusJDialog.getActionId(),
+                                            "Cancel")
+                .equals(e.getActionCommand())) 
+        {
+            view.cancelAltusJDialogAction();
+        }
         
-        s = Tools.generateActionCommand("CustomersFrame", "Create Customer");
-        if (s.equals(e.getActionCommand())) {
+        if (Tools.generateActionCommand(AltusJDialog.getActionId(),
+                                            "Confirm")
+                .equals(e.getActionCommand())) 
+        {
+            view.confirmAltusJDialogAction();
+        }
+        //end of AltusJDialog action commands
+        
+        //Customer Window action commands
+        if (Tools.generateActionCommand(CustomersWindow.getActionId(),
+                                            "Create Customer")
+                .equals(e.getActionCommand())) 
+        {
             view.displayCreateCustomerWindow();
         }
         
-        s = Tools.generateActionCommand("CustomersFrame", "Edit Customer");
-        if (s.equals(e.getActionCommand())) {
+        if (Tools.generateActionCommand(CustomersWindow.getActionId(),
+                                            "Edit Customer")
+                .equals(e.getActionCommand())) 
+        {
             view.displayEditCustomerWindow();
         }
-        
-        s = Tools.generateActionCommand("CreateCustomerDialog", "Cancel");
-        if (s.equals(e.getActionCommand())) {
-            view.cancelCreateCustomer();
-        }
-        
-        s = Tools.generateActionCommand("CreateCustomerDialog", "Confirm");
-        if (s.equals(e.getActionCommand())) {
-            view.confirmCreateCustomer();
-        }
-        
-        s = Tools.generateActionCommand("EditCustomerDialog", "Cancel");
-        if (s.equals(e.getActionCommand())) {
-            view.cancelEditCustomer();
-        }
-        
-        s = Tools.generateActionCommand("EditCustomerDialog", "Confirm");
-        if (s.equals(e.getActionCommand())) {
-            view.confirmEditCustomer();
-        }
+        //end of Customer Window action commands
         
         if ("MainFrame--Create Invoice".equals(e.getActionCommand())) {
             view.displayCreateInvoiceWindow();

@@ -53,6 +53,9 @@ public class MainFrame extends SkoonieFrame
     
     private final MainView mainView;
 
+    private AltusJDialog activeDialog;
+    public void setActiveDialog(AltusJDialog pDialog) {activeDialog = pDialog;}
+    private CustomersWindow customersWindow;
     private Help help;
     private About about;
     
@@ -162,6 +165,35 @@ public class MainFrame extends SkoonieFrame
         mainPanel.add(createDisplayPanel());
         
     }//end of MainFrame::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::cancelAltusJDialogAction
+    //
+    // Cancels whatever action may be happening through the active AltusJDialog.
+    //
+
+    public void cancelAltusJDialogAction()
+    {
+
+        activeDialog.cancel();
+
+    }// end of MainFrame::cancelAltusJDialogAction
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::confirmAltusJDialogAction
+    //
+    // Confirms whatever action may be happening through the active 
+    // AltusJDialog.
+    //
+
+    public void confirmAltusJDialogAction()
+    {
+
+        activeDialog.confirm();
+
+    }//end of MainFrame::confirmAltusJDialogAction
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -691,6 +723,49 @@ public class MainFrame extends SkoonieFrame
         about = null;
 
     }//end of MainFrame::displayAbout
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayCreateCustomerWindow
+    //
+    // Displays the Create Customer window.
+    //
+    
+    public void displayCreateCustomerWindow() 
+    {
+        
+        customersWindow.displayCreateCustomerWindow();
+        
+    }// end of MainFrame::displayCreateCustomerWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayCustomersWindow
+    //
+    // Displays the Customers window and stores a reference to it.
+    //
+    
+    public void displayCustomersWindow() 
+    {
+        
+        customersWindow = new CustomersWindow(this, mainView);
+        customersWindow.init();
+        
+    }// end of MainFrame::displayCustomersWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayEditCustomerWindow
+    //
+    // Displays the Edit Customer window.
+    //
+    
+    public void displayEditCustomerWindow() 
+    {
+        
+        customersWindow.displayEditCustomerWindow();
+        
+    }// end of MainFrame::displayEditCustomerWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

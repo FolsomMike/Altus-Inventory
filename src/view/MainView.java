@@ -50,7 +50,6 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 {
 
     private MainFrame mainFrame;
-    private CustomersFrame customersFrame;
 
     private GuiUpdater guiUpdater;
 
@@ -165,31 +164,17 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainView::cancelCreateCustomer
+    // MainView::cancelAltusJDialogAction
     //
-    // Cancels the create customer process.
+    // Cancels the action of the active AltusJDialog.
     //
 
-    public void cancelCreateCustomer()
+    public void cancelAltusJDialogAction()
     {
 
-        customersFrame.cancelCreateCustomer();
+        mainFrame.cancelAltusJDialogAction();
 
-    }//end of MainView::cancelCreateCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainView::cancelEditCustomer
-    //
-    // Cancels the changes made in the Edit Customer window.
-    //
-
-    public void cancelEditCustomer()
-    {
-
-        customersFrame.cancelEditCustomer();
-
-    }//end of MainView::cancelEditCustomer
+    }//end of MainView::cancelAltusJDialogAction
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -240,32 +225,17 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainView::confirmCreateCustomer
+    // MainView::confirmAltusJDialogAction
     //
-    // Confirms that the user wants to use the inputs in the Create Customer
-    // window to create a new customer.
+    // Confirms the action of the active AltusJDialog.
     //
 
-    public void confirmCreateCustomer()
+    public void confirmAltusJDialogAction()
     {
 
-        customersFrame.confirmCreateCustomer();
+        mainFrame.confirmAltusJDialogAction();
 
-    }//end of MainView::confirmCreateCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainView::confirmEditCustomer
-    //
-    // Confirms the changes made in the Edit Customer window.
-    //
-
-    public void confirmEditCustomer()
-    {
-
-        customersFrame.confirmEditCustomer();
-
-    }//end of MainView::confirmEditCustomer
+    }//end of MainView::confirmAltusJDialogAction
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -285,13 +255,13 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     // MainView::displayCreateCustomerWindow
     //
-    // Displays the Create Customer dialog.
+    // Displays the Create Customer window.
     //
 
     public void displayCreateCustomerWindow()
     {
 
-        customersFrame.displayCreateCustomerDialog();
+        mainFrame.displayCreateCustomerWindow();
 
     }//end of MainView::displayCreateCustomerWindow
     //--------------------------------------------------------------------------
@@ -335,8 +305,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void displayCustomersWindow()
     {
 
-        customersFrame = new CustomersFrame(this);
-        customersFrame.init();
+        mainFrame.displayCustomersWindow();
 
     }//end of MainView::displayCustomersWindow
     //--------------------------------------------------------------------------
@@ -350,7 +319,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void displayEditCustomerWindow()
     {
 
-        customersFrame.displayEditCustomerDialog();
+        mainFrame.displayEditCustomerWindow();
 
     }//end of MainView::displayEditCustomerWindow
     //--------------------------------------------------------------------------
