@@ -19,17 +19,12 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import model.Customer;
@@ -293,8 +288,6 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     private final String confirmButtonText;
     private final String confirmButtonToolTip;
     
-    private final Map<String, JTextField> inputFields = new HashMap<>();
-    
     //--------------------------------------------------------------------------
     // CreateOrEditCustomerWindow::CreateOrEditCustomerWindow (constructor)
     //
@@ -427,64 +420,6 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CreateOrEditCustomerWindow::createInputPanel
-    //
-    // Creates and returns an input panel.
-    //
-
-    private JPanel createInputPanel(String pLabelText, 
-                                            String pInputFieldText,
-                                            String pToolTip, int pWidth)
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel(pLabelText);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(label);
-        
-        JTextField field = new JTextField();
-        field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText(pToolTip);
-        field.setText(pInputFieldText);
-        Tools.setSizes(field, pWidth, 25);
-        //store a reference to the field
-        inputFields.put(pLabelText, field);
-        panel.add(field);
-
-        return panel;
-
-    }// end of CreateOrEditCustomerWindow::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // CreateOrEditCustomerWindow::createRow
-    //
-    // Creates and returns a row using pArray.
-    //
-
-    private JPanel createRow(JPanel[] pInputPanels)
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        for (int i=0; i<pInputPanels.length; i++) {
-            if (i>0) { panel.add(Tools.createHorizontalSpacer(10)); }
-            panel.add(pInputPanels[i]);
-        }
-        
-        return panel;
-
-    }// end of CreateOrEditCustomerWindow::createRow
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // CreateOrEditCustomerWindow::getUserInput
     //
     // Gets the user input from the text fields and stores it in the Customer.
@@ -493,19 +428,19 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     private void getUserInput()
     {
 
-        customer.setId(inputFields.get("Id").getText());
+        customer.setId(getInputFields().get("Id").getText());
         
-        customer.setName(inputFields.get("Name").getText());
+        customer.setName(getInputFields().get("Name").getText());
         
-        customer.setAddressLine1(inputFields.get("Address Line 1").getText());
+        customer.setAddressLine1(getInputFields().get("Address Line 1").getText());
         
-        customer.setAddressLine2(inputFields.get("Address Line 2").getText());
+        customer.setAddressLine2(getInputFields().get("Address Line 2").getText());
         
-        customer.setCity(inputFields.get("City").getText());
+        customer.setCity(getInputFields().get("City").getText());
         
-        customer.setState(inputFields.get("State").getText());
+        customer.setState(getInputFields().get("State").getText());
         
-        customer.setZipCode(inputFields.get("Zip Code").getText());
+        customer.setZipCode(getInputFields().get("Zip Code").getText());
 
     }// end of CreateOrEditCustomerWindow::getUserInput
     //--------------------------------------------------------------------------

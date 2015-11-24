@@ -19,12 +19,17 @@ package view;
 
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Dialog;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import model.MySQLDatabase;
 import toolkit.Tools;
 
@@ -50,6 +55,9 @@ public abstract class AltusJDialog extends JDialog
     
     private final MySQLDatabase db = new MySQLDatabase();
     public final MySQLDatabase getDatabase() { return db; }
+    
+    private final Map<String, JTextField> inputFields = new HashMap<>();
+    public final Map<String, JTextField> getInputFields() {return inputFields;}
 
     //--------------------------------------------------------------------------
     // AltusJDialog::AltusJDialog (constructor)
@@ -200,6 +208,67 @@ public abstract class AltusJDialog extends JDialog
         return panel;
 
     }// end of ActionFrame::createCancelConfirmPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateOrEditCustomerWindow::createInputPanel
+    //
+    // Creates and returns an input panel.
+    //
+    // The JTextField contained in this input panel is stored in inputFields,
+    // with pLabelText as they key.
+    //
+
+    protected final JPanel createInputPanel(String pLabelText, 
+                                            String pInputFieldText,
+                                            String pToolTip, int pWidth)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel(pLabelText);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
+        
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setToolTipText(pToolTip);
+        field.setText(pInputFieldText);
+        Tools.setSizes(field, pWidth, 25);
+        //store a reference to the field
+        inputFields.put(pLabelText, field);
+        panel.add(field);
+
+        return panel;
+
+    }// end of CreateOrEditCustomerWindow::createInputPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateOrEditCustomerWindow::createRow
+    //
+    // Creates and returns a row of input panels using pInputPanels.
+    //
+
+    protected final JPanel createRow(JPanel[] pInputPanels)
+    {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        for (int i=0; i<pInputPanels.length; i++) {
+            if (i>0) { panel.add(Tools.createHorizontalSpacer(10)); }
+            panel.add(pInputPanels[i]);
+        }
+        
+        return panel;
+
+    }// end of CreateOrEditCustomerWindow::createRow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
