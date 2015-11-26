@@ -1,11 +1,20 @@
 /*******************************************************************************
-* Title: ReserveMaterialFrame.java
+* Title: ReserveMaterialWindow.java
 * Author: Hunter Schoonover
 * Date: 07/25/15
 *
 * Purpose:
 *
 * This class is the Reserve Material window.
+*
+* It presents the user with input fields to specify the quantity of the material
+* and what to reserve it for.
+* 
+* //WIP HSS// -- should eventually have different input fields based on what
+*                   they want to reserve it for
+* 
+* Currently, it has input fields for:
+*       Quantity, Reserve for
 *
 */
 
@@ -27,26 +36,26 @@ import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class ReserveMaterialFrame
+// class ReserveMaterialWindow
 //
 
-public class ReserveMaterialFrame extends ActionFrame
+public class ReserveMaterialWindow extends ActionFrame
 {
 
     //--------------------------------------------------------------------------
-    // ReserveMaterialFrame::ReserveMaterialFrame (constructor)
+    // ReserveMaterialWindow::ReserveMaterialWindow (constructor)
     //
 
-    public ReserveMaterialFrame(MainView pMainView)
+    public ReserveMaterialWindow(MainView pMainView)
     {
 
         super("Reserve Material", "ReserveMaterialFrame", pMainView);
 
-    }//end of ReserveMaterialFrame::ReserveMaterialFrame (constructor)
+    }//end of ReserveMaterialWindow::ReserveMaterialWindow (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReserveMaterialFrame::createGui
+    // ReserveMaterialWindow::createGui
     //
     // Creates and adds the GUI to the mainPanel.
     //
@@ -70,11 +79,11 @@ public class ReserveMaterialFrame extends ActionFrame
         mainPanel.add(createCancelConfirmPanel("Reserve", 
                                                     "Reserve the material."));
         
-    }// end of ReserveMaterialFrame::createGui
+    }// end of ReserveMaterialWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReserveMaterialFrame::creatReserveForPanel
+    // ReserveMaterialWindow::creatReserveForPanel
     //
     // Creates and returns the "Reserve for" panel.
     //
@@ -107,11 +116,11 @@ public class ReserveMaterialFrame extends ActionFrame
         
         return panel;
 
-    }// end of ReserveMaterialFrame::createReserveForPanel
+    }// end of ReserveMaterialWindow::createReserveForPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReserveMaterialFrame::createRow1
+    // ReserveMaterialWindow::createRow1
     //
     // Creates and returns Row 1.
     //
@@ -125,9 +134,9 @@ public class ReserveMaterialFrame extends ActionFrame
 
         return createRow(new JPanel[]{input1, input2});
         
-    }// end of ReserveMaterialFrame::createRow1
+    }// end of ReserveMaterialWindow::createRow1
     //--------------------------------------------------------------------------
 
-}// end of class ReserveMaterialFrame
+}// end of class ReserveMaterialWindow
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
