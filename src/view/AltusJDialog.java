@@ -58,6 +58,7 @@ public abstract class AltusJDialog extends JDialog
     public final MySQLDatabase getDatabase() { return db; }
     
     private final int inputFieldHeight = 25;
+    public final int getInputFieldHeight() { return inputFieldHeight; }
     private final Map<String, JTextField> inputFields = new HashMap<>();
     public final Map<String, JTextField> getInputFields() {return inputFields;}
     
