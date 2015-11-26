@@ -815,6 +815,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayReserveMaterialWindow
+    //
+    // Displays the Reserve Material window.
+    //
+    
+    public void displayReserveMaterialWindow() 
+    {
+        
+        ReserveMaterialWindow w = new ReserveMaterialWindow(this, mainView);
+        w.init();
+        
+    }// end of MainFrame::displayTransferMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayShipMaterialWindow
     //
     // Displays the Ship Material window.

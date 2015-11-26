@@ -419,8 +419,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     public void displayReserveMaterialWindow()
     {
 
-        ReserveMaterialWindow frame = new ReserveMaterialWindow(this);
-        frame.init();
+        mainFrame.displayReserveMaterialWindow();
 
     }//end of MainView::displayReserveMaterialWindow
     //--------------------------------------------------------------------------

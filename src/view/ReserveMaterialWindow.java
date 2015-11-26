@@ -39,17 +39,20 @@ import toolkit.Tools;
 // class ReserveMaterialWindow
 //
 
-public class ReserveMaterialWindow extends ActionFrame
+public class ReserveMaterialWindow extends AltusJDialog
 {
+    
+    static private final String actionId = "ReserveMaterialWindow";
+    static public String getActionId() { return actionId; }
 
     //--------------------------------------------------------------------------
     // ReserveMaterialWindow::ReserveMaterialWindow (constructor)
     //
 
-    public ReserveMaterialWindow(MainView pMainView)
+    public ReserveMaterialWindow(MainFrame pMainFrame, MainView pMainView)
     {
 
-        super("Reserve Material", "ReserveMaterialFrame", pMainView);
+        super("Reserve Material", pMainFrame, pMainView);
 
     }//end of ReserveMaterialWindow::ReserveMaterialWindow (constructor)
     //--------------------------------------------------------------------------
@@ -64,19 +67,20 @@ public class ReserveMaterialWindow extends ActionFrame
     protected void createGui() 
     {
         
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(20));
+        //add the Quantity and Rack row
+        addToMainPanel(createRow(new JPanel[] {
+            createQuantityInputPanel("How many pieces of material would you "
+                                        + "like to reserve?"),
+            createReserveForPanel()
+        }));
         
-        //add Row 1
-        mainPanel.add(createRow1());
-        
-        //vertical spacer
-        mainPanel.add(createVerticalSpacer(30));
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
         
         //add the Cancel/Confirm panel
-        mainPanel.add(createCancelConfirmPanel("Reserve", 
+        addToMainPanel(createCancelConfirmPanel("Reserve", 
                                                     "Reserve the material."));
         
     }// end of ReserveMaterialWindow::createGui
@@ -105,36 +109,19 @@ public class ReserveMaterialWindow extends ActionFrame
         String[] strings = { "--Select--", "Shipment", "Move", "Transfer" };
         //Create the combo box, select item at index 0
         JComboBox combo = new JComboBox(strings);
-        combo.addActionListener(mainView);     
-        combo.setActionCommand("ReserveMaterialFrame::Reserve for");
+        combo.addActionListener(getMainView());     
+        combo.setActionCommand(Tools.generateActionCommand(actionId, 
+                                                                "Reserve for"));
         combo.setAlignmentX(LEFT_ALIGNMENT);
         combo.setAlignmentY(TOP_ALIGNMENT);
         combo.setSelectedIndex(0);
         combo.setBackground(Color.white);
-        Tools.setSizes(combo, 135, textFieldHeight);
+        Tools.setSizes(combo, 135, getInputFieldHeight());
         panel.add(combo);
         
         return panel;
 
     }// end of ReserveMaterialWindow::createReserveForPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReserveMaterialWindow::createRow1
-    //
-    // Creates and returns Row 1.
-    //
-    
-    private JPanel createRow1() {
-        
-        String tip = "How many pieces of material would you like to reserve?";
-        JPanel input1 = createQuantityInputPanel(tip);
-        
-        JPanel input2 = createReserveForPanel();
-
-        return createRow(new JPanel[]{input1, input2});
-        
-    }// end of ReserveMaterialWindow::createRow1
     //--------------------------------------------------------------------------
 
 }// end of class ReserveMaterialWindow
