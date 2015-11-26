@@ -66,7 +66,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
         addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Id", "", 
                                 "Give the material a reference ID.", w),
-            createInputPanel("Customer", "", 
+            createInputPanel("Owner", "", 
                                 "What customer owns the material?", w),
             createInputPanel("Date", "", 
                                 "What date was the material received?", w)               
