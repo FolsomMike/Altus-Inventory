@@ -77,7 +77,6 @@ public class ReceiveMaterialWindow extends AltusJDialog
         addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Id", "", 
                                 "Give the material a reference ID.", w),
-            createOwnerPanel(),
             createInputPanel("Date (YYYY-MM-DD)", "", 
                                 "What date was the material received?", w)               
         }));
@@ -85,8 +84,10 @@ public class ReceiveMaterialWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
+        addToMainPanel(createRow(new JPanel[] { createOwnerPanel() }));
+        
         //add the Truck Company, Truck Number, and Truck Driver row
-        addToMainPanel(createRow(new JPanel[] {
+        /*//DEBUG HSS//addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Truck Company", "", 
                                 "What truck company brought the material to "
                                         + "the yard?", w),
@@ -96,7 +97,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
             createInputPanel("Truck Driver", "", 
                                 "Who was the driver of the truck that brought"
                                         + " the material to the yard?", w)               
-        }));
+        }));*///DEBUG HSS//
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
@@ -104,16 +105,14 @@ public class ReceiveMaterialWindow extends AltusJDialog
         //add the Quanity, Length, and Rack row
         addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Quantity", "", "How many pieces of pipe?", w),
-            createInputPanel("Length", "", "How much pipe was received?", w),
-            createInputPanel("Rack", "", 
-                                "What rack is the material stored on?", w)               
+            createInputPanel("Total Length", "", 
+                                "Total length of the pipe was received?", w),
+            //DEBUG HSS//createInputPanel("Rack", "", 
+            //DEBUG HSS//                    "What rack is the material stored on?", w)               
         }));
         
-        //spacer between rows
-        addToMainPanel(createRowSpacer());
-        
         //add the Range, Grade, and Diameter row
-        addToMainPanel(createRow(new JPanel[] {
+        /*//DEBUG HSS//addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Range", "", "What is the range of the pipe?", w),
             createInputPanel("Grade", "", "What is the grade of the pipe?", w),
             createInputPanel("Diameter", "", 
@@ -129,7 +128,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
                                 "What is the wall thickness of the pipe?", w),
             createInputPanel("Facility", "", 
                                 "What facility is the pipe for?", w)            
-        }));
+        }));*///DEBUG HSS//
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
@@ -180,7 +179,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
         combo.setToolTipText("What customer owns the material?");
         combo.setSelectedIndex(0);
         combo.setBackground(Color.white);
-        Tools.setSizes(combo, 135, getInputFieldHeight());
+        Tools.setSizes(combo, 410, getInputFieldHeight());
         panel.add(combo);
         
         return panel;
