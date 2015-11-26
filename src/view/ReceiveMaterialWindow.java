@@ -22,8 +22,17 @@ package view;
 
 //------------------------------------------------------------------------------
 
+import java.awt.Color;
+import java.awt.Component;
+import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.TOP_ALIGNMENT;
+import java.util.ArrayList;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import model.Customer;
+import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -35,6 +44,8 @@ public class ReceiveMaterialWindow extends AltusJDialog
     
     static private final String actionId = "ReceiveMaterialWindow";
     static public String getActionId() { return actionId; }
+    
+    private ArrayList<Customer> customers;
 
     //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::ReceiveMaterialWindow (constructor)
@@ -66,8 +77,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
         addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Id", "", 
                                 "Give the material a reference ID.", w),
-            createInputPanel("Owner", "", 
-                                "What customer owns the material?", w),
+            createOwnerPanel(),
             createInputPanel("Date", "", 
                                 "What date was the material received?", w)               
         }));
@@ -131,7 +141,53 @@ public class ReceiveMaterialWindow extends AltusJDialog
         
     }// end of ReceiveMaterialWindow::createGui
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::createOwnerPanel
+    //
+    // Creates and returns the Owner panel.
+    //
+
+    private JPanel createOwnerPanel()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Owner");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentY(TOP_ALIGNMENT);
+        panel.add(label);
+        
+        //get customers from the database
+        customers = getDatabase().getCustomers();
+        
+        String[] names = new String[customers.size()+1];
+        names[0] = "--Select--";
+        
+        //extract names from customers
+        for (int i=0; i<customers.size(); i++) {
+            names[i+1] = customers.get(i).getName();
+        }
+        
+        //Create the combo box, select item at index 0
+        JComboBox combo = new JComboBox(names);
+        combo.addActionListener(getMainView());
+        combo.setAlignmentX(LEFT_ALIGNMENT);
+        combo.setAlignmentY(TOP_ALIGNMENT);
+        combo.setToolTipText("What customer owns the material?");
+        combo.setSelectedIndex(0);
+        combo.setBackground(Color.white);
+        Tools.setSizes(combo, 135, getInputFieldHeight());
+        panel.add(combo);
+        
+        return panel;
+
+    }// end of ReceiveMaterialWindow::createOwnerPanel
+    //--------------------------------------------------------------------------
 
 }// end of class ReceiveMaterialWindow
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
