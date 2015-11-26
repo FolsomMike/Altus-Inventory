@@ -78,7 +78,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
             createInputPanel("Id", "", 
                                 "Give the material a reference ID.", w),
             createOwnerPanel(),
-            createInputPanel("Date", "", 
+            createInputPanel("Date (YYYY-MM-DD)", "", 
                                 "What date was the material received?", w)               
         }));
         
