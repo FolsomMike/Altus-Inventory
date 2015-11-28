@@ -162,7 +162,9 @@ public class ReceiveMaterialWindow extends AltusJDialog
         //insert the batch into the database
         getDatabase().insertBatch(batch);
         
-        //WIP HSS// -- inform the MainFrame to update its stuff
+        //tell the MainFrame to reload its data from the database since we 
+        //changed some stuff there
+        getMainFrame().retrieveBatchesFromDatabase();
         
         //dispose of the window and its resources
         dispose();
