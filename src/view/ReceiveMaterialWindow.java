@@ -31,6 +31,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import model.Batch;
 import model.Customer;
 import toolkit.Tools;
 
@@ -45,7 +46,11 @@ public class ReceiveMaterialWindow extends AltusJDialog
     static private final String actionId = "ReceiveMaterialWindow";
     static public String getActionId() { return actionId; }
     
+    private JComboBox ownerCombo;
+    
     private ArrayList<Customer> customers;
+    
+    private Batch batch;
 
     //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::ReceiveMaterialWindow (constructor)
@@ -142,6 +147,30 @@ public class ReceiveMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::confirm
+    //
+    // Confirms that the user wants to receive a material using the inputs.
+    //
+
+    @Override
+    public void confirm()
+    {
+        
+        //get the user input
+        getUserInput();
+        
+        //insert the batch into the database
+        getDatabase().insertBatch(batch);
+        
+        //WIP HSS// -- inform the MainFrame to update its stuff
+        
+        //dispose of the window and its resources
+        dispose();
+
+    }// end of ReceiveMaterialWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::createOwnerPanel
     //
     // Creates and returns the Owner panel.
@@ -172,19 +201,60 @@ public class ReceiveMaterialWindow extends AltusJDialog
         }
         
         //Create the combo box, select item at index 0
-        JComboBox combo = new JComboBox(names);
-        combo.addActionListener(getMainView());
-        combo.setAlignmentX(LEFT_ALIGNMENT);
-        combo.setAlignmentY(TOP_ALIGNMENT);
-        combo.setToolTipText("What customer owns the material?");
-        combo.setSelectedIndex(0);
-        combo.setBackground(Color.white);
-        Tools.setSizes(combo, 410, getInputFieldHeight());
-        panel.add(combo);
+        ownerCombo = new JComboBox(names);
+        ownerCombo.addActionListener(getMainView());
+        ownerCombo.setAlignmentX(LEFT_ALIGNMENT);
+        ownerCombo.setAlignmentY(TOP_ALIGNMENT);
+        ownerCombo.setToolTipText("What customer owns the material?");
+        ownerCombo.setSelectedIndex(0);
+        ownerCombo.setBackground(Color.white);
+        Tools.setSizes(ownerCombo, 410, getInputFieldHeight());
+        panel.add(ownerCombo);
         
         return panel;
 
     }// end of ReceiveMaterialWindow::createOwnerPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::getCustomerKey
+    //
+    // Returns the Skoonie Key associated with pCustomerName
+    //
+
+    private String getCustomerKey(String pCustomerName)
+    {
+        
+        String key = "";
+        
+        for (Customer c : customers) {
+            if(pCustomerName.equals(c.getName())) { key = c.getSkoonieKey(); }
+        }
+        
+        return key;
+
+    }// end of ReceiveMaterialWindow::getCustomerKey
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::getUserInput
+    //
+    // Gets the user input from the text fields and stores it in the Batch.
+    //
+
+    private void getUserInput()
+    {
+        
+        String cusKey = getCustomerKey((String)ownerCombo.getSelectedItem());
+        
+        batch = new Batch(  "",
+                            getInputFields().get("Id").getText(),
+                            getInputFields().get("Date (YYYY-MM-DD)").getText(),
+                            getInputFields().get("Quantity").getText(),
+                            getInputFields().get("Total Length").getText(),
+                            cusKey);
+
+    }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
 
 }// end of class ReceiveMaterialWindow
