@@ -898,7 +898,7 @@ public class MainFrame extends SkoonieFrame
             String cusName = db.getCustomer(batches.get(i).getCustomerKey())
                                                             .getName();
             data[i] = new String[]{batches.get(i).getId(), 
-                                    batches.get(i).getDateCreated(),
+                                    batches.get(i).getDate(),
                                     batches.get(i).getQuantity(),
                                     batches.get(i).getTotalLength(),
                                     cusName};

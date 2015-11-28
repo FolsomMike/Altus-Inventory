@@ -46,11 +46,6 @@
 *       For more information on why you have to register the driver:
 *           http://www.xyzws.com/Javafaq/what-does-classforname-method-do/17
 *
-* Open Source Policy:
-*
-* This source code is Public Domain and free to any interested party.  Any
-* person, company, or organization may do with it as they please.
-*
 */
 
 //------------------------------------------------------------------------------
@@ -60,6 +55,7 @@ package model;
 //------------------------------------------------------------------------------
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -242,7 +238,7 @@ public class MySQLDatabase
             while (set.next()) { 
                 String sKey     = set.getString("skoonie_key");
                 String id       = set.getString("id");
-                String date     = set.getString("date_created");
+                String date     = set.getString("date");
                 String quantity = set.getString("quantity");
                 String length   = set.getString("total_length");
                 String cKey     = set.getString("customer_key");
@@ -361,6 +357,49 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::insertBatch
+    //
+    // Inserts pBatch into the database.
+    //
+
+    public void insertBatch(Batch pBatch)
+    {
+        
+        String cmd = "INSERT INTO `BATCHES` ("
+                        + "`id`,"
+                        + "`date`,"
+                        + "`quantity`,"
+                        + "`total_length`,"
+                        + "`customer_key`) "
+                        + "VALUES ("
+                        + "?,"  //placeholder 1     Id
+                        + "?,"  //placeholder 2     Date
+                        + "?,"  //placeholder 3     Quantity
+                        + "?,"  //placeholder 4     Total Length
+                        + "?)"; //placeholder 5     Customer Key
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pBatch.getId());
+            stmt.setString(2, pBatch.getDate());
+            stmt.setString(3, pBatch.getQuantity());
+            stmt.setString(4, pBatch.getTotalLength());
+            stmt.setString(5, pBatch.getCustomerKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 392"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }//end of MySQLDatabase::insertBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::insertCustomer
     //
     // Inserts pCustomer into the database.
@@ -396,7 +435,7 @@ public class MySQLDatabase
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 399"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 437"); }
         
         //clean up environment
         closePreparedStatement(stmt);
