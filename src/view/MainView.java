@@ -297,6 +297,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::displayCreateRackWindow
+    //
+    // Displays the Create Rack window.
+    //
+
+    public void displayCreateRackWindow()
+    {
+
+        mainFrame.displayCreateRackWindow();
+
+    }//end of MainView::displayCreateRackWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::displayCustomersWindow
     //
     // Displays the Customers window.
@@ -322,6 +336,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
         mainFrame.displayEditCustomerWindow();
 
     }//end of MainView::displayEditCustomerWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayEditRackWindow
+    //
+    // Displays the Edit Rack dialog.
+    //
+
+    public void displayEditRackWindow()
+    {
+
+        mainFrame.displayEditRackWindow();
+
+    }//end of MainView::displayEditRackWindow
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -394,6 +422,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
         mainFrame.displayMoveMaterialWindow();
 
     }//end of MainView::displayMoveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayRacksWindow
+    //
+    // Displays the Racks window.
+    //
+
+    public void displayRacksWindow()
+    {
+
+        mainFrame.displayRacksWindow();
+
+    }//end of MainView::displayRacksWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

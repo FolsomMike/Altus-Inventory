@@ -56,6 +56,7 @@ public class MainFrame extends SkoonieFrame
     private AltusJDialog activeDialog;
     public void setActiveDialog(AltusJDialog pDialog) {activeDialog = pDialog;}
     private CustomersWindow customersWindow;
+    private RacksWindow racksWindow;
     private Help help;
     private About about;
     
@@ -740,6 +741,20 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayCreateRackWindow
+    //
+    // Displays the Create Rack window.
+    //
+    
+    public void displayCreateRackWindow() 
+    {
+        
+        racksWindow.displayCreateRackWindow();
+        
+    }// end of MainFrame::displayCreateRackWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayCustomersWindow
     //
     // Displays the Customers window and stores a reference to it.
@@ -764,6 +779,20 @@ public class MainFrame extends SkoonieFrame
     {
         
         customersWindow.displayEditCustomerWindow();
+        
+    }// end of MainFrame::displayEditCustomerWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayEditRackWindow
+    //
+    // Displays the Edit Customer window.
+    //
+    
+    public void displayEditRackWindow() 
+    {
+        
+        racksWindow.displayEditRackWindow();
         
     }// end of MainFrame::displayEditCustomerWindow
     //--------------------------------------------------------------------------
@@ -797,6 +826,21 @@ public class MainFrame extends SkoonieFrame
         w.init();
         
     }// end of MainFrame::displayMoveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayRacksWindow
+    //
+    // Displays the Racks window and stores a reference to it.
+    //
+    
+    public void displayRacksWindow() 
+    {
+        
+        racksWindow = new RacksWindow(this, mainView);
+        racksWindow.init();
+        
+    }// end of MainFrame::displayRacksWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

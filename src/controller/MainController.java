@@ -62,7 +62,7 @@ import java.util.logging.SimpleFormatter;
 import toolkit.Tools;
 import view.AltusJDialog;
 import view.CustomersWindow;
-import view.MainFrame;
+import view.RacksWindow;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ public class MainController implements EventHandler, Runnable
         }
         //end of AltusJDialog action commands
         
-        //Customer Window action commands
+        //Customers Window action commands
         if (Tools.generateActionCommand(CustomersWindow.getActionId(),
                                             "Create Customer")
                 .equals(e.getActionCommand())) 
@@ -174,7 +174,23 @@ public class MainController implements EventHandler, Runnable
         {
             view.displayEditCustomerWindow();
         }
-        //end of Customer Window action commands
+        //end of Customers Window action commands
+        
+        //Racks Window action commands
+        if (Tools.generateActionCommand(RacksWindow.getActionId(),
+                                            "Create Rack")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayCreateRackWindow();
+        }
+        
+        if (Tools.generateActionCommand(RacksWindow.getActionId(),
+                                            "Edit Rack")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayEditRackWindow();
+        }
+        //end of Racks Window action commands
         
         if ("MainFrame--Create Invoice".equals(e.getActionCommand())) {
             view.displayCreateInvoiceWindow();
@@ -228,6 +244,10 @@ public class MainController implements EventHandler, Runnable
         
         if ("MainMenu--View All Customers".equals(e.getActionCommand())) {
             view.displayCustomersWindow();
+        }
+        
+        if ("MainMenu--View All Racks".equals(e.getActionCommand())) {
+            view.displayRacksWindow();
         }
 
         if ("Timer".equals(e.getActionCommand())) { 
