@@ -357,6 +357,46 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getRacks
+    //
+    // Gets and returns all of the racks in the RACKS table and stores all of 
+    // the data pertaining to a rack in a Rack object. All of the Rack objects 
+    // are returned in an array list.
+    //
+
+    public ArrayList<Rack> getRacks()
+    {
+        
+        ArrayList<Rack> racks = new ArrayList();
+
+        String cmd = "SELECT * FROM `RACKS` ORDER BY `name` ASC";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
+                String id       = set.getString("id");
+                String name     = set.getString("name");
+                
+                //store the rack information
+                racks.add(new Rack(sKey, id, name));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 387"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return racks;
+
+    }//end of MySQLDatabase::getRacks
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::insertBatch
     //
     // Inserts pBatch into the database.
