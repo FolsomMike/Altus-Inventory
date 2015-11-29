@@ -55,7 +55,6 @@ package model;
 //------------------------------------------------------------------------------
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -493,7 +492,7 @@ public class MySQLDatabase
     public void insertRack(Rack pRack)
     {
         
-        String cmd = "INSERT INTO `RACK` ("
+        String cmd = "INSERT INTO `RACKS` ("
                         + "`id`,`name`) "
                         + "VALUES ("
                         + "?,"  //placeholder 1     Id
@@ -508,7 +507,7 @@ public class MySQLDatabase
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 511"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 510"); }
         
         //clean up environment
         closePreparedStatement(stmt);
