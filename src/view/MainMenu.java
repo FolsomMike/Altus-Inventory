@@ -202,7 +202,7 @@ public class MainMenu extends JMenuBar
         
         //Rack menu
         rackMenu = new JMenu("Rack");
-        rackMenu.setMnemonic(KeyEvent.VK_C);
+        rackMenu.setMnemonic(KeyEvent.VK_R);
         rackMenu.setToolTipText("Rack");
         add(rackMenu);
 
