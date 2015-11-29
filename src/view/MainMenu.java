@@ -35,6 +35,9 @@ public class MainMenu extends JMenuBar
     
     JMenu customerMenu;
     JMenuItem viewAllCustomersMenuItem;
+    
+    JMenu rackMenu;
+    JMenuItem viewAllRacksMenuItem;
 
     JMenu helpMenu;
     JMenuItem aboutMenuItem, helpMenuItem;
@@ -65,6 +68,8 @@ public class MainMenu extends JMenuBar
         createFileMenu();
 
         createCustomerMenu();
+        
+        createRackMenu();
 
         createHelpMenu();
 
@@ -184,6 +189,31 @@ public class MainMenu extends JMenuBar
         helpMenu.add(helpMenuItem);
 
     }//end of MainMenu::createHelpMenu
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::createRackMenu
+    //
+    // Creates the Rack menu and adds it to the menu bar.
+    //
+
+    private void createRackMenu()
+    {
+        
+        //Rack menu
+        rackMenu = new JMenu("Rack");
+        rackMenu.setMnemonic(KeyEvent.VK_C);
+        rackMenu.setToolTipText("Rack");
+        add(rackMenu);
+
+        //Rack/View All Racks menu item
+        viewAllRacksMenuItem = new JMenuItem("View All Racks");
+        viewAllRacksMenuItem.setToolTipText("View all racks.");
+        viewAllRacksMenuItem.setActionCommand("MainMenu--View All Racks");
+        viewAllRacksMenuItem.addActionListener(actionListener);
+        rackMenu.add(viewAllRacksMenuItem);
+
+    }//end of MainMenu::createRackMenu
     //--------------------------------------------------------------------------
 
 }//end of class MainMenu
