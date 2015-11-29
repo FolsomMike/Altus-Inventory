@@ -485,6 +485,39 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::insertRack
+    //
+    // Inserts pRack into the database.
+    //
+
+    public void insertRack(Rack pRack)
+    {
+        
+        String cmd = "INSERT INTO `RACK` ("
+                        + "`id`,`name`) "
+                        + "VALUES ("
+                        + "?,"  //placeholder 1     Id
+                        + "?)"; //placeholder 2     Name
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pRack.getId());
+            stmt.setString(2, pRack.getName());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 511"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }//end of MySQLDatabase::insertRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::logSevere
     //
     // Logs pMessage with level SEVERE using the Java logger.
@@ -600,6 +633,39 @@ public class MySQLDatabase
         closeDatabaseConnection();
                 
     }//end of MySQLDatabase::updateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateRack
+    //
+    // Updates pRack in the database.
+    //
+
+    public void updateRack(Rack pRack)
+    {
+        
+        String cmd = "UPDATE `RACKS` SET "
+                        + "`id`=?,"                 //placeholder 1     Id
+                        + "`name`=?"                //placeholder 2     Name
+                        + "WHERE `skoonie_key`=?";  //placeholder 3     Skoonie Key
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pRack.getId());
+            stmt.setString(2, pRack.getName());
+            stmt.setString(3, pRack.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 662"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }//end of MySQLDatabase::updateRack
     //--------------------------------------------------------------------------
     
 }//end of class MySQLDatabase
