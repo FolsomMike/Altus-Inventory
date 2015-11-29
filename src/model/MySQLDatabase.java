@@ -241,12 +241,14 @@ public class MySQLDatabase
                 String quantity = set.getString("quantity");
                 String length   = set.getString("total_length");
                 String cKey     = set.getString("customer_key");
+                String rKey     = set.getString("rack_key");
                 
                 //store the batch information
-                batches.add(new Batch(sKey, id, date, quantity, length, cKey));
+                batches.add(new Batch(sKey, id, date, quantity, length, cKey,
+                                        rKey));
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 254"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 251"); }
         
         //clean up environment
         closeResultSet(set);
@@ -396,6 +398,51 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getRack
+    //
+    // Gets and returns the rack associated with pSkoonieKey from the RACKS 
+    // table in a Rack object.
+    //
+
+    public Rack getRack(String pSkoonieKey)
+    {
+        
+        Rack r = null;
+
+        String cmd = "SELECT * FROM `RACKS` WHERE `skoonie_key` = ?";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set;
+        
+        //perform query
+        try {
+            stmt.setString(1, pSkoonieKey);
+            set = performQuery(stmt);
+            
+            //extract the data from the ResultSet
+            while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
+                String id       = set.getString("id");
+                String name     = set.getString("name");
+                
+                //store the rack information
+                r = new Rack(sKey, id, name);
+            }
+            
+            //clean up environment
+            closeResultSet(set);
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 434"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return r;
+
+    }//end of MySQLDatabase::getRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::insertBatch
     //
     // Inserts pBatch into the database.
@@ -409,13 +456,16 @@ public class MySQLDatabase
                         + "`date`,"
                         + "`quantity`,"
                         + "`total_length`,"
-                        + "`customer_key`) "
+                        + "`customer_key`,"
+                        + "`rack_key`) "
                         + "VALUES ("
                         + "?,"  //placeholder 1     Id
                         + "?,"  //placeholder 2     Date
                         + "?,"  //placeholder 3     Quantity
                         + "?,"  //placeholder 4     Total Length
-                        + "?)"; //placeholder 5     Customer Key
+                        + "?,"  //placeholder 5     Customer Key
+                        + "?"   //placeholder 6     Rack Key
+                        + ")";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
@@ -425,11 +475,12 @@ public class MySQLDatabase
             stmt.setString(3, pBatch.getQuantity());
             stmt.setString(4, pBatch.getTotalLength());
             stmt.setString(5, pBatch.getCustomerKey());
+            stmt.setString(6, pBatch.getRackKey());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 392"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 438"); }
         
         //clean up environment
         closePreparedStatement(stmt);

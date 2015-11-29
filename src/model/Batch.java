@@ -6,7 +6,7 @@
 * Purpose:
 *
 * This class stores information about a batch:
-*       Skoonie Key, Id, Date, Quantity, Total Length, Customer Key
+*       Skoonie Key, Id, Date, Quantity, Total Length, Customer Key, Rack Key
 * 
 *
 */
@@ -41,12 +41,16 @@ public class Batch extends Record
     public String getCustomerKey() { return customerKey; }
     public void setCustomerKey(String pKey) { customerKey = pKey; }
     
+    private String rackKey;
+    public String getRackKey() { return rackKey; }
+    public void setRackKey(String pKey) { rackKey = pKey; }
+    
     //--------------------------------------------------------------------------
     // Batch::Batch (constructor)
     //
 
     public Batch(String pSkoonieKey, String pId, String pDate, String pQuantity, 
-                    String pLength, String pCustomerKey)
+                    String pLength, String pCustomerKey, String pRackKey)
     {
         
         super(pSkoonieKey, pId);
@@ -55,6 +59,7 @@ public class Batch extends Record
         quantity        = pQuantity;
         totalLength     = pLength;
         customerKey     = pCustomerKey;
+        rackKey         = pRackKey;
 
     }//end of Batch::Batch (constructor)
     //--------------------------------------------------------------------------

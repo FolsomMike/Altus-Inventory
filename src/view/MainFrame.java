@@ -933,7 +933,7 @@ public class MainFrame extends SkoonieFrame
         batches = db.getBatches();
         
         String[] columnNames = {"Id", "Date", "Quantity", 
-                                    "Total Length", "Owner"};
+                                    "Total Length", "Owner", "Rack"};
         
         String[][] data = new String[batches.size()][];
         
@@ -941,11 +941,14 @@ public class MainFrame extends SkoonieFrame
         for (int i=0; i<data.length; i++) {
             String cusName = db.getCustomer(batches.get(i).getCustomerKey())
                                                             .getName();
-            data[i] = new String[]{batches.get(i).getId(), 
+            String rackName = db.getRack(batches.get(i).getRackKey())
+                                                            .getName();
+            data[i] = new String[]{ batches.get(i).getId(), 
                                     batches.get(i).getDate(),
                                     batches.get(i).getQuantity(),
                                     batches.get(i).getTotalLength(),
-                                    cusName};
+                                    cusName,
+                                    rackName};
         }
         
         model.setDataVector(data, columnNames);

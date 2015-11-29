@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.Batch;
 import model.Customer;
+import model.Rack;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -47,8 +48,10 @@ public class ReceiveMaterialWindow extends AltusJDialog
     static public String getActionId() { return actionId; }
     
     private JComboBox ownerCombo;
+    private JComboBox rackCombo;
     
     private ArrayList<Customer> customers;
+    private ArrayList<Rack> racks;
     
     private Batch batch;
 
@@ -112,8 +115,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
             createInputPanel("Quantity", "", "How many pieces of pipe?", w),
             createInputPanel("Total Length", "", 
                                 "Total length of the pipe was received?", w),
-            //DEBUG HSS//createInputPanel("Rack", "", 
-            //DEBUG HSS//                    "What rack is the material stored on?", w)               
+            createRackPanel()               
         }));
         
         //add the Range, Grade, and Diameter row
@@ -219,6 +221,52 @@ public class ReceiveMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::createRackPanel
+    //
+    // Creates and returns the Rack panel.
+    //
+
+    private JPanel createRackPanel()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Rack");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentY(TOP_ALIGNMENT);
+        panel.add(label);
+        
+        //get racks from the database
+        racks = getDatabase().getRacks();
+        
+        String[] names = new String[racks.size()+1];
+        names[0] = "--Select--";
+        
+        //extract names from racks
+        for (int i=0; i<racks.size(); i++) {
+            names[i+1] = racks.get(i).getName();
+        }
+        
+        //Create the combo box, select item at index 0
+        rackCombo = new JComboBox(names);
+        rackCombo.addActionListener(getMainView());
+        rackCombo.setAlignmentX(LEFT_ALIGNMENT);
+        rackCombo.setAlignmentY(TOP_ALIGNMENT);
+        rackCombo.setToolTipText("What rack is the material stored on?");
+        rackCombo.setSelectedIndex(0);
+        rackCombo.setBackground(Color.white);
+        Tools.setSizes(rackCombo, 130, getInputFieldHeight());
+        panel.add(rackCombo);
+        
+        return panel;
+
+    }// end of ReceiveMaterialWindow::createRackPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::getCustomerKey
     //
     // Returns the Skoonie Key associated with pCustomerName
@@ -239,6 +287,26 @@ public class ReceiveMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::getRackKey
+    //
+    // Returns the Skoonie Key associated with pRackName
+    //
+
+    private String getRackKey(String pRackName)
+    {
+        
+        String key = "";
+        
+        for (Rack r : racks) {
+            if(pRackName.equals(r.getName())) { key = r.getSkoonieKey(); }
+        }
+        
+        return key;
+
+    }// end of ReceiveMaterialWindow::getRackKey
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::getUserInput
     //
     // Gets the user input from the text fields and stores it in the Batch.
@@ -248,13 +316,15 @@ public class ReceiveMaterialWindow extends AltusJDialog
     {
         
         String cusKey = getCustomerKey((String)ownerCombo.getSelectedItem());
+        String rackKey = getRackKey((String)rackCombo.getSelectedItem());
         
         batch = new Batch(  "",
                             getInputFields().get("Id").getText(),
                             getInputFields().get("Date (YYYY-MM-DD)").getText(),
                             getInputFields().get("Quantity").getText(),
                             getInputFields().get("Total Length").getText(),
-                            cusKey);
+                            cusKey,
+                            rackKey);
 
     }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
