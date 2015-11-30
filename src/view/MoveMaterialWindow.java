@@ -21,8 +21,17 @@ package view;
 
 //------------------------------------------------------------------------------
 
+import java.awt.Color;
+import java.awt.Component;
+import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.TOP_ALIGNMENT;
+import java.util.ArrayList;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import model.Rack;
+import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -34,6 +43,10 @@ public class  MoveMaterialWindow extends AltusJDialog
     
     static private final String actionId = "MoveMaterialWindow";
     static public String getActionId() { return actionId; }
+    
+    private JComboBox rackCombo;
+    
+    private ArrayList<Rack> racks;
 
     //--------------------------------------------------------------------------
     // MoveMaterialWindow::MoveMaterialWindow (constructor)
@@ -61,8 +74,7 @@ public class  MoveMaterialWindow extends AltusJDialog
         
         //add the Rack row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Rack", "", "What rack is the material being "
-                                    + "moved to?", 130)
+            createRackPanel()
         }));
         
         //spacer between rows
@@ -72,6 +84,52 @@ public class  MoveMaterialWindow extends AltusJDialog
         addToMainPanel(createCancelConfirmPanel("Move", "Move the material."));
         
     }// end of MoveMaterialWindow::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MoveMaterialWindow::createRackPanel
+    //
+    // Creates and returns the Rack panel.
+    //
+
+    private JPanel createRackPanel()
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Rack");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentY(TOP_ALIGNMENT);
+        panel.add(label);
+        
+        //get racks from the database
+        racks = getDatabase().getRacks();
+        
+        String[] names = new String[racks.size()+1];
+        names[0] = "--Select--";
+        
+        //extract names from racks
+        for (int i=0; i<racks.size(); i++) {
+            names[i+1] = racks.get(i).getName();
+        }
+        
+        //Create the combo box, select item at index 0
+        rackCombo = new JComboBox(names);
+        rackCombo.addActionListener(getMainView());
+        rackCombo.setAlignmentX(LEFT_ALIGNMENT);
+        rackCombo.setAlignmentY(TOP_ALIGNMENT);
+        rackCombo.setToolTipText("What rack is the material being moved to?");
+        rackCombo.setSelectedIndex(0);
+        rackCombo.setBackground(Color.white);
+        Tools.setSizes(rackCombo, 130, getInputFieldHeight());
+        panel.add(rackCombo);
+        
+        return panel;
+
+    }// end of MoveMaterialWindow::createRackPanel
     //--------------------------------------------------------------------------
 
 }//end of class MoveMaterialWindow
