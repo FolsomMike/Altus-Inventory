@@ -17,6 +17,7 @@ package view;
 
 import java.awt.event.*;
 import javax.swing.*;
+import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -27,6 +28,9 @@ import javax.swing.*;
 
 public class MainMenu extends JMenuBar
 {
+    
+    static private final String actionId = "MainMenu";
+    static public String getActionId() { return actionId; }
 
     ActionListener actionListener;
 
@@ -123,8 +127,9 @@ public class MainMenu extends JMenuBar
         //Customer/View All Customers menu item
         viewAllCustomersMenuItem = new JMenuItem("View All Customers");
         viewAllCustomersMenuItem.setToolTipText("View all customers.");
-        viewAllCustomersMenuItem.setActionCommand
-                                            ("MainMenu--View All Customers");
+        viewAllCustomersMenuItem.setActionCommand(Tools.generateActionCommand
+                                                    (actionId, 
+                                                        "View All Customers"));
         viewAllCustomersMenuItem.addActionListener(actionListener);
         customerMenu.add(viewAllCustomersMenuItem);
 
@@ -150,7 +155,8 @@ public class MainMenu extends JMenuBar
         exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setMnemonic(KeyEvent.VK_X);
         exitMenuItem.setToolTipText("Exit the program.");
-        exitMenuItem.setActionCommand("MainMenu--Exit");
+        exitMenuItem.setActionCommand(Tools.generateActionCommand(actionId, 
+                                                                    "Exit"));
         exitMenuItem.addActionListener(actionListener);
         fileMenu.add(exitMenuItem);
 
@@ -176,7 +182,8 @@ public class MainMenu extends JMenuBar
         aboutMenuItem = new JMenuItem("About");
         aboutMenuItem.setMnemonic(KeyEvent.VK_A);
         aboutMenuItem.setToolTipText("Display the About window.");
-        aboutMenuItem.setActionCommand("MainMenu--Display About");
+        aboutMenuItem.setActionCommand(Tools.generateActionCommand
+                                            (actionId, "Display About"));
         aboutMenuItem.addActionListener(actionListener);
         helpMenu.add(aboutMenuItem);
 
@@ -184,7 +191,8 @@ public class MainMenu extends JMenuBar
         helpMenuItem = new JMenuItem("Help");
         helpMenuItem.setMnemonic(KeyEvent.VK_H);
         helpMenuItem.setToolTipText("Display the Help window.");
-        helpMenuItem.setActionCommand("MainMenu--Display Help");
+        helpMenuItem.setActionCommand(Tools.generateActionCommand
+                                            (actionId, "Display Help"));
         helpMenuItem.addActionListener(actionListener);
         helpMenu.add(helpMenuItem);
 
@@ -209,7 +217,8 @@ public class MainMenu extends JMenuBar
         //Rack/View All Racks menu item
         viewAllRacksMenuItem = new JMenuItem("View All Racks");
         viewAllRacksMenuItem.setToolTipText("View all racks.");
-        viewAllRacksMenuItem.setActionCommand("MainMenu--View All Racks");
+        viewAllRacksMenuItem.setActionCommand(Tools.generateActionCommand
+                                                (actionId, "View All Racks"));
         viewAllRacksMenuItem.addActionListener(actionListener);
         rackMenu.add(viewAllRacksMenuItem);
 

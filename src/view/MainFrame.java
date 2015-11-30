@@ -16,7 +16,6 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import hscomponents.jsplitbutton.JSplitButton;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
@@ -29,14 +28,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Batch;
 import model.MySQLDatabase;
@@ -51,6 +47,9 @@ import toolkit.Tools;
 public class MainFrame extends SkoonieFrame
 {
     
+    static private final String actionId = "MainFrame";
+    static public String getActionId() { return actionId; }
+    
     private final MainView mainView;
 
     private AltusJDialog activeDialog;
@@ -64,23 +63,6 @@ public class MainFrame extends SkoonieFrame
     private ArrayList<Batch> batches;
     private CustomTable batchesTable;
     private DefaultTableModel model;
-    
-    //material action buttons
-    private JButton btnMoveMaterial;
-    private JButton btnReserveMaterial;
-    private JButton btnShipMaterial;
-    private JButton btnTransferMaterial;
-    //material action buttons tool tips
-    private final String disabledToolTipAddon 
-                        = " Select a material in the table below to enable.";
-    private final String moveMaterialToolTip 
-                        = "Move material to a different rack.";
-    private final String reserveMaterialToolTip 
-                        = "Reserve material for future use.";
-    private final String shipMaterialToolTip 
-                        = "Ship material from the yard.";
-    private final String transferMaterialToolTip 
-                        = "Transfer material from one customer to another.";
 
     //--------------------------------------------------------------------------
     // MainFrame::MainFrame (constructor)
@@ -89,7 +71,7 @@ public class MainFrame extends SkoonieFrame
     public MainFrame(MainView pMainView)
     {
         
-        super("Altus Inventory", "MainFrame", pMainView, pMainView);
+        super("Altus Inventory", pMainView, pMainView);
 
         mainView = pMainView;
         
@@ -243,61 +225,123 @@ public class MainFrame extends SkoonieFrame
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        int spacer = 10;
 
         //add Receive Material button
-        panel.add(createReceiveMaterialButton());
+        panel.add(createControlPanelButton("Receive<br>Material", 
+                                            "images/receiveMaterial.png",
+                                            "Receive material into the yard.",
+                                            "Receive Material"));
         
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
         
         //add Ship Material button
-        panel.add(createShipMaterialButton());
+        panel.add(createControlPanelButton("Ship<br>Material", 
+                                            "images/shipMaterial.png",
+                                            "Ship material from the yard.",
+                                            "Ship Material"));
         
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
         
         //add Move Material button
-        panel.add(createMoveMaterialButton());
+        panel.add(createControlPanelButton("Move<br>Material", 
+                                            "images/moveMaterial.png",
+                                            "Move the selected material to a "
+                                                + "different rack.",
+                                            "Move Material"));
         
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
         
         //add Transfer Material button
-        panel.add(createTransferMaterialButton());
+        panel.add(createControlPanelButton("Transfer<br>Material", 
+                                            "images/transferMaterial.png",
+                                            "Transfer the selected material to "
+                                                + "a different customer.",
+                                            "Transfer Material"));
         
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
         
         //add Reserve Material button
-        panel.add(createReserveMaterialButton());
+        panel.add(createControlPanelButton("Reserve<br>Material", 
+                                            "images/reserveMaterial.png",
+                                            "Reserve the selected material for "
+                                                + "future use.",
+                                            "Reserve Material"));
         
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
         
         //add Material Info button
-        panel.add(createMaterialInfoButton());
+        panel.add(createControlPanelButton("Material<br>Info", 
+                                            "images/materialInfo.png",
+                                            "View and edit information about "
+                                                + "the selected material.",
+                                            "Material Info"));
         
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
 
-        //add create report button
-        panel.add(createCreateReportButton());
-
-        //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
-
-        //add create invoice button
-        panel.add(createCreateInvoiceButton());
+        //add Create Report button
+        panel.add(createControlPanelButton("Create<br>Report", 
+                                            "images/createReport.png",
+                                            "Create a report.",
+                                            "Create Report"));
 
         //horizontal spacer
-        panel.add(Box.createRigidArea(new Dimension(10,0)));
+        panel.add(Tools.createHorizontalSpacer(spacer));
 
-        //add make payment button
-        panel.add(createMakePaymentButton());
+        //add Create Invoice button
+        panel.add(createControlPanelButton("Create<br>Invoice", 
+                                            "images/createInvoice.png",
+                                            "Create an invoice.",
+                                            "Create Invoice"));
+
+        //horizontal spacer
+        panel.add(Tools.createHorizontalSpacer(spacer));
+
+        //add Make Payment button
+        panel.add(createControlPanelButton("Make<br>Payment", 
+                                            "images/makePayment.png",
+                                            "Record payment from a customer.",
+                                            "Make Payment"));
 
         return panel;
 
     }// end of MainFrame::createControlPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::createControlPanelButton
+    //
+    // Creates and returns a button to be used in the control panel part of the
+    // MainFrame, using the parameters for individuality.
+    //
+
+    private JButton createControlPanelButton(String pText, String pImagePath,
+                                                String pTip, String pCommand)
+    {
+
+        //create button
+        JButton btn = new JButton("<html><center>" + pText + "</center></html>", 
+                                        createImageIcon(pImagePath));
+        btn.addActionListener(mainView);
+        btn.setActionCommand(Tools.generateActionCommand(actionId, pCommand));
+        btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setFocusPainted(false);
+        btn.setHorizontalTextPosition(SwingConstants.CENTER);
+        btn.setMargin(new Insets(0,0,0,0));
+        btn.setToolTipText(pTip);
+        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        Tools.setSizes(btn, 70, 75);
+        
+        return btn;
+
+    }// end of MainFrame::createControlPanelButton
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -341,124 +385,6 @@ public class MainFrame extends SkoonieFrame
         else {return null;}
 
     }//end of MainFrame::createImageIcon
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::createCreateInvoiceButton
-    //
-    // Creates and returns the Create Invoice button.
-    //
-
-    private JButton createCreateInvoiceButton()
-    {
-
-        //create button
-        JSplitButton btn = new JSplitButton(
-                                "<html><center>Create<br>Invoice</html>", 
-                                createImageIcon("images/createInvoice.png"));
-        btn.init();
-        btn.addSplitButtonActionListener(mainView);
-        btn.setActionCommand("MainFrame--Create Invoice");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setArrowSize(10);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,20));
-        btn.setToolTipText("Create an invoice for a customer.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        Tools.setSizes(btn, 70, 75);
-        
-        //create a popup menu and add it to the button
-        JPopupMenu menu = new JPopupMenu();
-        menu.setBorder(new BevelBorder(BevelBorder.RAISED));
-        
-        //Create Invoice/View All Invoices menu item
-        JMenuItem viewAllInvoicesItem = new JMenuItem("View All Invoices");
-        viewAllInvoicesItem.setToolTipText("View, edit, or delete invoices.");
-        viewAllInvoicesItem.setActionCommand
-                                ("MainFrame--Create Invoice/View All Invoices");
-        viewAllInvoicesItem.addActionListener(mainView);
-        menu.add(viewAllInvoicesItem);
-        
-        btn.setPopupMenu(menu);
-        
-        return btn;
-
-    }// end of MainFrame::createCreateInvoiceButton
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::createCreateReportButton
-    //
-    // Creates and returns the Create Report button.
-    //
-
-    private JButton createCreateReportButton()
-    {
-
-        //create button
-        JSplitButton btn = new JSplitButton(
-                                "<html><center>Create<br>Report</html>", 
-                                createImageIcon("images/createReport.png"));
-        btn.init();
-        btn.addSplitButtonActionListener(mainView);
-        btn.setActionCommand("MainFrame--Create Report");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setArrowSize(10);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,20));
-        btn.setToolTipText("Create report.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        Tools.setSizes(btn, 70, 75);
-        
-        //create a popup menu and add it to the button
-        JPopupMenu menu = new JPopupMenu();
-        
-        //Create Report/Receiving Report menu item
-        JMenuItem receivingReportMenuItem = new JMenuItem("Receiving Report");
-        receivingReportMenuItem.setToolTipText("Create a receiving report.");
-        receivingReportMenuItem.setActionCommand("MainFrame--Receiving Report");
-        receivingReportMenuItem.addActionListener(mainView);
-        menu.add(receivingReportMenuItem);
-        
-        //Create Report/Shipping Report menu item
-        JMenuItem shippingReportMenuItem = new JMenuItem("Shipping Report");
-        shippingReportMenuItem.setToolTipText("Create a shipping report.");
-        shippingReportMenuItem.setActionCommand("MainFrame--Shipping Report");
-        shippingReportMenuItem.addActionListener(mainView);
-        menu.add(shippingReportMenuItem);
-        
-        //Create Report/Tally Report menu item
-        JMenuItem tallyReportMenuItem = new JMenuItem("Tally Report");
-        tallyReportMenuItem.setToolTipText("Create a tally report.");
-        tallyReportMenuItem.setActionCommand("MainFrame--Tally Report");
-        tallyReportMenuItem.addActionListener(mainView);
-        menu.add(tallyReportMenuItem);
-        
-        //Create Report/Rack Report menu item
-        JMenuItem rackReportMenuItem = new JMenuItem("Rack Report");
-        rackReportMenuItem.setToolTipText("Create a rack report.");
-        rackReportMenuItem.setActionCommand("MainFrame--Rack Report");
-        rackReportMenuItem.addActionListener(mainView);
-        menu.add(rackReportMenuItem);
-        
-        //Create Report/Current Balance Report menu item
-        JMenuItem currentBalanceReportMenuItem = 
-                                        new JMenuItem("Current Balance Report");
-        currentBalanceReportMenuItem.setToolTipText
-                            ("Create a current balance report for a customer.");
-        currentBalanceReportMenuItem.setActionCommand
-                            ("MainFrame--Current Balance Report");
-        currentBalanceReportMenuItem.addActionListener(mainView);
-        menu.add(currentBalanceReportMenuItem);
-        
-        menu.setBorder(new BevelBorder(BevelBorder.RAISED));
-        btn.setPopupMenu(menu);
-        
-        return btn;
-
-    }// end of MainFrame::createCreateReportButton
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -547,201 +473,6 @@ public class MainFrame extends SkoonieFrame
         return panel;
 
     }// end of MainFrame::createFilterPanel
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainFrame::createMakePaymentButton
-    //
-    // Creates and returns the Make Payment button.
-    //
-
-    private JButton createMakePaymentButton()
-    {
-
-        //create button
-        JButton btn = new JButton("<html><center>Make<br>Payment</html>", 
-                                    createImageIcon("images/makePayment.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Make Payment");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("Record payment from customer.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
-        
-        return btn;
-
-    }// end of MainFrame::createMakePaymentButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::createMaterialInfoButton
-    //
-    // Creates and returns the Material Info button.
-    //
-
-    private JButton createMaterialInfoButton()
-    {
-
-        //create button
-        JButton btn = new JButton("<html><center>Material<br>Info</html>", 
-                                createImageIcon("images/materialInfo.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Material Info");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("View and edit information about the selected"
-                                + " material.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
-        
-        return btn;
-
-    }// end of MainFrame::createMaterialInfoButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::createMoveMaterialButton
-    //
-    // Creates and returns the Receive Material button.
-    //
-
-    private JButton createMoveMaterialButton()
-    {
-
-        //create button
-        btnMoveMaterial = new JButton("<html><center>Move<br>Material</html>", 
-                                createImageIcon("images/moveMaterial.png"));
-        btnMoveMaterial.addActionListener(mainView);
-        btnMoveMaterial.setActionCommand("MainFrame--Move Material");
-        btnMoveMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnMoveMaterial.setFocusPainted(false);
-        btnMoveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnMoveMaterial.setMargin(new Insets(0,0,0,0));
-        btnMoveMaterial.setToolTipText(moveMaterialToolTip 
-                                                        + disabledToolTipAddon);
-        btnMoveMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btnMoveMaterial, 70, 75);
-        
-        return btnMoveMaterial;
-
-    }// end of MainFrame::createMoveMaterialButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::createReceiveMaterialButton
-    //
-    // Creates and returns the Receive Material button.
-    //
-
-    private JButton createReceiveMaterialButton()
-    {
-
-        //create button
-        JButton btn = new JButton("<html><center>Receive<br>Material</html>", 
-                                createImageIcon("images/receiveMaterial.png"));
-        btn.addActionListener(mainView);
-        btn.setActionCommand("MainFrame--Receive Material");
-        btn.setAlignmentX(LEFT_ALIGNMENT);
-        btn.setFocusPainted(false);
-        btn.setHorizontalTextPosition(SwingConstants.CENTER);
-        btn.setMargin(new Insets(0,0,0,0));
-        btn.setToolTipText("Receive material into the yard.");
-        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btn, 70, 75);
-        
-        return btn;
-
-    }// end of MainFrame::createReceiveMaterialButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::createReserveMaterialButton
-    //
-    // Creates and returns the Reserve Material button.
-    //
-
-    private JButton createReserveMaterialButton()
-    {
-
-        //create button
-        btnReserveMaterial = new JButton
-                                ("<html><center>Reserve<br>Material</html>", 
-                                createImageIcon("images/reserveMaterial.png"));
-        btnReserveMaterial.addActionListener(mainView);
-        btnReserveMaterial.setActionCommand("MainFrame--Reserve Material");
-        btnReserveMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnReserveMaterial.setFocusPainted(false);
-        btnReserveMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnReserveMaterial.setMargin(new Insets(0,0,0,0));
-        btnReserveMaterial.setToolTipText(reserveMaterialToolTip 
-                                                        + disabledToolTipAddon);
-        btnReserveMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btnReserveMaterial, 70, 75);
-        
-        return btnReserveMaterial;
-
-    }// end of MainFrame::createReserveMaterialButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::createShipMaterialButton
-    //
-    // Creates and returns the Ship Material button.
-    //
-
-    private JButton createShipMaterialButton()
-    {
-
-        //create button
-        btnShipMaterial = new JButton("<html><center>Ship<br>Material</html>", 
-                                createImageIcon("images/shipMaterial.png"));
-        btnShipMaterial.addActionListener(mainView);
-        btnShipMaterial.setActionCommand("MainFrame--Ship Material");
-        btnShipMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnShipMaterial.setFocusPainted(false);
-        btnShipMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnShipMaterial.setMargin(new Insets(0,0,0,0));
-        btnShipMaterial.setToolTipText(shipMaterialToolTip 
-                                                        + disabledToolTipAddon);
-        btnShipMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btnShipMaterial, 70, 75);
-        
-        return btnShipMaterial;
-
-    }// end of MainFrame::createShipMaterialButton
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainFrame::createTransferMaterialButton
-    //
-    // Creates and returns the Transfer Material button.
-    //
-
-    private JButton createTransferMaterialButton()
-    {
-
-        //create button
-        btnTransferMaterial = new JButton("<html><center>Transfer<br>Material</html>", 
-                                createImageIcon("images/transferMaterial.png"));
-        btnTransferMaterial.addActionListener(mainView);
-        btnTransferMaterial.setActionCommand("MainFrame--Transfer Material");
-        btnTransferMaterial.setAlignmentX(LEFT_ALIGNMENT);
-        btnTransferMaterial.setFocusPainted(false);
-        btnTransferMaterial.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnTransferMaterial.setMargin(new Insets(0,0,0,0));
-        btnTransferMaterial.setToolTipText(transferMaterialToolTip 
-                                                        + disabledToolTipAddon);
-        btnTransferMaterial.setVerticalTextPosition(SwingConstants.BOTTOM);        
-        Tools.setSizes(btnTransferMaterial, 70, 75);
-        
-        return btnTransferMaterial;
-
-    }// end of MainFrame::createTransferMaterialButton
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

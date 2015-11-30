@@ -62,6 +62,8 @@ import java.util.logging.SimpleFormatter;
 import toolkit.Tools;
 import view.AltusJDialog;
 import view.CustomersWindow;
+import view.MainFrame;
+import view.MainMenu;
 import view.RacksWindow;
 
 //------------------------------------------------------------------------------
@@ -144,127 +146,155 @@ public class MainController implements EventHandler, Runnable
     public void actionPerformed(ActionEvent e)
     {
         
-        //AltusJDialog action commands
-        if (Tools.generateActionCommand(AltusJDialog.getActionId(),
-                                            "Cancel")
+        String actionId;
+        
+        //MainFrame
+        actionId = MainFrame.getActionId();
+        
+        if (Tools.generateActionCommand(MainFrame.getActionId(), "Create Invoice")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayCreateInvoiceWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Create Report")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayCreateReportWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Make Payment")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayMakePaymentWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Move Material")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayMoveMaterialWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Receive Material")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayReceiveMaterialWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Reserve Material")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayReserveMaterialWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Ship Material")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayShipMaterialWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Transfer Material")
+                .equals(e.getActionCommand()))
+        {
+            view.displayTransferMaterialWindow();
+        }
+        //end of MainFrame
+        
+        //MainMenu
+        actionId = MainMenu.getActionId();
+        
+        if (Tools.generateActionCommand(actionId, "Display About")
+                .equals(e.getActionCommand()))
+        {
+            view.displayAbout();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Display Help")
+                .equals(e.getActionCommand()))
+        {
+            view.displayHelp();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "Exit")
+                .equals(e.getActionCommand()))
+        {
+            shutDown();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "View All Customers")
+                .equals(e.getActionCommand()))
+        {
+            view.displayCustomersWindow();
+        }
+        
+        else if (Tools.generateActionCommand(actionId, "View All Racks")
+                .equals(e.getActionCommand()))
+        {
+            view.displayRacksWindow();
+        }
+        //end of MainMenu
+        
+        //AltusJDialog
+        actionId = AltusJDialog.getActionId();
+        
+        if (Tools.generateActionCommand(actionId, "Cancel")
                 .equals(e.getActionCommand())) 
         {
             view.cancelAltusJDialogAction();
         }
         
-        if (Tools.generateActionCommand(AltusJDialog.getActionId(),
-                                            "Confirm")
+        else if (Tools.generateActionCommand(actionId, "Confirm")
                 .equals(e.getActionCommand())) 
         {
             view.confirmAltusJDialogAction();
         }
-        //end of AltusJDialog action commands
+        //end of AltusJDialog
         
-        //Customers window action commands
-        if (Tools.generateActionCommand(CustomersWindow.getActionId(),
-                                            "Create Customer")
+        //Customers window
+        actionId = CustomersWindow.getActionId();
+        
+        if (Tools.generateActionCommand(actionId, "Create Customer")
                 .equals(e.getActionCommand())) 
         {
             view.displayCreateCustomerWindow();
         }
         
-        if (Tools.generateActionCommand(CustomersWindow.getActionId(),
-                                            "Delete Customer")
+        else if (Tools.generateActionCommand(actionId, "Delete Customer")
                 .equals(e.getActionCommand())) 
         {
             view.deleteCustomer();
         }
         
-        if (Tools.generateActionCommand(CustomersWindow.getActionId(),
-                                            "Edit Customer")
+        else if (Tools.generateActionCommand(actionId, "Edit Customer")
                 .equals(e.getActionCommand())) 
         {
             view.displayEditCustomerWindow();
         }
-        //end of Customers window action commands
+        //end of Customers window
         
-        //Racks window action commands
-        if (Tools.generateActionCommand(RacksWindow.getActionId(),
-                                            "Create Rack")
+        //Racks window
+        actionId = RacksWindow.getActionId();
+        
+        if (Tools.generateActionCommand(actionId, "Create Rack")
                 .equals(e.getActionCommand())) 
         {
             view.displayCreateRackWindow();
         }
         
-        if (Tools.generateActionCommand(RacksWindow.getActionId(),
-                                            "Delete Rack")
+        else if (Tools.generateActionCommand(actionId, "Delete Rack")
                 .equals(e.getActionCommand())) 
         {
             view.deleteRack();
         }
         
-        if (Tools.generateActionCommand(RacksWindow.getActionId(),
-                                            "Edit Rack")
+        else if (Tools.generateActionCommand(actionId, "Edit Rack")
                 .equals(e.getActionCommand())) 
         {
             view.displayEditRackWindow();
         }
-        //end of Racks window action commands
-        
-        if ("MainFrame--Create Invoice".equals(e.getActionCommand())) {
-            view.displayCreateInvoiceWindow();
-        }
-        
-        if ("MainFrame--Create Invoice/View All Invoices".equals
-            (e.getActionCommand())) 
-        {
-            view.displayInvoicesWindow();
-        }
-        
-        if ("MainFrame--Create Report".equals(e.getActionCommand())) {
-            view.displayCreateReportWindow();
-        }
-        
-        if ("MainFrame--Make Payment".equals(e.getActionCommand())) {
-            view.displayMakePaymentWindow();
-        }
-        
-        if ("MainFrame--Move Material".equals(e.getActionCommand())) {
-            view.displayMoveMaterialWindow();
-        }
-        
-        if ("MainFrame--Receive Material".equals(e.getActionCommand())) {
-            view.displayReceiveMaterialWindow();
-        }
-        
-        if ("MainFrame--Reserve Material".equals(e.getActionCommand())) {
-            view.displayReserveMaterialWindow();
-        }
-        
-        if ("MainFrame--Ship Material".equals(e.getActionCommand())) {
-            view.displayShipMaterialWindow();
-        }
-        
-        if ("MainFrame--Transfer Material".equals(e.getActionCommand())) {
-            view.displayTransferMaterialWindow();
-        }
-        
-        if ("MainMenu--Display About".equals(e.getActionCommand())) {
-            view.displayAbout();
-        }
-        
-        if ("MainMenu--Display Help".equals(e.getActionCommand())) {
-            view.displayHelp();
-        }
-        
-        if ("MainMenu--Exit".equals(e.getActionCommand())) {
-            shutDown();
-        }
-        
-        if ("MainMenu--View All Customers".equals(e.getActionCommand())) {
-            view.displayCustomersWindow();
-        }
-        
-        if ("MainMenu--View All Racks".equals(e.getActionCommand())) {
-            view.displayRacksWindow();
-        }
+        //end of Racks window
 
-        if ("Timer".equals(e.getActionCommand())) { 
+        else if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
         }
 
