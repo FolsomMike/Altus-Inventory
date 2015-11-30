@@ -85,7 +85,7 @@ public class MySQLDatabase
     public MySQLDatabase()
     {
 
-    }//end of MySQLDatabase::MySQLDatabase (constructor)
+    }// end of MySQLDatabase::MySQLDatabase (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -99,7 +99,7 @@ public class MySQLDatabase
         
         registerJDBCDriver();
 
-    }//end of MySQLDatabase::init
+    }// end of MySQLDatabase::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -124,7 +124,7 @@ public class MySQLDatabase
         }
         catch (SQLException e) { logSevere(e.getMessage() + " - Error: 129"); }
         
-    }//end of MySQLDatabase::closeDatabaseConnection
+    }// end of MySQLDatabase::closeDatabaseConnection
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -139,7 +139,7 @@ public class MySQLDatabase
         try { if (pSet != null) { pSet.close(); } }
         catch (SQLException e) { logSevere(e.getMessage() + " - Error: 144"); }
 
-    }//end of MySQLDatabase::closeResultSet
+    }// end of MySQLDatabase::closeResultSet
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -154,7 +154,7 @@ public class MySQLDatabase
         try { if (pStatement != null) { pStatement.close(); } }
         catch (SQLException e) { logSevere(e.getMessage() + " - Error: 161"); }
 
-    }//end of MySQLDatabase::closePreparedStatement
+    }// end of MySQLDatabase::closePreparedStatement
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -188,7 +188,7 @@ public class MySQLDatabase
         
         return success;
         
-    }//end of MySQLDatabase::connectToDatabase
+    }// end of MySQLDatabase::connectToDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -212,7 +212,7 @@ public class MySQLDatabase
         
         return stmt;
 
-    }//end of MySQLDatabase::createPreparedStatement
+    }// end of MySQLDatabase::createPreparedStatement
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -257,7 +257,7 @@ public class MySQLDatabase
         
         return batches;
 
-    }//end of MySQLDatabase::getBatches
+    }// end of MySQLDatabase::getBatches
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -308,7 +308,7 @@ public class MySQLDatabase
         
         return c;
 
-    }//end of MySQLDatabase::getCustomer
+    }// end of MySQLDatabase::getCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -354,47 +354,7 @@ public class MySQLDatabase
         
         return customers;
 
-    }//end of MySQLDatabase::getCustomers
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getRacks
-    //
-    // Gets and returns all of the racks in the RACKS table and stores all of 
-    // the data pertaining to a rack in a Rack object. All of the Rack objects 
-    // are returned in an array list.
-    //
-
-    public ArrayList<Rack> getRacks()
-    {
-        
-        ArrayList<Rack> racks = new ArrayList();
-
-        String cmd = "SELECT * FROM `RACKS` ORDER BY `name` ASC";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                
-                //store the rack information
-                racks.add(new Rack(sKey, id, name));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 387"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return racks;
-
-    }//end of MySQLDatabase::getRacks
+    }// end of MySQLDatabase::getCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -439,7 +399,47 @@ public class MySQLDatabase
         
         return r;
 
-    }//end of MySQLDatabase::getRack
+    }// end of MySQLDatabase::getRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::getRacks
+    //
+    // Gets and returns all of the racks in the RACKS table and stores all of 
+    // the data pertaining to a rack in a Rack object. All of the Rack objects 
+    // are returned in an array list.
+    //
+
+    public ArrayList<Rack> getRacks()
+    {
+        
+        ArrayList<Rack> racks = new ArrayList();
+
+        String cmd = "SELECT * FROM `RACKS` ORDER BY `name` ASC";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
+                String id       = set.getString("id");
+                String name     = set.getString("name");
+                
+                //store the rack information
+                racks.add(new Rack(sKey, id, name));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 387"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return racks;
+
+    }// end of MySQLDatabase::getRacks
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -486,7 +486,7 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
         closeDatabaseConnection();
                 
-    }//end of MySQLDatabase::insertBatch
+    }// end of MySQLDatabase::insertBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -531,7 +531,7 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
         closeDatabaseConnection();
                 
-    }//end of MySQLDatabase::insertCustomer
+    }// end of MySQLDatabase::insertCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -564,7 +564,7 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
         closeDatabaseConnection();
                 
-    }//end of MySQLDatabase::insertRack
+    }// end of MySQLDatabase::insertRack
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -578,7 +578,7 @@ public class MySQLDatabase
 
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage);
 
-    }//end of MySQLDatabase::logSevere
+    }// end of MySQLDatabase::logSevere
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -593,7 +593,7 @@ public class MySQLDatabase
 
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage, pE);
 
-    }//end of MySQLDatabase::logStackTrace
+    }// end of MySQLDatabase::logStackTrace
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -621,7 +621,7 @@ public class MySQLDatabase
         
         return set;
 
-    }//end of MySQLDatabase::performQuery
+    }// end of MySQLDatabase::performQuery
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -639,7 +639,7 @@ public class MySQLDatabase
             logSevere(e.getMessage() + " - Error: 477"); 
         }
 
-    }//end of MySQLDatabase::registerJDBCDriver
+    }// end of MySQLDatabase::registerJDBCDriver
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateBatch
@@ -679,7 +679,7 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
         closeDatabaseConnection();
                 
-    }//end of MySQLDatabase::updateBatch
+    }// end of MySQLDatabase::updateBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -722,7 +722,7 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
         closeDatabaseConnection();
                 
-    }//end of MySQLDatabase::updateCustomer
+    }// end of MySQLDatabase::updateCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -755,9 +755,9 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
         closeDatabaseConnection();
                 
-    }//end of MySQLDatabase::updateRack
+    }// end of MySQLDatabase::updateRack
     //--------------------------------------------------------------------------
     
-}//end of class MySQLDatabase
+}// end of class MySQLDatabase
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
