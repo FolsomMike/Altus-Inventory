@@ -96,6 +96,32 @@ public class TransferMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // TransferMaterialWindow::confirm
+    //
+    // Confirms that the user wants to transfer a material using the inputs.
+    //
+
+    @Override
+    public void confirm()
+    {
+        
+        //get the user input
+        getUserInput();
+        
+        //update the batch in the database
+        getDatabase().updateBatch(batch);
+        
+        //tell the MainFrame to reload its data from the database since we 
+        //changed some stuff there
+        getMainFrame().retrieveBatchesFromDatabase();
+        
+        //dispose of the window and its resources
+        dispose();
+
+    }// end of TransferMaterialWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // TransferMaterialWindow::createCustomerPanel
     //
     // Creates and returns the Customer panel.
@@ -140,6 +166,41 @@ public class TransferMaterialWindow extends AltusJDialog
         return panel;
 
     }// end of TransferMaterialWindow::createCustomerPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // TransferMaterialWindow::getCustomerKey
+    //
+    // Returns the Skoonie Key associated with pCustomerName
+    //
+
+    private String getCustomerKey(String pCustomerName)
+    {
+        
+        String key = "";
+        
+        for (Customer c : customers) {
+            if(pCustomerName.equals(c.getName())) { key = c.getSkoonieKey(); }
+        }
+        
+        return key;
+
+    }// end of TransferMaterialWindow::getCustomerKey
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // TransferMaterialWindow::getUserInput
+    //
+    // Gets the user input from the text fields and stores it in the Batch.
+    //
+
+    private void getUserInput()
+    {
+        
+        batch.setCustomerKey(getCustomerKey((String)customerCombo
+                                                        .getSelectedItem()));
+
+    }// end of TransferMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
 
 }//end of class TransferMaterialWindow
