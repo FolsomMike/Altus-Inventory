@@ -9,7 +9,7 @@
 * database and displays their names and ids in a table.
 * 
 * It allows users to perform actions relating to customers, currently:
-*       Add Customer, Edit Customer
+*       Add Customer, Edit Customer, Delete Customer
 *
 */
 
