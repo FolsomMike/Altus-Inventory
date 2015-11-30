@@ -93,6 +93,32 @@ public class  MoveMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MoveMaterialWindow::confirm
+    //
+    // Confirms that the user wants to move a material using the inputs.
+    //
+
+    @Override
+    public void confirm()
+    {
+        
+        //get the user input
+        getUserInput();
+        
+        //update the batch into the database
+        getDatabase().updateBatch(batch);
+        
+        //tell the MainFrame to reload its data from the database since we 
+        //changed some stuff there
+        getMainFrame().retrieveBatchesFromDatabase();
+        
+        //dispose of the window and its resources
+        dispose();
+
+    }// end of MoveMaterialWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MoveMaterialWindow::createRackPanel
     //
     // Creates and returns the Rack panel.
@@ -136,6 +162,40 @@ public class  MoveMaterialWindow extends AltusJDialog
         return panel;
 
     }// end of MoveMaterialWindow::createRackPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MoveMaterialWindow::getRackKey
+    //
+    // Returns the Skoonie Key associated with pRackName
+    //
+
+    private String getRackKey(String pRackName)
+    {
+        
+        String key = "";
+        
+        for (Rack r : racks) {
+            if(pRackName.equals(r.getName())) { key = r.getSkoonieKey(); }
+        }
+        
+        return key;
+
+    }// end of MoveMaterialWindow::getRackKey
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MoveMaterialWindow::getUserInput
+    //
+    // Gets the user input from the text fields and stores it in the Batch.
+    //
+
+    private void getUserInput()
+    {
+        
+        batch.setRackKey(getRackKey((String)rackCombo.getSelectedItem()));
+
+    }// end of MoveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
 
 }// end of class MoveMaterialWindow
