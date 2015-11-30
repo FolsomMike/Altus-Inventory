@@ -192,6 +192,13 @@ public class MainController implements EventHandler, Runnable
         }
         
         if (Tools.generateActionCommand(RacksWindow.getActionId(),
+                                            "Delete Rack")
+                .equals(e.getActionCommand())) 
+        {
+            view.deleteRack();
+        }
+        
+        if (Tools.generateActionCommand(RacksWindow.getActionId(),
                                             "Edit Rack")
                 .equals(e.getActionCommand())) 
         {

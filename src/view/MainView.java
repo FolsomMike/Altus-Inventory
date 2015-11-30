@@ -249,7 +249,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         mainFrame.deleteCustomer();
 
-    }//end of MainView::eleteCustomer
+    }//end of MainView::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::deleteRack
+    //
+    // Deletes the rack selected in the Racks window.
+    //
+
+    public void deleteRack()
+    {
+
+        mainFrame.deleteRack();
+
+    }//end of MainView::deleteRack
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------

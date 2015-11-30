@@ -723,6 +723,20 @@ public class MainFrame extends SkoonieFrame
         
     }// end of MainFrame::deleteCustomer
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::deleteRack
+    //
+    // Deletes the rack selected in the Racks window.
+    //
+    
+    public void deleteRack() 
+    {
+        
+        racksWindow.deleteRack();
+        
+    }// end of MainFrame::deleteRack
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainFrame::displayAbout

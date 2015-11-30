@@ -142,6 +142,23 @@ public class RacksWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // RacksWindow::deleteRack
+    //
+    // Deletes the rack selected in the table.
+    //
+    
+    public void deleteRack() 
+    {
+       
+       getDatabase().deleteRack(getSelectedRack());
+       
+       //reload the racks from the database now that we've changed stuff
+       retrieveRacksFromDatabase();
+        
+    }// end of RacksWindow::deleteRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // RacksWindow::displayCreateRackWindow
     //
     // Displays the Create Rack window and sets it as the active dialog.
