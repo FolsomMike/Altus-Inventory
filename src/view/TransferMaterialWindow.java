@@ -11,7 +11,7 @@
 * and what customer to transfer it to.
 * 
 * Currently, it has input fields for:
-*       Quantity, Customer
+*       Customer
 */
 
 //------------------------------------------------------------------------------
@@ -60,8 +60,6 @@ public class TransferMaterialWindow extends AltusJDialog
         
         //add the Quantity and Customer row
         addToMainPanel(createRow(new JPanel[] {
-            createQuantityInputPanel("How many pieces of material would you "
-                                        + "like to ship?"),
             createInputPanel("Customer", "", "What customer is the material "
                                     + "being transferred to?", 130)
         }));
