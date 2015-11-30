@@ -244,6 +244,34 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::deleteRack
+    //
+    // Deletes pRack from the RACKS table in the database.
+    //
+
+    public void deleteRack(Rack pRack)
+    {
+        
+        String cmd = "DELETE FROM `RACKS` WHERE `skoonie_key`=?";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pRack.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 265"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+
+    }// end of MySQLDatabase::deleteRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getBatches
     //
     // Gets and returns all of the batches in the BATCHES table and stores all
