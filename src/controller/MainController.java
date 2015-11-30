@@ -160,7 +160,7 @@ public class MainController implements EventHandler, Runnable
         }
         //end of AltusJDialog action commands
         
-        //Customers Window action commands
+        //Customers window action commands
         if (Tools.generateActionCommand(CustomersWindow.getActionId(),
                                             "Create Customer")
                 .equals(e.getActionCommand())) 
@@ -174,9 +174,9 @@ public class MainController implements EventHandler, Runnable
         {
             view.displayEditCustomerWindow();
         }
-        //end of Customers Window action commands
+        //end of Customers window action commands
         
-        //Racks Window action commands
+        //Racks window action commands
         if (Tools.generateActionCommand(RacksWindow.getActionId(),
                                             "Create Rack")
                 .equals(e.getActionCommand())) 
@@ -190,7 +190,7 @@ public class MainController implements EventHandler, Runnable
         {
             view.displayEditRackWindow();
         }
-        //end of Racks Window action commands
+        //end of Racks window action commands
         
         if ("MainFrame--Create Invoice".equals(e.getActionCommand())) {
             view.displayCreateInvoiceWindow();
