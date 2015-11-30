@@ -118,15 +118,24 @@ public class CustomersWindow extends AltusJDialog
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
+        int buttonSpacer = 20;
+        
         //Create Customer button
         panel.add(createButton("Create Customer", "Create a new customer.", 
                                 actionId));
         
-        panel.add(Tools.createVerticalSpacer(20));
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Edit Customer button
         panel.add(createButton("Edit Customer", 
                                 "Edit information about the selected customer.",
+                                actionId));
+        
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
+        
+        //Delete Customer button
+        panel.add(createButton("Delete Customer", 
+                                "Delete the selected customer.",
                                 actionId));
         
         
