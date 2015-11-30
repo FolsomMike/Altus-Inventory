@@ -641,6 +641,46 @@ public class MySQLDatabase
 
     }//end of MySQLDatabase::registerJDBCDriver
     //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateBatch
+    //
+    // Updates pBatch in the database.
+    //
+
+    public void updateBatch(Batch pBatch)
+    {
+        
+        String cmd = "UPDATE `BATCHES` SET "
+                        + "`id`=?,"                 //placeholder 1     id
+                        + "`date`=?,"               //placeholder 2     date
+                        + "`quantity`=?,"           //placeholder 3     quantity
+                        + "`total_length`=?,"       //placeholder 4     total length
+                        + "`customer_key`=?,"       //placeholder 5     customer key
+                        + "`rack_key`=?,"           //placeholder 6     rack key
+                        + "WHERE `skoonie_key`=?";  //placeholder 7     skoonie key
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pBatch.getId());
+            stmt.setString(2, pBatch.getDate());
+            stmt.setString(3, pBatch.getQuantity());
+            stmt.setString(4, pBatch.getTotalLength());
+            stmt.setString(5, pBatch.getCustomerKey());
+            stmt.setString(6, pBatch.getRackKey());
+            stmt.setString(7, pBatch.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 676"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }//end of MySQLDatabase::updateBatch
+    //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateCustomer
