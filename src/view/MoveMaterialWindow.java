@@ -105,7 +105,7 @@ public class  MoveMaterialWindow extends AltusJDialog
         //get the user input
         getUserInput();
         
-        //update the batch into the database
+        //update the batch in the database
         getDatabase().updateBatch(batch);
         
         //tell the MainFrame to reload its data from the database since we 
