@@ -273,6 +273,12 @@ public class MainFrame extends SkoonieFrame
         
         //horizontal spacer
         panel.add(Box.createRigidArea(new Dimension(10,0)));
+        
+        //add Material Info button
+        panel.add(createMaterialInfoButton());
+        
+        //horizontal spacer
+        panel.add(Box.createRigidArea(new Dimension(10,0)));
 
         //add create report button
         panel.add(createCreateReportButton());
@@ -568,6 +574,34 @@ public class MainFrame extends SkoonieFrame
         return btn;
 
     }// end of MainFrame::createMakePaymentButton
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::createMaterialInfoButton
+    //
+    // Creates and returns the Material Info button.
+    //
+
+    private JButton createMaterialInfoButton()
+    {
+
+        //create button
+        JButton btn = new JButton("<html><center>Material<br>Info</html>", 
+                                createImageIcon("images/materialInfo.png"));
+        btn.addActionListener(mainView);
+        btn.setActionCommand("MainFrame--Material Info");
+        btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.setFocusPainted(false);
+        btn.setHorizontalTextPosition(SwingConstants.CENTER);
+        btn.setMargin(new Insets(0,0,0,0));
+        btn.setToolTipText("View and edit information about the selected"
+                                + " material.");
+        btn.setVerticalTextPosition(SwingConstants.BOTTOM);        
+        Tools.setSizes(btn, 70, 75);
+        
+        return btn;
+
+    }// end of MainFrame::createMaterialInfoButton
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
