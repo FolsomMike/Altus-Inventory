@@ -75,9 +75,6 @@ public class TransferMaterialWindow extends AltusJDialog
     protected void createGui() 
     {
         
-        //DEBUG HSS//
-        System.out.println("Batch Id: " + batch.getId());
-        
         setMainPanelLayout(BoxLayout.Y_AXIS);
         
         //add the Quantity and Customer row
