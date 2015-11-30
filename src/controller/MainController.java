@@ -169,6 +169,13 @@ public class MainController implements EventHandler, Runnable
         }
         
         if (Tools.generateActionCommand(CustomersWindow.getActionId(),
+                                            "Delete Customer")
+                .equals(e.getActionCommand())) 
+        {
+            view.deleteCustomer();
+        }
+        
+        if (Tools.generateActionCommand(CustomersWindow.getActionId(),
                                             "Edit Customer")
                 .equals(e.getActionCommand())) 
         {

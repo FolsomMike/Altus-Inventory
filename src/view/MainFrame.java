@@ -709,6 +709,20 @@ public class MainFrame extends SkoonieFrame
 
     }// end of MainFrame::createTransferMaterialButton
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::deleteCustomer
+    //
+    // Deletes the customer selected in the Customers window.
+    //
+    
+    public void deleteCustomer() 
+    {
+        
+        customersWindow.deleteCustomer();
+        
+    }// end of MainFrame::deleteCustomer
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainFrame::displayAbout

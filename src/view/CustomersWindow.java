@@ -145,6 +145,23 @@ public class CustomersWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // CustomersWindow::deleteCustomer
+    //
+    // Deletes the customer selected in the table.
+    //
+    
+    public void deleteCustomer() 
+    {
+       
+       getDatabase().deleteCustomer(getSelectedCustomer());
+       
+       //reload the customers from the database now that we've changed stuff
+       retrieveCustomersFromDatabase();
+        
+    }// end of CustomersWindow::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // CustomersWindow::displayCreateCustomerWindow
     //
     // Displays the Create Customer window and sets it as the active dialog.

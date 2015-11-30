@@ -237,6 +237,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }//end of MainView::confirmAltusJDialogAction
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::deleteCustomer
+    //
+    // Deletes the customer selected in the Customers window.
+    //
+
+    public void deleteCustomer()
+    {
+
+        mainFrame.deleteCustomer();
+
+    }//end of MainView::eleteCustomer
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayAbout
