@@ -30,6 +30,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import model.Batch;
 import model.Rack;
 import toolkit.Tools;
 
@@ -47,17 +48,22 @@ public class  MoveMaterialWindow extends AltusJDialog
     private JComboBox rackCombo;
     
     private ArrayList<Rack> racks;
+    
+    private final Batch batch;
 
     //--------------------------------------------------------------------------
     // MoveMaterialWindow::MoveMaterialWindow (constructor)
     //
 
-    public MoveMaterialWindow(MainFrame pMainFrame, MainView pMainView)
+    public MoveMaterialWindow(Batch pBatch, MainFrame pMainFrame, 
+                                MainView pMainView)
     {
 
         super("Move Material", pMainFrame, pMainView);
+        
+        batch = pBatch;
 
-    }//end of  MoveMaterialWindow::MoveMaterialWindow (constructor)
+    }// end of MoveMaterialWindow::MoveMaterialWindow (constructor)
     //-------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -132,6 +138,6 @@ public class  MoveMaterialWindow extends AltusJDialog
     }// end of MoveMaterialWindow::createRackPanel
     //--------------------------------------------------------------------------
 
-}//end of class MoveMaterialWindow
+}// end of class MoveMaterialWindow
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

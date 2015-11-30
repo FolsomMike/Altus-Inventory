@@ -822,7 +822,8 @@ public class MainFrame extends SkoonieFrame
     public void displayMoveMaterialWindow() 
     {
         
-        MoveMaterialWindow w = new MoveMaterialWindow(this, mainView);
+        MoveMaterialWindow w = new MoveMaterialWindow(getSelectedBatch(), this,
+                                                        mainView);
         w.init();
         
     }// end of MainFrame::displayMoveMaterialWindow
@@ -901,6 +902,29 @@ public class MainFrame extends SkoonieFrame
         w.init();
         
     }// end of MainFrame::displayTransferMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::getSelectedBatch
+    //
+    // Gets and returns the batch that is selected in the table.
+    //
+    
+    private Batch getSelectedBatch() 
+    {
+        
+        int row = batchesTable.getSelectedRow();
+        String id = (String)batchesTable.getValueAt(row, 0);
+        
+        //look for the customer that matches the selected id
+        for (Batch b : batches) {
+            if (id.equals(b.getId())) { return b; }
+        }
+        
+        //no customer was found so return null
+        return null;
+        
+    }// end of MainFrame::getSelectedBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
