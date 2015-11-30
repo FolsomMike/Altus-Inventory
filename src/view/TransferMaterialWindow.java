@@ -29,6 +29,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import model.Batch;
 import model.Customer;
 import toolkit.Tools;
 
@@ -46,15 +47,20 @@ public class TransferMaterialWindow extends AltusJDialog
     private JComboBox customerCombo;
     
     private ArrayList<Customer> customers;
+    
+    private final Batch batch;
 
     //--------------------------------------------------------------------------
     // TransferMaterialWindow::TransferMaterialWindow (constructor)
     //
 
-    public TransferMaterialWindow(MainFrame pMainFrame, MainView pMainView)
+    public TransferMaterialWindow(Batch pBatch, MainFrame pMainFrame, 
+                                    MainView pMainView)
     {
 
         super("Transfer Material", pMainFrame, pMainView);
+        
+        batch = pBatch;
 
     }//end of TransferMaterialWindow::TransferMaterialWindow (constructor)
     //--------------------------------------------------------------------------
@@ -68,6 +74,9 @@ public class TransferMaterialWindow extends AltusJDialog
     @Override
     protected void createGui() 
     {
+        
+        //DEBUG HSS//
+        System.out.println("Batch Id: " + batch.getId());
         
         setMainPanelLayout(BoxLayout.Y_AXIS);
         

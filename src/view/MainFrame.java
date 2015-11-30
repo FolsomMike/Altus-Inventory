@@ -898,7 +898,8 @@ public class MainFrame extends SkoonieFrame
     public void displayTransferMaterialWindow() 
     {
         
-        TransferMaterialWindow w = new TransferMaterialWindow(this, mainView);
+        TransferMaterialWindow w = new TransferMaterialWindow(
+                                            getSelectedBatch(),this, mainView);
         w.init();
         
     }// end of MainFrame::displayTransferMaterialWindow
