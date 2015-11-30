@@ -11,7 +11,7 @@
 * and what rack to move it to.
 * 
 * Currently, it has input fields for:
-*       Quantity, Rack
+*       Rack
 *
 */
 
@@ -59,10 +59,8 @@ public class  MoveMaterialWindow extends AltusJDialog
         
         setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        //add the Quantity and Rack row
+        //add the Rack row
         addToMainPanel(createRow(new JPanel[] {
-            createQuantityInputPanel("How many pieces of material would you "
-                                        + "like to ship?"),
             createInputPanel("Rack", "", "What rack is the material being "
                                     + "moved to?", 130)
         }));
