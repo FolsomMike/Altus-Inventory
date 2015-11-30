@@ -9,7 +9,7 @@
 * database and displays their names and ids in a table.
 * 
 * It allows users to perform actions relating to racks, currently:
-*       Add Rack, Edit Rack
+*       Add Rack, Edit Rack, Delete Rack
 *
 */
 
@@ -118,16 +118,23 @@ public class RacksWindow extends AltusJDialog
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
+        int buttonSpacer = 20;
+        
         //Create Rack button
         panel.add(createButton("Create Rack", "Create a new rack.", actionId));
         
-        panel.add(Tools.createVerticalSpacer(20));
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Edit Rack button
         panel.add(createButton("Edit Rack", 
                                 "Edit information about the selected rack.",
                                 actionId));
         
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
+        
+        //Delete Rack button
+        panel.add(createButton("Delete Rack", "Delete the selected rack.",
+                                actionId));
         
         return panel;
         
