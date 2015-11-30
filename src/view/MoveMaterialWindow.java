@@ -132,7 +132,7 @@ public class  MoveMaterialWindow extends AltusJDialog
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        JLabel label = new JLabel("Rack");
+        JLabel label = new JLabel("Move to rack:");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         label.setAlignmentY(TOP_ALIGNMENT);
         panel.add(label);
