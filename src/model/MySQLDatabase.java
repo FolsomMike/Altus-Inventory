@@ -656,7 +656,7 @@ public class MySQLDatabase
                         + "`quantity`=?,"           //placeholder 3     quantity
                         + "`total_length`=?,"       //placeholder 4     total length
                         + "`customer_key`=?,"       //placeholder 5     customer key
-                        + "`rack_key`=?,"           //placeholder 6     rack key
+                        + "`rack_key`=?"           //placeholder 6     rack key
                         + "WHERE `skoonie_key`=?";  //placeholder 7     skoonie key
         
         PreparedStatement stmt = createPreparedStatement(cmd);
