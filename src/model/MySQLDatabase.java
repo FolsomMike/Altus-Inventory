@@ -216,6 +216,34 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::deleteCustomer
+    //
+    // Deletes pCustomer from the CUSTOMERS table in the database.
+    //
+
+    public void deleteCustomer(Customer pCustomer)
+    {
+        
+        String cmd = "DELETE FROM `CUSTOMERS` WHERE `skoonie_key`=?";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pCustomer.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 237"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+
+    }// end of MySQLDatabase::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getBatches
     //
     // Gets and returns all of the batches in the BATCHES table and stores all
