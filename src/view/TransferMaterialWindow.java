@@ -20,18 +20,9 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Color;
-import java.awt.Component;
-import static java.awt.Component.LEFT_ALIGNMENT;
-import static java.awt.Component.TOP_ALIGNMENT;
-import java.util.ArrayList;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.Batch;
-import model.Customer;
-import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -43,10 +34,6 @@ public class TransferMaterialWindow extends AltusJDialog
     
     static private final String actionId = "TransferMaterialWindow";
     static public String getActionId() { return actionId; }
-    
-    private JComboBox customerCombo;
-    
-    private ArrayList<Customer> customers;
     
     private final Batch batch;
 
@@ -119,73 +106,6 @@ public class TransferMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TransferMaterialWindow::createCustomerPanel
-    //
-    // Creates and returns the Customer panel.
-    //
-
-    private JPanel createCustomerPanel()
-    {
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel("Transfer to customer:");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setAlignmentY(TOP_ALIGNMENT);
-        panel.add(label);
-        
-        //get customers from the database
-        customers = getDatabase().getCustomers();
-        
-        String[] names = new String[customers.size()+1];
-        names[0] = "--Select--";
-        
-        //extract names from customers
-        for (int i=0; i<customers.size(); i++) {
-            names[i+1] = customers.get(i).getName();
-        }
-        
-        //Create the combo box, select item at index 0
-        customerCombo = new JComboBox(names);
-        customerCombo.addActionListener(getMainView());
-        customerCombo.setAlignmentX(LEFT_ALIGNMENT);
-        customerCombo.setAlignmentY(TOP_ALIGNMENT);
-        customerCombo.setToolTipText("What customer is the material being "
-                                        + "transferred to?");
-        customerCombo.setSelectedIndex(0);
-        customerCombo.setBackground(Color.white);
-        Tools.setSizes(customerCombo, 410, getInputFieldHeight());
-        panel.add(customerCombo);
-        
-        return panel;
-
-    }// end of TransferMaterialWindow::createCustomerPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // TransferMaterialWindow::getCustomerKey
-    //
-    // Returns the Skoonie Key associated with pCustomerName
-    //
-
-    private String getCustomerKey(String pCustomerName)
-    {
-        
-        String key = "";
-        
-        for (Customer c : customers) {
-            if(pCustomerName.equals(c.getName())) { key = c.getSkoonieKey(); }
-        }
-        
-        return key;
-
-    }// end of TransferMaterialWindow::getCustomerKey
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // TransferMaterialWindow::getUserInput
     //
     // Gets the user input from the text fields and stores it in the Batch.
@@ -194,8 +114,7 @@ public class TransferMaterialWindow extends AltusJDialog
     private void getUserInput()
     {
         
-        batch.setCustomerKey(getCustomerKey((String)customerCombo
-                                                        .getSelectedItem()));
+        batch.setCustomerKey(getCustomerInput());
 
     }// end of TransferMaterialWindow::getUserInput
     //--------------------------------------------------------------------------

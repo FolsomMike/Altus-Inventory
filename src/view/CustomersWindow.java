@@ -373,12 +373,10 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     protected void createGui() 
     {
         
-        //add the Id and Customer Name row
+        //add the Id and Name row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Id", customer.getId(),
-                                "The id used for the customer.", 100),
-            createInputPanel("Name", customer.getName(),
-                                "The customer's name.", 200)
+            createIdPanel(customer.getId()),
+            createNamePanel(customer.getName())
         }));
         
         //spacer between rows
@@ -386,26 +384,18 @@ class CreateOrEditCustomerWindow extends AltusJDialog
         
         //add the Address Line 1 and Address Line 2 row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Address Line 1", customer.getAddressLine1(),
-                                "Address line 1 for the customer's location.",
-                                200),
-            createInputPanel("Address Line 2", customer.getAddressLine2(),
-                                "Address line 2 for the customer's location.",
-                                200)
+            createAddressLine1Panel(customer.getAddressLine1()),
+            createAddressLine2Panel(customer.getAddressLine2())
         }));
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
-        int w = 130;
         //add the City, State, and Zip Code row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("City", customer.getCity(),
-                                "City for the customer's location.", w),
-            createInputPanel("State", customer.getState(),
-                                "State for the customer's location.", w),
-            createInputPanel("Zip Code", customer.getZipCode(),
-                                "Zip code for the customer's location.", w)
+            createCityPanel(customer.getCity()),
+            createStatePanel(customer.getState()),
+            createZipCodePanel(customer.getZipCode())
         }));
         
         //spacer between rows
@@ -456,19 +446,19 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     private void getUserInput()
     {
 
-        customer.setId(getInputFields().get("Id").getText());
+        customer.setId(getIdInput());
         
-        customer.setName(getInputFields().get("Name").getText());
+        customer.setName(getNameInput());
         
-        customer.setAddressLine1(getInputFields().get("Address Line 1").getText());
+        customer.setAddressLine1(getAddressLine1Input());
         
-        customer.setAddressLine2(getInputFields().get("Address Line 2").getText());
+        customer.setAddressLine2(getAddressLine2Input());
         
-        customer.setCity(getInputFields().get("City").getText());
+        customer.setCity(getCityInput());
         
-        customer.setState(getInputFields().get("State").getText());
+        customer.setState(getStateInput());
         
-        customer.setZipCode(getInputFields().get("Zip Code").getText());
+        customer.setZipCode(getZipCodeInput());
 
     }// end of CreateOrEditCustomerWindow::getUserInput
     //--------------------------------------------------------------------------

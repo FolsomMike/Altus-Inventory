@@ -21,18 +21,9 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Color;
-import java.awt.Component;
-import static java.awt.Component.LEFT_ALIGNMENT;
-import static java.awt.Component.TOP_ALIGNMENT;
-import java.util.ArrayList;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.Batch;
-import model.Rack;
-import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -44,10 +35,6 @@ public class  MoveMaterialWindow extends AltusJDialog
     
     static private final String actionId = "MoveMaterialWindow";
     static public String getActionId() { return actionId; }
-    
-    private JComboBox rackCombo;
-    
-    private ArrayList<Rack> racks;
     
     private final Batch batch;
 
@@ -119,72 +106,6 @@ public class  MoveMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createRackPanel
-    //
-    // Creates and returns the Rack panel.
-    //
-
-    private JPanel createRackPanel()
-    {
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel("Move to rack:");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setAlignmentY(TOP_ALIGNMENT);
-        panel.add(label);
-        
-        //get racks from the database
-        racks = getDatabase().getRacks();
-        
-        String[] names = new String[racks.size()+1];
-        names[0] = "--Select--";
-        
-        //extract names from racks
-        for (int i=0; i<racks.size(); i++) {
-            names[i+1] = racks.get(i).getName();
-        }
-        
-        //Create the combo box, select item at index 0
-        rackCombo = new JComboBox(names);
-        rackCombo.addActionListener(getMainView());
-        rackCombo.setAlignmentX(LEFT_ALIGNMENT);
-        rackCombo.setAlignmentY(TOP_ALIGNMENT);
-        rackCombo.setToolTipText("What rack is the material being moved to?");
-        rackCombo.setSelectedIndex(0);
-        rackCombo.setBackground(Color.white);
-        Tools.setSizes(rackCombo, 130, getInputFieldHeight());
-        panel.add(rackCombo);
-        
-        return panel;
-
-    }// end of MoveMaterialWindow::createRackPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MoveMaterialWindow::getRackKey
-    //
-    // Returns the Skoonie Key associated with pRackName
-    //
-
-    private String getRackKey(String pRackName)
-    {
-        
-        String key = "";
-        
-        for (Rack r : racks) {
-            if(pRackName.equals(r.getName())) { key = r.getSkoonieKey(); }
-        }
-        
-        return key;
-
-    }// end of MoveMaterialWindow::getRackKey
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MoveMaterialWindow::getUserInput
     //
     // Gets the user input from the text fields and stores it in the Batch.
@@ -193,7 +114,7 @@ public class  MoveMaterialWindow extends AltusJDialog
     private void getUserInput()
     {
         
-        batch.setRackKey(getRackKey((String)rackCombo.getSelectedItem()));
+        batch.setRackKey(getRackInput());
 
     }// end of MoveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------

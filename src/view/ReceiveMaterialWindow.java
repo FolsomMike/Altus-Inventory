@@ -22,19 +22,9 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Color;
-import java.awt.Component;
-import static java.awt.Component.LEFT_ALIGNMENT;
-import static java.awt.Component.TOP_ALIGNMENT;
-import java.util.ArrayList;
 import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.Batch;
-import model.Customer;
-import model.Rack;
-import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -46,12 +36,6 @@ public class ReceiveMaterialWindow extends AltusJDialog
     
     static private final String actionId = "ReceiveMaterialWindow";
     static public String getActionId() { return actionId; }
-    
-    private JComboBox ownerCombo;
-    private JComboBox rackCombo;
-    
-    private ArrayList<Customer> customers;
-    private ArrayList<Rack> racks;
     
     private Batch batch;
 
@@ -79,20 +63,19 @@ public class ReceiveMaterialWindow extends AltusJDialog
         
         setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        int w = 130;
-        
-        //add the Id, Customer, and Date row
+        //add the Id and Date row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Id", "", 
-                                "Give the material a reference ID.", w),
-            createInputPanel("Date (YYYY-MM-DD)", "", 
-                                "What date was the material received?", w)               
+            createIdPanel(""),
+            createDatePanel("")              
         }));
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
-        addToMainPanel(createRow(new JPanel[] { createOwnerPanel() }));
+        //add the Customer row
+        addToMainPanel(createRow(new JPanel[] { 
+            createCustomerPanel()
+        }));
         
         //add the Truck Company, Truck Number, and Truck Driver row
         /*//DEBUG HSS//addToMainPanel(createRow(new JPanel[] {
@@ -110,12 +93,11 @@ public class ReceiveMaterialWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
-        //add the Quanity, Length, and Rack row
+        //add the Quanity, Total Length, and Rack row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Quantity", "", "How many pieces of pipe?", w),
-            createInputPanel("Total Length", "", 
-                                "Total length of the pipe was received?", w),
-            createRackPanel()               
+            createQuantityPanel(""),
+            createTotalLengthPanel(""),
+            createRackPanel()
         }));
         
         //add the Range, Grade, and Diameter row
@@ -175,138 +157,6 @@ public class ReceiveMaterialWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::createOwnerPanel
-    //
-    // Creates and returns the Owner panel.
-    //
-
-    private JPanel createOwnerPanel()
-    {
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel("Owner");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setAlignmentY(TOP_ALIGNMENT);
-        panel.add(label);
-        
-        //get customers from the database
-        customers = getDatabase().getCustomers();
-        
-        String[] names = new String[customers.size()+1];
-        names[0] = "--Select--";
-        
-        //extract names from customers
-        for (int i=0; i<customers.size(); i++) {
-            names[i+1] = customers.get(i).getName();
-        }
-        
-        //Create the combo box, select item at index 0
-        ownerCombo = new JComboBox(names);
-        ownerCombo.addActionListener(getMainView());
-        ownerCombo.setAlignmentX(LEFT_ALIGNMENT);
-        ownerCombo.setAlignmentY(TOP_ALIGNMENT);
-        ownerCombo.setToolTipText("What customer owns the material?");
-        ownerCombo.setSelectedIndex(0);
-        ownerCombo.setBackground(Color.white);
-        Tools.setSizes(ownerCombo, 410, getInputFieldHeight());
-        panel.add(ownerCombo);
-        
-        return panel;
-
-    }// end of ReceiveMaterialWindow::createOwnerPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::createRackPanel
-    //
-    // Creates and returns the Rack panel.
-    //
-
-    private JPanel createRackPanel()
-    {
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel("Rack");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setAlignmentY(TOP_ALIGNMENT);
-        panel.add(label);
-        
-        //get racks from the database
-        racks = getDatabase().getRacks();
-        
-        String[] names = new String[racks.size()+1];
-        names[0] = "--Select--";
-        
-        //extract names from racks
-        for (int i=0; i<racks.size(); i++) {
-            names[i+1] = racks.get(i).getName();
-        }
-        
-        //Create the combo box, select item at index 0
-        rackCombo = new JComboBox(names);
-        rackCombo.addActionListener(getMainView());
-        rackCombo.setAlignmentX(LEFT_ALIGNMENT);
-        rackCombo.setAlignmentY(TOP_ALIGNMENT);
-        rackCombo.setToolTipText("What rack is the material stored on?");
-        rackCombo.setSelectedIndex(0);
-        rackCombo.setBackground(Color.white);
-        Tools.setSizes(rackCombo, 130, getInputFieldHeight());
-        panel.add(rackCombo);
-        
-        return panel;
-
-    }// end of ReceiveMaterialWindow::createRackPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::getCustomerKey
-    //
-    // Returns the Skoonie Key associated with pCustomerName
-    //
-
-    private String getCustomerKey(String pCustomerName)
-    {
-        
-        String key = "";
-        
-        for (Customer c : customers) {
-            if(pCustomerName.equals(c.getName())) { key = c.getSkoonieKey(); }
-        }
-        
-        return key;
-
-    }// end of ReceiveMaterialWindow::getCustomerKey
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::getRackKey
-    //
-    // Returns the Skoonie Key associated with pRackName
-    //
-
-    private String getRackKey(String pRackName)
-    {
-        
-        String key = "";
-        
-        for (Rack r : racks) {
-            if(pRackName.equals(r.getName())) { key = r.getSkoonieKey(); }
-        }
-        
-        return key;
-
-    }// end of ReceiveMaterialWindow::getRackKey
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::getUserInput
     //
     // Gets the user input from the text fields and stores it in the Batch.
@@ -315,16 +165,13 @@ public class ReceiveMaterialWindow extends AltusJDialog
     private void getUserInput()
     {
         
-        String cusKey = getCustomerKey((String)ownerCombo.getSelectedItem());
-        String rackKey = getRackKey((String)rackCombo.getSelectedItem());
-        
         batch = new Batch(  "",
-                            getInputFields().get("Id").getText(),
-                            getInputFields().get("Date (YYYY-MM-DD)").getText(),
-                            getInputFields().get("Quantity").getText(),
-                            getInputFields().get("Total Length").getText(),
-                            cusKey,
-                            rackKey);
+                            getIdInput(),
+                            getDateInput(),
+                            getQuantityInput(),
+                            getTotalLengthInput(),
+                            getCustomerInput(),
+                            getRackInput());
 
     }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------

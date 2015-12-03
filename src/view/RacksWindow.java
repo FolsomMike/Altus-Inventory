@@ -371,10 +371,8 @@ class CreateOrEditRackWindow extends AltusJDialog
         
         //add the Id and Rack Name row
         addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Id", rack.getId(),
-                                "The id used for the rack.", 100),
-            createInputPanel("Name", rack.getName(),
-                                "The rack's name.", 200)
+            createIdPanel(rack.getId()),
+            createNamePanel(rack.getName())
         }));
         
         //spacer between rows
@@ -425,9 +423,9 @@ class CreateOrEditRackWindow extends AltusJDialog
     private void getUserInput()
     {
 
-        rack.setId(getInputFields().get("Id").getText());
+        rack.setId(getIdInput());
         
-        rack.setName(getInputFields().get("Name").getText());
+        rack.setName(getNameInput());
 
     }// end of CreateOrEditRackWindow::getUserInput
     //--------------------------------------------------------------------------

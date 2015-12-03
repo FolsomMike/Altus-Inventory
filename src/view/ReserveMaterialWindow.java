@@ -71,8 +71,7 @@ public class ReserveMaterialWindow extends AltusJDialog
         
         //add the Quantity and Rack row
         addToMainPanel(createRow(new JPanel[] {
-            createQuantityInputPanel("How many pieces of material would you "
-                                        + "like to reserve?"),
+            createQuantityPanel(""),
             createReserveForPanel()
         }));
         
@@ -116,7 +115,7 @@ public class ReserveMaterialWindow extends AltusJDialog
         combo.setAlignmentY(TOP_ALIGNMENT);
         combo.setSelectedIndex(0);
         combo.setBackground(Color.white);
-        Tools.setSizes(combo, 135, getInputFieldHeight());
+        Tools.setSizes(combo, 135, getInputHeight());
         panel.add(combo);
         
         return panel;

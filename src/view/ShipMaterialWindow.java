@@ -61,19 +61,16 @@ public class ShipMaterialWindow extends AltusJDialog
         
         setMainPanelLayout(BoxLayout.Y_AXIS);
         
-        int w = 130;
-        
         //add the Quantity row
         addToMainPanel(createRow(new JPanel[] {
-            createQuantityInputPanel("How many pieces of material would you "
-                                        + "like to ship?")             
+            createQuantityPanel("")         
         }));
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
                 
         //add the Destination row
-        addToMainPanel(createRow(new JPanel[] {
+        /*addToMainPanel(createRow(new JPanel[] {
             createInputPanel("Destination", "", 
                                 "What destination is the material being "
                                     + "shipped to?", 410),
@@ -119,7 +116,7 @@ public class ShipMaterialWindow extends AltusJDialog
             createInputPanel("Truck Driver", "", 
                                 "Who was the driver of the truck that brought"
                                         + " the material to the yard?", w)               
-        }));
+        }));*/
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
