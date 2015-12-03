@@ -66,7 +66,7 @@ public class TransferMaterialWindow extends AltusJDialog
         
         //add the Quantity and Customer row
         addToMainPanel(createRow(new JPanel[] {
-            createCustomerPanel()
+            createCustomerPanel(batch)
         }));
         
         //spacer between rows

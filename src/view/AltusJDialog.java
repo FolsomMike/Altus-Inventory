@@ -33,6 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import model.Batch;
 import model.Customer;
 import model.MySQLDatabase;
 import model.Rack;
@@ -364,7 +365,8 @@ public abstract class AltusJDialog extends JDialog
     //
 
     private JPanel createComboBoxPanel(String pLabel, String[] pComboValues,
-                                        String pToolTip, int pWidth)
+                                        int pSelectIndex, String pToolTip,
+                                        int pWidth)
     {
         
         JPanel panel = new JPanel();
@@ -380,12 +382,12 @@ public abstract class AltusJDialog extends JDialog
         //put the selection phrase into the array
         pComboValues[0] = "--Select--";
         
-        //Create the combo box, select item at index 0
+        //Create the combo box, select item at pSelectIndex
         JComboBox combo = new JComboBox(pComboValues);
         combo.setAlignmentX(LEFT_ALIGNMENT);
         combo.setAlignmentY(TOP_ALIGNMENT);
         combo.setToolTipText(pToolTip);
-        combo.setSelectedIndex(0);
+        combo.setSelectedIndex(pSelectIndex);
         combo.setBackground(Color.white);
         Tools.setSizes(combo, pWidth, inputHeight);
         //store a reference to the input field
@@ -403,7 +405,7 @@ public abstract class AltusJDialog extends JDialog
     // Creates and returns a Customer input panel.
     //
 
-    public JPanel createCustomerPanel()
+    public JPanel createCustomerPanel(Batch pBatch)
     {
         
         //get customers from the database
@@ -411,13 +413,22 @@ public abstract class AltusJDialog extends JDialog
         
         //extract the names from customers, leaving an empty space at index 0 
         //for the selection phrase
+        int selectIndex = 0;
         String[] names = new String[customers.size()+1];
         for (int i=0; i<customers.size(); i++) {
             names[i+1] = customers.get(i).getName();
+            
+            //if the customer matches the customer for
+            //pBatch, then set the selection index to the
+            //index of that customer
+            if (pBatch != null && pBatch.getCustomerKey()
+                                    .equals(customers.get(i).getSkoonieKey())) {
+                selectIndex = i+1;
+            }
         }
         
-        return createComboBoxPanel(customerLabel, names, "Select a customer.", 
-                                    inputWidthFull);
+        return createComboBoxPanel(customerLabel, names, selectIndex,
+                                    "Select a customer.", inputWidthFull);
 
     }// end of AltusJDialog::createCustomerPanel
     //--------------------------------------------------------------------------
@@ -529,21 +540,30 @@ public abstract class AltusJDialog extends JDialog
     // Creates and returns a Rack input panel.
     //
 
-    public JPanel createRackPanel()
+    public JPanel createRackPanel(Batch pBatch)
     {
         
         //get racks from the database
         racks = db.getRacks();
         
         //extract the names from racks, leaving an empty space at index 0 for 
-        //the selection phrase
+        //the selection phrase 
+        int selectIndex = 0;
         String[] names = new String[racks.size()+1];
         for (int i=0; i<racks.size(); i++) {
             names[i+1] = racks.get(i).getName();
+            
+            //if the customer matches the customer for
+            //pBatch, then set the selection index to the
+            //index of that customer
+            if (pBatch != null && pBatch.getRackKey()
+                                    .equals(racks.get(i).getSkoonieKey())) {
+                selectIndex = i+1;
+            }
         }
         
-        return createComboBoxPanel(rackLabel, names, "Select a rack.", 
-                                    inputWidth);
+        return createComboBoxPanel(rackLabel, names, selectIndex,
+                                    "Select a rack.", inputWidth);
 
     }// end of AltusJDialog::createRackPanel
     //--------------------------------------------------------------------------

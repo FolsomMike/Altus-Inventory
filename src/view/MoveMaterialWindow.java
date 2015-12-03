@@ -67,7 +67,7 @@ public class  MoveMaterialWindow extends AltusJDialog
         
         //add the Rack row
         addToMainPanel(createRow(new JPanel[] {
-            createRackPanel()
+            createRackPanel(batch)
         }));
         
         //spacer between rows

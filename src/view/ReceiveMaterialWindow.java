@@ -74,7 +74,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
         
         //add the Customer row
         addToMainPanel(createRow(new JPanel[] { 
-            createCustomerPanel()
+            createCustomerPanel(null)
         }));
         
         //add the Truck Company, Truck Number, and Truck Driver row
@@ -97,7 +97,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
         addToMainPanel(createRow(new JPanel[] {
             createQuantityPanel(""),
             createTotalLengthPanel(""),
-            createRackPanel()
+            createRackPanel(null)
         }));
         
         //add the Range, Grade, and Diameter row

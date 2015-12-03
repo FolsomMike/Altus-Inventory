@@ -85,7 +85,9 @@ public class MaterialInfoWindow extends AltusJDialog
         addToMainPanel(createRowSpacer());
         
         //add the Customer row
-        addToMainPanel(createRow(new JPanel[] { createCustomerPanel() }));
+        addToMainPanel(createRow(new JPanel[] { 
+            createCustomerPanel(batch) 
+        }));
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
@@ -94,7 +96,7 @@ public class MaterialInfoWindow extends AltusJDialog
         addToMainPanel(createRow(new JPanel[] {
             createQuantityPanel(batch.getQuantity()),
             createTotalLengthPanel(batch.getTotalLength()),
-            createRackPanel()
+            createRackPanel(batch)
         }));
         
         //spacer between rows
