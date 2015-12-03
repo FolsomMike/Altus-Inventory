@@ -169,6 +169,12 @@ public class MainController implements EventHandler, Runnable
             view.displayMakePaymentWindow();
         }
         
+        else if (Tools.generateActionCommand(actionId, "Material Info")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayMaterialInfoWindow();
+        }
+        
         else if (Tools.generateActionCommand(actionId, "Move Material")
                 .equals(e.getActionCommand())) 
         {

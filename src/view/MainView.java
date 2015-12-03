@@ -439,6 +439,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::displayMaterialInfoWindow
+    //
+    // Displays the Material Info window.
+    //
+
+    public void displayMaterialInfoWindow()
+    {
+
+        mainFrame.displayMaterialInfoWindow();
+
+    }//end of MainView::displayMaterialInfoWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::displayMoveMaterialWindow
     //
     // Displays the Move Material window.
