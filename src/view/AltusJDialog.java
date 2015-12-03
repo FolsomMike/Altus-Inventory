@@ -632,8 +632,7 @@ public abstract class AltusJDialog extends JDialog
     {
 
         return createJTextFieldPanel(totalLengthLabel, pInputFieldText, 
-                                        "What is the total length of the pipe "
-                                            + "being received?", 
+                                        "What is the total length of the pipe?", 
                                         inputWidth);
 
     }// end of AltusJDialog::createTotalLengthPanel
