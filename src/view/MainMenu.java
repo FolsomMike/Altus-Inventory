@@ -78,7 +78,7 @@ public class MainMenu extends JMenuBar
         
         createRackMenu();
         
-        createTruckCompanyMenu();
+        createTruckMenu();
 
         createHelpMenu();
 
@@ -231,12 +231,12 @@ public class MainMenu extends JMenuBar
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainMenu::createTruckCompanyMenu
+    // MainMenu::createTruckMenu
     //
-    // Creates the Truck Company menu and adds it to the menu bar.
+    // Creates the Truck menu and adds it to the menu bar.
     //
 
-    private void createTruckCompanyMenu()
+    private void createTruckMenu()
     {
         
         //Truck menu
@@ -256,7 +256,7 @@ public class MainMenu extends JMenuBar
         viewAllTruckCompaniesMenuItem.addActionListener(actionListener);
         truckMenu.add(viewAllTruckCompaniesMenuItem);
 
-    }//end of MainMenu::createTruckCompanyMenu
+    }//end of MainMenu::createTruckMenu
     //--------------------------------------------------------------------------
 
 }//end of class MainMenu
