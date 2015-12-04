@@ -955,6 +955,39 @@ public class MySQLDatabase
     }// end of MySQLDatabase::updateRack
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateTruckCompany
+    //
+    // Updates pTruckCompany in the database.
+    //
+
+    public void updateTruckCompany(TruckCompany pCompany)
+    {
+        
+        String cmd = "UPDATE `TRUCK_COMPANIES` SET "
+                        + "`id`=?,"                 //placeholder 1
+                        + "`name`=?,"               //placeholder 2
+                        + "WHERE `skoonie_key`=?";  //placeholder 3
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pCompany.getId());
+            stmt.setString(2, pCompany.getName());
+            stmt.setString(3, pCompany.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 982"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::updateTruckCompany
+    //--------------------------------------------------------------------------
+    
 }// end of class MySQLDatabase
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
