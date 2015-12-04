@@ -966,7 +966,7 @@ public class MySQLDatabase
         
         String cmd = "UPDATE `TRUCK_COMPANIES` SET "
                         + "`id`=?,"                 //placeholder 1
-                        + "`name`=?,"               //placeholder 2
+                        + "`name`=?"                //placeholder 2
                         + "WHERE `skoonie_key`=?";  //placeholder 3
         
         PreparedStatement stmt = createPreparedStatement(cmd);
