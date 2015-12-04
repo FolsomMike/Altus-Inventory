@@ -575,7 +575,7 @@ public class MySQLDatabase
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 438"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 578"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -712,7 +712,7 @@ public class MySQLDatabase
         if (!connectToDatabase()) { return set; }
         
         try { set = pStatement.executeQuery(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 458"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 718"); }
         
         return set;
 
