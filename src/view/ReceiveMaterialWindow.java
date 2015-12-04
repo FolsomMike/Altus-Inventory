@@ -140,6 +140,9 @@ public class ReceiveMaterialWindow extends AltusJDialog
     public void confirm()
     {
         
+        //check user input for errors
+        if (!checkUserInput()) { return; }
+        
         //get the user input
         getUserInput();
         
@@ -154,6 +157,63 @@ public class ReceiveMaterialWindow extends AltusJDialog
         dispose();
 
     }// end of ReceiveMaterialWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::checkUserInput
+    //
+    // Checks the user input for errors.
+    //
+    // Returns true if no errors; false if there are.
+    //
+
+    private boolean checkUserInput()
+    {
+        
+        //Check Id input
+        if (getIdInput().isEmpty()) {
+            displayError("Please give the material an Id.");
+            return false;
+        }
+        else if (getDatabase().checkForValue(getIdInput(), "BATCHES", "id")) {
+            displayError("The Id entered already exists in the database.");
+            return false;
+        }
+        
+        //Check Date input
+        if (getDateInput().isEmpty()) {
+            displayError("Please specify a date.");
+            return false;
+        }
+        
+        //Check Customer input
+        if (!checkCustomerInput()) { 
+            displayError("Please select a customer.");
+            return false;
+        }
+        
+        //Check Quantity input
+        if (getQuantityInput().isEmpty()) {
+            displayError("Please enter a Quantity.");
+            return false;
+        }
+        
+        //Check Total Length input
+        if (getTotalLengthInput().isEmpty()) {
+            displayError("Please enter a Total Length.");
+            return false;
+        }
+        
+        //Check Rack input
+        if (!checkRackInput()) { 
+            displayError("Please select a rack.");
+            return false;
+        }
+        
+        //we made it here, so there were no errors
+        return true;
+
+    }// end of ReceiveMaterialWindow::checkUserInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
