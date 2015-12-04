@@ -316,6 +316,12 @@ public class MainController implements EventHandler, Runnable
             view.displayCreateTruckCompanyWindow();
         }
         
+        else if (Tools.generateActionCommand(actionId, "Delete Company")
+                .equals(e.getActionCommand())) 
+        {
+            view.deleteTruckCompany();
+        }
+        
         else if (Tools.generateActionCommand(actionId, "Edit Company")
                 .equals(e.getActionCommand())) 
         {
