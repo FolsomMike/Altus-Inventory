@@ -56,6 +56,7 @@ public class MainFrame extends SkoonieFrame
     public void setActiveDialog(AltusJDialog pDialog) {activeDialog = pDialog;}
     private CustomersWindow customersWindow;
     private RacksWindow racksWindow;
+    private TruckCompaniesWindow truckCompaniesWindow;
     private Help help;
     private About about;
     
@@ -712,6 +713,21 @@ public class MainFrame extends SkoonieFrame
         w.init();
         
     }// end of MainFrame::displayTransferMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::displayTruckCompaniesWindow
+    //
+    // Displays the Truck Companies window and stores a reference to it.
+    //
+    
+    public void displayTruckCompaniesWindow() 
+    {
+        
+        truckCompaniesWindow = new TruckCompaniesWindow(this, mainView);
+        truckCompaniesWindow.init();
+        
+    }// end of MainFrame::displayTruckCompaniesWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
