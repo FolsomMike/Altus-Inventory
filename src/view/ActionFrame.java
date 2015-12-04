@@ -62,10 +62,10 @@ public abstract class ActionFrame extends SkoonieFrame
     // ActionFrame::ActionFrame (constructor)
     //
 
-    public ActionFrame(String pTitle, String pActionId, MainView pView)
+    public ActionFrame(String pTitle, MainView pView)
     {
         
-        super(pTitle, pActionId, pView, pView);
+        super(pTitle, pView, pView);
         
         mainView = pView;
         
@@ -93,7 +93,7 @@ public abstract class ActionFrame extends SkoonieFrame
 
         cancelConfirmPanel = new CancelConfirmPanel(pConfirmButtonText, 
                                                     pConfirmButtonToolTip, 
-                                                    actionId, mainView);
+                                                    getActionId(), mainView);
         cancelConfirmPanel.init();
 
         return cancelConfirmPanel;
@@ -157,7 +157,7 @@ public abstract class ActionFrame extends SkoonieFrame
         MFloatSpinner spinner = new MFloatSpinner(1000, 0, 1000, 1, "##0", 75, 
                                                     textFieldHeight);
         spinner.addChangeListener(mainView);
-        spinner.setName(Tools.generateActionCommand(actionId, 
+        spinner.setName(Tools.generateActionCommand(getActionId(), 
                                                         "Quantity Spinner"));
         spinner.setToolTipText(pToolTip);
         spinner.centerText();
