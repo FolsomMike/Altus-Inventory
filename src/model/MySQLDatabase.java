@@ -103,6 +103,45 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::checkForValue
+    //
+    // Checks for pValue in pTable under pColumn.
+    //
+
+    public boolean checkForValue(String pValue, String pTable, String pColumn)
+    {
+
+        String cmd = "SELECT COUNT(*) FROM " +pTable+ " WHERE " +pColumn+ "=?";
+        
+        int count = 0;
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        //perform query
+        try { 
+            stmt.setString(1, pValue);
+            
+            ResultSet set = performQuery(stmt);
+            
+            //extract the count from the ResultSet
+            while (set.next()) { count = set.getInt(1); }
+            
+            //clean up environment
+            closeResultSet(set);
+            
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 134"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return (count > 0);
+        
+    }// end of MySQLDatabase::checkForValue
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::closeDatabaseConnection
     //
     // Closes the connection to the database.
@@ -330,12 +369,12 @@ public class MySQLDatabase
 
         String cmd = "SELECT * FROM `CUSTOMERS` WHERE `skoonie_key` = ?";
         PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set;
         
         //perform query
         try {
             stmt.setString(1, pSkoonieKey);
-            set = performQuery(stmt);
+            
+            ResultSet set = performQuery(stmt);
             
             //extract the data from the ResultSet
             while (set.next()) { 
