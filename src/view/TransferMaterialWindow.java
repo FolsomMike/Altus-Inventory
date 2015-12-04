@@ -89,6 +89,9 @@ public class TransferMaterialWindow extends AltusJDialog
     public void confirm()
     {
         
+        //check user input for errors
+        if (!checkUserInput()) { return; }
+        
         //get the user input
         getUserInput();
         
@@ -103,6 +106,29 @@ public class TransferMaterialWindow extends AltusJDialog
         dispose();
 
     }// end of TransferMaterialWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // TransferMaterialWindow::checkUserInput
+    //
+    // Checks the user input for errors.
+    //
+    // Returns true if no errors; false if there are.
+    //
+
+    private boolean checkUserInput()
+    {
+        
+        //Check Customer input
+        if (!checkCustomerInput()) { 
+            displayError("Please select a customer.");
+            return false;
+        }
+        
+        //we made it here, so there were no errors
+        return true;
+
+    }// end of TransferMaterialWindow::checkUserInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
