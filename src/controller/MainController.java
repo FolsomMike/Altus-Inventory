@@ -65,6 +65,7 @@ import view.CustomersWindow;
 import view.MainFrame;
 import view.MainMenu;
 import view.RacksWindow;
+import view.TruckCompaniesWindow;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -305,6 +306,16 @@ public class MainController implements EventHandler, Runnable
             view.displayEditRackWindow();
         }
         //end of Racks window
+        
+        //Truck Companies window
+        actionId = TruckCompaniesWindow.getActionId();
+        
+        if (Tools.generateActionCommand(actionId, "Create Company")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayCreateTruckCompanyWindow();
+        }
+        //end of Truck Companies window
 
         else if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
