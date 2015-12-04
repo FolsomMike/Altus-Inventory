@@ -213,7 +213,7 @@ public class RacksWindow extends AltusJDialog
         //no rack was found so return null
         return null;
         
-    }// end of RacksWindow::getSelectedCustomer
+    }// end of RacksWindow::getSelectedRack
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -313,7 +313,7 @@ class CreateOrEditRackWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     // CreateOrEditRackWindow::CreateOrEditRackWindow (constructor)
     //
-    // Constructor for using the Create Customer window.
+    // Constructor for using the Create Rack window.
     //
 
     public CreateOrEditRackWindow(RacksWindow pRacksWindow, 
@@ -337,7 +337,7 @@ class CreateOrEditRackWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     // CreateOrEditRackWindow::CreateOrEditRackWindow (constructor)
     //
-    // Constructor for using the Edit Customer window.
+    // Constructor for using the Edit Rack window.
     //
 
     public CreateOrEditRackWindow(Rack pRack,
@@ -388,12 +388,15 @@ class CreateOrEditRackWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     // CreateOrEditRackWindow::confirm
     //
-    // Confirms that the user wants to use the inputs to create a new customer.
+    // Confirms that the user wants to use the inputs to create a new rack.
     //
 
     @Override
     public void confirm()
     {
+        
+        //check user input for errors
+        if (!checkUserInput()) { return; }
         
         //get the user input
         getUserInput();
@@ -412,6 +415,47 @@ class CreateOrEditRackWindow extends AltusJDialog
         dispose();
 
     }// end of CreateOrEditRackWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateOrEditRackWindow::checkUserInput
+    //
+    // Checks the user input for errors.
+    //
+    // Returns true if no errors; false if there are.
+    //
+
+    private boolean checkUserInput()
+    {
+        
+        //Check Id input
+        if (getIdInput().isEmpty()) {
+            displayError("Please give the rack an Id.");
+            return false;
+        }
+        else if (!getIdInput().equals(rack.getId())
+                && getDatabase().checkForValue(getIdInput(), "RACKS", "id"))
+        {
+            displayError("The Id entered already exists in the database.");
+            return false;
+        }
+        
+        //Check Name input
+        if (getNameInput().isEmpty()) {
+            displayError("Please give the rack a name.");
+            return false;
+        }
+        else if (!getNameInput().equals(rack.getName())
+                && getDatabase().checkForValue(getNameInput(), "RACKS", "name"))
+        {
+            displayError("The name entered already exists in the database.");
+            return false;
+        }
+        
+        //we made it here, so there were no errors
+        return true;
+
+    }// end of CreateOrEditRackWindow::checkUserInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
