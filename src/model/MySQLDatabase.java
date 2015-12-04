@@ -732,6 +732,39 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::insertTruckCompany
+    //
+    // Inserts pCompany into the database.
+    //
+
+    public void insertTruckCompany(TruckCompany pCompany)
+    {
+        
+        String cmd = "INSERT INTO `TRUCK_COMPANIES` ("
+                        + "`id`,`name`) "
+                        + "VALUES ("
+                        + "?,"  //placeholder 1     Id
+                        + "?)"; //placeholder 2     Name
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pCompany.getId());
+            stmt.setString(2, pCompany.getName());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 758"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::insertTruckCompany
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::logSevere
     //
     // Logs pMessage with level SEVERE using the Java logger.
