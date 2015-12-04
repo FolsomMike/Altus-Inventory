@@ -42,6 +42,9 @@ public class MainMenu extends JMenuBar
     
     JMenu rackMenu;
     JMenuItem viewAllRacksMenuItem;
+    
+    JMenu truckCompanyMenu;
+    JMenuItem viewAllTruckCompaniesMenuItem;
 
     JMenu helpMenu;
     JMenuItem aboutMenuItem, helpMenuItem;
@@ -74,6 +77,8 @@ public class MainMenu extends JMenuBar
         createCustomerMenu();
         
         createRackMenu();
+        
+        createTruckCompanyMenu();
 
         createHelpMenu();
 
@@ -223,6 +228,35 @@ public class MainMenu extends JMenuBar
         rackMenu.add(viewAllRacksMenuItem);
 
     }//end of MainMenu::createRackMenu
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::createTruckCompanyMenu
+    //
+    // Creates the Truck Company menu and adds it to the menu bar.
+    //
+
+    private void createTruckCompanyMenu()
+    {
+        
+        //Truck Company menu
+        truckCompanyMenu = new JMenu("Truck Company");
+        truckCompanyMenu.setMnemonic(KeyEvent.VK_R);
+        truckCompanyMenu.setToolTipText("Truck Company");
+        add(truckCompanyMenu);
+
+        //Truck Company/View All Truck Companies menu item
+        viewAllTruckCompaniesMenuItem 
+                                = new JMenuItem("View All Truck Companies");
+        viewAllTruckCompaniesMenuItem
+                                .setToolTipText("View all truck companies.");
+        viewAllTruckCompaniesMenuItem.setActionCommand
+                                (Tools.generateActionCommand
+                                    (actionId, "View All Truck Companies"));
+        viewAllTruckCompaniesMenuItem.addActionListener(actionListener);
+        truckCompanyMenu.add(viewAllTruckCompaniesMenuItem);
+
+    }//end of MainMenu::createTruckCompanyMenu
     //--------------------------------------------------------------------------
 
 }//end of class MainMenu
