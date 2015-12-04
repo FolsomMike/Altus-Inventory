@@ -238,6 +238,12 @@ public class MainController implements EventHandler, Runnable
         {
             view.displayRacksWindow();
         }
+        
+        else if (Tools.generateActionCommand(actionId, "View All Truck Companies")
+                .equals(e.getActionCommand()))
+        {
+            view.displayTruckCompaniesWindow();
+        }
         //end of MainMenu
         
         //AltusJDialog
