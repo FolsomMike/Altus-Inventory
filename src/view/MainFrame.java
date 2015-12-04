@@ -503,6 +503,20 @@ public class MainFrame extends SkoonieFrame
         
     }// end of MainFrame::deleteRack
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainFrame::deleteTruckCompany
+    //
+    // Deletes the truck company selected in the Truck Companies window.
+    //
+    
+    public void deleteTruckCompany() 
+    {
+        
+        truckCompaniesWindow.deleteTruckCompany();
+        
+    }// end of MainFrame::deleteTruckCompany
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainFrame::displayAbout
