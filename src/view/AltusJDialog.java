@@ -31,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import model.Batch;
@@ -76,6 +77,9 @@ public abstract class AltusJDialog extends JDialog
     private final int inputWidthFull        = 410;
     private final int inputHeight           = 25;
     protected final int getInputHeight() { return 25; }
+    
+    private final String comboSelectionPhrase = "--Select--";
+    protected final String getComboSelectionPhrase(){return comboSelectionPhrase;} 
     
     //Labels
     private final String addressLine1Label = "Address Line 1";
@@ -126,6 +130,7 @@ public abstract class AltusJDialog extends JDialog
     public String getCityInput() 
     { return inputFields.get(cityLabel).getValue(); }
     
+    //NOTE: actually returns the Skoonie Key associated with the input
     public String getCustomerInput() 
     { return getCustomerKey(inputFields.get(customerLabel).getValue()); }
     
@@ -141,6 +146,7 @@ public abstract class AltusJDialog extends JDialog
     public String getQuantityInput() 
     { return inputFields.get(quantityLabel).getValue(); }
     
+    //NOTE: actually returns the Skoonie Key associated with the input
     public String getRackInput() 
     { return getRackKey(inputFields.get(rackLabel).getValue()); }
     
@@ -250,15 +256,51 @@ public abstract class AltusJDialog extends JDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // AltusJDialog::checkCustomerInput
+    //
+    // Checks to make sure that the user selected a Customer from the combobox
+    // and did not just leave it at the selection phrase.
+    //
+    // Returns true if it does not equal; false if it does.
+    //
+
+    protected final boolean checkCustomerInput()
+    {
+        
+        return !inputFields.get(customerLabel).getValue()
+                                                .equals(comboSelectionPhrase);
+
+    }// end of AltusJDialog::checkCustomerInput
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::checkRackInput
+    //
+    // Checks to make sure that the user selected a Rack from the combobox
+    // and did not just leave it at the selection phrase.
+    //
+
+    protected final boolean checkRackInput()
+    {
+        
+        return !inputFields.get(rackLabel).getValue()
+                                                .equals(comboSelectionPhrase);
+
+    }// end of AltusJDialog::checkRackInput
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // AltusJDialog::confirm
     //
-    // Confirms the action of the JDialog.
+    // Confirms the action of the JDialog -- default action is to dispose.
     //
     // Children classes can override this to perform specific actions.
     //
 
     public void confirm()
     {
+        
+        dispose();
 
     }//end of AltusJDialog::confirm
     //--------------------------------------------------------------------------
@@ -380,7 +422,7 @@ public abstract class AltusJDialog extends JDialog
         panel.add(label);
         
         //put the selection phrase into the array
-        pComboValues[0] = "--Select--";
+        pComboValues[0] = comboSelectionPhrase;
         
         //Create the combo box, select item at pSelectIndex
         JComboBox combo = new JComboBox(pComboValues);
@@ -652,6 +694,23 @@ public abstract class AltusJDialog extends JDialog
                                         inputWidth);
 
     }// end of AltusJDialog::createZipCodePanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::displayError
+    //
+    // Displays pErrorMessage to the user.
+    //
+
+    protected final void displayError(String pErrorMessage)
+    {
+        
+        JOptionPane.showMessageDialog(  this,
+                                        pErrorMessage,
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+
+    }// end of AltusJDialog::displayError
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
