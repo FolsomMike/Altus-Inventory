@@ -418,6 +418,9 @@ class CreateOrEditCustomerWindow extends AltusJDialog
     public void confirm()
     {
         
+        //check user input for errors
+        if (!checkUserInput()) { return; }
+        
         //get the user input
         getUserInput();
         
@@ -435,6 +438,44 @@ class CreateOrEditCustomerWindow extends AltusJDialog
         dispose();
 
     }// end of CreateOrEditCustomerWindow::confirm
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CreateOrEditCustomerWindow::checkUserInput
+    //
+    // Checks the user input for errors.
+    //
+    // Returns true if no errors; false if there are.
+    //
+
+    private boolean checkUserInput()
+    {
+        
+        //Check Id input
+        if (getIdInput().isEmpty()) {
+            displayError("Please give the customer an Id.");
+            return false;
+        }
+        else if (getDatabase().checkForValue(getIdInput(), "CUSTOMERS", "id")) {
+            displayError("The Id entered already exists in the database.");
+            return false;
+        }
+        
+        //Check Name input
+        if (getNameInput().isEmpty()) {
+            displayError("Please give the customer a name.");
+            return false;
+        }
+        else if (getDatabase().checkForValue(getIdInput(), "CUSTOMERS", "name"))
+        {
+            displayError("The name entered already exists in the database.");
+            return false;
+        }
+        
+        //we made it here, so there were no errors
+        return true;
+
+    }// end of CreateOrEditCustomerWindow::checkUserInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
