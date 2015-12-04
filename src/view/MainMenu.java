@@ -241,7 +241,7 @@ public class MainMenu extends JMenuBar
         
         //Truck menu
         truckMenu = new JMenu("Truck");
-        truckMenu.setMnemonic(KeyEvent.VK_R);
+        truckMenu.setMnemonic(KeyEvent.VK_T);
         truckMenu.setToolTipText("Truck Company");
         add(truckMenu);
 
