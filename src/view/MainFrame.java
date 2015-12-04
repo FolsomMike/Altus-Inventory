@@ -606,6 +606,20 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayEditTruckCompanyWindow
+    //
+    // Displays the Edit Truck Company window.
+    //
+    
+    public void displayEditTruckCompanyWindow() 
+    {
+        
+        truckCompaniesWindow.displayEditTruckCompanyWindow();
+        
+    }// end of MainFrame::displayEditTruckCompanyWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayHelp
     //
     // Displays help information.
