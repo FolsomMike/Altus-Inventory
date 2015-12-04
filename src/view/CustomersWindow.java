@@ -456,7 +456,9 @@ class CreateOrEditCustomerWindow extends AltusJDialog
             displayError("Please give the customer an Id.");
             return false;
         }
-        else if (getDatabase().checkForValue(getIdInput(), "CUSTOMERS", "id")) {
+        else if (!getIdInput().equals(customer.getId())
+                && getDatabase().checkForValue(getIdInput(), "CUSTOMERS", "id"))
+        {
             displayError("The Id entered already exists in the database.");
             return false;
         }
@@ -466,7 +468,9 @@ class CreateOrEditCustomerWindow extends AltusJDialog
             displayError("Please give the customer a name.");
             return false;
         }
-        else if (getDatabase().checkForValue(getIdInput(), "CUSTOMERS", "name"))
+        else if (!getNameInput().equals(customer.getName()) && 
+                    getDatabase().checkForValue(getNameInput(), 
+                                                    "CUSTOMERS", "name"))
         {
             displayError("The name entered already exists in the database.");
             return false;
