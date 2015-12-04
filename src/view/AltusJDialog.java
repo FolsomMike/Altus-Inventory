@@ -501,7 +501,7 @@ public abstract class AltusJDialog extends JDialog
     {
 
         return createJTextFieldPanel(idLabel, pInputFieldText, 
-                                        "Give the material a reference ID.", 
+                                        "Provide a reference Id.", 
                                         inputWidth);
 
     }// end of AltusJDialog::createIdPanel
