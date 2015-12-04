@@ -209,7 +209,7 @@ public class TruckCompaniesWindow extends AltusJDialog
         int row = table.getSelectedRow();
         String id = (String)table.getValueAt(row, 0);
         
-        //look for the customer that matches the selected id
+        //look for the company that matches the selected id
         for (TruckCompany c : companies) {
             if (id.equals(c.getId())) { return c; }
         }
