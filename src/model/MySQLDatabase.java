@@ -773,6 +773,41 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::insertTruck
+    //
+    // Inserts pTruck into the database.
+    //
+
+    public void insertTruck(Truck pTruck)
+    {
+        
+        String cmd = "INSERT INTO `TRUCKS` ("
+                        + "`id`,`name`,`truck_company_key`) "
+                        + "VALUES ("
+                        + "?,"  //placeholder 1     Id
+                        + "?,"  //placeholder 2     Name
+                        + "?)"; //placeholder 3     Truck Company Key
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pTruck.getId());
+            stmt.setString(2, pTruck.getName());
+            stmt.setString(3, pTruck.getTruckCompanyKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 801"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::insertTruck
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::insertTruckCompany
     //
     // Inserts pCompany into the database.
