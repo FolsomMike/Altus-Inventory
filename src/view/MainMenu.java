@@ -45,6 +45,7 @@ public class MainMenu extends JMenuBar
     
     JMenu truckMenu;
     JMenuItem truckCompaniesMenuItem;
+    JMenuItem trucksMenuItem;
 
     JMenu helpMenu;
     JMenuItem aboutMenuItem, helpMenuItem;
@@ -253,6 +254,14 @@ public class MainMenu extends JMenuBar
                                     (actionId, "View All Truck Companies"));
         truckCompaniesMenuItem.addActionListener(actionListener);
         truckMenu.add(truckCompaniesMenuItem);
+        
+        //Truck/Trucks menu item
+        trucksMenuItem = new JMenuItem("Trucks");
+        trucksMenuItem.setToolTipText("Trucks");
+        trucksMenuItem.setActionCommand(Tools.generateActionCommand
+                                                (actionId, "View All Trucks"));
+        trucksMenuItem.addActionListener(actionListener);
+        truckMenu.add(trucksMenuItem);
 
     }//end of MainMenu::createTruckMenu
     //--------------------------------------------------------------------------
