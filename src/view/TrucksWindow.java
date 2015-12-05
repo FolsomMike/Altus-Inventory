@@ -324,8 +324,7 @@ class CreateOrEditTruckWindow extends AltusJDialog
                                         MainView pMainView)
     {
 
-        super("Create Truck Company", pTrucksWindow, pMainFrame,
-                        pMainView);
+        super("Create Truck", pTrucksWindow, pMainFrame, pMainView);
         
         mode                    = mode_create;
         truck                   = new Truck("", "", "", "");
