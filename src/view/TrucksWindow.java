@@ -415,8 +415,8 @@ class CreateOrEditTruckWindow extends AltusJDialog
             getDatabase().updateTruck(truck);
         }
         
-        //tell the Truck Companies window to reload its data from the database
-        //since we changed some stuff there
+        //tell the Trucks window to reload its data from the database since we
+        //changed some stuff there
         trucksWindow.retrieveDataFromDatabase();
         
         //dispose of the window and its resources
