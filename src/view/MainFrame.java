@@ -578,6 +578,20 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayCreateTruckWindow
+    //
+    // Displays the Create Truck window.
+    //
+
+    public void displayCreateTruckWindow()
+    {
+
+        trucksWindow.displayCreateTruckWindow();
+
+    }//end of MainFrame::displayCreateTruckWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayCustomersWindow
     //
     // Displays the Customers window and stores a reference to it.
