@@ -245,7 +245,7 @@ public class MainMenu extends JMenuBar
         truckMenu.setToolTipText("Truck Company");
         add(truckMenu);
 
-        //Truck/View All Truck Companies menu item
+        //Truck/Truck Companies menu item
         truckCompaniesMenuItem = new JMenuItem("Truck Companies");
         truckCompaniesMenuItem.setToolTipText("Truck companies");
         truckCompaniesMenuItem.setActionCommand
