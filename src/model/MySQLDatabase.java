@@ -607,6 +607,47 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getTrucks
+    //
+    // Gets and returns all of the trucks in the TRUCKS table and stores all of
+    // the data pertaining to a truck company in a Truck object. All of the 
+    // Truck objects are returned in an array list.
+    //
+
+    public ArrayList<Truck> getTrucks()
+    {
+        
+        ArrayList<Truck> trucks = new ArrayList();
+
+        String cmd = "SELECT * FROM `TRUCKS` ORDER BY `name` ASC";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
+                String id       = set.getString("id");
+                String name     = set.getString("name");
+                String comp_key = set.getString("truck_company_key");
+                
+                //store the truck information
+                trucks.add(new Truck(sKey, id, name, comp_key));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 638"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return trucks;
+
+    }// end of MySQLDatabase::getTrucks
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::insertBatch
     //
     // Inserts pBatch into the database.
