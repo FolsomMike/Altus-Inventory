@@ -344,6 +344,12 @@ public class MainController implements EventHandler, Runnable
         {
             view.displayCreateTruckWindow();
         }
+        
+        else if (Tools.generateActionCommand(actionId, "Delete Truck")
+                .equals(e.getActionCommand())) 
+        {
+            view.deleteTruck();
+        }
         //end of Trucks window
 
         else if ("Timer".equals(e.getActionCommand())) { 
