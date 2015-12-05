@@ -313,7 +313,7 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::deleteTruckCompany
     //
-    // Deletes pCustomer from the TRUCK COMPANIES table in the database.
+    // Deletes pCompany from the TRUCK COMPANIES table in the database.
     //
 
     public void deleteTruckCompany(TruckCompany pCompany)
