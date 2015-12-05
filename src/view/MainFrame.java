@@ -774,6 +774,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayTrucksWindow
+    //
+    // Displays the Trucks window and stores a reference to it.
+    //
+    
+    public void displayTrucksWindow() 
+    {
+        
+        trucksWindow = new TrucksWindow(this, mainView);
+        trucksWindow.init();
+        
+    }// end of MainFrame::displayTrucksWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::getSelectedBatch
     //
     // Gets and returns the batch that is selected in the table.
