@@ -339,6 +339,34 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::deleteTruck
+    //
+    // Deletes pTruck from the TRUCKS table in the database.
+    //
+
+    public void deleteTruck(Truck pTruck)
+    {
+        
+        String cmd = "DELETE FROM `TRUCKS` WHERE `skoonie_key`=?";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pTruck.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 360"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+
+    }// end of MySQLDatabase::deleteTruck
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getBatches
     //
     // Gets and returns all of the batches in the BATCHES table and stores all
