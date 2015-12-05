@@ -57,6 +57,7 @@ public class MainFrame extends SkoonieFrame
     private CustomersWindow customersWindow;
     private RacksWindow racksWindow;
     private TruckCompaniesWindow truckCompaniesWindow;
+    private TrucksWindow trucksWindow;
     private Help help;
     private About about;
     
