@@ -1064,6 +1064,41 @@ public class MySQLDatabase
     }// end of MySQLDatabase::updateTruckCompany
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateTruck
+    //
+    // Updates pTruck in the database.
+    //
+
+    public void updateTruck(Truck pTruck)
+    {
+        
+        String cmd = "UPDATE `TRUCKS` SET "
+                        + "`id`=?,"                 //placeholder 1
+                        + "`name`=?,"               //placeholder 2
+                        + "`truck_company_key`=?"   //placeholder 3
+                        + "WHERE `skoonie_key`=?";  //placeholder 4
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pTruck.getId());
+            stmt.setString(2, pTruck.getName());
+            stmt.setString(3, pTruck.getTruckCompanyKey());
+            stmt.setString(4, pTruck.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1093"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::updateTruck
+    //--------------------------------------------------------------------------
+    
 }// end of class MySQLDatabase
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
