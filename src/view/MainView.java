@@ -449,6 +449,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }//end of MainView::displayEditTruckCompanyWindow
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayEditTruckWindow
+    //
+    // Displays the Edit Truck window.
+    //
+
+    public void displayEditTruckWindow()
+    {
+
+        mainFrame.displayEditTruckWindow();
+
+    }//end of MainView::displayEditTruckWindow
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::displayErrorMessage
