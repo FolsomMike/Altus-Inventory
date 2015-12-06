@@ -1171,6 +1171,41 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateTruck
     //
+    // Updates pTruckDriver in the database.
+    //
+
+    public void updateTruck(TruckDriver pTruckDriver)
+    {
+        
+        String cmd = "UPDATE `TRUCK_DRIVERS` SET "
+                        + "`id`=?,"                 //placeholder 1
+                        + "`name`=?,"               //placeholder 2
+                        + "`truck_company_key`=?"   //placeholder 3
+                        + "WHERE `skoonie_key`=?";  //placeholder 4
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pTruckDriver.getId());
+            stmt.setString(2, pTruckDriver.getName());
+            stmt.setString(3, pTruckDriver.getTruckCompanyKey());
+            stmt.setString(4, pTruckDriver.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1197"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::updateTruckDriver
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateTruck
+    //
     // Updates pTruck in the database.
     //
 
