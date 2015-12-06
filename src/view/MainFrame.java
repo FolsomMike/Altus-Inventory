@@ -593,6 +593,20 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayCreateTruckDriverWindow
+    //
+    // Displays the Create Truck Driver window.
+    //
+
+    public void displayCreateTruckDriverWindow()
+    {
+
+        truckDriversWindow.displayCreateTruckDriverWindow();
+
+    }//end of MainFrame::displayCreateTruckWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayCreateTruckWindow
     //
     // Displays the Create Truck window.

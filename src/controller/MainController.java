@@ -66,6 +66,7 @@ import view.MainFrame;
 import view.MainMenu;
 import view.RacksWindow;
 import view.TruckCompaniesWindow;
+import view.TruckDriversWindow;
 import view.TrucksWindow;
 
 //------------------------------------------------------------------------------
@@ -363,6 +364,16 @@ public class MainController implements EventHandler, Runnable
             view.displayEditTruckWindow();
         }
         //end of Trucks window
+        
+        //Truck Drivers window
+        actionId = TruckDriversWindow.getActionId();
+        
+        if (Tools.generateActionCommand(actionId, "Create Driver")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayCreateTruckDriverWindow();
+        }
+        //end of Truck Drivers window
 
         else if ("Timer".equals(e.getActionCommand())) { 
             doTimerActions(); 
