@@ -157,16 +157,16 @@ public class TruckDriversWindow extends AltusJDialog
        //reload the data from the database now that we've changed stuff
        retrieveDataFromDatabase();
         
-    }// end of TruckDriversWindow::deleteTruck
+    }// end of TruckDriversWindow::deleteTruckDriver
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TruckDriversWindow::displayCreateTruckWindow
+    // TruckDriversWindow::displayCreateTruckDriverWindow
     //
-    // Displays the Create Truck window and sets it as the active dialog.
+    // Displays the Create Truck Driver window and sets it as the active dialog.
     //
     
-    public void displayCreateTruckWindow() 
+    public void displayCreateTruckDriverWindow() 
     {
         
         
@@ -175,16 +175,16 @@ public class TruckDriversWindow extends AltusJDialog
                                                                 getMainView());
         createEditWindow.init();
         
-    }// end of TruckDriversWindow::displayCreateTruckWindow
+    }// end of TruckDriversWindow::displayCreateTruckDriverWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TruckDriversWindow::displayEditTruckWindow
+    // TruckDriversWindow::displayEditTruckDriverWindow
     //
-    // Displays the Edit Truck window and sets it as the active dialog.
+    // Displays the Edit Truck Driver window and sets it as the active dialog.
     //
     
-    public void displayEditTruckWindow() 
+    public void displayEditTruckDriverWindow() 
     {
         
         
@@ -195,7 +195,7 @@ public class TruckDriversWindow extends AltusJDialog
                                                     getMainView());
         createEditWindow.init();
         
-    }// end of TruckDriversWindow::displayEditTruckWindow
+    }// end of TruckDriversWindow::displayEditTruckDriverWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
