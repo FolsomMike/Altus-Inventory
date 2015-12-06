@@ -381,6 +381,14 @@ class CreateOrEditTruckWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
+        //add the Truck Company row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckCompanyPanel(truck.getTruckCompanyKey())
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
         //add the Cancel/Confirm panel
         addToMainPanel(createCancelConfirmPanel(confirmButtonText, 
                                                     confirmButtonToolTip));
@@ -460,6 +468,12 @@ class CreateOrEditTruckWindow extends AltusJDialog
             return false;
         }
         
+        //Check Truck Company input
+        if (!checkTruckCompanyInput()) { 
+            displayError("Please select a truck company.");
+            return false;
+        }
+        
         //we made it here, so there were no errors
         return true;
 
@@ -478,6 +492,8 @@ class CreateOrEditTruckWindow extends AltusJDialog
         truck.setId(getIdInput());
         
         truck.setName(getNameInput());
+        
+        truck.setTruckCompanyKey(getTruckCompanyInput());
 
     }// end of CreateOrEditTruckWindow::getUserInput
     //--------------------------------------------------------------------------
