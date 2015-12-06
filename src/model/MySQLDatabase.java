@@ -910,6 +910,41 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::insertTruckDriver
+    //
+    // Inserts pTruckDriver into the database.
+    //
+
+    public void insertTruckDriver(TruckDriver pTruckDriver)
+    {
+        
+        String cmd = "INSERT INTO `TRUCK_DRIVERS` ("
+                        + "`id`,`name`,`truck_company_key`) "
+                        + "VALUES ("
+                        + "?,"  //placeholder 1     Id
+                        + "?,"  //placeholder 2     Name
+                        + "?)"; //placeholder 3     Truck Company Key
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pTruckDriver.getId());
+            stmt.setString(2, pTruckDriver.getName());
+            stmt.setString(3, pTruckDriver.getTruckCompanyKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 938"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::insertTruckDriver
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::logSevere
     //
     // Logs pMessage with level SEVERE using the Java logger.
