@@ -373,6 +373,12 @@ public class MainController implements EventHandler, Runnable
         {
             view.displayCreateTruckDriverWindow();
         }
+        
+        else if (Tools.generateActionCommand(actionId, "Edit Driver")
+                .equals(e.getActionCommand())) 
+        {
+            view.displayEditTruckDriverWindow();
+        }
         //end of Truck Drivers window
 
         else if ("Timer".equals(e.getActionCommand())) { 
