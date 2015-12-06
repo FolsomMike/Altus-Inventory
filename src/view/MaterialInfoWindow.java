@@ -126,6 +126,14 @@ public class MaterialInfoWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
+        //add the Comments row
+        addToMainPanel(createRow(new JPanel[] {
+            createCommentsPanel(batch.getComments())
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
         //add the Cancel/Confirm panel
         addToMainPanel(createCancelConfirmPanel("Apply", 
                                                 "Apply the changes made."));
@@ -257,6 +265,7 @@ public class MaterialInfoWindow extends AltusJDialog
         batch.setTruckCompanyKey(getTruckCompanyInput());
         batch.setTruckKey(getTruckInput());
         batch.setTruckDriverKey(getTruckDriverInput());
+        batch.setComments(getCommentsInput());
 
     }// end of MaterialInfoWindow::getUserInput
     //--------------------------------------------------------------------------
