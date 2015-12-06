@@ -247,6 +247,12 @@ public class MainController implements EventHandler, Runnable
             view.displayTruckCompaniesWindow();
         }
         
+        else if (Tools.generateActionCommand(actionId, "View All Truck Drivers")
+                .equals(e.getActionCommand()))
+        {
+            view.displayTruckDriversWindow();
+        }
+        
         else if (Tools.generateActionCommand(actionId, "View All Trucks")
                 .equals(e.getActionCommand()))
         {

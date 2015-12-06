@@ -817,6 +817,21 @@ public class MainFrame extends SkoonieFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayTruckDriversWindow
+    //
+    // Displays the Truck Drivers window and stores a reference to it.
+    //
+    
+    public void displayTruckDriversWindow() 
+    {
+        
+        truckDriversWindow = new TruckDriversWindow(this, mainView);
+        truckDriversWindow.init();
+        
+    }// end of MainFrame::displayTruckDriversWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayTrucksWindow
     //
     // Displays the Trucks window and stores a reference to it.

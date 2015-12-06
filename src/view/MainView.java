@@ -635,6 +635,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainFrame::displayTruckDriversWindow
+    //
+    // Displays the Truck Drivers window.
+    //
+
+    public void displayTruckDriversWindow()
+    {
+
+        mainFrame.displayTruckDriversWindow();
+
+    }//end of MainFrame::displayTruckDriversWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainFrame::displayTrucksWindow
     //
     // Displays the Trucks window.
