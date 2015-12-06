@@ -339,6 +339,34 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::deleteTruckDriver
+    //
+    // Deletes pTruckDriver from the TRUCK_DRIVERS table in the database.
+    //
+
+    public void deleteTruckDriver(TruckDriver pTruckDriver)
+    {
+        
+        String cmd = "DELETE FROM `TRUCK_DRIVERS` WHERE `skoonie_key`=?";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        try {
+            stmt.setString(1, pTruckDriver.getSkoonieKey());
+            
+            //execute the statement
+            stmt.execute();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 360"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+
+    }// end of MySQLDatabase::deleteTruckDriver
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::deleteTruck
     //
     // Deletes pTruck from the TRUCKS table in the database.
