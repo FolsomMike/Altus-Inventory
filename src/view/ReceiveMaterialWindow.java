@@ -77,19 +77,6 @@ public class ReceiveMaterialWindow extends AltusJDialog
             createCustomerPanel(null)
         }));
         
-        //add the Truck Company, Truck Number, and Truck Driver row
-        /*//DEBUG HSS//addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Truck Company", "", 
-                                "What truck company brought the material to "
-                                        + "the yard?", w),
-            createInputPanel("Truck Number", "", 
-                                "What is the number of the truck that brought "
-                                        + "the material to the yard?", w),
-            createInputPanel("Truck Driver", "", 
-                                "Who was the driver of the truck that brought"
-                                        + " the material to the yard?", w)               
-        }));*///DEBUG HSS//
-        
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
@@ -99,25 +86,6 @@ public class ReceiveMaterialWindow extends AltusJDialog
             createTotalLengthPanel(""),
             createRackPanel(null)
         }));
-        
-        //add the Range, Grade, and Diameter row
-        /*//DEBUG HSS//addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Range", "", "What is the range of the pipe?", w),
-            createInputPanel("Grade", "", "What is the grade of the pipe?", w),
-            createInputPanel("Diameter", "", 
-                                "What is the outside diameter of the pipe?", w)               
-        }));
-        
-        //spacer between rows
-        addToMainPanel(createRowSpacer());
-        
-        //add the Wall and Facility row
-        addToMainPanel(createRow(new JPanel[] {
-            createInputPanel("Wall", "", 
-                                "What is the wall thickness of the pipe?", w),
-            createInputPanel("Facility", "", 
-                                "What facility is the pipe for?", w)            
-        }));*///DEBUG HSS//
         
         //spacer between rows
         addToMainPanel(createRowSpacer());
