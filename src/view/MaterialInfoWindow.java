@@ -102,6 +102,30 @@ public class MaterialInfoWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
+        //add the Truck Company row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckCompanyPanel(batch.getTruckCompanyKey())
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
+        //add the Truck row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckPanel(batch.getTruckKey())
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
+        //add the Truck Driver row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckDriverPanel(batch.getTruckDriverKey())
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
         //add the Cancel/Confirm panel
         addToMainPanel(createCancelConfirmPanel("Apply", 
                                                 "Apply the changes made."));
@@ -191,6 +215,24 @@ public class MaterialInfoWindow extends AltusJDialog
             return false;
         }
         
+        //Check Truck Company input
+        if (!checkTruckCompanyInput()) { 
+            displayError("Please select a truck company.");
+            return false;
+        }
+        
+        //Check Truck input
+        if (!checkTruckInput()) { 
+            displayError("Please select a truck.");
+            return false;
+        }
+        
+        //Check Truck Driver input
+        if (!checkTruckDriverInput()) { 
+            displayError("Please select a truck driver.");
+            return false;
+        }
+        
         //we made it here, so there were no errors
         return true;
 
@@ -212,6 +254,9 @@ public class MaterialInfoWindow extends AltusJDialog
         batch.setTotalLength(getTotalLengthInput());
         batch.setCustomerKey(getCustomerInput());
         batch.setRackKey(getRackInput());
+        batch.setTruckCompanyKey(getTruckCompanyInput());
+        batch.setTruckKey(getTruckInput());
+        batch.setTruckDriverKey(getTruckDriverInput());
 
     }// end of MaterialInfoWindow::getUserInput
     //--------------------------------------------------------------------------
