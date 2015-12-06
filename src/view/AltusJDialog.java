@@ -33,6 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import model.Batch;
 import model.Customer;
@@ -106,6 +107,9 @@ public abstract class AltusJDialog extends JDialog
     private final String cityLabel = "City";
     public String getCityLabel() { return cityLabel; }
     
+    private final String commentsLabel = "Comments";
+    public String getCommentsLabel() { return commentsLabel; }
+    
     private final String customerLabel = "Customer";
     public String getCustomerLabel() { return customerLabel; }
     
@@ -153,6 +157,9 @@ public abstract class AltusJDialog extends JDialog
     
     public String getCityInput() 
     { return inputFields.get(cityLabel).getValue(); }
+    
+    public String getCommentsInput() 
+    { return inputFields.get(commentsLabel).getValue(); }
     
     //NOTE: actually returns the Skoonie Key associated with the input
     public String getCustomerInput() 
@@ -529,6 +536,41 @@ public abstract class AltusJDialog extends JDialog
         return panel;
 
     }// end of AltusJDialog::createComboBoxPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::createCommentsPanel
+    //
+    // Creates and returns a Comments input panel.
+    //
+
+    public JPanel createCommentsPanel(String pComments)
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel(commentsLabel);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentY(TOP_ALIGNMENT);
+        panel.add(label);
+
+        JTextArea textArea = new JTextArea(pComments);
+        textArea.setAlignmentX(LEFT_ALIGNMENT);
+        textArea.setAlignmentY(TOP_ALIGNMENT);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setToolTipText("Additional information or comments.");
+        Tools.setSizes(textArea, inputWidthFull, 300);
+        //store a reference to the input field
+        inputFields.put(commentsLabel, new InputField(textArea));
+        panel.add(textArea);
+        
+        return panel;
+
+    }// end of AltusJDialog::createCommentsPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -1035,6 +1077,7 @@ class InputField extends Object
     
     private final JTextField jTextField;
     private final JComboBox jComboBox;
+    private final JTextArea jTextArea;
     
     //--------------------------------------------------------------------------
     // InputField::InputField (constructor)
@@ -1047,6 +1090,7 @@ class InputField extends Object
         
         jTextField   = pField;
         jComboBox    = null;
+        jTextArea    = null;
 
     }//end of InputField::InputField (constructor)
     //--------------------------------------------------------------------------
@@ -1061,6 +1105,23 @@ class InputField extends Object
     {
         
         jComboBox    = pCombo;
+        jTextField   = null;
+        jTextArea    = null;
+
+    }//end of InputField::InputField (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // InputField::InputField (constructor)
+    //
+    // Constructor for use when input is a JTextArea.
+    //
+
+    public InputField(JTextArea pTextArea)
+    {
+        
+        jTextArea    = pTextArea;
+        jComboBox    = null;
         jTextField   = null;
 
     }//end of InputField::InputField (constructor)
@@ -1079,6 +1140,8 @@ class InputField extends Object
         if (jComboBox != null) { return (String)jComboBox.getSelectedItem(); }
         
         if (jTextField != null) { return jTextField.getText(); }
+        
+        if (jTextArea != null) { return jTextArea.getText(); }
         
         return "";
 
