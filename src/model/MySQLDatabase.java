@@ -421,13 +421,16 @@ public class MySQLDatabase
                 String length   = set.getString("total_length");
                 String cKey     = set.getString("customer_key");
                 String rKey     = set.getString("rack_key");
+                String trCKey   = set.getString("truck_company_key");
+                String trKey    = set.getString("truck_key");
+                String trDKey   = set.getString("truck_driver_key");
                 
                 //store the batch information
                 batches.add(new Batch(sKey, id, date, quantity, length, cKey,
-                                        rKey));
+                                        rKey, trCKey, trKey, trDKey));
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 251"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error:433"); }
         
         //clean up environment
         closeResultSet(set);
@@ -759,14 +762,21 @@ public class MySQLDatabase
                         + "`quantity`,"
                         + "`total_length`,"
                         + "`customer_key`,"
-                        + "`rack_key`) "
+                        + "`rack_key`,"
+                        + "`truck_company_key`,"
+                        + "`truck_key`,"
+                        + "`truck_driver_key`"
+                        + ")"
                         + "VALUES ("
                         + "?,"  //placeholder 1     Id
                         + "?,"  //placeholder 2     Date
                         + "?,"  //placeholder 3     Quantity
                         + "?,"  //placeholder 4     Total Length
                         + "?,"  //placeholder 5     Customer Key
-                        + "?"   //placeholder 6     Rack Key
+                        + "?,"  //placeholder 6     Rack Key
+                        + "?,"  //placeholder 7     Truck Company Key
+                        + "?,"  //placeholder 8     Truck Key
+                        + "?"   //placeholder 9     Truck Driver Key
                         + ")";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
@@ -778,11 +788,14 @@ public class MySQLDatabase
             stmt.setString(4, pBatch.getTotalLength());
             stmt.setString(5, pBatch.getCustomerKey());
             stmt.setString(6, pBatch.getRackKey());
+            stmt.setString(7, pBatch.getTruckCompanyKey());
+            stmt.setString(8, pBatch.getTruckKey());
+            stmt.setString(9, pBatch.getTruckDriverKey());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 578"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 798"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -1061,24 +1074,30 @@ public class MySQLDatabase
                         + "`quantity`=?,"           //placeholder 3     quantity
                         + "`total_length`=?,"       //placeholder 4     total length
                         + "`customer_key`=?,"       //placeholder 5     customer key
-                        + "`rack_key`=?"            //placeholder 6     rack key
-                        + "WHERE `skoonie_key`=?";  //placeholder 7     skoonie key
+                        + "`rack_key`=?,"           //placeholder 6     rack key
+                        + "`truck_company_key`=?,"  //placeholder 7     truck company key
+                        + "`truck_key`=?,"          //placeholder 8     truck key
+                        + "`truck_driver_key`=?"    //placeholder 9     truck driver key
+                        + "WHERE `skoonie_key`=?";  //placeholder 10    skoonie key
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pBatch.getId());
-            stmt.setString(2, pBatch.getDate());
-            stmt.setString(3, pBatch.getQuantity());
-            stmt.setString(4, pBatch.getTotalLength());
-            stmt.setString(5, pBatch.getCustomerKey());
-            stmt.setString(6, pBatch.getRackKey());
-            stmt.setString(7, pBatch.getSkoonieKey());
+            stmt.setString(1,   pBatch.getId());
+            stmt.setString(2,   pBatch.getDate());
+            stmt.setString(3,   pBatch.getQuantity());
+            stmt.setString(4,   pBatch.getTotalLength());
+            stmt.setString(5,   pBatch.getCustomerKey());
+            stmt.setString(6,   pBatch.getRackKey());
+            stmt.setString(7,   pBatch.getTruckCompanyKey());
+            stmt.setString(8,   pBatch.getTruckKey());
+            stmt.setString(9,   pBatch.getTruckDriverKey());
+            stmt.setString(10,  pBatch.getSkoonieKey());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 676"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1100"); }
         
         //clean up environment
         closePreparedStatement(stmt);

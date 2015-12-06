@@ -231,7 +231,8 @@ public class ReceiveMaterialWindow extends AltusJDialog
                             getQuantityInput(),
                             getTotalLengthInput(),
                             getCustomerInput(),
-                            getRackInput());
+                            getRackInput(),
+                            "", "", "");
 
     }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
