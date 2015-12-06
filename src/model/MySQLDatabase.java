@@ -635,6 +635,47 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getTruckDrivers
+    //
+    // Gets and returns all of the truck drivers in the TRUCKDRIVERS table and 
+    // stores all of the data pertaining to a truck driver in a TruckDriver
+    // object. All of the TruckDriver objects are returned in an array list.
+    //
+
+    public ArrayList<TruckDriver> getTruckDrivers()
+    {
+        
+        ArrayList<TruckDriver> drivers = new ArrayList();
+
+        String cmd = "SELECT * FROM `TRUCK_DRIVERS` ORDER BY `name` ASC";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            while (set.next()) { 
+                String sKey     = set.getString("skoonie_key");
+                String id       = set.getString("id");
+                String name     = set.getString("name");
+                String comp_key = set.getString("truck_company_key");
+                
+                //store the driver information
+                drivers.add(new TruckDriver(sKey, id, name, comp_key));
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 666"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return drivers;
+
+    }// end of MySQLDatabase::getTruckDrivers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getTrucks
     //
     // Gets and returns all of the trucks in the TRUCKS table and stores all of
