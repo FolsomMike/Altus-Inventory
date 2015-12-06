@@ -1202,7 +1202,7 @@ public class MySQLDatabase
     // Updates pTruckDriver in the database.
     //
 
-    public void updateTruck(TruckDriver pTruckDriver)
+    public void updateTruckDriver(TruckDriver pTruckDriver)
     {
         
         String cmd = "UPDATE `TRUCK_DRIVERS` SET "
