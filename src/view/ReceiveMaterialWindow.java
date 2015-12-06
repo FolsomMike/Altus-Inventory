@@ -114,6 +114,14 @@ public class ReceiveMaterialWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
+        //add the Comments row
+        addToMainPanel(createRow(new JPanel[] {
+            createCommentsPanel("")
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
         //add the Cancel/Confirm panel
         addToMainPanel(createCancelConfirmPanel(
                                         "Receive", 
@@ -245,7 +253,7 @@ public class ReceiveMaterialWindow extends AltusJDialog
                             getTruckCompanyInput(),
                             getTruckInput(),
                             getTruckDriverInput(),
-                            "");
+                            getCommentsInput());
 
     }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
