@@ -244,7 +244,8 @@ public class ReceiveMaterialWindow extends AltusJDialog
                             getRackInput(),
                             getTruckCompanyInput(),
                             getTruckInput(),
-                            getTruckDriverInput());
+                            getTruckDriverInput(),
+                            "");
 
     }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------

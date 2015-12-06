@@ -7,7 +7,7 @@
 *
 * This class stores information about a batch:
 *       Skoonie Key, Id, Date, Quantity, Total Length, Customer Key, Rack Key,
-*       Truck Company Key, Truck Key, Truck Driver Key
+*       Truck Company Key, Truck Key, Truck Driver Key, Comments
 * 
 *
 */
@@ -58,6 +58,10 @@ public class Batch extends Record
     public String getTruckDriverKey() { return truckDriverKey; }
     public void setTruckDriverKey(String pKey) { truckDriverKey = pKey; }
     
+    private String comments;
+    public String getComments() { return comments; }
+    public void setComments(String pComments) { comments = pComments; }
+    
     //--------------------------------------------------------------------------
     // Batch::Batch (constructor)
     //
@@ -65,7 +69,7 @@ public class Batch extends Record
     public Batch(String pSkoonieKey, String pId, String pDate, String pQuantity, 
                     String pLength, String pCustomerKey, String pRackKey,
                     String pTruckCompanyKey, String pTruckKey,
-                    String pTruckDriverKey)
+                    String pTruckDriverKey, String pComments)
     {
         
         super(pSkoonieKey, pId);
@@ -78,6 +82,7 @@ public class Batch extends Record
         truckCompanyKey = pTruckCompanyKey;
         truckKey        = pTruckKey;
         truckDriverKey  = pTruckDriverKey;
+        comments        = pComments;
 
     }//end of Batch::Batch (constructor)
     //--------------------------------------------------------------------------

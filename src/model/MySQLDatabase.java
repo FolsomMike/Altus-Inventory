@@ -424,10 +424,11 @@ public class MySQLDatabase
                 String trCKey   = set.getString("truck_company_key");
                 String trKey    = set.getString("truck_key");
                 String trDKey   = set.getString("truck_driver_key");
+                String comments = set.getString("comments");
                 
                 //store the batch information
                 batches.add(new Batch(sKey, id, date, quantity, length, cKey,
-                                        rKey, trCKey, trKey, trDKey));
+                                        rKey, trCKey, trKey, trDKey, comments));
             }
         }
         catch (SQLException e) { logSevere(e.getMessage() + " - Error:433"); }
@@ -765,7 +766,8 @@ public class MySQLDatabase
                         + "`rack_key`,"
                         + "`truck_company_key`,"
                         + "`truck_key`,"
-                        + "`truck_driver_key`"
+                        + "`truck_driver_key`,"
+                        + "`comments`"
                         + ")"
                         + "VALUES ("
                         + "?,"  //placeholder 1     Id
@@ -777,25 +779,27 @@ public class MySQLDatabase
                         + "?,"  //placeholder 7     Truck Company Key
                         + "?,"  //placeholder 8     Truck Key
                         + "?"   //placeholder 9     Truck Driver Key
+                        + "?"   //placeholder 10    Comments
                         + ")";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pBatch.getId());
-            stmt.setString(2, pBatch.getDate());
-            stmt.setString(3, pBatch.getQuantity());
-            stmt.setString(4, pBatch.getTotalLength());
-            stmt.setString(5, pBatch.getCustomerKey());
-            stmt.setString(6, pBatch.getRackKey());
-            stmt.setString(7, pBatch.getTruckCompanyKey());
-            stmt.setString(8, pBatch.getTruckKey());
-            stmt.setString(9, pBatch.getTruckDriverKey());
+            stmt.setString(1,   pBatch.getId());
+            stmt.setString(2,   pBatch.getDate());
+            stmt.setString(3,   pBatch.getQuantity());
+            stmt.setString(4,   pBatch.getTotalLength());
+            stmt.setString(5,   pBatch.getCustomerKey());
+            stmt.setString(6,   pBatch.getRackKey());
+            stmt.setString(7,   pBatch.getTruckCompanyKey());
+            stmt.setString(8,   pBatch.getTruckKey());
+            stmt.setString(9,   pBatch.getTruckDriverKey());
+            stmt.setString(10,  pBatch.getComments());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 798"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 802"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -1077,8 +1081,9 @@ public class MySQLDatabase
                         + "`rack_key`=?,"           //placeholder 6     rack key
                         + "`truck_company_key`=?,"  //placeholder 7     truck company key
                         + "`truck_key`=?,"          //placeholder 8     truck key
-                        + "`truck_driver_key`=?"    //placeholder 9     truck driver key
-                        + "WHERE `skoonie_key`=?";  //placeholder 10    skoonie key
+                        + "`truck_driver_key`=?,"   //placeholder 9     truck driver key
+                        + "`comments`=?"            //placeholder 10    comments
+                        + "WHERE `skoonie_key`=?";  //placeholder 11    skoonie key
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
@@ -1092,7 +1097,8 @@ public class MySQLDatabase
             stmt.setString(7,   pBatch.getTruckCompanyKey());
             stmt.setString(8,   pBatch.getTruckKey());
             stmt.setString(9,   pBatch.getTruckDriverKey());
-            stmt.setString(10,  pBatch.getSkoonieKey());
+            stmt.setString(10,  pBatch.getComments());
+            stmt.setString(11,  pBatch.getSkoonieKey());
             
             //execute the statement
             stmt.execute();
