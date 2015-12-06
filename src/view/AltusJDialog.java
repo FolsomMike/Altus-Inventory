@@ -38,6 +38,7 @@ import model.Batch;
 import model.Customer;
 import model.MySQLDatabase;
 import model.Rack;
+import model.TruckCompany;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -67,6 +68,9 @@ public abstract class AltusJDialog extends JDialog
     protected final ArrayList<Customer> getCustomers() { return customers; }
     private ArrayList<Rack> racks;
     protected final ArrayList<Rack> getRacks() { return racks; }
+    private ArrayList<TruckCompany> truckCompanies;
+    protected final ArrayList<TruckCompany> getTruckCompanies() 
+    { return truckCompanies; }
     
     private final int rowSpacer = 20;
     
@@ -115,6 +119,9 @@ public abstract class AltusJDialog extends JDialog
     private final String totalLengthLabel = "Total Length";
     public String getTotalLengthLabel() { return totalLengthLabel; }
     
+    private final String truckCompanyLabel = "Truck Company";
+    public String getTruckCompanyLabelLabel() { return truckCompanyLabel; }
+    
     private final String zipCodeLabel = "Zip Code";
     public String getZipCodeLabel() { return zipCodeLabel; }
     //end of Labels
@@ -155,6 +162,10 @@ public abstract class AltusJDialog extends JDialog
     
     public String getTotalLengthInput() 
     { return inputFields.get(totalLengthLabel).getValue(); }
+    
+    //NOTE: actually returns the Skoonie Key associated with the input
+    public String getTruckCompanyInput()
+    {return getTruckCompanyKey(inputFields.get(truckCompanyLabel).getValue());}
     
     public String getZipCodeInput() 
     { return inputFields.get(zipCodeLabel).getValue(); }
@@ -287,6 +298,24 @@ public abstract class AltusJDialog extends JDialog
                                                 .equals(comboSelectionPhrase);
 
     }// end of AltusJDialog::checkRackInput
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::checkTruckCompanyInput
+    //
+    // Checks to make sure that the user selected a Truck Company from the
+    // combobox and did not just leave it at the selection phrase.
+    //
+    // Returns true if input is good; false if it isn't.
+    //
+
+    protected final boolean checkTruckCompanyInput()
+    {
+        
+        return !inputFields.get(truckCompanyLabel).getValue()
+                                                .equals(comboSelectionPhrase);
+
+    }// end of AltusJDialog::checkTruckCompanyInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -681,6 +710,38 @@ public abstract class AltusJDialog extends JDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // AltusJDialog::createTruckCompanyPanel
+    //
+    // Creates and returns a Truck Company input panel.
+    //
+
+    public JPanel createTruckCompanyPanel(String pSkoonieKey)
+    {
+        
+        //get truck companies from the database
+        truckCompanies = db.getTruckCompanies();
+        
+        //extract the names from truckCompanies, leaving an empty space at index
+        //0 for the selection phrase
+        int selectIndex = 0;
+        String[] names = new String[truckCompanies.size()+1];
+        for (int i=0; i<truckCompanies.size(); i++) {
+            names[i+1] = truckCompanies.get(i).getName();
+            
+            //if the truck company matches pSkoonieKey then set the selection
+            //index to the index of that truck company
+            if (pSkoonieKey.equals(truckCompanies.get(i).getSkoonieKey())) {
+                selectIndex = i+1;
+            }
+        }
+        
+        return createComboBoxPanel(truckCompanyLabel, names, selectIndex,
+                                    "Select a company.", inputWidthFull);
+
+    }// end of AltusJDialog::createTruckCompanyPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // AltusJDialog::createZipCodePanel
     //
     // Creates and returns a Zip Code input panel.
@@ -751,6 +812,26 @@ public abstract class AltusJDialog extends JDialog
         return key;
 
     }// end of AltusJDialog::getRackKey
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::getTruckCompanyKey
+    //
+    // Returns the Skoonie Key associated with pName
+    //
+
+    private String getTruckCompanyKey(String pName)
+    {
+        
+        String key = "";
+        
+        for (TruckCompany t : truckCompanies) {
+            if(pName.equals(t.getName())) { key = t.getSkoonieKey(); }
+        }
+        
+        return key;
+
+    }// end of AltusJDialog::getTruckCompanyKey
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
