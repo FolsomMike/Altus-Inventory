@@ -778,7 +778,7 @@ public class MySQLDatabase
                         + "?,"  //placeholder 6     Rack Key
                         + "?,"  //placeholder 7     Truck Company Key
                         + "?,"  //placeholder 8     Truck Key
-                        + "?"   //placeholder 9     Truck Driver Key
+                        + "?,"  //placeholder 9     Truck Driver Key
                         + "?"   //placeholder 10    Comments
                         + ")";
         
