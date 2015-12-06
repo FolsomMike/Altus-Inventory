@@ -90,6 +90,30 @@ public class ReceiveMaterialWindow extends AltusJDialog
         //spacer between rows
         addToMainPanel(createRowSpacer());
         
+        //add the Truck Company row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckCompanyPanel("")
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
+        //add the Truck row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckPanel("")
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
+        //add the Truck Driver row
+        addToMainPanel(createRow(new JPanel[] {
+            createTruckDriverPanel("")
+        }));
+        
+        //spacer between rows
+        addToMainPanel(createRowSpacer());
+        
         //add the Cancel/Confirm panel
         addToMainPanel(createCancelConfirmPanel(
                                         "Receive", 
@@ -178,6 +202,24 @@ public class ReceiveMaterialWindow extends AltusJDialog
             return false;
         }
         
+        //Check Truck Company input
+        if (!checkTruckCompanyInput()) { 
+            displayError("Please select a truck company.");
+            return false;
+        }
+        
+        //Check Truck input
+        if (!checkTruckInput()) { 
+            displayError("Please select a truck.");
+            return false;
+        }
+        
+        //Check Truck Driver input
+        if (!checkTruckDriverInput()) { 
+            displayError("Please select a truck driver.");
+            return false;
+        }
+        
         //we made it here, so there were no errors
         return true;
 
@@ -200,7 +242,9 @@ public class ReceiveMaterialWindow extends AltusJDialog
                             getTotalLengthInput(),
                             getCustomerInput(),
                             getRackInput(),
-                            "", "", "");
+                            getTruckCompanyInput(),
+                            getTruckInput(),
+                            getTruckDriverInput());
 
     }// end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
