@@ -281,6 +281,20 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainView::deleteTruckDriver
+    //
+    // Deletes the truck driver selected in the Truck Drivers window.
+    //
+    
+    public void deleteTruckDriver() 
+    {
+        
+        mainFrame.deleteTruckDriver();
+        
+    }// end of MainView::deleteTruckDriver
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainView::deleteTruck
     //
     // Deletes the truck selected in the Trucks window.

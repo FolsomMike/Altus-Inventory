@@ -374,6 +374,12 @@ public class MainController implements EventHandler, Runnable
             view.displayCreateTruckDriverWindow();
         }
         
+        else if (Tools.generateActionCommand(actionId, "Delete Driver")
+                .equals(e.getActionCommand())) 
+        {
+            view.deleteTruckDriver();
+        }
+        
         else if (Tools.generateActionCommand(actionId, "Edit Driver")
                 .equals(e.getActionCommand())) 
         {
