@@ -157,6 +157,7 @@ public class MainController implements CommandHandler, Runnable
         switch(pCommand[actionIndex]) {
             case "create": createBatch(pCommand);
             case "delete": deleteBatch(pCommand);
+            case "update": updateBatch(pCommand);
         }
 
     }//end of MainController::handleRecordCommand
@@ -200,6 +201,30 @@ public class MainController implements CommandHandler, Runnable
         db.deleteBatch(r);
 
     }//end of MainController::deleteBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::updateBatch
+    //
+    // Updates the batch associated with the Skoonie Key in the database using
+    // the key-value pairs in pCommand.
+    //
+
+    private void updateBatch(String[] pCommand)
+    {
+        
+        //extract the skoonie key from pCommand
+        Record r = new Record();
+        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
+        
+        for (int i=skKeyAttrsIndex; i<pCommand.length; i++) {
+            String[] pairs = pCommand[i].split(":");
+            r.addAttr(pairs[0], pairs[1]);
+        }
+        
+        db.updateBatch(r);
+
+    }//end of MainController::updateBatch
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
