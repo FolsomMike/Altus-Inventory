@@ -191,7 +191,11 @@ public class MainController implements CommandHandler, Runnable
     //--------------------------------------------------------------------------
     // MainController::receiveBatch
     //
-    // //WIP HSS//
+    // Receives a batch using the information in pCommand.
+    //
+    // Two records are created and inserted into the database:
+    //      one for a receivement
+    //      one for a new batch
     //
 
     private void receiveBatch(String[] pCommand)
