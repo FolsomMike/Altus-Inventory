@@ -40,10 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.swing.*;
-import model.Options;
 import view.MainView;
-import java.sql.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -62,10 +59,6 @@ public class MainController implements CommandHandler, Runnable
 
     private CommandHandler view;
     private final MySQLDatabase db = new MySQLDatabase();
-    
-    private SwingWorker workerThread;
-
-    private Options options;
 
     private int displayUpdateTimer = 0;
 
@@ -138,9 +131,6 @@ public class MainController implements CommandHandler, Runnable
         view = new MainView(this);
         view.init();
 
-        //create and load the program options
-        options = new Options();
-
         //start the control thread
         new Thread(this).start();
 
@@ -173,52 +163,58 @@ public class MainController implements CommandHandler, Runnable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::handleBatchCommand
+    // MainController::run
     //
-    // Performs different actions depending on pCommand.
+    // This is the part which runs as a separate thread.  The actions of 
+    // accessing remote devices occur here.  If they are done in a timer call 
+    // instead, then buttons and displays get frozen during the sometimes 
+    // lengthy calls to access the network.
+    //
+    // NOTE:  All functions called by this thread must wrap calls to alter GUI
+    // components in the invokeLater function to be thread safe.
     //
 
-    private void handleBatchCommand(String[] pCommand)
+    @Override
+    public void run()
     {
-        
-        switch(pCommand[actionIndex]) {
-            case "receive": receiveBatch(pCommand); break;
+
+        //call the control method repeatedly
+        while(true){
+
+            control();
+
+            //sleep for 2 seconds -- all timing is based on this period
+            threadSleep(2000);
+
         }
 
-    }//end of MainController::handleBatchCommand
+    }//end of MainController::run
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::receiveBatch
+    // MainController::control
     //
-    // Receives a batch using the information in pCommand.
-    //
-    // Two records are created and inserted into the database:
-    //      one for a receivement
-    //      one for a new batch
+    // Performs all display and control.  Call this from a thread.
     //
 
-    private void receiveBatch(String[] pCommand)
+    public void control()
     {
-       
-       Record receiveRecord = new Record();
-       receiveRecord.addAttr("id", pCommand[3]);
-       receiveRecord.addAttr("date", pCommand[4]);
-       extractAttributes(receiveRecord, pCommand, receivementAttributes);
-       
-       Record batchRecord = new Record();
-       extractAttributes(batchRecord, pCommand, batchAttributes);
-       
-       //insert the batch record into the database
-       int skoonieKey = db.insertRecord(batchRecord, batchesTable);
-       
-       //add the batch skoonie key to the receiveRecord
-       receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
-       
-       //insert the receive record into the database
-       db.insertRecord(receiveRecord, receivementsTable);
 
-    }//end of MainController::receiveBatch
+        //update the display every 30 seconds
+        if (displayUpdateTimer++ == 14){
+            displayUpdateTimer = 0;
+            //call function to update stuff here
+        }
+
+
+        //If a shut down is initiated, clean up and exit the program.
+
+        if(shutDown){
+            //exit the program
+            System.exit(0);
+        }
+
+    }//end of MainController::control
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -258,126 +254,6 @@ public class MainController implements CommandHandler, Runnable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::deleteRecord
-    //
-    // Deletes the Record associated with the Skoonie Key found in pCommand
-    // from pTable.
-    //
-
-    private void deleteRecord(String[] pCommand, String pTable)
-    {
-        
-        //extract the skoonie key from pCommand
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        
-        db.deleteRecord(r, pTable);
-
-    }//end of MainController::deleteRecord
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::insertRecord
-    //
-    // Inserts a Record using the key-value pairs contained in pCommand into
-    // pTable.
-    //
-
-    private void insertRecord(String[] pCommand, String pTable)
-    {
-        
-        //extract the key-value pairs from pCommand
-        Record r = new Record();
-        for (int i=noSkKeyAttrsIndex; i<pCommand.length; i++) {
-            String[] pairs = pCommand[i].split(":");
-            r.addAttr(pairs[0], pairs[1]);
-        }
-        
-        db.insertRecord(r, pTable);
-
-    }//end of MainController::insertRecord
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::updateRecord
-    //
-    // Updates the Record in pTable using the Skoonie Key and key-value pairs
-    // found in pCommand.
-    //
-
-    private void updateRecord(String[] pCommand, String pTable)
-    {
-        
-        //extract the skoonie key from pCommand
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        
-        for (int i=skKeyAttrsIndex; i<pCommand.length; i++) {
-            String[] pairs = pCommand[i].split(":");
-            r.addAttr(pairs[0], pairs[1]);
-        }
-        
-        db.updateRecord(r, pTable);
-
-    }//end of MainController::updateRecord
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::run
-    //
-    // This is the part which runs as a separate thread.  The actions of 
-    // accessing remote devices occur here.  If they are done in a timer call 
-    // instead, then buttons and displays get frozen during the sometimes 
-    // lengthy calls to access the network.
-    //
-    // NOTE:  All functions called by this thread must wrap calls to alter GUI
-    // components in the invokeLater function to be thread safe.
-    //
-
-    @Override
-    public void run()
-    {
-
-        //call the control method repeatedly
-        while(true){
-
-            control();
-
-            //sleep for 2 seconds -- all timing is based on this period
-            threadSleep(2000);
-
-        }
-
-    }//end of MainController::run
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::control
-    //
-    // Performs all display and control.  Call this from a thread.
-    //
-
-    public void control()
-    {
-
-        //update the display every 30 seconds
-        if (displayUpdateTimer++ == 14){
-            displayUpdateTimer = 0;
-            //call function to update stuff here
-        }
-
-
-        //If a shut down is initiated, clean up and exit the program.
-
-        if(shutDown){
-            //exit the program
-            System.exit(0);
-        }
-
-    }//end of MainController::control
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MainController::deleteFileIfOverSizeLimit
     //
     // If file pFilename is larger than pLimit, the file is deleted.
@@ -400,108 +276,62 @@ public class MainController implements CommandHandler, Runnable
 
     }//end of MainController::deleteFileIfOverSizeLimit
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainController::displayErrorMessage
+    // MainController::deleteRecord
     //
-    // Displays an error dialog with message pMessage.
+    // Deletes the Record associated with the Skoonie Key found in pCommand
+    // from pTable.
     //
 
-    public void displayErrorMessage(String pMessage)
+    private void deleteRecord(String[] pCommand, String pTable)
     {
+        
+        //extract the skoonie key from pCommand
+        Record r = new Record();
+        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
+        
+        db.deleteRecord(r, pTable);
 
-        //DEBUG HSS//view.displayErrorMessage(pMessage);
-
-    }//end of MainController::displayErrorMessage
+    }//end of MainController::deleteRecord
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainController::doSomethingInWorkerThread
+    // MainController::handleBatchCommand
     //
-    // Does nothing right now -- modify it to call a function which takes a 
-    // long time to finish. It will be run in a background thread so the GUI 
-    // is still responsive.
-    //
-    // -- CHANGE THE NAME TO REFLECT THE ACTION BEING DONE --
+    // Performs different actions depending on pCommand.
     //
 
-    private void doSomethingInWorkerThread()
+    private void handleBatchCommand(String[] pCommand)
     {
+        
+        switch(pCommand[actionIndex]) {
+            case "receive": receiveBatch(pCommand); break;
+        }
 
-        //define and instantiate a worker thread to create the file
-
-
-        //----------------------------------------------------------------------
-        //class SwingWorker
-        //
-
-        workerThread = new SwingWorker<Void, String>() {
-            @Override
-            public Void doInBackground() {
-
-                //do the work here by calling a function
-
-                return(null);
-
-            }//end of doInBackground
-
-            @Override
-            public void done() {
-
-                //clear in progress message here if one is being displayed
-
-                try {
-
-                    //use get(); function here to retrieve results if necessary
-                    //note that Void type here and above would be replaced with
-                    //the type of variable to be returned
-
-                    Void v = get();
-
-                } catch (InterruptedException ignore) {}
-                catch (java.util.concurrent.ExecutionException e) {
-                    String why;
-                    Throwable cause = e.getCause();
-                    if (cause != null) {
-                        why = cause.getMessage();
-                    } else {
-                        why = e.getMessage();
-                    }
-                    System.err.println("Error creating file: " + why);
-                }//catch
-
-            }//end of done
-
-            @Override
-            protected void process(java.util.List <String> pairs) {
-
-                //this method is not used by this application as it 
-                //is limited the publish method cannot be easily called 
-                //outside the class, so messages are displayed using a 
-                //ThreadSafeLogger object and status components are 
-                //updated using a GUIUpdater object
-
-            }//end of process
-
-        };//end of class SwingWorker
-        //----------------------------------------------------------------------
-
-    }//end of MainController::doSomethingInWorkerThread
+    }//end of MainController::handleBatchCommand
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainController::doTimerActions
+    // MainController::insertRecord
     //
-    // Performs actions driven by the timer.
-    //
-    // Not used for accessing network -- see run function for details.
+    // Inserts a Record using the key-value pairs contained in pCommand into
+    // pTable.
     //
 
-    public void doTimerActions()
+    private void insertRecord(String[] pCommand, String pTable)
     {
+        
+        //extract the key-value pairs from pCommand
+        Record r = new Record();
+        for (int i=noSkKeyAttrsIndex; i<pCommand.length; i++) {
+            String[] pairs = pCommand[i].split(":");
+            r.addAttr(pairs[0], pairs[1]);
+        }
+        
+        db.insertRecord(r, pTable);
 
-
-    }//end of MainController::doTimerActions
+    }//end of MainController::insertRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -531,6 +361,39 @@ public class MainController implements CommandHandler, Runnable
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage, pE);
 
     }//end of MainController::logStackTrace
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::receiveBatch
+    //
+    // Receives a batch using the information in pCommand.
+    //
+    // Two records are created and inserted into the database:
+    //      one for a receivement
+    //      one for a new batch
+    //
+
+    private void receiveBatch(String[] pCommand)
+    {
+       
+       Record receiveRecord = new Record();
+       receiveRecord.addAttr("id", pCommand[3]);
+       receiveRecord.addAttr("date", pCommand[4]);
+       extractAttributes(receiveRecord, pCommand, receivementAttributes);
+       
+       Record batchRecord = new Record();
+       extractAttributes(batchRecord, pCommand, batchAttributes);
+       
+       //insert the batch record into the database
+       int skoonieKey = db.insertRecord(batchRecord, batchesTable);
+       
+       //add the batch skoonie key to the receiveRecord
+       receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
+       
+       //insert the receive record into the database
+       db.insertRecord(receiveRecord, receivementsTable);
+
+    }//end of MainController::receiveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -617,15 +480,30 @@ public class MainController implements CommandHandler, Runnable
     }//end of MainController::threadSleep
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // MainController::updateRecord
+    //
+    // Updates the Record in pTable using the Skoonie Key and key-value pairs
+    // found in pCommand.
+    //
+
+    private void updateRecord(String[] pCommand, String pTable)
+    {
+        
+        //extract the skoonie key from pCommand
+        Record r = new Record();
+        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
+        
+        for (int i=skKeyAttrsIndex; i<pCommand.length; i++) {
+            String[] pairs = pCommand[i].split(":");
+            r.addAttr(pairs[0], pairs[1]);
+        }
+        
+        db.updateRecord(r, pTable);
+
+    }//end of MainController::updateRecord
+    //-------------------------------------------------------------------------
+    
 }//end of class MainController
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-
-//DEBUG HSS// -- this class is only temporary and should be removed later
-class Parameters {
-
-    ResultSet resultSet;
-    
-    public Parameters() {}
-        
-}
