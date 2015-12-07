@@ -81,10 +81,29 @@ public class MainController implements CommandHandler, Runnable
     //where the key-value pairs start when Skoonie Key is there
     int skKeyAttrsIndex     = 4;
     
+    //Record attributes --  record attributes are the keys to search for in a
+    //                      command array for a specific record type
+    private final String[] batchAttributes =    { 
+                                                    "customer_key",
+                                                    "id",
+                                                    "quantity",
+                                                    "rack_key", 
+                                                    "total_length"
+                                                };
+    
+    private final String[] receivementAttributes =  {
+                                                        "rack_key",
+                                                        "truck_key",
+                                                        "truck_company_key", 
+                                                        "truck_driver_key"
+                                                    };
+    
     //Table names -- back quotes so that they can be easily put in cmd strings
     private final String batchesTable = "`BATCHES`";
     private final String customersTable = "`CUSTOMERS`";
+    private final String movementsTable = "`MOVEMENTS`";
     private final String racksTable = "`RACKS`";
+    private final String receivementsTable = "`RECEIVEMENTS`";
     private final String truckCompaniesTable = "`TRUCK_COMPANIES`";
     private final String truckDriversTable = "`TRUCK_DRIVERS`";
     private final String trucksTable = "`TRUCKS`";
@@ -163,12 +182,75 @@ public class MainController implements CommandHandler, Runnable
     {
         
         switch(pCommand[actionIndex]) {
-            case "delete": deleteRecord(pCommand, batchesTable);
-            case "insert": insertRecord(pCommand, batchesTable);
-            case "update": updateRecord(pCommand, batchesTable);
+            case "receive": receiveBatch(pCommand); break;
         }
 
-    }//end of MainController::handleRecordCommand
+    }//end of MainController::handleBatchCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::receiveBatch
+    //
+    // //WIP HSS//
+    //
+
+    private void receiveBatch(String[] pCommand)
+    {
+       
+       Record receiveRecord = new Record();
+       receiveRecord.addAttr("id", pCommand[3]);
+       receiveRecord.addAttr("date", pCommand[4]);
+       extractAttributes(receiveRecord, pCommand, receivementAttributes);
+       
+       Record batchRecord = new Record();
+       extractAttributes(batchRecord, pCommand, batchAttributes);
+       
+       //insert the batch record into the database
+       int skoonieKey = db.insertRecord(batchRecord, batchesTable);
+       
+       //add the batch skoonie key to the receiveRecord
+       receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
+       
+       //insert the receive record into the database
+       db.insertRecord(receiveRecord, receivementsTable);
+
+    }//end of MainController::receiveBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::extractAttributes
+    //
+    // Extracts pAttributes from pCommand and puts them in pRec.
+    //
+
+    private void extractAttributes(Record pRec, String[] pCommand, 
+                                            String[] pAttributes)
+    {
+        
+        int attrsIndex = -1;
+        for (int i=0; i<pCommand.length; i++) {
+            if (pCommand[i].equals("begin attributes")) { attrsIndex = ++i; }
+        }
+        
+        //return if there are no attributes in pCommand
+        if (attrsIndex==-1) { return; }
+        
+        for (int i=attrsIndex; i<pCommand.length; i++) {
+            
+            //get key-value pair -- key index is 0; value index is 1
+            String[] pair = pCommand[i].split(":");
+            
+            //check to see if key matches an attribute, store pair if it does
+            for (String attr : pAttributes) {
+                if (pair[0].equals(attr)) { 
+                    pRec.addAttr(pair[0], pair[1]);
+                    break;
+                }
+            }
+            
+        }
+
+    }//end of MainController::extractAttributes
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

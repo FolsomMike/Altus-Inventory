@@ -60,6 +60,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -258,8 +259,11 @@ public class MySQLDatabase
         //conection can't be established
         if (!connectToDatabase()) { return stmt; }
         
-        try { stmt = connection.prepareStatement(pCommand); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 216"); }
+        try { 
+            stmt = connection.prepareStatement(pCommand, 
+                                            Statement.RETURN_GENERATED_KEYS);
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 266"); }
         
         return stmt;
 
@@ -556,8 +560,10 @@ public class MySQLDatabase
     // Inserts pRec into pTable.
     //
 
-    public void insertRecord(Record pRec, String pTable)
+    public int insertRecord(Record pRec, String pTable)
     {
+        
+        int skoonieKey = -1;
         
         String cmd = "INSERT INTO " + pTable + " (";
         
@@ -603,15 +609,24 @@ public class MySQLDatabase
             
             //execute the statement
             stmt.execute();
+            
+            ResultSet set = stmt.getGeneratedKeys();
+
+            if (set.next()) { skoonieKey = set.getInt(1); }
+            
+            //clean up environment
+            closeResultSet(set);
         }
         catch (SQLException e) { 
             //DEBUG HSS//
             System.out.println(e.getMessage());
-            logSevere(e.getMessage() + " - Error: 951"); }
+            logSevere(e.getMessage() + " - Error: 667"); }
         
         //clean up environment
         closePreparedStatement(stmt);
         closeDatabaseConnection();
+        
+        return skoonieKey;
                 
     }// end of MySQLDatabase::insertRecord
     //--------------------------------------------------------------------------
