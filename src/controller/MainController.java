@@ -306,6 +306,7 @@ public class MainController implements CommandHandler, Runnable
     {
         
         switch(pCommand[actionIndex]) {
+            case "delete":  deleteRecord(pCommand, batchesTable); break;
             case "receive": receiveBatch(pCommand); break;
         }
 
