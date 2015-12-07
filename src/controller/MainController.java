@@ -308,6 +308,7 @@ public class MainController implements CommandHandler, Runnable
         switch(pCommand[actionIndex]) {
             case "delete":  deleteRecord(pCommand, batchesTable); break;
             case "receive": receiveBatch(pCommand); break;
+            case "update":  updateRecord(pCommand, batchesTable); break;
         }
 
     }//end of MainController::handleBatchCommand
