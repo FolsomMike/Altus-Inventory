@@ -80,6 +80,14 @@ public class MainController implements CommandHandler, Runnable
     int noSkKeyAttrsIndex   = 3;
     //where the key-value pairs start when Skoonie Key is there
     int skKeyAttrsIndex     = 4;
+    
+    //Table names -- back quotes so that they can be easily put in cmd strings
+    private final String batchesTable = "`BATCHES`";
+    private final String customersTable = "`CUSTOMERS`";
+    private final String racksTable = "`RACKS`";
+    private final String truckCompaniesTable = "`TRUCK_COMPANIES`";
+    private final String truckDriversTable = "`TRUCK_DRIVERS`";
+    private final String trucksTable = "`TRUCKS`";
 
     //--------------------------------------------------------------------------
     // MainController::MainController (constructor)
@@ -155,22 +163,41 @@ public class MainController implements CommandHandler, Runnable
     {
         
         switch(pCommand[actionIndex]) {
-            case "create": createBatch(pCommand);
-            case "delete": deleteBatch(pCommand);
-            case "update": updateBatch(pCommand);
+            case "delete": deleteRecord(pCommand, batchesTable);
+            case "insert": insertRecord(pCommand, batchesTable);
+            case "update": updateRecord(pCommand, batchesTable);
         }
 
     }//end of MainController::handleRecordCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::createBatch
+    // MainController::deleteRecord
     //
-    // Creates a Record using the key-value pairs contained in pCommand and 
-    // inserts it into the database as a batch.
+    // Deletes the Record associated with the Skoonie Key found in pCommand
+    // from pTable.
     //
 
-    private void createBatch(String[] pCommand)
+    private void deleteRecord(String[] pCommand, String pTable)
+    {
+        
+        //extract the skoonie key from pCommand
+        Record r = new Record();
+        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
+        
+        db.deleteRecord(r, pTable);
+
+    }//end of MainController::deleteRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::insertRecord
+    //
+    // Inserts a Record using the key-value pairs contained in pCommand into
+    // pTable.
+    //
+
+    private void insertRecord(String[] pCommand, String pTable)
     {
         
         //extract the key-value pairs from pCommand
@@ -180,37 +207,19 @@ public class MainController implements CommandHandler, Runnable
             r.addAttr(pairs[0], pairs[1]);
         }
         
-        db.insertBatch(r);
+        db.insertRecord(r, pTable);
 
-    }//end of MainController::createBatch
+    }//end of MainController::insertRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::deleteBatch
+    // MainController::updateRecord
     //
-    // Deletes the batch associated with the Skoonie Key from the database.
-    //
-
-    private void deleteBatch(String[] pCommand)
-    {
-        
-        //extract the skoonie key from pCommand
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        
-        db.deleteBatch(r);
-
-    }//end of MainController::deleteBatch
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::updateBatch
-    //
-    // Updates the batch associated with the Skoonie Key in the database using
-    // the key-value pairs in pCommand.
+    // Updates the Record in pTable using the Skoonie Key and key-value pairs
+    // found in pCommand.
     //
 
-    private void updateBatch(String[] pCommand)
+    private void updateRecord(String[] pCommand, String pTable)
     {
         
         //extract the skoonie key from pCommand
@@ -222,9 +231,9 @@ public class MainController implements CommandHandler, Runnable
             r.addAttr(pairs[0], pairs[1]);
         }
         
-        db.updateBatch(r);
+        db.updateRecord(r, pTable);
 
-    }//end of MainController::updateBatch
+    }//end of MainController::updateRecord
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
