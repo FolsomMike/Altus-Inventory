@@ -84,6 +84,8 @@ public class MainController implements CommandHandler, Runnable
                                                     "total_length"
                                                 };
     
+    private final String[] movementAttributes =  {};
+    
     private final String[] receivementAttributes =  {
                                                         "rack_key",
                                                         "truck_key",
@@ -227,6 +229,9 @@ public class MainController implements CommandHandler, Runnable
                                             String[] pAttributes)
     {
         
+        //return if there are no attributes to check for
+        if (pAttributes.length <= 0) { return; }
+        
         int attrsIndex = -1;
         for (int i=0; i<pCommand.length; i++) {
             if (pCommand[i].equals("begin attributes")) { attrsIndex = ++i; }
@@ -307,6 +312,7 @@ public class MainController implements CommandHandler, Runnable
         
         switch(pCommand[actionIndex]) {
             case "delete":  deleteRecord(pCommand, batchesTable); break;
+            case "move":    moveBatch(pCommand); break;
             case "receive": receiveBatch(pCommand); break;
             case "update":  updateRecord(pCommand, batchesTable); break;
         }
@@ -363,6 +369,37 @@ public class MainController implements CommandHandler, Runnable
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage, pE);
 
     }//end of MainController::logStackTrace
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::moveBatch
+    //
+    // Moves a batch using the information in pCommand.
+    //
+    // A record to document the movement is created and inserted into the 
+    // movements table.
+    //
+
+    private void moveBatch(String[] pCommand)
+    {
+       
+       //document the movement
+       Record moveRecord = new Record();
+       moveRecord.addAttr("batch_key",      pCommand[3]);
+       moveRecord.addAttr("id",             pCommand[4]);
+       moveRecord.addAttr("date",           pCommand[5]);
+       moveRecord.addAttr("to_rack_key",    pCommand[6]);
+       extractAttributes(moveRecord, pCommand, movementAttributes);
+       db.insertRecord(moveRecord, movementsTable);
+       
+       //update the batch with the new rack
+       Record batchRecord = new Record();
+       batchRecord.setSkoonieKey(pCommand[3]);
+       batchRecord.addAttr("rack_key", pCommand[6]);
+       extractAttributes(batchRecord, pCommand, batchAttributes);
+       db.updateRecord(batchRecord, batchesTable);
+
+    }//end of MainController::moveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
