@@ -72,9 +72,9 @@ public class MySQLDatabase
 {
     
     private final String url = "jdbc:mysql://108.167.140.102:3306/"
-                                    + "hunter98_altus-inventory";
-    private final String username = "hunter98_altus";
-    private final String password = "shyanismineagain98";
+                                    + "hunter98_altus-inventory-jpf";
+    private final String username = "hunter98_jpf";
+    private final String password = "jpftesting";
     
     private Connection connection;
     
