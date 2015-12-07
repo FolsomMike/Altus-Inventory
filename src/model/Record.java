@@ -5,13 +5,14 @@
 *
 * Purpose:
 *
-* This class stores information about a record in a database table.
+* This class stores information about a record intended for a database table.
 * 
-* Currently stores:
-*       Skoonie Key, Id
+* Generic information needed for every single record in the program:
+*       Skoonie Key
 * 
-* Children classes can extend this to store more values, depending on the 
-* record type (Customer, Batch, etc.).
+* All other attributes can be stored and retrieved using the addAttr() and
+* getAttr() functions. The keys for the attributes need to match the column
+* names in the database.
 *
 */
 
@@ -20,6 +21,10 @@
 package model;
 
 //------------------------------------------------------------------------------
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -33,19 +38,30 @@ public class Record
     public String getSkoonieKey() { return skoonieKey; }
     public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
     
-    private String id;
-    public String getId() { return id; }
-    public void setId(String pId) { id = pId; }
+    private final Map<String, String> attributes = new HashMap<>();
+    public Map<String, String> getAttrs() { return attributes; }
+    public void addAttr(String pKey, String pAttribute) 
+    { attributes.put(pKey, pAttribute); }
+    public String getAttr(String pKey) { return attributes.get(pKey); }
     
     //--------------------------------------------------------------------------
     // Record::Record (constructor)
     //
 
-    public Record(String pSkoonieKey, String pId)
+    public Record()
+    {
+
+    }//end of Record::Record (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Record::Record (constructor)
+    //
+
+    public Record(String pSkoonieKey)
     {
         
         skoonieKey  = pSkoonieKey;
-        id          = pId;
 
     }//end of Record::Record (constructor)
     //--------------------------------------------------------------------------

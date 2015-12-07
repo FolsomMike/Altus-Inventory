@@ -28,29 +28,19 @@
 * to an EventHandler object -- in this case the Controller is designated to the
 * View as the EventHandler.
 *
-* Open Source Policy:
-*
-* This source code is Public Domain and free to any interested party.  Any
-* person, company, or organization may do with it as they please.
-*
 */
 
 //------------------------------------------------------------------------------
 
 package controller;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import aa_altusinventory.CommandHandler;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.TableModelEvent;
 import model.Options;
 import view.MainView;
 import java.sql.*;
@@ -59,44 +49,37 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import toolkit.Tools;
-import view.AltusJDialog;
-import view.CustomersWindow;
-import view.MainFrame;
-import view.MainMenu;
-import view.RacksWindow;
-import view.TruckCompaniesWindow;
-import view.TruckDriversWindow;
-import view.TrucksWindow;
+import model.MySQLDatabase;
+import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class MainController
 //
 
-public class MainController implements EventHandler, Runnable
+public class MainController implements CommandHandler, Runnable
 {
 
-    private MainView view;
+    private CommandHandler view;
+    private final MySQLDatabase db = new MySQLDatabase();
+    
+    private SwingWorker workerThread;
 
     private Options options;
 
-    private String errorMessage;
-
-    private SwingWorker workerThread;
-
-    private final DecimalFormat decimalFormat1 = new DecimalFormat("#.0");
-
-    private Font tSafeFont;
-    private String tSafeText;
-
     private int displayUpdateTimer = 0;
 
-    private String XMLPageFromRemote;
-
     private boolean shutDown = false;
-
-    private final String newline = "\n";
+    
+    //command array index variables
+    int controllerIndex     = 0;
+    int recordTypeIndex     = 1;
+    int actionIndex         = 2;
+    int skoonieKeyIndex     = 3;
+    //where the key-value pairs start when Skoonie Key is NOT there
+    int noSkKeyAttrsIndex   = 3;
+    //where the key-value pairs start when Skoonie Key is there
+    int skKeyAttrsIndex     = 4;
 
     //--------------------------------------------------------------------------
     // MainController::MainController (constructor)
@@ -114,12 +97,17 @@ public class MainController implements EventHandler, Runnable
     // Initializes the object. Must be called immediately after instantiation.
     //
 
+    @Override
     public void init()
     {
         
         //set up the logger
         setupJavaLogger();
+        
+        //initialize database
+        db.init();
 
+        //set up the view
         view = new MainView(this);
         view.init();
 
@@ -129,269 +117,89 @@ public class MainController implements EventHandler, Runnable
         //start the control thread
         new Thread(this).start();
 
-        view.setupAndStartMainTimer();
-
     }// end of MainController::init
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainController::actionPerformed
+    // MainController::performCommand
     //
-    // Responds to events.
+    // Performs different actions depending on pCommand.
     //
-    // This is identical to the method employed by  ActionListener objects. 
-    // This object is not an ActionListener, but uses the same concept for 
-    // clarity. The "MainView" (MVC Concept) objects catch GUI events and call 
-    // this method to pass those events to this "MainController" object.
+    // The function will do nothing if pCommand was not intended for controller.
     //
 
     @Override
-    public void actionPerformed(ActionEvent e)
+    public void performCommand(String pCommand)
     {
         
-        String actionId;
+        String[] command = pCommand.split("\\|");
         
-        //MainFrame
-        actionId = MainFrame.getActionId();
+        //return if not meant for controller
+        if (!command[controllerIndex].equals("controller")) { return; }
         
-        if (Tools.generateActionCommand(MainFrame.getActionId(), "Create Invoice")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateInvoiceWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Create Report")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateReportWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Make Payment")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayMakePaymentWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Material Info")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayMaterialInfoWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Move Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayMoveMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Receive Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayReceiveMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Reserve Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayReserveMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Ship Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayShipMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Transfer Material")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTransferMaterialWindow();
-        }
-        //end of MainFrame
-        
-        //MainMenu
-        actionId = MainMenu.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Display About")
-                .equals(e.getActionCommand()))
-        {
-            view.displayAbout();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Display Help")
-                .equals(e.getActionCommand()))
-        {
-            view.displayHelp();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Exit")
-                .equals(e.getActionCommand()))
-        {
-            shutDown();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Customers")
-                .equals(e.getActionCommand()))
-        {
-            view.displayCustomersWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Racks")
-                .equals(e.getActionCommand()))
-        {
-            view.displayRacksWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Truck Companies")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTruckCompaniesWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Truck Drivers")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTruckDriversWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Trucks")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTrucksWindow();
-        }
-        //end of MainMenu
-        
-        //AltusJDialog
-        actionId = AltusJDialog.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Cancel")
-                .equals(e.getActionCommand())) 
-        {
-            view.cancelAltusJDialogAction();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Confirm")
-                .equals(e.getActionCommand())) 
-        {
-            view.confirmAltusJDialogAction();
-        }
-        //end of AltusJDialog
-        
-        //Customers window
-        actionId = CustomersWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Customer")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateCustomerWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Customer")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteCustomer();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Customer")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditCustomerWindow();
-        }
-        //end of Customers window
-        
-        //Racks window
-        actionId = RacksWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Rack")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateRackWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Rack")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteRack();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Rack")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditRackWindow();
-        }
-        //end of Racks window
-        
-        //Truck Companies window
-        actionId = TruckCompaniesWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Company")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateTruckCompanyWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Company")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteTruckCompany();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Company")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditTruckCompanyWindow();
-        }
-        //end of Truck Companies window
-        
-        //Trucks window
-        actionId = TrucksWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Truck")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateTruckWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Truck")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteTruck();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Truck")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditTruckWindow();
-        }
-        //end of Trucks window
-        
-        //Truck Drivers window
-        actionId = TruckDriversWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Driver")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateTruckDriverWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Driver")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteTruckDriver();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Driver")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditTruckDriverWindow();
-        }
-        //end of Truck Drivers window
-
-        else if ("Timer".equals(e.getActionCommand())) { 
-            doTimerActions(); 
+        switch(command[recordTypeIndex]) {
+            case "batch":
+                handleBatchCommand(command);
         }
 
-    }//end of MainController::actionPerformed
+    }//end of MainController::performCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::handleBatchCommand
+    //
+    // Performs different actions depending on pCommand.
+    //
+
+    private void handleBatchCommand(String[] pCommand)
+    {
+        
+        switch(pCommand[actionIndex]) {
+            case "create": createBatch(pCommand);
+            case "delete": deleteBatch(pCommand);
+        }
+
+    }//end of MainController::handleRecordCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::createBatch
+    //
+    // Creates a Record using the key-value pairs contained in pCommand and 
+    // inserts it into the database as a batch.
+    //
+
+    private void createBatch(String[] pCommand)
+    {
+        
+        //extract the key-value pairs from pCommand
+        Record r = new Record();
+        for (int i=noSkKeyAttrsIndex; i<pCommand.length; i++) {
+            String[] pairs = pCommand[i].split(":");
+            r.addAttr(pairs[0], pairs[1]);
+        }
+        
+        db.insertBatch(r);
+
+    }//end of MainController::createBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::deleteBatch
+    //
+    // Deletes the batch associated with the Skoonie Key from the database.
+    //
+
+    private void deleteBatch(String[] pCommand)
+    {
+        
+        //extract the skoonie key from pCommand
+        Record r = new Record();
+        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
+        
+        db.deleteBatch(r);
+
+    }//end of MainController::deleteBatch
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -421,46 +229,6 @@ public class MainController implements EventHandler, Runnable
         }
 
     }//end of MainController::run
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::stateChanged
-    //
-
-    @Override
-    public void stateChanged(ChangeEvent ce)
-    {
-
-    }//end of MainController::stateChanged
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::tableChanged
-    //
-    
-    @Override
-    public void tableChanged(TableModelEvent tme) {
-        
-        int col = tme.getColumn();
-        int row = tme.getFirstRow();
-        if (col == 0) { view.checkBoxChanged(row); }
-        
-    }//end of MainController::tableChanged
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::windowClosing
-    //
-    // Handles actions necessary when the window is closing
-    //
-
-    @Override
-    public void windowClosing(WindowEvent e)
-    {
-
-        //perform all shut down procedures
-
-    }//end of MainController::windowClosing
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -522,7 +290,7 @@ public class MainController implements EventHandler, Runnable
     public void displayErrorMessage(String pMessage)
     {
 
-        view.displayErrorMessage(pMessage);
+        //DEBUG HSS//view.displayErrorMessage(pMessage);
 
     }//end of MainController::displayErrorMessage
     //--------------------------------------------------------------------------
@@ -728,34 +496,7 @@ public class MainController implements EventHandler, Runnable
 
     }//end of MainController::threadSleep
     //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::(various window listener functions)
-    //
-    // These functions are implemented per requirements of interface 
-    // WindowListener but do nothing at the present time.  As code is added to 
-    // each function, it should be moved from this section and formatted 
-    // properly.
-    //
-
-    @Override
-    public void windowActivated(WindowEvent e){}
-    @Override
-    public void windowDeactivated(WindowEvent e){}
-    @Override
-    public void windowOpened(WindowEvent e){}
-    //@Override
-    //public void windowClosing(WindowEvent e){}
-    @Override
-    public void windowClosed(WindowEvent e){}
-    @Override
-    public void windowIconified(WindowEvent e){}
-    @Override
-    public void windowDeiconified(WindowEvent e){}
-
-    //end of MainController::(various window listener functions)
-    //--------------------------------------------------------------------------
-     
+    
 }//end of class MainController
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
