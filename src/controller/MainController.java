@@ -425,23 +425,32 @@ public class MainController implements CommandHandler, Runnable
 
     private void receiveBatch(String[] pCommand)
     {
+        
+        //extract values from pCommand
+        String receiveId    = pCommand[3];
+        String receiveDate  = pCommand[4];
+        
+        //record for the batch
+        Record batchRecord = new Record();
+        extractAttributes(batchRecord, pCommand, batchAttributes);
+        
+        //before we go any farther, verify the receivement
+        if(!verifyReceivement(receiveId, batchRecord.getAttr("id"))) { return; }
        
-       Record receiveRecord = new Record();
-       receiveRecord.addAttr("id", pCommand[3]);
-       receiveRecord.addAttr("date", pCommand[4]);
-       extractAttributes(receiveRecord, pCommand, receivementAttributes);
-       
-       Record batchRecord = new Record();
-       extractAttributes(batchRecord, pCommand, batchAttributes);
-       
-       //insert the batch record into the database
-       int skoonieKey = db.insertRecord(batchRecord, batchesTable);
-       
-       //add the batch skoonie key to the receiveRecord
-       receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
-       
-       //insert the receive record into the database
-       db.insertRecord(receiveRecord, receivementsTable);
+        //record for the receivement
+        Record receiveRecord = new Record();
+        receiveRecord.addAttr("id", receiveId);
+        receiveRecord.addAttr("date", receiveDate);
+        extractAttributes(receiveRecord, pCommand, receivementAttributes);
+
+        //insert the batch into the database and store the skoonie key
+        int skoonieKey = db.insertRecord(batchRecord, batchesTable);
+
+        //add the batch skoonie key to the receivement
+        receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
+
+        //insert the receivement into the database
+        db.insertRecord(receiveRecord, receivementsTable);
 
     }//end of MainController::receiveBatch
     //--------------------------------------------------------------------------
@@ -577,6 +586,34 @@ public class MainController implements CommandHandler, Runnable
         return shouldMove;
 
     }//end of MainController::verifyMove
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::verifyReceivement
+    //
+    // Verifies the receivement of a batch.
+    //
+    // If pReceiveId or pBatchId already exist in the database or are empty,
+    // then the receivement should not be made.
+    //
+    // Returns true if receivement should be made; false if not.
+    //
+
+    private boolean verifyReceivement(String pReceiveId, String pBatchId)
+    {
+        
+        boolean shouldReceive = true;
+        
+        if (pReceiveId.isEmpty() || pBatchId.isEmpty() 
+            || db.checkForValue(pBatchId, batchesTable, "id")
+            || db.checkForValue(pReceiveId, receivementsTable, "id"))
+        {
+            shouldReceive = false;
+        }
+        
+        return shouldReceive;
+
+    }//end of MainController::verifyReceivement
     //--------------------------------------------------------------------------
     
 }//end of class MainController
