@@ -382,22 +382,33 @@ public class MainController implements CommandHandler, Runnable
 
     private void moveBatch(String[] pCommand)
     {
+        
+        //extract values from pCommand
+        String batchKey     = pCommand[3];
+        String moveId       = pCommand[4];
+        String date         = pCommand[5];
+        String toRackKey    = pCommand[6];
+        String fromRackKey  = db.getRecord(batchKey, batchesTable)
+                                                        .getAttr("rack_key");
+        
+        //verify the move
+        if (!verifyMove(toRackKey, fromRackKey)) { return; }
        
-       //document the movement
-       Record moveRecord = new Record();
-       moveRecord.addAttr("batch_key",      pCommand[3]);
-       moveRecord.addAttr("id",             pCommand[4]);
-       moveRecord.addAttr("date",           pCommand[5]);
-       moveRecord.addAttr("to_rack_key",    pCommand[6]);
-       extractAttributes(moveRecord, pCommand, movementAttributes);
-       db.insertRecord(moveRecord, movementsTable);
+        //document the movement
+        Record moveRecord = new Record();
+        moveRecord.addAttr("batch_key",      batchKey);
+        moveRecord.addAttr("id",             moveId);
+        moveRecord.addAttr("date",           date);
+        moveRecord.addAttr("from_rack_key",  fromRackKey);
+        moveRecord.addAttr("to_rack_key",    toRackKey);
+        extractAttributes(moveRecord, pCommand, movementAttributes);
+        db.insertRecord(moveRecord, movementsTable);
        
-       //update the batch with the new rack
-       Record batchRecord = new Record();
-       batchRecord.setSkoonieKey(pCommand[3]);
-       batchRecord.addAttr("rack_key", pCommand[6]);
-       extractAttributes(batchRecord, pCommand, batchAttributes);
-       db.updateRecord(batchRecord, batchesTable);
+        //update the batch with the new rack
+        Record batchRecord = new Record(batchKey);
+        batchRecord.addAttr("rack_key", toRackKey);
+        extractAttributes(batchRecord, pCommand, batchAttributes);
+        db.updateRecord(batchRecord, batchesTable);
 
     }//end of MainController::moveBatch
     //--------------------------------------------------------------------------
@@ -541,8 +552,33 @@ public class MainController implements CommandHandler, Runnable
         db.updateRecord(r, pTable);
 
     }//end of MainController::updateRecord
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::verifyMove
+    //
+    // Verifies the move of a batch from pFromRackKey to pToRackKey.
+    //
+    // If the keys are the same or if the pFromRackKey is empty, then the move
+    // should not be made. 
+    //
+    // Returns true if move should be made; false if not.
+    //
+
+    private boolean verifyMove(String pFromRackKey, String pToRackKey)
+    {
+        
+        boolean shouldMove = true;
+        
+        if (pFromRackKey.isEmpty() || pFromRackKey.equals(pToRackKey)) {
+            shouldMove = false;
+        }
+        
+        return shouldMove;
+
+    }//end of MainController::verifyMove
+    //--------------------------------------------------------------------------
     
 }//end of class MainController
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
