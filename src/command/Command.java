@@ -27,6 +27,7 @@ public class Command {
     
     //batch action Ids
     public final static String batchActionId  = controllerCommandId + "batch|";
+    public final static String batchDeleteId  = batchActionId + "delete|";
     
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
