@@ -26,8 +26,9 @@ public class Command {
     public final static String viewCommandId          = "view|";
     
     //batch action Ids
-    public final static String batchActionId  = controllerCommandId + "batch|";
-    public final static String batchDeleteId  = batchActionId + "delete|";
+    public final static String batchActionId    = controllerCommandId + "batch|";
+    public final static String batchDeleteId    = batchActionId + "delete|";
+    public final static String batchMoveId      = batchActionId + "move|";
     
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
