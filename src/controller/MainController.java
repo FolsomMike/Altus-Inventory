@@ -36,7 +36,7 @@ package controller;
 
 import command.CommandHandler;
 import command.CommandListener;
-import command.Commands;
+import command.Command;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -156,7 +156,7 @@ public class MainController implements CommandListener, Runnable
     public void commandPerformed(String pCommand)
     {
         
-        if (!Commands.isControllerCommand(pCommand)) { return; }
+        if (!Command.isControllerCommand(pCommand)) { return; }
         
         String[] command = pCommand.split("\\|");
         

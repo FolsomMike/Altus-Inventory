@@ -5,11 +5,8 @@
 *
 * Purpose:
 *
-* This class contains the commands that are sent to the CommandHandler. Using
-* variables for commands makes changing a command easier.
-* 
-* It also contains some helper functions to help with creating a command or 
-* determining a command's type.
+* This class contains helper functions and variables for creating commands for
+* the CommandHandler.
 *
 */
 
@@ -20,16 +17,16 @@ package command;
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-// class Commands
+// class Command
 //
 
-public class Commands {
+public class Command {
     
     public final static String controllerCommandId    = "controller|";
     public final static String viewCommandId          = "view|";
     
     //--------------------------------------------------------------------------
-    // Commands::createControllerCommand
+    // Command::createControllerCommand
     //
     // Creates and returns a controller command by adding the contorller command
     // id to the beginning of pCommand.
@@ -46,11 +43,11 @@ public class Commands {
         
         return controllerCommandId + pCommand;
 
-    }//end of Commands::createControllerCommand
+    }//end of Command::createControllerCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Commands::createViewCommand
+    // Command::createViewCommand
     //
     // Creates and returns a view command by adding the view command id to the
     // beginning of pCommand.
@@ -67,11 +64,11 @@ public class Commands {
         
         return viewCommandId + pCommand;
 
-    }//end of Commands::createViewCommand
+    }//end of Command::createViewCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Commands::isControllerCommand
+    // Command::isControllerCommand
     //
     // Determines whether or not the passed in command is a controller command.
     //
@@ -85,11 +82,11 @@ public class Commands {
         
         return pCommand.startsWith(controllerCommandId);
 
-    }//end of Commands::isControllerCommand
+    }//end of Command::isControllerCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Commands::isViewCommand
+    // Command::isViewCommand
     //
     // Determines whether or not the passed in command is a view command.
     //
@@ -103,10 +100,10 @@ public class Commands {
         
         return pCommand.startsWith(viewCommandId);
 
-    }//end of Commands::isViewCommand
+    }//end of Command::isViewCommand
     //--------------------------------------------------------------------------
     
     
-}//end of class Commands
+}//end of class Command
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

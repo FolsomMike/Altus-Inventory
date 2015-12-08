@@ -47,7 +47,7 @@ public class CommandHandler {
     // Only controllerListeners will be notified of controller commands; only
     // viewListeners notified of view commands.
     //
-    // Commands that can be distinguished are sent to all listeners.
+    // Command that can be distinguished are sent to all listeners.
     //
 
     public static void performCommand(String pCommand)
@@ -55,10 +55,10 @@ public class CommandHandler {
         
         if (pCommand == null || pCommand.isEmpty()) { return; }
         
-        if (Commands.isControllerCommand(pCommand)) { 
+        if (Command.isControllerCommand(pCommand)) { 
             notifyListeners(controllerListeners, pCommand);
         }
-        else if (Commands.isViewCommand(pCommand)) { 
+        else if (Command.isViewCommand(pCommand)) { 
             notifyListeners(viewListeners, pCommand);
         }
         else { notifyListeners(listeners, pCommand); }
@@ -79,8 +79,8 @@ public class CommandHandler {
         
         if (pCommand == null || pCommand.isEmpty()) { return; }
         
-        if (!Commands.isControllerCommand(pCommand)) { 
-            pCommand = Commands.createControllerCommand(pCommand);
+        if (!Command.isControllerCommand(pCommand)) { 
+            pCommand = Command.createControllerCommand(pCommand);
         }
         
         performCommand(pCommand);
@@ -101,8 +101,8 @@ public class CommandHandler {
         
         if (pCommand == null || pCommand.isEmpty()) { return; }
         
-        if (!Commands.isViewCommand(pCommand)) { 
-            pCommand = Commands.createViewCommand(pCommand);
+        if (!Command.isViewCommand(pCommand)) { 
+            pCommand = Command.createViewCommand(pCommand);
         }
         
         performCommand(pCommand);

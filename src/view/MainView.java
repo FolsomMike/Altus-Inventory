@@ -27,7 +27,7 @@ package view;
 
 import command.CommandHandler;
 import command.CommandListener;
-import command.Commands;
+import command.Command;
 import model.MySQLDatabase;
 import view.barebones.DisplayBareBones;
 
@@ -88,7 +88,7 @@ public class MainView implements CommandListener
     public void commandPerformed(String pCommand)
     {
         
-        if (!Commands.isControllerCommand(pCommand)) { return; }
+        if (!Command.isControllerCommand(pCommand)) { return; }
 
     }//end of MainView::commandPerformed
     //--------------------------------------------------------------------------
