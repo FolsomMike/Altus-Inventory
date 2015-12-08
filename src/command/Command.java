@@ -25,6 +25,9 @@ public class Command {
     public final static String controllerCommandId    = "controller|";
     public final static String viewCommandId          = "view|";
     
+    //batch action Ids
+    public final static String batchActionId  = controllerCommandId + "batch|";
+    
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
     //
