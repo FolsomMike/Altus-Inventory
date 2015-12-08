@@ -49,7 +49,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import model.MySQLDatabase;
-import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -64,45 +63,6 @@ public class MainController implements CommandListener, Runnable
     private int displayUpdateTimer = 0;
 
     private boolean shutDown = false;
-    
-    //command array index variables
-    int controllerIndex     = 0;
-    int recordTypeIndex     = 1;
-    int actionIndex         = 2;
-    int skoonieKeyIndex     = 3;
-    //where the key-value pairs start when Skoonie Key is NOT there
-    int noSkKeyAttrsIndex   = 3;
-    //where the key-value pairs start when Skoonie Key is there
-    int skKeyAttrsIndex     = 4;
-    
-    //Record attributes --  record attributes are the keys to search for in a
-    //                      command array for a specific record type
-    private final String[] batchAttributes =    { 
-                                                    "customer_key",
-                                                    "id",
-                                                    "quantity",
-                                                    "rack_key", 
-                                                    "total_length"
-                                                };
-    
-    private final String[] movementAttributes =  {};
-    
-    private final String[] receivementAttributes =  {
-                                                        "rack_key",
-                                                        "truck_key",
-                                                        "truck_company_key", 
-                                                        "truck_driver_key"
-                                                    };
-    
-    //Table names -- back quotes so that they can be easily put in cmd strings
-    private final String batchesTable = "`BATCHES`";
-    private final String customersTable = "`CUSTOMERS`";
-    private final String movementsTable = "`MOVEMENTS`";
-    private final String racksTable = "`RACKS`";
-    private final String receivementsTable = "`RECEIVEMENTS`";
-    private final String truckCompaniesTable = "`TRUCK_COMPANIES`";
-    private final String truckDriversTable = "`TRUCK_DRIVERS`";
-    private final String trucksTable = "`TRUCKS`";
 
     //--------------------------------------------------------------------------
     // MainController::MainController (constructor)
@@ -131,6 +91,10 @@ public class MainController implements CommandListener, Runnable
         
         //initialize database
         db.init();
+        
+        //set up the batch action handler
+        BatchActionHandler bh = new BatchActionHandler(db);
+        bh.init();
 
         //set up the view
         MainView v = new MainView(db);
@@ -157,13 +121,6 @@ public class MainController implements CommandListener, Runnable
     {
         
         if (!Command.isControllerCommand(pCommand)) { return; }
-        
-        String[] command = pCommand.split("\\|");
-        
-        switch(command[recordTypeIndex]) {
-            case "batch":
-                handleBatchCommand(command);
-        }
 
     }//end of MainController::commandPerformed
     //--------------------------------------------------------------------------
@@ -224,45 +181,6 @@ public class MainController implements CommandListener, Runnable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::extractAttributes
-    //
-    // Extracts pAttributes from pCommand and puts them in pRec.
-    //
-
-    private void extractAttributes(Record pRec, String[] pCommand, 
-                                            String[] pAttributes)
-    {
-        
-        //return if there are no attributes to check for
-        if (pAttributes.length <= 0) { return; }
-        
-        int attrsIndex = -1;
-        for (int i=0; i<pCommand.length; i++) {
-            if (pCommand[i].equals("begin attributes")) { attrsIndex = ++i; }
-        }
-        
-        //return if there are no attributes in pCommand
-        if (attrsIndex==-1) { return; }
-        
-        for (int i=attrsIndex; i<pCommand.length; i++) {
-            
-            //get key-value pair -- key index is 0; value index is 1
-            String[] pair = pCommand[i].split(":");
-            
-            //check to see if key matches an attribute, store pair if it does
-            for (String attr : pAttributes) {
-                if (pair[0].equals(attr)) { 
-                    pRec.addAttr(pair[0], pair[1]);
-                    break;
-                }
-            }
-            
-        }
-
-    }//end of MainController::extractAttributes
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MainController::deleteFileIfOverSizeLimit
     //
     // If file pFilename is larger than pLimit, the file is deleted.
@@ -284,66 +202,6 @@ public class MainController implements CommandListener, Runnable
         }
 
     }//end of MainController::deleteFileIfOverSizeLimit
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::deleteRecord
-    //
-    // Deletes the Record associated with the Skoonie Key found in pCommand
-    // from pTable.
-    //
-
-    private void deleteRecord(String[] pCommand, String pTable)
-    {
-        
-        //extract the skoonie key from pCommand
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        
-        db.deleteRecord(r, pTable);
-
-    }//end of MainController::deleteRecord
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::handleBatchCommand
-    //
-    // Performs different actions depending on pCommand.
-    //
-
-    private void handleBatchCommand(String[] pCommand)
-    {
-        
-        switch(pCommand[actionIndex]) {
-            case "delete":  deleteRecord(pCommand, batchesTable); break;
-            case "move":    moveBatch(pCommand); break;
-            case "receive": receiveBatch(pCommand); break;
-            case "update":  updateRecord(pCommand, batchesTable); break;
-        }
-
-    }//end of MainController::handleBatchCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::insertRecord
-    //
-    // Inserts a Record using the key-value pairs contained in pCommand into
-    // pTable.
-    //
-
-    private void insertRecord(String[] pCommand, String pTable)
-    {
-        
-        //extract the key-value pairs from pCommand
-        Record r = new Record();
-        for (int i=noSkKeyAttrsIndex; i<pCommand.length; i++) {
-            String[] pairs = pCommand[i].split(":");
-            r.addAttr(pairs[0], pairs[1]);
-        }
-        
-        db.insertRecord(r, pTable);
-
-    }//end of MainController::insertRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -373,90 +231,6 @@ public class MainController implements CommandListener, Runnable
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage, pE);
 
     }//end of MainController::logStackTrace
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::moveBatch
-    //
-    // Moves a batch using the information in pCommand.
-    //
-    // A record to document the movement is created and inserted into the 
-    // movements table.
-    //
-
-    private void moveBatch(String[] pCommand)
-    {
-        
-        //extract values from pCommand
-        String batchKey     = pCommand[3];
-        String moveId       = pCommand[4];
-        String date         = pCommand[5];
-        String toRackKey    = pCommand[6];
-        String fromRackKey  = db.getRecord(batchKey, batchesTable)
-                                                        .getAttr("rack_key");
-        
-        //verify the move
-        if (!verifyMove(toRackKey, fromRackKey)) { return; }
-       
-        //document the movement
-        Record moveRecord = new Record();
-        moveRecord.addAttr("batch_key",      batchKey);
-        moveRecord.addAttr("id",             moveId);
-        moveRecord.addAttr("date",           date);
-        moveRecord.addAttr("from_rack_key",  fromRackKey);
-        moveRecord.addAttr("to_rack_key",    toRackKey);
-        extractAttributes(moveRecord, pCommand, movementAttributes);
-        db.insertRecord(moveRecord, movementsTable);
-       
-        //update the batch with the new rack
-        Record batchRecord = new Record(batchKey);
-        batchRecord.addAttr("rack_key", toRackKey);
-        extractAttributes(batchRecord, pCommand, batchAttributes);
-        db.updateRecord(batchRecord, batchesTable);
-
-    }//end of MainController::moveBatch
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::receiveBatch
-    //
-    // Receives a batch using the information in pCommand.
-    //
-    // Two records are created and inserted into the database:
-    //      one for a receivement
-    //      one for a new batch
-    //
-
-    private void receiveBatch(String[] pCommand)
-    {
-        
-        //extract values from pCommand
-        String receiveId    = pCommand[3];
-        String receiveDate  = pCommand[4];
-        
-        //record for the batch
-        Record batchRecord = new Record();
-        extractAttributes(batchRecord, pCommand, batchAttributes);
-        
-        //before we go any farther, verify the receivement
-        if(!verifyReceivement(receiveId, batchRecord.getAttr("id"))) { return; }
-       
-        //record for the receivement
-        Record receiveRecord = new Record();
-        receiveRecord.addAttr("id", receiveId);
-        receiveRecord.addAttr("date", receiveDate);
-        extractAttributes(receiveRecord, pCommand, receivementAttributes);
-
-        //insert the batch into the database and store the skoonie key
-        int skoonieKey = db.insertRecord(batchRecord, batchesTable);
-
-        //add the batch skoonie key to the receivement
-        receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
-
-        //insert the receivement into the database
-        db.insertRecord(receiveRecord, receivementsTable);
-
-    }//end of MainController::receiveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -541,83 +315,6 @@ public class MainController implements CommandListener, Runnable
         try {Thread.sleep(pSleepTime);} catch (InterruptedException e) { }
 
     }//end of MainController::threadSleep
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::updateRecord
-    //
-    // Updates the Record in pTable using the Skoonie Key and key-value pairs
-    // found in pCommand.
-    //
-
-    private void updateRecord(String[] pCommand, String pTable)
-    {
-        
-        //extract the skoonie key from pCommand
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        
-        for (int i=skKeyAttrsIndex; i<pCommand.length; i++) {
-            String[] pairs = pCommand[i].split(":");
-            r.addAttr(pairs[0], pairs[1]);
-        }
-        
-        db.updateRecord(r, pTable);
-
-    }//end of MainController::updateRecord
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::verifyMove
-    //
-    // Verifies the move of a batch from pFromRackKey to pToRackKey.
-    //
-    // If the keys are the same or if the pFromRackKey is empty, then the move
-    // should not be made. 
-    //
-    // Returns true if move should be made; false if not.
-    //
-
-    private boolean verifyMove(String pFromRackKey, String pToRackKey)
-    {
-        
-        boolean shouldMove = true;
-        
-        if (pFromRackKey.isEmpty() || pFromRackKey.equals(pToRackKey)) {
-            shouldMove = false;
-        }
-        
-        return shouldMove;
-
-    }//end of MainController::verifyMove
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::verifyReceivement
-    //
-    // Verifies the receivement of a batch.
-    //
-    // If pReceiveId or pBatchId already exist in the database or are empty,
-    // then the receivement should not be made.
-    //
-    // Returns true if receivement should be made; false if not.
-    //
-
-    private boolean verifyReceivement(String pReceiveId, String pBatchId)
-    {
-        
-        boolean shouldReceive = true;
-        
-        if (pReceiveId.isEmpty() || pBatchId.isEmpty() 
-            || db.checkForValue(pBatchId, batchesTable, "id")
-            || db.checkForValue(pReceiveId, receivementsTable, "id"))
-        {
-            shouldReceive = false;
-        }
-        
-        return shouldReceive;
-
-    }//end of MainController::verifyReceivement
     //--------------------------------------------------------------------------
     
 }//end of class MainController
