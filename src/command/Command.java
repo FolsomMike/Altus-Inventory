@@ -112,6 +112,25 @@ public class Command {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // Command::isBatchReceiveCommand
+    //
+    // Determines whether or not the passed in command is a batch recieve
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isBatchReceiveCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(batchReceiveId);
+
+    }//end of Command::isBatchReceiveCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // Command::isControllerCommand
     //
     // Determines whether or not the passed in command is a controller command.
