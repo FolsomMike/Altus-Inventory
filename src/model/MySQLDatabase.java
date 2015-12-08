@@ -426,6 +426,48 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getRecord
+    //
+    // Gets and returns the record in pTable associated with pSkoonieKey
+    //
+
+    public Record getRecord(String pSkoonieKey, String pTable)
+    {
+        
+        Record r = new Record(pSkoonieKey);
+
+        String cmd = "SELECT * FROM " + pTable 
+                            + "WHERE `skoonie_key`=" + pSkoonieKey;
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            ResultSetMetaData d = set.getMetaData();
+            while (set.next()) { 
+                
+                //put attributes in record
+                //start count at 2 since Skoonie Key is at 1
+                for (int i=2; i<d.getColumnCount(); i++) {
+                    String key = d.getColumnName(i);
+                    r.addAttr(key, set.getString(key));
+                }
+                
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error:635"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        closeDatabaseConnection();
+        
+        return r;
+
+    }// end of MySQLDatabase::getRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getRecords
     //
     // Gets and returns all of the records in pTable.
