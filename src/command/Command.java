@@ -131,6 +131,25 @@ public class Command {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // Command::isBatchUpdateCommand
+    //
+    // Determines whether or not the passed in command is a batch update
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isBatchUpdateCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(batchUpdateId);
+
+    }//end of Command::isBatchUpdateCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // Command::isControllerCommand
     //
     // Determines whether or not the passed in command is a controller command.
