@@ -42,7 +42,10 @@ public class Record
     public Map<String, String> getAttrs() { return attributes; }
     public void addAttr(String pKey, String pAttribute) 
     { attributes.put(pKey, pAttribute); }
-    public String getAttr(String pKey) { return attributes.get(pKey); }
+    public String getAttr(String pKey) { 
+        String attr = attributes.get(pKey);
+        return attr!=null ? attr : "";
+    }
     
     //--------------------------------------------------------------------------
     // Record::Record (constructor)
