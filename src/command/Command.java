@@ -30,6 +30,7 @@ public class Command {
     public final static String batchDeleteId    = batchActionId + "delete|";
     public final static String batchMoveId      = batchActionId + "move|";
     public final static String batchReceiveId   = batchActionId + "receive|";
+    public final static String batchUpdateId    = batchActionId + "update|";
     
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
