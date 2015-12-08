@@ -112,11 +112,9 @@ public class BatchActionHandler implements CommandListener
     public void commandPerformed(String pCommand)
     {
         
-        if (!Command.isControllerCommand(pCommand)) { return; }
+        if (!pCommand.equals(Command.batchActionId)) { return; }
         
         String[] command = pCommand.split("\\|");
-        
-        if (!command[recordTypeIndex].equals("batch")) { return; }
         
         switch(command[actionIndex]) {
             case "delete":  deleteRecord(command, batchesTable); break;
