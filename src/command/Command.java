@@ -94,6 +94,24 @@ public class Command {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // Command::isBatchMoveCommand
+    //
+    // Determines whether or not the passed in command is a batch move command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isBatchMoveCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(batchMoveId);
+
+    }//end of Command::isBatchMoveCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // Command::isControllerCommand
     //
     // Determines whether or not the passed in command is a controller command.
