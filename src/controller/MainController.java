@@ -34,7 +34,9 @@
 
 package controller;
 
-import aa_altusinventory.CommandHandler;
+import command.CommandHandler;
+import command.CommandListener;
+import command.Commands;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -54,10 +56,9 @@ import model.Record;
 // class MainController
 //
 
-public class MainController implements CommandHandler, Runnable
+public class MainController implements CommandListener, Runnable
 {
-
-    private CommandHandler view;
+    
     private final MySQLDatabase db = new MySQLDatabase();
 
     private int displayUpdateTimer = 0;
@@ -119,9 +120,11 @@ public class MainController implements CommandHandler, Runnable
     // Initializes the object. Must be called immediately after instantiation.
     //
 
-    @Override
     public void init()
     {
+        
+        //register this as a controller listener
+        CommandHandler.registerControllerListener(this);
         
         //set up the logger
         setupJavaLogger();
@@ -130,8 +133,8 @@ public class MainController implements CommandHandler, Runnable
         db.init();
 
         //set up the view
-        view = new MainView(this);
-        view.init();
+        MainView v = new MainView(db);
+        v.init();
 
         //start the control thread
         new Thread(this).start();
@@ -140,28 +143,29 @@ public class MainController implements CommandHandler, Runnable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::performCommand
+    // MainController::commandPerformed
     //
     // Performs different actions depending on pCommand.
     //
     // The function will do nothing if pCommand was not intended for controller.
     //
+    // Called by the CommandHandler everytime a controller command is performed.
+    //
 
     @Override
-    public void performCommand(String pCommand)
+    public void commandPerformed(String pCommand)
     {
         
-        String[] command = pCommand.split("\\|");
+        if (!Commands.isControllerCommand(pCommand)) { return; }
         
-        //return if not meant for controller
-        if (!command[controllerIndex].equals("controller")) { return; }
+        String[] command = pCommand.split("\\|");
         
         switch(command[recordTypeIndex]) {
             case "batch":
                 handleBatchCommand(command);
         }
 
-    }//end of MainController::performCommand
+    }//end of MainController::commandPerformed
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

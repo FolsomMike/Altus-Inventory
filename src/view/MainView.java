@@ -25,7 +25,10 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import aa_altusinventory.CommandHandler;
+import command.CommandHandler;
+import command.CommandListener;
+import command.Commands;
+import model.MySQLDatabase;
 import view.barebones.DisplayBareBones;
 
 //------------------------------------------------------------------------------
@@ -33,22 +36,24 @@ import view.barebones.DisplayBareBones;
 // class MainView
 //
 
-public class MainView implements CommandHandler
+public class MainView implements CommandListener
 {
-
-    private final CommandHandler controller;
     
-    private CommandHandler display;
+    private final MySQLDatabase db;
+    private final String displayMode;
+    private final String displayModeBareBones = "BareBones";
 
     //--------------------------------------------------------------------------
     // MainView::MainView (constructor)
     //
 
-    public MainView(CommandHandler pControllerCommandHandler)
+    public MainView(MySQLDatabase pDatabase)
     {
 
-        controller = pControllerCommandHandler;
-
+        db = pDatabase;
+        
+        displayMode = displayModeBareBones;
+        
     }//end of MainView::MainView (constructor)
     //--------------------------------------------------------------------------
 
@@ -58,42 +63,52 @@ public class MainView implements CommandHandler
     // Initializes the object. Must be called immediately after instantiation.
     //
 
-    @Override
     public void init()
     {
         
-        //initialize the display
-        display = new DisplayBareBones(this);
-        display.init();
+        //register this as a view command listener
+        CommandHandler.registerViewListener(this);
+        
+        setupDisplay();
 
     }// end of MainView::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainView::performCommand
+    // MainView::commandPerformed
     //
-    // Decides what actions to take depending on pCommand.
+    // Performs different actions depending on pCommand.
     //
-    // If pCommand is intended for the controller, then it will be passed on to
-    // to the controller.
+    // The function will do nothing if pCommand was not intended for view.
     //
-    // If pCommand is intended for the view, then it will be passed on to
-    // to the dispaly or a generic action will be taken here.
+    // Called by the CommandHandler everytime a view command is performed.
     //
 
     @Override
-    public void performCommand(String pCommand)
+    public void commandPerformed(String pCommand)
     {
         
-        if (pCommand.startsWith("controller|")) {
-            controller.performCommand(pCommand);
-        }
+        if (!Commands.isControllerCommand(pCommand)) { return; }
+
+    }//end of MainView::commandPerformed
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::setupDisplay
+    //
+    // Uses the display mode to determien which display to use.
+    //
+
+    private void setupDisplay()
+    {
         
-        else if (pCommand.startsWith("view|")) {
-            display.performCommand(pCommand);
+        switch (displayMode) {
+            case displayModeBareBones:
+                DisplayBareBones b = new DisplayBareBones();
+                b.init();
         }
 
-    }// end of MainView::performCommand
+    }//end of MainView::setupDisplay
     //--------------------------------------------------------------------------
 
 }//end of class MainView
