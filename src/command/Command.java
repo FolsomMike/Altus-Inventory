@@ -75,6 +75,25 @@ public class Command {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // Command::isBatchDeleteCommand
+    //
+    // Determines whether or not the passed in command is a batch delete
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isBatchDeleteCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(batchDeleteId);
+
+    }//end of Command::isBatchDeleteCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // Command::isControllerCommand
     //
     // Determines whether or not the passed in command is a controller command.
@@ -109,7 +128,6 @@ public class Command {
 
     }//end of Command::isViewCommand
     //--------------------------------------------------------------------------
-    
     
 }//end of class Command
 //------------------------------------------------------------------------------
