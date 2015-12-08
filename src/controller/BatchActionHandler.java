@@ -112,15 +112,19 @@ public class BatchActionHandler implements CommandListener
     public void commandPerformed(String pCommand)
     {
         
-        if (!pCommand.equals(Command.batchActionId)) { return; }
+        String[] cmdArray = pCommand.split("\\|");
         
-        String[] command = pCommand.split("\\|");
-        
-        switch(command[actionIndex]) {
-            case "delete":  deleteRecord(command, batchesTable); break;
-            case "move":    moveBatch(command); break;
-            case "receive": receiveBatch(command); break;
-            case "update":  updateRecord(command, batchesTable); break;
+        if (Command.isBatchDeleteCommand(pCommand)) {
+            deleteRecord(cmdArray, batchesTable);
+        }
+        else if (Command.isBatchMoveCommand(pCommand)) {
+            moveBatch(cmdArray);
+        }
+        else if (Command.isBatchReceiveCommand(pCommand)) {
+            receiveBatch(cmdArray);
+        }
+        else if (Command.isBatchReceiveCommand(pCommand)) {
+            updateRecord(cmdArray, batchesTable);
         }
 
     }//end of BatchActionHandler::commandPerformed
