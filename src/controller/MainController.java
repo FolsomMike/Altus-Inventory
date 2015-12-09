@@ -95,6 +95,10 @@ public class MainController implements CommandListener, Runnable
         //set up the batch action handler
         BatchActionHandler bh = new BatchActionHandler(db);
         bh.init();
+        
+        //set up the customer action handler
+        CustomerActionHandler ch = new CustomerActionHandler(db);
+        ch.init();
 
         //set up the view
         MainView v = new MainView(db);
