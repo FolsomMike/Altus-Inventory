@@ -217,10 +217,7 @@ public class BatchActionHandler implements CommandListener
         
         //verify the move
         if (!verifyMove(fromRackKey, toRackKey)) {
-            String e = "The batch cannot be moved to the specified rack "
-                        + "because it is either already on that rack or is not "
-                        + "on a rack that it can be moved from.";
-            CommandHandler.performErrorCommand(e);
+            CommandHandler.performErrorCommand("batch move failed");
             return;
         }
        
