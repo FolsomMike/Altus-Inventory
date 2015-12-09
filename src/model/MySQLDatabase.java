@@ -230,9 +230,11 @@ public class MySQLDatabase
         
         try { 
             //return true if we are already connected
-            if(connection != null && !connection.isClosed()) { return success; }
+            if(connection != null && !connection.isClosed() 
+                    && connection.isValid(10)) { return success; }
             
             connection = DriverManager.getConnection(url, username, password);
+            
         }
         catch (SQLException e) {
             success = false;
