@@ -169,7 +169,6 @@ public class MainController implements CommandListener, Runnable
             //call function to update stuff here
         }
 
-
         //If a shut down is initiated, clean up and exit the program.
 
         if(shutDown){
