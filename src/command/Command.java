@@ -22,8 +22,9 @@ package command;
 
 public class Command {
     
-    public final static String controllerCommandId    = "controller|";
-    public final static String viewCommandId          = "view|";
+    public final static String controllerCommandId  = "controller|";
+    public final static String errorCommandId       = "error|";
+    public final static String viewCommandId        = "view|";
     
     //batch action Ids
     public final static String batchActionId    = controllerCommandId + "batch|";
@@ -51,6 +52,27 @@ public class Command {
         return controllerCommandId + pCommand;
 
     }//end of Command::createControllerCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::createErrorCommand
+    //
+    // Creates and returns an error command by adding the error command id to 
+    // the beginning of pCommand.
+    //
+
+    public static String createErrorCommand(String pCommand)
+    {
+        
+        //if pCommand is null or empty then just return an empty string
+        if (pCommand == null || pCommand.isEmpty()) { return ""; }
+        
+        //if pCommand is already an error commmand, then just give it back
+        if (isErrorCommand(pCommand)) { return pCommand; }
+        
+        return errorCommandId + pCommand;
+
+    }//end of Command::createErrorCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -165,6 +187,24 @@ public class Command {
         return pCommand.startsWith(controllerCommandId);
 
     }//end of Command::isControllerCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isErrorCommand
+    //
+    // Determines whether or not the passed in command is an error command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isErrorCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(errorCommandId);
+
+    }//end of Command::isErrorCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
