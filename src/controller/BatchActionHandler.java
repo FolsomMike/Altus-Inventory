@@ -124,7 +124,7 @@ public class BatchActionHandler implements CommandListener
             receiveBatch(cmdArray);
         }
         else if (Command.isBatchReceiveCommand(pCommand)) {
-            updateRecord(cmdArray, batchesTable);
+            updateRecord(cmdArray, batchAttributes, batchesTable);
         }
 
     }//end of BatchActionHandler::commandPerformed
@@ -279,17 +279,13 @@ public class BatchActionHandler implements CommandListener
     // found in pCommand.
     //
 
-    private void updateRecord(String[] pCommand, String pTable)
+    private void updateRecord(String[] pCommand, String[] pAttributes,
+                                String pTable)
     {
         
-        //extract the skoonie key from pCommand
         Record r = new Record();
         r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        
-        for (int i=skKeyAttrsIndex; i<pCommand.length; i++) {
-            String[] pairs = pCommand[i].split(":");
-            r.addAttr(pairs[0], pairs[1]);
-        }
+        extractAttributes(r, pCommand, pAttributes);
         
         db.updateRecord(r, pTable);
 
