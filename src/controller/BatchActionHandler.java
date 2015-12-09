@@ -136,6 +136,10 @@ public class BatchActionHandler implements CommandListener
     // Deletes the Record associated with the Skoonie Key found in pCommand
     // from pTable.
     //
+    // //DEBUG HSS// -- for testing purposes only. If this becomes a program
+    //                  feature in the future, then a check needs to be
+    //                  performed to see if a batch can't be deleted.
+    //
 
     private void deleteRecord(String[] pCommand, String pTable)
     {
