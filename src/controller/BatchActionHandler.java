@@ -123,7 +123,7 @@ public class BatchActionHandler implements CommandListener
         else if (Command.isBatchReceiveCommand(pCommand)) {
             receiveBatch(cmdArray);
         }
-        else if (Command.isBatchReceiveCommand(pCommand)) {
+        else if (Command.isBatchUpdateCommand(pCommand)) {
             updateRecord(cmdArray, batchAttributes, batchesTable);
         }
 
@@ -275,8 +275,8 @@ public class BatchActionHandler implements CommandListener
     //--------------------------------------------------------------------------
     // BatchActionHandler::updateRecord
     //
-    // Updates the Record in pTable using the Skoonie Key and key-value pairs
-    // found in pCommand.
+    // Updates the Record in pTable associated with the Skoonie Key found in 
+    // pCommand in pTable using the Skoonie Key and key-value pairs
     //
 
     private void updateRecord(String[] pCommand, String[] pAttributes,
