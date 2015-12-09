@@ -93,6 +93,9 @@ public class BatchActionHandler implements CommandListener
         
         //register this as a controller listener
         CommandHandler.registerControllerListener(this);
+        
+        //register this as an error listener
+        CommandHandler.registerErrorListener(this);
 
     }// end of BatchActionHandler::init
     //--------------------------------------------------------------------------
