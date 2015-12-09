@@ -33,6 +33,12 @@ public class Command {
     public final static String batchReceiveId   = batchActionId + "receive|";
     public final static String batchUpdateId    = batchActionId + "update|";
     
+    //customer action Ids
+    public final static String customerActionId = controllerCommandId + "customer|";
+    public final static String customerAddId    = customerActionId + "add|";
+    public final static String customerDeleteId = customerActionId + "delete|";
+    public final static String customerUpdateId = customerActionId + "update|";
+    
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
     //
@@ -187,6 +193,63 @@ public class Command {
         return pCommand.startsWith(controllerCommandId);
 
     }//end of Command::isControllerCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isCustomerAddCommand
+    //
+    // Determines whether or not the passed in command is a customer add
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isCustomerAddCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(customerAddId);
+
+    }//end of Command::isCustomerAddCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isCustomerDeleteCommand
+    //
+    // Determines whether or not the passed in command is a customer delete
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isCustomerDeleteCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(customerDeleteId);
+
+    }//end of Command::isCustomerDeleteCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isCustomerUpdateCommand
+    //
+    // Determines whether or not the passed in command is a customer update
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isCustomerUpdateCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(customerUpdateId);
+
+    }//end of Command::isCustomerUpdateCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
