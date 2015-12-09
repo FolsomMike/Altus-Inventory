@@ -54,6 +54,7 @@ package model;
 
 //------------------------------------------------------------------------------
 
+import command.CommandHandler;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -233,9 +234,10 @@ public class MySQLDatabase
             
             connection = DriverManager.getConnection(url, username, password);
         }
-        catch (SQLException e) { 
+        catch (SQLException e) {
             success = false;
-            logSevere(e.getMessage() + " - Error: 191"); 
+            CommandHandler.performErrorCommand("database connection failed");
+            logSevere(e.getMessage() + " - Error: 240"); 
         }
         
         return success;
