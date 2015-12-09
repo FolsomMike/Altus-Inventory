@@ -213,7 +213,13 @@ public class BatchActionHandler implements CommandListener
                                                         .getAttr("rack_key");
         
         //verify the move
-        if (!verifyMove(fromRackKey, toRackKey)) { return; }
+        if (!verifyMove(fromRackKey, toRackKey)) {
+            String e = "The batch cannot be moved to the specified rack "
+                        + "because it is either already on that rack or is not "
+                        + "on a rack that it can be moved from.";
+            CommandHandler.performErrorCommand(e);
+            return;
+        }
        
         //document the movement
         Record moveRecord = new Record();
