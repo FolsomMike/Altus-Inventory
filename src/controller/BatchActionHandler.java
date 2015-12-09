@@ -213,7 +213,7 @@ public class BatchActionHandler implements CommandListener
                                                         .getAttr("rack_key");
         
         //verify the move
-        if (!verifyMove(toRackKey, fromRackKey)) { return; }
+        if (!verifyMove(fromRackKey, toRackKey)) { return; }
        
         //document the movement
         Record moveRecord = new Record();
