@@ -99,6 +99,10 @@ public class MainController implements CommandListener, Runnable
         //set up the customer action handler
         CustomerActionHandler ch = new CustomerActionHandler(db);
         ch.init();
+        
+        //set up the rack action handler
+        RackActionHandler rh = new RackActionHandler(db);
+        rh.init();
 
         //set up the view
         MainView v = new MainView(db);
