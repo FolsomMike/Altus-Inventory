@@ -39,6 +39,12 @@ public class Command {
     public final static String customerDeleteId = customerActionId + "delete|";
     public final static String customerUpdateId = customerActionId + "update|";
     
+    //rack action Ids
+    public final static String rackActionId = controllerCommandId + "rack|";
+    public final static String rackAddId    = rackActionId + "add|";
+    public final static String rackDeleteId = rackActionId + "delete|";
+    public final static String rackUpdateId = rackActionId + "update|";
+    
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
     //
@@ -250,6 +256,62 @@ public class Command {
         return pCommand.startsWith(customerUpdateId);
 
     }//end of Command::isCustomerUpdateCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isRackAddCommand
+    //
+    // Determines whether or not the passed in command is a rack add command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isRackAddCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(rackAddId);
+
+    }//end of Command::isRackAddCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isRackDeleteCommand
+    //
+    // Determines whether or not the passed in command is a rack delete
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isRackDeleteCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(rackDeleteId);
+
+    }//end of Command::isRackDeleteCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::isRackUpdateCommand
+    //
+    // Determines whether or not the passed in command is a rack update
+    // command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isRackUpdateCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(rackUpdateId);
+
+    }//end of Command::isRackUpdateCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
