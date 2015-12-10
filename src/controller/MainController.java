@@ -92,6 +92,9 @@ public class MainController implements CommandListener, Runnable
         //initialize database
         db.init();
         
+        //initialize the attributes config file
+        //WIP HSS// initialize attributes config file
+        
         //set up the batch action handler
         BatchActionHandler bh = new BatchActionHandler(db);
         bh.init();
