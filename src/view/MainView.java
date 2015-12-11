@@ -25,11 +25,11 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import command.CommandHandler;
 import command.CommandListener;
 import command.Command;
 import model.MySQLDatabase;
 import view.barebones.DisplayBareBones;
+import view.classic.DisplayClassic;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -42,6 +42,7 @@ public class MainView implements CommandListener
     private final MySQLDatabase db;
     private final String displayMode;
     private final String displayModeBareBones = "BareBones";
+    private final String displayModeClassic = "Classic";
 
     //--------------------------------------------------------------------------
     // MainView::MainView (constructor)
@@ -103,6 +104,11 @@ public class MainView implements CommandListener
             case displayModeBareBones:
                 DisplayBareBones b = new DisplayBareBones();
                 b.init();
+                break;
+                
+            case displayModeClassic:
+                DisplayClassic c = new DisplayClassic();
+                c.init();
         }
 
     }//end of MainView::setupDisplay
