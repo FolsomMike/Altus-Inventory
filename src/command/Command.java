@@ -96,6 +96,24 @@ public class Command {
     }//end of Command::isControllerCommand
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // Command::isViewCommand
+    //
+    // Determines whether or not the passed in command is a view command.
+    //
+    // Returns true if it is; false if not.
+    //
+
+    public static boolean isViewCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        
+        return pCommand.startsWith(viewCommandId);
+
+    }//end of Command::isViewCommand
+    //--------------------------------------------------------------------------
+    
 }//end of class Command
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
