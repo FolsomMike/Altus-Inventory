@@ -329,7 +329,7 @@ public class MySQLDatabase
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pRec.getValue("skoonie_key"));
+            stmt.setString(1, pRec.getSkoonieKey());
             
             //execute the statement
             stmt.execute();
@@ -437,7 +437,7 @@ public class MySQLDatabase
     {
         
         Record r = new Record();
-        r.addColumn("skoonie_key", pSkoonieKey);
+        r.setSkoonieKey(pSkoonieKey);
 
         String cmd = "SELECT * FROM " + pTable 
                             + "WHERE `skoonie_key`=" + pSkoonieKey;
@@ -873,7 +873,7 @@ public class MySQLDatabase
             }
             
             //set the Skoonie Key
-            stmt.setString(place, pRec.getValue("skoonie_key"));
+            stmt.setString(place, pRec.getSkoonieKey());
             
             //execute the statement
             stmt.execute();

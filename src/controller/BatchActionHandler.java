@@ -40,10 +40,12 @@ public class BatchActionHandler implements CommandListener
     
     //Command keys -- keys to look for when handling a command
     private final List<String> batchKeys = new ArrayList<>();
+    private final List<String> movementKeys = new ArrayList<>();
     private final List<String> receivementKeys = new ArrayList<>();
     
     //Table names -- back quotes so that they can be easily put in cmd strings
     private final String batchesTable = "`BATCHES`";
+    private final String movementsTable = "`MOVEMENTS`";
     private final String receivementsTable = "`RECEIVEMENTS`";
 
     //--------------------------------------------------------------------------
@@ -73,6 +75,9 @@ public class BatchActionHandler implements CommandListener
         
         //setup the batch keys
         setupBatchKeys();
+        
+        //setup the movement keys
+        setupMovementKeys();
         
         //setup the receivement keys
         setupReceivementKeys();
@@ -111,6 +116,10 @@ public class BatchActionHandler implements CommandListener
                 deleteBatch(command);
                 break;
                 
+            case "move":
+            moveBatch(command);
+                break;
+                
             case "update":
                 updateBatch(command);
                 break;
@@ -133,12 +142,12 @@ public class BatchActionHandler implements CommandListener
         
         //delete the batch
         Record batchRecord = new Record();
-        getValues(batchRecord, pCommand, batchKeys);
+        batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
         db.deleteRecord(batchRecord, batchesTable);
         
         //delete the receivement associated with the batch
         ArrayList<Record> receivementRecords = db.getRecords(receivementsTable);
-        String batchKey = batchRecord.getValue("skoonie_key");
+        String batchKey = batchRecord.getSkoonieKey();
         for (Record receivement : receivementRecords) {
             if (receivement.getValue("batch_key").equals(batchKey)) {
                 db.deleteRecord(receivement, receivementsTable);
@@ -188,6 +197,30 @@ public class BatchActionHandler implements CommandListener
         }
 
     }//end of BatchActionHandler::getValues
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // BatchActionHandler::moveBatch
+    //
+    // Moves a batch using the information in pCommand.
+    //
+
+    private void moveBatch(Map<String, String> pCommand)
+    {
+        
+        //update the batch in the database
+        Record batchRecord = new Record();
+        batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
+        getValues(batchRecord, pCommand, batchKeys);
+        db.updateRecord(batchRecord, batchesTable);
+       
+        //document the movement
+        Record moveRecord = new Record();
+        getValues(moveRecord, pCommand, movementKeys);
+        moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
+        db.insertRecord(moveRecord, movementsTable);
+
+    }//end of BatchActionHandler::moveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -242,9 +275,7 @@ public class BatchActionHandler implements CommandListener
     {
         
         //keys hard coded into the program
-        batchKeys.add("skoonie_key");
-        //id or batch_id can be used as key -- value will be stored using "id"
-        batchKeys.add("id/batch_id");
+        batchKeys.add("id/batch_id"); //"id" used as column name
         batchKeys.add("quantity");
         batchKeys.add("storage_location_key");
         
@@ -252,6 +283,35 @@ public class BatchActionHandler implements CommandListener
         //WIP HSS//--add code to do this man
 
     }//end of BatchActionHandler::setupBatchKeys
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // BatchActionHandler::setupMovementKeys
+    //
+    // Sets up the movement keys list by adding some keys that are hard coded
+    // into the program to the list and then adding the optional attribute keys
+    // grabbed from the config file to that same list.
+    //
+    // NOTE:    The keys list is a list of keys that need to be extracted from a
+    //          command string when dealing with a movement.
+    //          Try to make sure that the keys and column names in the batches
+    //          table match. If there is a special case where the key cannot be
+    //          the same as a column name, prepend the column name followed by a
+    //          slash to the key: "column_name/key".
+    //
+
+    private void setupMovementKeys()
+    {
+        
+        //keys hard coded into the program
+        movementKeys.add("id/move_id"); //"id" used as column name
+        movementKeys.add("date");
+        movementKeys.add("storage_location_key");
+        
+        //optional keys that are grabbed from the attributes file
+        //WIP HSS//--add code to do this man
+
+    }//end of BatchActionHandler::setupMovementKeys
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -273,10 +333,7 @@ public class BatchActionHandler implements CommandListener
     {
         
         //keys hard coded into the program
-        receivementKeys.add("skoonie_key");
-        //id or receivement_id can be used as key -- value will 
-        //be stored into a record using "id" as the column name
-        receivementKeys.add("id/receivement_id");
+        receivementKeys.add("id/receivement_id"); //"id" used as column name
         receivementKeys.add("date");
         receivementKeys.add("quantity");
         receivementKeys.add("batch_key");
@@ -299,6 +356,7 @@ public class BatchActionHandler implements CommandListener
         
         //record for the batch
         Record batchRecord = new Record();
+        batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(batchRecord, pCommand, batchKeys);
         db.updateRecord(batchRecord, batchesTable);
         

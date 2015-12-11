@@ -30,6 +30,10 @@ import java.util.Map;
 public class Record 
 {
     
+    private String skoonieKey;
+    public String getSkoonieKey() { return skoonieKey; }
+    public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
+    
     //key=column; value=column value
     private final Map<String, String> columns = new HashMap<>();
     public Map<String, String> getColumns() { return columns; }
