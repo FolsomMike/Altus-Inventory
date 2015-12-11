@@ -27,6 +27,7 @@ import java.util.Map;
 public class Command {
     
     private final static String controllerCommandId  = "target=controller listeners|";
+    private final static String viewCommandId  = "target=view listeners|";
     
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
