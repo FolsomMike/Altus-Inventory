@@ -248,6 +248,8 @@ public class MainController implements CommandListener, Runnable
         db.emptyTable("MOVEMENTS");
         
         db.emptyTable("RECEIVEMENTS");
+        
+        db.closeDatabaseConnection();
 
     }//end of MainController::emptyDatabase
     //--------------------------------------------------------------------------
