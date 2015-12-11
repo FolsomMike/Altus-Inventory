@@ -84,6 +84,10 @@ public class CustomerActionHandler extends RecordActionHandler
                 addCustomer(command);
                 break;
                 
+            case "delete":
+                deleteRecord(command, getCustomersTableName());
+                break;
+                
             case "update":
                 updateRecord(command, getCustomerKeys(), 
                                         getCustomersTableName());
