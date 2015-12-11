@@ -201,8 +201,8 @@ public class BatchActionHandler implements CommandListener
         
         //keys hard coded into the program
         batchKeys.add("skoonie_key");
-        //id or batch id can be used as key -- value will be stored using "id"
-        batchKeys.add("id/batch id");
+        //id or batch_id can be used as key -- value will be stored using "id"
+        batchKeys.add("id/batch_id");
         batchKeys.add("quantity");
         batchKeys.add("storage_location_key");
         
@@ -232,9 +232,9 @@ public class BatchActionHandler implements CommandListener
         
         //keys hard coded into the program
         receivementKeys.add("skoonie_key");
-        //id or receivement id can be used as key -- value will 
+        //id or receivement_id can be used as key -- value will 
         //be stored into a record using "id" as the column name
-        receivementKeys.add("id/receivement id");
+        receivementKeys.add("id/receivement_id");
         receivementKeys.add("date");
         receivementKeys.add("quantity");
         receivementKeys.add("batch_key");
