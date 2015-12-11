@@ -243,6 +243,8 @@ public class MainController implements CommandListener, Runnable
         
         db.emptyTable("BATCHES");
         
+        db.emptyTable("CUSTOMERS");
+        
         db.emptyTable("MOVEMENTS");
         
         db.emptyTable("RECEIVEMENTS");
