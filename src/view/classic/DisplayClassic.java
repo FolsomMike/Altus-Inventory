@@ -19,7 +19,6 @@ package view.classic;
 import command.Command;
 import command.CommandHandler;
 import command.CommandListener;
-import java.util.Scanner;
 import javax.swing.JFrame;
 
 //------------------------------------------------------------------------------
