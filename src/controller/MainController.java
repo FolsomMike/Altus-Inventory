@@ -48,6 +48,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import model.ConfigFile;
 import model.MySQLDatabase;
 
 //------------------------------------------------------------------------------
@@ -59,6 +60,12 @@ public class MainController implements CommandListener, Runnable
 {
     
     private final MySQLDatabase db = new MySQLDatabase();
+    
+    private final ConfigFile attrsConfigFile
+                                        = new ConfigFile("attributes.config");
+    
+    private final BatchActionHandler batchActionHandler 
+                                = new BatchActionHandler(db, attrsConfigFile);
 
     private int displayUpdateTimer = 0;
 
@@ -93,19 +100,11 @@ public class MainController implements CommandListener, Runnable
         db.init();
         
         //initialize the attributes config file
-        //WIP HSS// initialize attributes config file
+        try { attrsConfigFile.init(); }
+        catch (IOException e) { logSevere(e.getMessage() + " - Error: 101"); }
         
         //set up the batch action handler
-        BatchActionHandler bh = new BatchActionHandler(db);
-        bh.init();
-        
-        //set up the customer action handler
-        CustomerActionHandler ch = new CustomerActionHandler(db);
-        ch.init();
-        
-        //set up the rack action handler
-        RackActionHandler rh = new RackActionHandler(db);
-        rh.init();
+        batchActionHandler.init();
 
         //set up the view
         MainView v = new MainView(db);

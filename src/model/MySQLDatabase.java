@@ -54,7 +54,6 @@ package model;
 
 //------------------------------------------------------------------------------
 
-import command.CommandHandler;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -238,7 +237,6 @@ public class MySQLDatabase
         }
         catch (SQLException e) {
             success = false;
-            CommandHandler.performErrorCommand("database connection failed");
             logSevere(e.getMessage() + " - Error: 240"); 
         }
         
@@ -331,7 +329,7 @@ public class MySQLDatabase
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pRec.getSkoonieKey());
+            stmt.setString(1, pRec.getValue("skoonie_key"));
             
             //execute the statement
             stmt.execute();
@@ -438,7 +436,8 @@ public class MySQLDatabase
     public Record getRecord(String pSkoonieKey, String pTable)
     {
         
-        Record r = new Record(pSkoonieKey);
+        Record r = new Record();
+        r.addColumn("skoonie_key", pSkoonieKey);
 
         String cmd = "SELECT * FROM " + pTable 
                             + "WHERE `skoonie_key`=" + pSkoonieKey;
@@ -454,7 +453,7 @@ public class MySQLDatabase
                 //start count at 2 since Skoonie Key is at 1
                 for (int i=2; i<d.getColumnCount(); i++) {
                     String key = d.getColumnName(i);
-                    r.addAttr(key, set.getString(key));
+                    r.addColumn(key, set.getString(key));
                 }
                 
             }
@@ -491,13 +490,11 @@ public class MySQLDatabase
             ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
                 
-                Record r = new Record(set.getString("skoonie_key"));
-                
-                //put attributes in record
-                //start count at 2 since Skoonie Key is at 1
-                for (int i=2; i<d.getColumnCount(); i++) {
+                Record r = new Record();
+                //put columns into the record
+                for (int i=1; i<d.getColumnCount(); i++) {
                     String key = d.getColumnName(i);
-                    r.addAttr(key, set.getString(key));
+                    r.addColumn(key, set.getString(key));
                 }
                 
                 //store the record
@@ -614,7 +611,7 @@ public class MySQLDatabase
         String cmd = "INSERT INTO " + pTable + " (";
         
         //get the attributes of pRec and put them in a set
-        Set<Map.Entry<String, String>> attrs = pRec.getAttrs().entrySet();
+        Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
         
         //use the keys in the Record attributes as the column names
         int c=0;
@@ -848,7 +845,7 @@ public class MySQLDatabase
         String cmd = "UPDATE " + pTable + " SET ";
         
         //get the attributes of pRec and put them in a set
-        Set<Map.Entry<String, String>> attrs = pRec.getAttrs().entrySet();
+        Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
         
         //use the keys in the Record attributes as the column names
         int c=0;
@@ -876,7 +873,7 @@ public class MySQLDatabase
             }
             
             //set the Skoonie Key
-            stmt.setString(place, pRec.getSkoonieKey());
+            stmt.setString(place, pRec.getValue("skoonie_key"));
             
             //execute the statement
             stmt.execute();

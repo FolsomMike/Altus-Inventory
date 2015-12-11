@@ -16,39 +16,22 @@ package command;
 
 //------------------------------------------------------------------------------
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 //------------------------------------------------------------------------------
 // class Command
 //
 
 public class Command {
     
-    public final static String controllerCommandId  = "controller|";
-    public final static String errorCommandId       = "error|";
-    public final static String viewCommandId        = "view|";
-    
-    //batch action Ids
-    public final static String batchActionId    = controllerCommandId + "batch|";
-    public final static String batchDeleteId    = batchActionId + "delete|";
-    public final static String batchMoveId      = batchActionId + "move|";
-    public final static String batchReceiveId   = batchActionId + "receive|";
-    public final static String batchUpdateId    = batchActionId + "update|";
-    
-    //customer action Ids
-    public final static String customerActionId = controllerCommandId + "customer|";
-    public final static String customerAddId    = customerActionId + "add|";
-    public final static String customerDeleteId = customerActionId + "delete|";
-    public final static String customerUpdateId = customerActionId + "update|";
-    
-    //rack action Ids
-    public final static String rackActionId = controllerCommandId + "rack|";
-    public final static String rackAddId    = rackActionId + "add|";
-    public final static String rackDeleteId = rackActionId + "delete|";
-    public final static String rackUpdateId = rackActionId + "update|";
+    private final static String controllerCommandId  = "target=controller listeners";
     
     //--------------------------------------------------------------------------
     // Command::createControllerCommand
     //
-    // Creates and returns a controller command by adding the contorller command
+    // Creates and returns a controller command by adding the controller command
     // id to the beginning of pCommand.
     //
 
@@ -67,120 +50,31 @@ public class Command {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Command::createErrorCommand
+    // Command::extractKeyValuePairs
     //
-    // Creates and returns an error command by adding the error command id to 
-    // the beginning of pCommand.
+    // Extracts all of the key value pairs from pCommand and returns them in a
+    // Map.
     //
 
-    public static String createErrorCommand(String pCommand)
+    public static Map<String, String> extractKeyValuePairs(String pCommand)
     {
         
-        //if pCommand is null or empty then just return an empty string
-        if (pCommand == null || pCommand.isEmpty()) { return ""; }
+        Map<String, String> map = new HashMap<>();
         
-        //if pCommand is already an error commmand, then just give it back
-        if (isErrorCommand(pCommand)) { return pCommand; }
+        if (pCommand == null || pCommand.isEmpty()) { return map; }
         
-        return errorCommandId + pCommand;
+        //pairs array will contain key-value pairs
+        String[] pairs = pCommand.split("\\|");
+        
+        for (String pair : pairs) {
+            //keyat index 0; value at index 1
+            String[] keyValue = pair.split("=");
+            map.put(keyValue[0], keyValue[1]);
+        }
+        
+        return map;
 
-    }//end of Command::createErrorCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::createViewCommand
-    //
-    // Creates and returns a view command by adding the view command id to the
-    // beginning of pCommand.
-    //
-
-    public static String createViewCommand(String pCommand)
-    {
-        
-        //if pCommand is null or empty then just return an empty string
-        if (pCommand == null || pCommand.isEmpty()) { return ""; }
-        
-        //if pCommand is already a view commmand, then just give it back
-        if (isViewCommand(pCommand)) { return pCommand; }
-        
-        return viewCommandId + pCommand;
-
-    }//end of Command::createViewCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isBatchDeleteCommand
-    //
-    // Determines whether or not the passed in command is a batch delete
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isBatchDeleteCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(batchDeleteId);
-
-    }//end of Command::isBatchDeleteCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isBatchMoveCommand
-    //
-    // Determines whether or not the passed in command is a batch move command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isBatchMoveCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(batchMoveId);
-
-    }//end of Command::isBatchMoveCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isBatchReceiveCommand
-    //
-    // Determines whether or not the passed in command is a batch recieve
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isBatchReceiveCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(batchReceiveId);
-
-    }//end of Command::isBatchReceiveCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isBatchUpdateCommand
-    //
-    // Determines whether or not the passed in command is a batch update
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isBatchUpdateCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(batchUpdateId);
-
-    }//end of Command::isBatchUpdateCommand
+    }//end of Command::extractKeyValuePairs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -199,155 +93,6 @@ public class Command {
         return pCommand.startsWith(controllerCommandId);
 
     }//end of Command::isControllerCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isCustomerAddCommand
-    //
-    // Determines whether or not the passed in command is a customer add
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isCustomerAddCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(customerAddId);
-
-    }//end of Command::isCustomerAddCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isCustomerDeleteCommand
-    //
-    // Determines whether or not the passed in command is a customer delete
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isCustomerDeleteCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(customerDeleteId);
-
-    }//end of Command::isCustomerDeleteCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isCustomerUpdateCommand
-    //
-    // Determines whether or not the passed in command is a customer update
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isCustomerUpdateCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(customerUpdateId);
-
-    }//end of Command::isCustomerUpdateCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isRackAddCommand
-    //
-    // Determines whether or not the passed in command is a rack add command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isRackAddCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(rackAddId);
-
-    }//end of Command::isRackAddCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isRackDeleteCommand
-    //
-    // Determines whether or not the passed in command is a rack delete
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isRackDeleteCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(rackDeleteId);
-
-    }//end of Command::isRackDeleteCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isRackUpdateCommand
-    //
-    // Determines whether or not the passed in command is a rack update
-    // command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isRackUpdateCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(rackUpdateId);
-
-    }//end of Command::isRackUpdateCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isErrorCommand
-    //
-    // Determines whether or not the passed in command is an error command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isErrorCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(errorCommandId);
-
-    }//end of Command::isErrorCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isViewCommand
-    //
-    // Determines whether or not the passed in command is a view command.
-    //
-    // Returns true if it is; false if not.
-    //
-
-    public static boolean isViewCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
-        
-        return pCommand.startsWith(viewCommandId);
-
-    }//end of Command::isViewCommand
     //--------------------------------------------------------------------------
     
 }//end of class Command

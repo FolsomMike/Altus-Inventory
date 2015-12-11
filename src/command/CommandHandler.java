@@ -35,14 +35,6 @@ public class CommandHandler {
     private final static List<CommandListener> 
                 controllerListeners = new ArrayList<>();
     
-    //error listeners
-    private final static List<CommandListener> 
-                errorListeners = new ArrayList<>();  
-    
-    //view listeners
-    private final static List<CommandListener> 
-                viewListeners = new ArrayList<>();
-    
     //--------------------------------------------------------------------------
     // CommandHandler::performCommand
     //
@@ -62,12 +54,6 @@ public class CommandHandler {
         if (Command.isControllerCommand(pCommand)) { 
             notifyListeners(controllerListeners, pCommand);
         }
-        else if (Command.isErrorCommand(pCommand)) { 
-            notifyListeners(errorListeners, pCommand);
-        }
-        else if (Command.isViewCommand(pCommand)) { 
-            notifyListeners(viewListeners, pCommand);
-        }
         else { notifyListeners(listeners, pCommand); }
 
     }//end of CommandHandler::performCommand
@@ -86,57 +72,12 @@ public class CommandHandler {
         
         if (pCommand == null || pCommand.isEmpty()) { return; }
         
-        if (!Command.isControllerCommand(pCommand)) { 
-            pCommand = Command.createControllerCommand(pCommand);
-        }
+        
+        pCommand = Command.createControllerCommand(pCommand);
         
         performCommand(pCommand);
         
     }//end of CommandHandler::performControllerCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // CommandHandler::performErrorCommand
-    //
-    // Performs pCommand as an error command.
-    //
-    // If pCommand is not an errror commmand, then it is turned into one.
-    //
-
-    public static void performErrorCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return; }
-        
-        if (!Command.isErrorCommand(pCommand)) { 
-            pCommand = Command.createErrorCommand(pCommand);
-        }
-        
-        performCommand(pCommand);
-        
-    }//end of CommandHandler::performErrorCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // CommandHandler::performViewCommand
-    //
-    // Performs pCommand as a view command.
-    //
-    // If pCommand is not a view commmand, then it is turned into one.
-    //
-
-    public static void performViewCommand(String pCommand)
-    {
-        
-        if (pCommand == null || pCommand.isEmpty()) { return; }
-        
-        if (!Command.isViewCommand(pCommand)) { 
-            pCommand = Command.createViewCommand(pCommand);
-        }
-        
-        performCommand(pCommand);
-        
-    }//end of CommandHandler::performViewCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -178,46 +119,6 @@ public class CommandHandler {
         listeners.add(pListener);
 
     }//end of CommandHandler::registerControllerListener
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // CommandHandler::registerErrorListener
-    //
-    // Registers pListener as an error listener, meaning that every time a
-    // command containing an error is sent to the command handler,
-    // the listener will be notified that the command was performed.
-    //
-
-    public static void registerErrorListener(CommandListener pListener)
-    {
-        
-        if (pListener == null) { return; }
-        
-        errorListeners.add(pListener);
-        
-        listeners.add(pListener);
-
-    }//end of CommandHandler::registerErrorListener
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // CommandHandler::registerViewListener
-    //
-    // Registers pListener as a view listener, meaning that every time a
-    // command intended for the view is performed, the listener will be notified
-    // that the command was performed.
-    //
-
-    public static void registerViewListener(CommandListener pListener)
-    {
-        
-        if (pListener == null) { return; }
-        
-        viewListeners.add(pListener);
-        
-        listeners.add(pListener);
-
-    }//end of CommandHandler::registerViewListener
     //--------------------------------------------------------------------------
 
 }//end of class CommandHandler

@@ -66,9 +66,6 @@ public class MainView implements CommandListener
     public void init()
     {
         
-        //register this as a view command listener
-        CommandHandler.registerViewListener(this);
-        
         setupDisplay();
 
     }// end of MainView::init

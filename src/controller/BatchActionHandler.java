@@ -5,14 +5,10 @@
 *
 * Purpose:
 *
-* This class listens for controller commands sent to the CommandHandler that 
-* contain batch actions.
+* This class handles commands pertaining to batches. 
 *
-* Currently handles actions:
-*   delete batch
-*   move batch
+* Currently handles batch actions:
 *   receive batch
-*   update batch
 *
 */
 
@@ -23,6 +19,10 @@ package controller;
 import command.CommandHandler;
 import command.CommandListener;
 import command.Command;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import model.ConfigFile;
 import model.MySQLDatabase;
 import model.Record;
 
@@ -36,48 +36,25 @@ public class BatchActionHandler implements CommandListener
     
     private final MySQLDatabase db;
     
-    //command array index variables
-    int controllerIndex     = 0;
-    int recordTypeIndex     = 1;
-    int actionIndex         = 2;
-    int skoonieKeyIndex     = 3;
-    //where the key-value pairs start when Skoonie Key is NOT there
-    int noSkKeyAttrsIndex   = 3;
-    //where the key-value pairs start when Skoonie Key is there
-    int skKeyAttrsIndex     = 4;
+    private final ConfigFile attrsConfigFile;
     
-    //Record attributes --  record attributes are the keys to search for in a
-    //                      command array for a specific record type
-    private final String[] batchAttributes =    { 
-                                                    "customer_key",
-                                                    "id",
-                                                    "quantity",
-                                                    "rack_key", 
-                                                    "total_length"
-                                                };
-    
-    private final String[] movementAttributes =  {};
-    
-    private final String[] receivementAttributes =  {
-                                                        "rack_key",
-                                                        "truck_key",
-                                                        "truck_company_key", 
-                                                        "truck_driver_key"
-                                                    };
+    //Command keys -- keys to look for when handling a command
+    private final List<String> batchKeys = new ArrayList<>();
+    private final List<String> receivementKeys = new ArrayList<>();
     
     //Table names -- back quotes so that they can be easily put in cmd strings
     private final String batchesTable = "`BATCHES`";
-    private final String movementsTable = "`MOVEMENTS`";
     private final String receivementsTable = "`RECEIVEMENTS`";
 
     //--------------------------------------------------------------------------
     // BatchActionHandler::BatchActionHandler (constructor)
     //
 
-    public BatchActionHandler(MySQLDatabase pDatabase)
+    public BatchActionHandler(MySQLDatabase pDatabase, ConfigFile pAttrsFile)
     {
 
         db = pDatabase;
+        attrsConfigFile = pAttrsFile;
 
     }//end of BatchActionHandler::BatchActionHandler (constructor)
     //--------------------------------------------------------------------------
@@ -94,8 +71,11 @@ public class BatchActionHandler implements CommandListener
         //register this as a controller listener
         CommandHandler.registerControllerListener(this);
         
-        //register this as an error listener
-        CommandHandler.registerErrorListener(this);
+        //setup the batch keys
+        setupBatchKeys();
+        
+        //setup the receivement keys
+        setupReceivementKeys();
 
     }// end of BatchActionHandler::init
     //--------------------------------------------------------------------------
@@ -115,129 +95,57 @@ public class BatchActionHandler implements CommandListener
     public void commandPerformed(String pCommand)
     {
         
-        String[] cmdArray = pCommand.split("\\|");
+        //return if this is not a controller command or does not pertain to a
+        //batch
+        if(!Command.isControllerCommand(pCommand) 
+                && !pCommand.contains("record-type=batch")) { return; }
         
-        if (Command.isBatchDeleteCommand(pCommand)) {
-            deleteRecord(cmdArray, batchesTable);
-        }
-        else if (Command.isBatchMoveCommand(pCommand)) {
-            moveBatch(cmdArray);
-        }
-        else if (Command.isBatchReceiveCommand(pCommand)) {
-            receiveBatch(cmdArray);
-        }
-        else if (Command.isBatchUpdateCommand(pCommand)) {
-            updateRecord(cmdArray, batchAttributes, batchesTable);
-        }
+        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
+        
+        //receive a batch
+        if (command.get("action").equals("receive")) { receiveBatch(command); }
 
     }//end of BatchActionHandler::commandPerformed
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::deleteRecord
+    // BatchActionHandler::getValues
     //
-    // Deletes the Record associated with the Skoonie Key found in pCommand
-    // from pTable.
+    // The value of every key in pKeyValuePairs that matches one of the keys in 
+    // pKeys is added to pRec, using the key as the column.
     //
-    // //DEBUG HSS// -- for testing purposes only. If this becomes a program
-    //                  feature in the future, then a check needs to be
-    //                  performed to see if a record can be deleted.
+    // If a string in pKeys contains two keys for one value, then the first key
+    // is used as the column.
     //
 
-    private void deleteRecord(String[] pCommand, String pTable)
+    private void getValues(Record pRec, Map<String, String> pKeyValuePairs, 
+                            List<String> pKeys)
     {
         
-        //extract the skoonie key from pCommand
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
+        //return if there are no keys to check for
+        if (pKeys.isEmpty() || pKeyValuePairs.isEmpty()) { return; }
         
-        db.deleteRecord(r, pTable);
-
-    }//end of BatchActionHandler::deleteRecord
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // BatchActionHandler::extractAttributes
-    //
-    // Extracts pAttributes from pCommand and puts them in pRec.
-    //
-
-    private void extractAttributes(Record pRec, String[] pCommand, 
-                                            String[] pAttributes)
-    {
-        
-        //return if there are no attributes to check for
-        if (pAttributes.length <= 0) { return; }
-        
-        int attrsIndex = -1;
-        for (int i=0; i<pCommand.length; i++) {
-            if (pCommand[i].equals("begin attributes")) { attrsIndex = ++i; }
-        }
-        
-        //return if there are no attributes in pCommand
-        if (attrsIndex==-1) { return; }
-        
-        for (int i=attrsIndex; i<pCommand.length; i++) {
+        for (String keys : pKeys) {
             
-            //get key-value pair -- key index is 0; value index is 1
-            String[] pair = pCommand[i].split(":");
-            
-            //check to see if key matches an attribute, store pair if it does
-            for (String attr : pAttributes) {
-                if (pair[0].equals(attr)) { 
-                    pRec.addAttr(pair[0], pair[1]);
-                    break;
+            //since multiple keys can relate to one value, split up keys into
+            //an array and look for each key in the array
+            String[] allKeys = keys.split("/");
+            for (String key : allKeys) {
+                
+                //if one of the keys is found, then add the value retrieved
+                //using that key to pRec, using the first key in allKeys as the
+                //column
+                String value;
+                if((value=pKeyValuePairs.get(key)) != null) { 
+                    pRec.addColumn(allKeys[0], value);
+                    break; 
                 }
+                
             }
-            
+
         }
 
-    }//end of BatchActionHandler::extractAttributes
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // BatchActionHandler::moveBatch
-    //
-    // Moves a batch using the information in pCommand.
-    //
-    // A record to document the movement is created and inserted into the 
-    // movements table.
-    //
-
-    private void moveBatch(String[] pCommand)
-    {
-        
-        //extract values from pCommand
-        String batchKey     = pCommand[3];
-        String moveId       = pCommand[4];
-        String date         = pCommand[5];
-        String toRackKey    = pCommand[6];
-        String fromRackKey  = db.getRecord(batchKey, batchesTable)
-                                                        .getAttr("rack_key");
-        
-        //verify the move
-        if (!verifyMove(fromRackKey, toRackKey)) {
-            CommandHandler.performErrorCommand("batch move failed");
-            return;
-        }
-       
-        //document the movement
-        Record moveRecord = new Record();
-        moveRecord.addAttr("batch_key",      batchKey);
-        moveRecord.addAttr("id",             moveId);
-        moveRecord.addAttr("date",           date);
-        moveRecord.addAttr("from_rack_key",  fromRackKey);
-        moveRecord.addAttr("to_rack_key",    toRackKey);
-        extractAttributes(moveRecord, pCommand, movementAttributes);
-        db.insertRecord(moveRecord, movementsTable);
-       
-        //update the batch with the new rack
-        Record batchRecord = new Record(batchKey);
-        batchRecord.addAttr("rack_key", toRackKey);
-        extractAttributes(batchRecord, pCommand, batchAttributes);
-        db.updateRecord(batchRecord, batchesTable);
-
-    }//end of BatchActionHandler::moveBatch
+    }//end of BatchActionHandler::getValues
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -250,31 +158,22 @@ public class BatchActionHandler implements CommandListener
     //      one for a new batch
     //
 
-    private void receiveBatch(String[] pCommand)
+    private void receiveBatch(Map<String, String> pCommand)
     {
-        
-        //extract values from pCommand
-        String receiveId    = pCommand[3];
-        String receiveDate  = pCommand[4];
         
         //record for the batch
         Record batchRecord = new Record();
-        extractAttributes(batchRecord, pCommand, batchAttributes);
-        
-        //before we go any farther, verify the receivement
-        if(!verifyReceivement(receiveId, batchRecord.getAttr("id"))) { return; }
+        getValues(batchRecord, pCommand, batchKeys);
        
         //record for the receivement
         Record receiveRecord = new Record();
-        receiveRecord.addAttr("id", receiveId);
-        receiveRecord.addAttr("date", receiveDate);
-        extractAttributes(receiveRecord, pCommand, receivementAttributes);
+        getValues(receiveRecord, pCommand, receivementKeys);
 
         //insert the batch into the database and store the skoonie key
         int skoonieKey = db.insertRecord(batchRecord, batchesTable);
 
         //add the batch skoonie key to the receivement
-        receiveRecord.addAttr("batch_key", Integer.toString(skoonieKey));
+        receiveRecord.addColumn("batch_key", Integer.toString(skoonieKey));
 
         //insert the receivement into the database
         db.insertRecord(receiveRecord, receivementsTable);
@@ -283,76 +182,68 @@ public class BatchActionHandler implements CommandListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::updateRecord
+    // BatchActionHandler::setupBatchKeys
     //
-    // Updates the Record in pTable associated with the Skoonie Key found in 
-    // pCommand in pTable using the Skoonie Key and key-value pairs
+    // Sets up the batch keys list by adding some keys that are hard coded
+    // into the program to the list and then adding the optional attribute keys
+    // grabbed from the config file to that same list.
+    //
+    // NOTE:    The keys list is a list of keys that need to be extracted from a
+    //          command string when dealing with a batch.
+    //          Try to make sure that the keys and column names in the batches
+    //          table match. If there is a special case where the key cannot be
+    //          the same as a column name, prepend the column name followed by a
+    //          slash to the key: "column_name/key".
     //
 
-    private void updateRecord(String[] pCommand, String[] pAttributes,
-                                String pTable)
+    private void setupBatchKeys()
     {
         
-        Record r = new Record();
-        r.setSkoonieKey(pCommand[skoonieKeyIndex]);
-        extractAttributes(r, pCommand, pAttributes);
+        //keys hard coded into the program
+        batchKeys.add("skoonie_key");
+        //id or batch id can be used as key -- value will be stored using "id"
+        batchKeys.add("id/batch id");
+        batchKeys.add("quantity");
+        batchKeys.add("storage_location_key");
         
-        db.updateRecord(r, pTable);
+        //optional keys that are grabbed from the attributes file
+        //WIP HSS//--add code to do this man
 
-    }//end of BatchActionHandler::updateRecord
+    }//end of BatchActionHandler::setupBatchKeys
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::verifyMove
+    // BatchActionHandler::setupReceivementKeys
     //
-    // Verifies the move of a batch from pFromRackKey to pToRackKey.
+    // Sets up the receivement keys list by adding some keys that are hard coded
+    // into the program to the list and then adding the optional attribute keys
+    // grabbed from the config file to that same list.
     //
-    // If the keys are the same or if the pFromRackKey is empty, then the move
-    // should not be made. 
-    //
-    // Returns true if move should be made; false if not.
+    // NOTE:    The keys list is a list of keys that need to be extracted from a
+    //          command string when dealing with a receivement.
+    //          Try to make sure that the keys and column names in the batches
+    //          table match. If there is a special case where the key cannot be
+    //          the same as a column name, prepend the column name followed by a
+    //          slash to the key: "column_name/key".
     //
 
-    private boolean verifyMove(String pFromRackKey, String pToRackKey)
+    private void setupReceivementKeys()
     {
         
-        boolean shouldMove = true;
+        //keys hard coded into the program
+        receivementKeys.add("skoonie_key");
+        //id or receivement id can be used as key -- value will 
+        //be stored into a record using "id" as the column name
+        receivementKeys.add("id/receivement id");
+        receivementKeys.add("date");
+        receivementKeys.add("quantity");
+        receivementKeys.add("batch_key");
+        receivementKeys.add("storage_location_key");
         
-        if (pFromRackKey.isEmpty() || pFromRackKey.equals(pToRackKey)) {
-            shouldMove = false;
-        }
-        
-        return shouldMove;
+        //optional keys that are grabbed from the attributes file
+        //WIP HSS//--add code to do this man
 
-    }//end of BatchActionHandler::verifyMove
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // BatchActionHandler::verifyReceivement
-    //
-    // Verifies the receivement of a batch.
-    //
-    // If pReceiveId or pBatchId already exist in the database or are empty,
-    // then the receivement should not be made.
-    //
-    // Returns true if receivement should be made; false if not.
-    //
-
-    private boolean verifyReceivement(String pReceiveId, String pBatchId)
-    {
-        
-        boolean shouldReceive = true;
-        
-        if (pReceiveId.isEmpty() || pBatchId.isEmpty() 
-            || db.checkForValue(pBatchId, batchesTable, "id")
-            || db.checkForValue(pReceiveId, receivementsTable, "id"))
-        {
-            shouldReceive = false;
-        }
-        
-        return shouldReceive;
-
-    }//end of BatchActionHandler::verifyReceivement
+    }//end of BatchActionHandler::setupReceivementKeys
     //--------------------------------------------------------------------------
     
 }//end of class BatchActionHandler

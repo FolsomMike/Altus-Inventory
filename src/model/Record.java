@@ -7,12 +7,8 @@
 *
 * This class stores information about a record intended for a database table.
 * 
-* Generic information needed for every single record in the program:
-*       Skoonie Key
-* 
-* All other attributes can be stored and retrieved using the addAttr() and
-* getAttr() functions. The keys for the attributes need to match the column
-* names in the database.
+* Currently stores:
+*   columns and values in a Map
 *
 */
 
@@ -34,16 +30,13 @@ import java.util.Map;
 public class Record 
 {
     
-    private String skoonieKey;
-    public String getSkoonieKey() { return skoonieKey; }
-    public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
-    
-    private final Map<String, String> attributes = new HashMap<>();
-    public Map<String, String> getAttrs() { return attributes; }
-    public void addAttr(String pKey, String pAttribute) 
-    { attributes.put(pKey, pAttribute); }
-    public String getAttr(String pKey) { 
-        String attr = attributes.get(pKey);
+    //key=column; value=column value
+    private final Map<String, String> columns = new HashMap<>();
+    public Map<String, String> getColumns() { return columns; }
+    public void addColumn(String pColumn, String pValue) 
+    { columns.put(pColumn, pValue); }
+    public String getValue(String pColumn) { 
+        String attr = columns.get(pColumn);
         return attr!=null ? attr : "";
     }
     
@@ -53,18 +46,6 @@ public class Record
 
     public Record()
     {
-
-    }//end of Record::Record (constructor)
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Record::Record (constructor)
-    //
-
-    public Record(String pSkoonieKey)
-    {
-        
-        skoonieKey  = pSkoonieKey;
 
     }//end of Record::Record (constructor)
     //--------------------------------------------------------------------------
