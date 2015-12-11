@@ -85,6 +85,27 @@ public class CommandHandler {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // CommandHandler::performViewCommand
+    //
+    // Performs pCommand as a view command.
+    //
+    // If pCommand is not a view commmand, then it is turned into one.
+    //
+
+    public static void performViewCommand(String pCommand)
+    {
+        
+        if (pCommand == null || pCommand.isEmpty()) { return; }
+        
+        
+        pCommand = Command.createViewCommand(pCommand);
+        
+        performCommand(pCommand);
+        
+    }//end of CommandHandler::performViewCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // CommandHandler::notifyListeners
     //
     // Notifies all of the listeners in pListeners that pCommand has been
