@@ -148,6 +148,26 @@ public class CommandHandler {
 
     }//end of CommandHandler::registerControllerListener
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CommandHandler::registerViewListener
+    //
+    // Registers pListener as a view listener, meaning that every time a command
+    // intended for the view is performed, the listener will be notified that
+    // the command was performed.
+    //
+
+    public static void registerViewListener(CommandListener pListener)
+    {
+        
+        if (pListener == null) { return; }
+        
+        viewListeners.add(pListener);
+        
+        listeners.add(pListener);
+
+    }//end of CommandHandler::registerViewListener
+    //--------------------------------------------------------------------------
 
 }//end of class CommandHandler
 //------------------------------------------------------------------------------
