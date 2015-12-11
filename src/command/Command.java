@@ -51,6 +51,27 @@ public class Command {
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // Command::createViewCommand
+    //
+    // Creates and returns a view command by adding the view command id to the
+    // beginning of pCommand.
+    //
+
+    public static String createViewCommand(String pCommand)
+    {
+        
+        //if pCommand is null or empty then just return an empty string
+        if (pCommand == null || pCommand.isEmpty()) { return ""; }
+        
+        //if pCommand is already a view commmand, then just give it back
+        if (isViewCommand(pCommand)) { return pCommand; }
+        
+        return viewCommandId + pCommand;
+
+    }//end of Command::createViewCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // Command::extractKeyValuePairs
     //
     // Extracts all of the key value pairs from pCommand and returns them in a
