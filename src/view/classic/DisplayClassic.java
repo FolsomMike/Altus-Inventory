@@ -95,6 +95,18 @@ public class DisplayClassic extends JFrame implements CommandListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DisplayClassic::createGui
+    //
+    // Creates and adds the GUI to the window.
+    //
+
+    private void createGui()
+    {
+
+    }// end of DisplayClassic::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DisplayClassic::setUpFrame
     //
     // Sets up the frame by setting various options and styles.
