@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Title: BatchController.java
+* Title: BatchActionHandler.java
 * Author: Hunter Schoonover
 * Date: 12/08/15
 *
@@ -7,8 +7,11 @@
 *
 * This class handles commands pertaining to batches. 
 *
-* Currently handles batch actions:
+* Currently handles actions:
+*   delete batch
+*   move batch
 *   receive batch
+*   update batch
 *
 */
 
