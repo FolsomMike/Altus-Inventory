@@ -29,11 +29,15 @@ public class CommandHandler {
     
     //controller, error, and view listeners in one list
     private final static List<CommandListener> 
-                listeners = new ArrayList<>();
+                        listeners = new ArrayList<>();
     
     //controller listeners
     private final static List<CommandListener> 
-                controllerListeners = new ArrayList<>();
+                        controllerListeners = new ArrayList<>();
+    
+    //view listeners
+    private final static List<CommandListener> 
+                        viewListeners = new ArrayList<>();
     
     //--------------------------------------------------------------------------
     // CommandHandler::performCommand
