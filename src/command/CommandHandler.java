@@ -58,6 +58,9 @@ public class CommandHandler {
         if (Command.isControllerCommand(pCommand)) { 
             notifyListeners(controllerListeners, pCommand);
         }
+        else if (Command.isViewCommand(pCommand)) { 
+            notifyListeners(viewListeners, pCommand);
+        }
         else { notifyListeners(listeners, pCommand); }
 
     }//end of CommandHandler::performCommand
