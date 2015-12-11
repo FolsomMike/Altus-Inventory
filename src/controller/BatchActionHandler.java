@@ -140,6 +140,8 @@ public class BatchActionHandler implements CommandListener
     private void deleteBatch(Map<String, String> pCommand)
     {
         
+        db.connectToDatabase();
+        
         //delete the batch
         Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
@@ -155,6 +157,7 @@ public class BatchActionHandler implements CommandListener
             }
         }
        
+        db.closeDatabaseConnection();
         
     }//end of BatchActionHandler::deleteBatch
     //--------------------------------------------------------------------------
@@ -208,6 +211,8 @@ public class BatchActionHandler implements CommandListener
     private void moveBatch(Map<String, String> pCommand)
     {
         
+        db.connectToDatabase();
+        
         //update the batch in the database
         Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
@@ -219,6 +224,8 @@ public class BatchActionHandler implements CommandListener
         getValues(moveRecord, pCommand, movementKeys);
         moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
         db.insertRecord(moveRecord, movementsTable);
+        
+        db.closeDatabaseConnection();
 
     }//end of BatchActionHandler::moveBatch
     //--------------------------------------------------------------------------
@@ -236,6 +243,8 @@ public class BatchActionHandler implements CommandListener
     private void receiveBatch(Map<String, String> pCommand)
     {
         
+        db.connectToDatabase();
+        
         //record for the batch
         Record batchRecord = new Record();
         getValues(batchRecord, pCommand, batchKeys);
@@ -252,6 +261,8 @@ public class BatchActionHandler implements CommandListener
 
         //insert the receivement into the database
         db.insertRecord(receiveRecord, receivementsTable);
+        
+        db.closeDatabaseConnection();
 
     }//end of BatchActionHandler::receiveBatch
     //--------------------------------------------------------------------------
@@ -354,11 +365,15 @@ public class BatchActionHandler implements CommandListener
     private void updateBatch(Map<String, String> pCommand)
     {
         
+        db.connectToDatabase();
+        
         //record for the batch
         Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(batchRecord, pCommand, batchKeys);
         db.updateRecord(batchRecord, batchesTable);
+        
+        db.closeDatabaseConnection();
         
     }//end of BatchActionHandler::updateBatch
     //--------------------------------------------------------------------------

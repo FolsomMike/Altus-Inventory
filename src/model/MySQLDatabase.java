@@ -147,7 +147,6 @@ public class MySQLDatabase
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
         
         return (count > 0);
         
@@ -165,7 +164,7 @@ public class MySQLDatabase
     // connect and when to close the connection.
     //
 
-    private void closeDatabaseConnection()
+    public void closeDatabaseConnection()
     {
         
         try { 
@@ -222,7 +221,7 @@ public class MySQLDatabase
     // connect and when to close the connection.
     //
 
-    private boolean connectToDatabase()
+    public boolean connectToDatabase()
     {
         
         boolean success = true;
@@ -338,7 +337,6 @@ public class MySQLDatabase
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
                 
     }// end of MySQLDatabase::deleteRecord
     //--------------------------------------------------------------------------
@@ -463,7 +461,6 @@ public class MySQLDatabase
         //clean up environment
         closeResultSet(set);
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
         
         return r;
 
@@ -506,7 +503,6 @@ public class MySQLDatabase
         //clean up environment
         closeResultSet(set);
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
         
         return recs;
 
@@ -667,7 +663,6 @@ public class MySQLDatabase
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
         
         return skoonieKey;
                 
@@ -882,7 +877,6 @@ public class MySQLDatabase
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
                 
     }// end of MySQLDatabase::updateRecord
     //--------------------------------------------------------------------------
