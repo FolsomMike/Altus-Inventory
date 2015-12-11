@@ -83,6 +83,11 @@ public class CustomerActionHandler extends RecordActionHandler
             case "add":
                 addCustomer(command);
                 break;
+                
+            case "update":
+                updateRecord(command, getCustomerKeys(), 
+                                        getCustomersTableName());
+                break;
         }
 
     }//end of CustomerActionHandler::commandPerformed
