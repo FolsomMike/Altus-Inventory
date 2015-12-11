@@ -42,6 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import view.MainView;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -131,6 +132,14 @@ public class MainController implements CommandListener, Runnable
     {
         
         if (!Command.isControllerCommand(pCommand)) { return; }
+        
+        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
+        
+        switch (command.get("action")) {
+            case "empty database": //DEBUG HSS// -- testing purposes only
+                emptyDatabase();
+                break;
+        }
 
     }//end of MainController::commandPerformed
     //--------------------------------------------------------------------------
@@ -211,6 +220,28 @@ public class MainController implements CommandListener, Runnable
         }
 
     }//end of MainController::deleteFileIfOverSizeLimit
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainController::emptyDatabase
+    //
+    // Deletes all of the data in the database.
+    //
+    // //DEBUG HSS// -- for testing purposes only
+    //
+
+    private void emptyDatabase()
+    {
+
+        db.connectToDatabase();
+        
+        db.emptyTable("BATCHES");
+        
+        db.emptyTable("MOVEMENTS");
+        
+        db.emptyTable("RECEIVEMENTS");
+
+    }//end of MainController::emptyDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
