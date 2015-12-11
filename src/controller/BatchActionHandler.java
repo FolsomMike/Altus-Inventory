@@ -106,8 +106,13 @@ public class BatchActionHandler implements CommandListener
             case "receive":
                 receiveBatch(command);
                 break;
+                
             case "delete": //DEBUG HSS -- for testing purposes only
                 deleteBatch(command);
+                break;
+                
+            case "update":
+                updateBatch(command);
                 break;
         }
 
@@ -281,6 +286,23 @@ public class BatchActionHandler implements CommandListener
         //WIP HSS//--add code to do this man
 
     }//end of BatchActionHandler::setupReceivementKeys
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // BatchActionHandler::updateBatch
+    //
+    // Updates a batch using the information inside pCommand.
+    //
+
+    private void updateBatch(Map<String, String> pCommand)
+    {
+        
+        //record for the batch
+        Record batchRecord = new Record();
+        getValues(batchRecord, pCommand, batchKeys);
+        db.updateRecord(batchRecord, batchesTable);
+        
+    }//end of BatchActionHandler::updateBatch
     //--------------------------------------------------------------------------
     
 }//end of class BatchActionHandler
