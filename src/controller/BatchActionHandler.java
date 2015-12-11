@@ -102,10 +102,47 @@ public class BatchActionHandler implements CommandListener
         
         Map<String, String> command = Command.extractKeyValuePairs(pCommand);
         
-        //receive a batch
-        if (command.get("action").equals("receive")) { receiveBatch(command); }
+        switch (command.get("action")) {
+            case "receive":
+                receiveBatch(command);
+                break;
+            case "delete": //DEBUG HSS -- for testing purposes only
+                deleteBatch(command);
+                break;
+        }
 
     }//end of BatchActionHandler::commandPerformed
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // BatchActionHandler::deleteBatch
+    //
+    // Deletes a batch and the receivement associated with that batch using the
+    // information in pCommand.
+    //
+    // //DEBUG HSS// -- testing purposes only
+    //
+
+    private void deleteBatch(Map<String, String> pCommand)
+    {
+        
+        //delete the batch
+        Record batchRecord = new Record();
+        getValues(batchRecord, pCommand, batchKeys);
+        db.deleteRecord(batchRecord, batchesTable);
+        
+        //delete the receivement associated with the batch
+        ArrayList<Record> receivementRecords = db.getRecords(receivementsTable);
+        String batchKey = batchRecord.getValue("skoonie_key");
+        for (Record receivement : receivementRecords) {
+            if (receivement.getValue("batch_key").equals(batchKey)) {
+                db.deleteRecord(receivement, receivementsTable);
+                break;
+            }
+        }
+       
+        
+    }//end of BatchActionHandler::deleteBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
