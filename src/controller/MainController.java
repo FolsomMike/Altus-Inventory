@@ -67,6 +67,9 @@ public class MainController implements CommandListener, Runnable
     
     private final BatchActionHandler batchActionHandler 
                                 = new BatchActionHandler(db, attrsConfigFile);
+    
+    private final CustomerActionHandler customerActionHandler 
+                                = new CustomerActionHandler(db, attrsConfigFile);
 
     private int displayUpdateTimer = 0;
 
@@ -102,10 +105,13 @@ public class MainController implements CommandListener, Runnable
         
         //initialize the attributes config file
         try { attrsConfigFile.init(); }
-        catch (IOException e) { logSevere(e.getMessage() + " - Error: 101"); }
+        catch (IOException e) { logSevere(e.getMessage() + " - Error: 108"); }
         
         //set up the batch action handler
         batchActionHandler.init();
+        
+        //set up the customer action handler
+        customerActionHandler.init();
 
         //set up the view
         MainView v = new MainView(db);
