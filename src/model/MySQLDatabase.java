@@ -384,6 +384,30 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::emptyTable
+    //
+    // Deletes all of the data in pTable from the database.
+    //
+    // //DEBUG HSS// -- for testing purposes only
+    //
+
+    public void emptyTable(String pTable)
+    {
+        
+        String cmd = "TRUNCATE " + pTable;
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        //execute the statement
+        try { stmt.execute(); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 402"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+
+    }// end of MySQLDatabase::emptyTable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getBatches
     //
     // Gets and returns all of the records in the batches table.
