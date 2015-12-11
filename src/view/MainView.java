@@ -53,7 +53,7 @@ public class MainView implements CommandListener
 
         db = pDatabase;
         
-        displayMode = displayModeBareBones;
+        displayMode = displayModeClassic;
         
     }//end of MainView::MainView (constructor)
     //--------------------------------------------------------------------------
