@@ -19,6 +19,7 @@ package view.classic;
 import command.Command;
 import command.CommandHandler;
 import command.CommandListener;
+import java.util.Map;
 import javax.swing.JFrame;
 
 //------------------------------------------------------------------------------
@@ -70,6 +71,8 @@ public class DisplayClassic extends JFrame implements CommandListener
         
         //return if this is not a view command
         if(!Command.isViewCommand(pCommand)) { return; }
+        
+        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
 
     }//end of DisplayClassic::commandPerformed
     //--------------------------------------------------------------------------
