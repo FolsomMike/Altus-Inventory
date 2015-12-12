@@ -23,6 +23,8 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -45,7 +47,8 @@ import view.MainView;
 // class DisplayClassic
 //
 
-public class DisplayClassic extends JFrame implements CommandListener
+public class DisplayClassic extends JFrame implements CommandListener, 
+                                                        ActionListener
 {
     
     private final JPanel mainPanel;
@@ -109,6 +112,21 @@ public class DisplayClassic extends JFrame implements CommandListener
         Map<String, String> command = Command.extractKeyValuePairs(pCommand);
 
     }//end of DisplayClassic::commandPerformed
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::actionPerformed
+    //
+    // Passes the action event message on to the command handler.
+    //
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        
+        CommandHandler.performCommand(e.getActionCommand());
+
+    }//end of DisplayClassic::actionPerformed
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -245,7 +263,7 @@ public class DisplayClassic extends JFrame implements CommandListener
     {
         
         //add the menu
-        Menu m = new Menu();
+        Menu m = new Menu(this);
         m.init();
         setJMenuBar(m);
         
@@ -337,6 +355,8 @@ public class DisplayClassic extends JFrame implements CommandListener
 class Menu extends JMenuBar
 {
     
+    private final ActionListener actionListener;
+    
     JMenu viewMenu;
     JMenuItem customersMenuItem;
 
@@ -344,8 +364,10 @@ class Menu extends JMenuBar
     // Menu::Menu (constructor)
     //
 
-    public Menu()
+    public Menu(ActionListener pListener)
     {
+        
+        actionListener = pListener;
 
     }//end of Menu::Menu (constructor)
     //--------------------------------------------------------------------------
@@ -410,6 +432,10 @@ class Menu extends JMenuBar
         customersMenuItem = new JMenuItem("Customers");
         customersMenuItem.setMnemonic(KeyEvent.VK_C);
         customersMenuItem.setToolTipText("View, edit, and delete customers.");
+        String cmd = Command.createViewCommand("display=Classic|"
+                                    + "action=display customers window");
+        customersMenuItem.setActionCommand(cmd);
+        customersMenuItem.addActionListener(actionListener);
         viewMenu.add(customersMenuItem);
 
     }//end of Menu::createViewMenu
