@@ -18,7 +18,6 @@ package view.classic;
 
 import command.Command;
 import command.CommandHandler;
-import command.CommandListener;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import static java.awt.Frame.MAXIMIZED_BOTH;
@@ -26,7 +25,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -40,6 +38,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import toolkit.Tools;
+import view.Display;
 import view.MainView;
 
 //------------------------------------------------------------------------------
@@ -47,8 +46,7 @@ import view.MainView;
 // class DisplayClassic
 //
 
-public class DisplayClassic extends JFrame implements CommandListener, 
-                                                        ActionListener
+public class DisplayClassic extends JFrame implements Display, ActionListener
 {
     
     private final JPanel mainPanel;
@@ -71,11 +69,9 @@ public class DisplayClassic extends JFrame implements CommandListener,
     // Initializes the object. Must be called immediately after instantiation.
     //
 
+    @Override
     public void init()
     {
-        
-        //register this as a view listener
-        CommandHandler.registerViewListener(this);
         
         //set up the frame
         setUpFrame();
@@ -93,33 +89,18 @@ public class DisplayClassic extends JFrame implements CommandListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DisplayClassic::commandPerformed
+    // DisplayClassic::displayCustomers
     //
-    // Performs different actions depending on pCommand.
-    //
-    // The function will do nothing if pCommand was not intended for view or the
-    // classic display class.
-    //
-    // Called by the CommandHandler everytime a view command is performed.
+    // Displays the Customers window.
     //
 
     @Override
-    public void commandPerformed(String pCommand)
+    public void displayCustomers()
     {
         
-        //return if this is not a view command or a display classic command
-        if(!Command.isViewCommand(pCommand) 
-                || !pCommand.contains("display=Classic")) { return; }
-        
-        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
-        
-        switch(command.get("action")) {
-            case "display customers":
-                displayCustomers();
-                break;
-        }
+        //WIP HSS// -- do the stuff you say you're going to bro
 
-    }//end of DisplayClassic::commandPerformed
+    }//end of DisplayClassic::displayCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -310,18 +291,6 @@ public class DisplayClassic extends JFrame implements CommandListener,
         else {return null;}
 
     }//end of DisplayClassic::createImageIcon
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // DisplayClassic::displayCustomers
-    //
-    // Displays the Customers window.
-    //
-
-    private void displayCustomers()
-    {
-
-    }//end of DisplayClassic::displayCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

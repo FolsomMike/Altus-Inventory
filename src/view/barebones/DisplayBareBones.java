@@ -21,13 +21,14 @@ package view.barebones;
 
 import command.CommandHandler;
 import java.util.Scanner;
+import view.Display;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class DisplayBareBones
 //
 
-public class DisplayBareBones
+public class DisplayBareBones implements Display
 {
 
     //--------------------------------------------------------------------------
@@ -46,6 +47,7 @@ public class DisplayBareBones
     // Initializes the object. Must be called immediately after instantiation.
     //
 
+    @Override
     public void init()
     {
         
@@ -58,6 +60,10 @@ public class DisplayBareBones
 
     }// end of DisplayBareBones::init
     //--------------------------------------------------------------------------
+
+    //functions required for Display interface
+    @Override
+    public void displayCustomers() {}
 
 }//end of class DisplayBareBones
 //------------------------------------------------------------------------------

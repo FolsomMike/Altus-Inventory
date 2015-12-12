@@ -4,6 +4,8 @@
 * Date: 12/06/15
 *
 * Purpose:
+* 
+* //WIP HSS//
 *
 * This class is the MainView in a Model-View-Controller architecture. 
 * 
@@ -40,6 +42,8 @@ public class MainView implements CommandListener
 {
     
     private final MySQLDatabase db;
+    
+    private Display display;
     private final String displayMode;
     private final String displayModeBareBones = "BareBones";
     private final String displayModeClassic = "Classic";
@@ -86,7 +90,7 @@ public class MainView implements CommandListener
     public void commandPerformed(String pCommand)
     {
         
-        if (!Command.isControllerCommand(pCommand)) { return; }
+        if (!Command.isViewCommand(pCommand)) { return; }
 
     }//end of MainView::commandPerformed
     //--------------------------------------------------------------------------
@@ -102,14 +106,15 @@ public class MainView implements CommandListener
         
         switch (displayMode) {
             case displayModeBareBones:
-                DisplayBareBones b = new DisplayBareBones();
-                b.init();
+                display = new DisplayBareBones();
                 break;
                 
             case displayModeClassic:
-                DisplayClassic c = new DisplayClassic();
-                c.init();
+                display = new DisplayClassic();
+                break;
         }
+        
+        display.init();
 
     }//end of MainView::setupDisplay
     //--------------------------------------------------------------------------
