@@ -18,10 +18,12 @@ package view.classic;
 //------------------------------------------------------------------------------
 
 import java.awt.Component;
+import static java.awt.Component.LEFT_ALIGNMENT;
 import java.awt.Dialog;
 import java.awt.Window;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import model.MySQLDatabase;
@@ -95,6 +97,26 @@ public abstract class AltusJDialog extends JDialog
         setVisible(true);
         
     }// end of AltusJDialog::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::createButton
+    //
+    // Creates and returns a CustomTextButton, using the parameters for 
+    // individuality.
+    //
+    
+    protected final JButton createButton(String pText, String pTip)
+    {
+        
+        CustomTextButton btn = new CustomTextButton(pText, 150, 30);
+        btn.init();
+        btn.setToolTipText(pTip);
+        btn.setAlignmentX(LEFT_ALIGNMENT);
+        
+        return btn;
+        
+    }// end of AltusJDialog::createButton
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
