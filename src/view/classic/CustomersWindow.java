@@ -18,10 +18,12 @@ package view.classic;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
+import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQLDatabase;
+import model.Record;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -34,6 +36,11 @@ public class CustomersWindow extends AltusJDialog
     
     private CustomTable table;
     private DefaultTableModel model;
+    
+    private ArrayList<Record> customers;
+    
+    //Table names -- back quotes so that they can be easily put in cmd strings
+    private final String customersDbTable = "`CUSTOMERS`";
 
     //--------------------------------------------------------------------------
     // CustomersWindow::CustomersWindow (constructor)
@@ -57,6 +64,13 @@ public class CustomersWindow extends AltusJDialog
     public void init() 
     {
         
+        //has to be called before data is loaded
+        setupTableModel();
+        
+        //has to be called before call to super's init because super displays
+        //modal which will stop all other execution of code in this function
+        loadDataFromDatabase();
+        
         super.init();
         
     }// end of CustomersWindow::init
@@ -75,16 +89,6 @@ public class CustomersWindow extends AltusJDialog
         //set the main panel layout to add components left to right
         setMainPanelLayout(BoxLayout.X_AXIS);
         
-        //initialize model -- allows no editable cells
-        model = new DefaultTableModel() {
-            @Override public boolean isCellEditable(int pR, int pC) {
-                return false;
-            }
-        };
-        
-        //add the columns to the model
-        model.setColumnIdentifiers(new String[]{"Id", "Name"});
-        
         //set up the table
         table = new CustomTable(model);
         table.init();
@@ -97,6 +101,60 @@ public class CustomersWindow extends AltusJDialog
         addToMainPanel(sp);
         
     }// end of CustomersWindow::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::loadDataFromDatabase
+    //
+    // Loads the customers from the database and stores them in the customers
+    // list. Once the data has been loaded, the ids and names are put into the
+    // model for the table.
+    //
+    
+    public void loadDataFromDatabase() 
+    {
+        
+        //remove all of the data already in the model
+        int rowCount = model.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
+        
+        //get customers from the database
+        getDatabase().connectToDatabase();
+        customers = getDatabase().getRecords(customersDbTable);
+        getDatabase().closeDatabaseConnection();
+        
+        //extract ids and names from customers
+        for (Record customer : customers) {
+            model.addRow(new String[] { customer.getValue("id"), 
+                                        customer.getValue("name")
+                                        });
+        }
+        
+        
+    }// end of CustomersWindow::loadDataFromDatabase
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::setupTableModel
+    //
+    // Sets up the table model for use
+    //
+    
+    private void setupTableModel() 
+    {
+        
+        //initialize model -- allows no editable cells
+        model = new DefaultTableModel() {
+            @Override public boolean isCellEditable(int pR, int pC) {
+                return false;
+            }
+        };
+        
+        //add the column names to the model
+        model.setColumnIdentifiers(new String[]{"Id", "Name"});
+        
+    }// end of CustomersWindow::setupTableModel
     //--------------------------------------------------------------------------
 
 }//end of class CustomersWindow
