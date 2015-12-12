@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import model.MySQLDatabase;
 import toolkit.Tools;
 import view.Display;
 import view.MainView;
@@ -49,14 +50,17 @@ import view.MainView;
 public class DisplayClassic extends JFrame implements Display, ActionListener
 {
     
+    private final MySQLDatabase db;
     private final JPanel mainPanel;
 
     //--------------------------------------------------------------------------
     // DisplayClassic::DisplayClassic (constructor)
     //
 
-    public DisplayClassic()
+    public DisplayClassic(MySQLDatabase pDatabase)
     {
+        
+        db = pDatabase;
         
         mainPanel = new JPanel();
 
@@ -98,7 +102,8 @@ public class DisplayClassic extends JFrame implements Display, ActionListener
     public void displayCustomers()
     {
         
-        //WIP HSS// -- do the stuff you say you're going to bro
+        CustomersWindow window = new CustomersWindow(this, db);
+        window.init();
 
     }//end of DisplayClassic::displayCustomers
     //--------------------------------------------------------------------------

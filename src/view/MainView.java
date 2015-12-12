@@ -29,6 +29,7 @@ package view;
 
 import command.CommandListener;
 import command.Command;
+import command.CommandHandler;
 import java.util.Map;
 import model.MySQLDatabase;
 import view.barebones.DisplayBareBones;
@@ -71,6 +72,9 @@ public class MainView implements CommandListener
 
     public void init()
     {
+        
+        //register this as a view listener
+        CommandHandler.registerViewListener(this);
         
         setupDisplay();
 
@@ -120,7 +124,7 @@ public class MainView implements CommandListener
                 break;
                 
             case displayModeClassic:
-                display = new DisplayClassic();
+                display = new DisplayClassic(db);
                 break;
         }
         
