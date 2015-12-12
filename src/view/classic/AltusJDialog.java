@@ -17,10 +17,12 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
+import command.Command;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import java.awt.Dialog;
 import java.awt.Window;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -43,6 +45,8 @@ public abstract class AltusJDialog extends JDialog
     
     private final MySQLDatabase db;
     protected final MySQLDatabase getDatabase() { return db; }
+    
+    private final ActionListener actionListener;
 
     private JPanel mainPanel;
     protected final void addToMainPanel(Component pC) { mainPanel.add(pC); }
@@ -51,13 +55,15 @@ public abstract class AltusJDialog extends JDialog
     // AltusJDialog::AltusJDialog (constructor)
     //
 
-    public AltusJDialog(String pTitle, Window pParent, MySQLDatabase pDatabase)
+    public AltusJDialog(String pTitle, Window pParent, MySQLDatabase pDatabase,
+                            ActionListener pListener)
     {
 
         super(pParent, pTitle);
         
         parent = pParent;
         db = pDatabase;
+        actionListener = pListener;
 
     }//end of AltusJDialog::AltusJDialog (constructor)
     //--------------------------------------------------------------------------
@@ -106,12 +112,15 @@ public abstract class AltusJDialog extends JDialog
     // individuality.
     //
     
-    protected final JButton createButton(String pText, String pTip)
+    protected final JButton createButton(String pText, String pTip, 
+                                            String pActionCommand)
     {
         
         CustomTextButton btn = new CustomTextButton(pText, 150, 30);
         btn.init();
         btn.setToolTipText(pTip);
+        btn.setActionCommand(pActionCommand);
+        btn.addActionListener(actionListener);
         btn.setAlignmentX(LEFT_ALIGNMENT);
         
         return btn;

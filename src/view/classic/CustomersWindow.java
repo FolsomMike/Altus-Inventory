@@ -15,9 +15,11 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
+import command.Command;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -47,10 +49,11 @@ public class CustomersWindow extends AltusJDialog
     // CustomersWindow::CustomersWindow (constructor)
     //
 
-    public CustomersWindow(Window pParent, MySQLDatabase db)
+    public CustomersWindow(Window pParent, MySQLDatabase db, 
+                            ActionListener pListener)
     {
 
-        super("Customers", pParent, db);
+        super("Customers", pParent, db, pListener);
 
     }//end of CustomersWindow::CustomersWindow (constructor)
     //--------------------------------------------------------------------------
@@ -127,19 +130,24 @@ public class CustomersWindow extends AltusJDialog
         
         int buttonSpacer = 20;
         
-        //Create Customer button
-        panel.add(createButton("Add", "Create a new customer."));
+        //Add Customer button
+        panel.add(createButton( "Add", 
+                                "Add a new customer.", 
+                                Command.createViewCommand
+                                    ("action=display add customer")));
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Edit Customer button
-        panel.add(createButton("Edit", "Edit information about the selected "
-                                        + "customer."));
+        panel.add(createButton( "Edit", 
+                                "Edit information about the selected "
+                                    + "customer.", 
+                                "")); //WIP HSS// -- add action command
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Delete Customer button
-        panel.add(createButton("Delete", "Delete the selected customer."));
+        panel.add(createButton("Delete", "Delete the selected customer.", "")); //WIP HSS// -- add action command
         
         
         return panel;

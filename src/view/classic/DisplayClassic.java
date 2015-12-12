@@ -102,7 +102,7 @@ public class DisplayClassic extends JFrame implements Display, ActionListener
     public void displayCustomers()
     {
         
-        CustomersWindow window = new CustomersWindow(this, db);
+        CustomersWindow window = new CustomersWindow(this, db, this);
         window.init();
 
     }//end of DisplayClassic::displayCustomers
