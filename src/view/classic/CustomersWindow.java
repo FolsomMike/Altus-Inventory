@@ -20,6 +20,7 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQLDatabase;
@@ -100,7 +101,50 @@ public class CustomersWindow extends AltusJDialog
         Tools.setSizes(sp, 400, 300);
         addToMainPanel(sp);
         
+        //horizontal spacer
+        addToMainPanel(Tools.createHorizontalSpacer(10));
+        
+        //add the buttons panel
+        addToMainPanel(createButtonsPanel());
+        
     }// end of CustomersWindow::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::createButtonsPanel
+    //
+    // Creates and returns a JPanel containing all of the buttons for the
+    // window.
+    //
+    
+    private JPanel createButtonsPanel() 
+    {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        int buttonSpacer = 20;
+        
+        //Create Customer button
+        panel.add(createButton("Add", "Create a new customer."));
+        
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
+        
+        //Edit Customer button
+        panel.add(createButton("Edit", "Edit information about the selected "
+                                        + "customer."));
+        
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
+        
+        //Delete Customer button
+        panel.add(createButton("Delete", "Delete the selected customer."));
+        
+        
+        return panel;
+        
+    }// end of CustomersWindow::createButtonsPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -130,7 +174,6 @@ public class CustomersWindow extends AltusJDialog
                                         customer.getValue("name")
                                         });
         }
-        
         
     }// end of CustomersWindow::loadDataFromDatabase
     //--------------------------------------------------------------------------
