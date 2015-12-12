@@ -23,12 +23,16 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -240,6 +244,11 @@ public class DisplayClassic extends JFrame implements CommandListener
     private void createGui()
     {
         
+        //add the menu
+        Menu m = new Menu();
+        m.init();
+        setJMenuBar(m);
+        
         //add padding to the main panel
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
@@ -315,5 +324,97 @@ public class DisplayClassic extends JFrame implements CommandListener
     //--------------------------------------------------------------------------
 
 }//end of class DisplayClassic
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// class Menu
+//
+// This class creates the main menu and sub menus for the main window.
+//
+
+class Menu extends JMenuBar
+{
+    
+    JMenu viewMenu;
+    JMenuItem customersMenuItem;
+
+    //--------------------------------------------------------------------------
+    // Menu::Menu (constructor)
+    //
+
+    public Menu()
+    {
+
+    }//end of Menu::Menu (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Menu::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+
+    public void init()
+    {
+
+        createViewMenu();
+
+    }//end of Menu::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Menu::isSelected
+    //
+    // Returns true is any of the top level menu items are selected.
+    //
+    // NOTE: this is a workaround for JMenuBar.isSelected which once true never
+    // seems to go back false when the menu is no longer selected.
+    //
+
+    @Override
+    public boolean isSelected()
+    {
+
+        //return true if any top level menu item is selected
+
+        boolean selected = false;
+
+        if (viewMenu.isSelected())
+        {
+            selected = true;
+        }
+
+        return selected;
+
+    }//end of Menu::isSelected
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Menu::createViewMenu
+    //
+    // Creates the Customer menu and adds it to the menu bar.
+    //
+
+    private void createViewMenu()
+    {
+        
+        //View menu
+        viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_V);
+        viewMenu.setToolTipText("View");
+        add(viewMenu);
+
+        //View/Customers menu item
+        customersMenuItem = new JMenuItem("Customers");
+        customersMenuItem.setMnemonic(KeyEvent.VK_C);
+        customersMenuItem.setToolTipText("View, edit, and delete customers.");
+        viewMenu.add(customersMenuItem);
+
+    }//end of Menu::createViewMenu
+    //--------------------------------------------------------------------------
+
+}//end of class Menu
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
