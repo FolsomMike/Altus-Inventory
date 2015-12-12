@@ -22,6 +22,7 @@ import command.CommandListener;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -109,6 +110,9 @@ public class DisplayClassic extends JFrame implements CommandListener
         
         //add padding to the main panel
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        //set the layout to add items top to bottom
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
     }// end of DisplayClassic::createGui
     //--------------------------------------------------------------------------
