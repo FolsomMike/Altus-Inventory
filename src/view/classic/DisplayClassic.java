@@ -421,8 +421,7 @@ class Menu extends JMenuBar
         customersMenuItem = new JMenuItem("Customers");
         customersMenuItem.setMnemonic(KeyEvent.VK_C);
         customersMenuItem.setToolTipText("View, edit, and delete customers.");
-        String cmd = Command.createViewCommand("display=Classic|"
-                                                + "action=display customers");
+        String cmd = Command.createViewCommand("action=display customers");
         customersMenuItem.setActionCommand(cmd);
         customersMenuItem.addActionListener(actionListener);
         viewMenu.add(customersMenuItem);
