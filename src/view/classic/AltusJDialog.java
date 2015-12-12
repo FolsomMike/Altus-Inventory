@@ -23,7 +23,6 @@ import java.awt.Window;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import model.MySQLDatabase;
 import toolkit.Tools;
@@ -93,9 +92,6 @@ public abstract class AltusJDialog extends JDialog
         
         //arrange all the GUI items
         pack();
-        
-        //DEBUG HSS//
-        Tools.setSizes(this, 100, 100);
         
         //center the dialog and make it visible
         Tools.centerJDialog(this, parent);
