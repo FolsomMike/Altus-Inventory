@@ -97,7 +97,8 @@ public class DisplayClassic extends JFrame implements CommandListener,
     //
     // Performs different actions depending on pCommand.
     //
-    // The function will do nothing if pCommand was not intended for view.
+    // The function will do nothing if pCommand was not intended for view or the
+    // classic display class.
     //
     // Called by the CommandHandler everytime a view command is performed.
     //
@@ -106,10 +107,17 @@ public class DisplayClassic extends JFrame implements CommandListener,
     public void commandPerformed(String pCommand)
     {
         
-        //return if this is not a view command
-        if(!Command.isViewCommand(pCommand)) { return; }
+        //return if this is not a view command or a display classic command
+        if(!Command.isViewCommand(pCommand) 
+                || !pCommand.contains("display=Classic")) { return; }
         
         Map<String, String> command = Command.extractKeyValuePairs(pCommand);
+        
+        switch(command.get("action")) {
+            case "display customers":
+                displayCustomers();
+                break;
+        }
 
     }//end of DisplayClassic::commandPerformed
     //--------------------------------------------------------------------------
@@ -305,6 +313,18 @@ public class DisplayClassic extends JFrame implements CommandListener,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DisplayClassic::displayCustomers
+    //
+    // Displays the Customers window.
+    //
+
+    private void displayCustomers()
+    {
+
+    }//end of DisplayClassic::displayCustomers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DisplayClassic::setUpFrame
     //
     // Sets up the frame by setting various options and styles.
@@ -433,7 +453,7 @@ class Menu extends JMenuBar
         customersMenuItem.setMnemonic(KeyEvent.VK_C);
         customersMenuItem.setToolTipText("View, edit, and delete customers.");
         String cmd = Command.createViewCommand("display=Classic|"
-                                    + "action=display customers window");
+                                                + "action=display customers");
         customersMenuItem.setActionCommand(cmd);
         customersMenuItem.addActionListener(actionListener);
         viewMenu.add(customersMenuItem);
