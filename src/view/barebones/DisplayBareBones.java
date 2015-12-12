@@ -64,6 +64,9 @@ public class DisplayBareBones implements Display
     //functions required for Display interface
     @Override
     public void displayCustomers() {}
+    
+    @Override
+    public void displayAddCustomer() {}
 
 }//end of class DisplayBareBones
 //------------------------------------------------------------------------------

@@ -109,6 +109,21 @@ public class DisplayClassic extends JFrame implements Display, ActionListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DisplayClassic::displayAddCustomer
+    //
+    // Displays the Add Customer window.
+    //
+
+    @Override
+    public void displayAddCustomer()
+    {
+        
+        //WIP HSS// -- put stuff here
+
+    }//end of DisplayClassic::displayCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DisplayClassic::actionPerformed
     //
     // Passes the action event message on to the command handler.

@@ -20,6 +20,9 @@ public interface Display
 {
     
     public void init();
+    
+    //Function relating to customers
     public void displayCustomers();
+    public void displayAddCustomer();
     
 }
