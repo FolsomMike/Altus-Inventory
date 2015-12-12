@@ -5,13 +5,10 @@
 *
 * Purpose:
 *
-* This class stores information about a record in a database table.
+* This class stores information about a record intended for a database table.
 * 
 * Currently stores:
-*       Skoonie Key, Id
-* 
-* Children classes can extend this to store more values, depending on the 
-* record type (Customer, Batch, etc.).
+*   columns and values in a Map
 *
 */
 
@@ -20,6 +17,10 @@
 package model;
 
 //------------------------------------------------------------------------------
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -33,19 +34,22 @@ public class Record
     public String getSkoonieKey() { return skoonieKey; }
     public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
     
-    private String id;
-    public String getId() { return id; }
-    public void setId(String pId) { id = pId; }
+    //key=column; value=column value
+    private final Map<String, String> columns = new HashMap<>();
+    public Map<String, String> getColumns() { return columns; }
+    public void addColumn(String pColumn, String pValue) 
+    { columns.put(pColumn, pValue); }
+    public String getValue(String pColumn) { 
+        String attr = columns.get(pColumn);
+        return attr!=null ? attr : "";
+    }
     
     //--------------------------------------------------------------------------
     // Record::Record (constructor)
     //
 
-    public Record(String pSkoonieKey, String pId)
+    public Record()
     {
-        
-        skoonieKey  = pSkoonieKey;
-        id          = pId;
 
     }//end of Record::Record (constructor)
     //--------------------------------------------------------------------------

@@ -1,0 +1,64 @@
+/*******************************************************************************
+* Title: DisplayBareBones.java
+* Author: Hunter Schoonover
+* Date: 12/06/15
+*
+* Purpose:
+*
+* This class is the BareBones display version. It the most bare-bone, basic GUI
+* possible: 
+*   It takes input from the console and feeds it directly to CommandHandler as
+*       a controller command
+*   No information is displayed to the user except for "Next command:"
+*
+*/
+
+//------------------------------------------------------------------------------
+
+package view.barebones;
+
+//------------------------------------------------------------------------------
+
+import command.CommandHandler;
+import java.util.Scanner;
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// class DisplayBareBones
+//
+
+public class DisplayBareBones
+{
+
+    //--------------------------------------------------------------------------
+    // DisplayBareBones::DisplayBareBones (constructor)
+    //
+
+    public DisplayBareBones()
+    {
+
+    }//end of DisplayBareBones::DisplayBareBones (constructor)
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    // DisplayBareBones::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+
+    public void init()
+    {
+        
+        //start listening for console input
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Next command:");
+            CommandHandler.performControllerCommand(scanner.nextLine());
+        }
+
+    }// end of DisplayBareBones::init
+    //--------------------------------------------------------------------------
+
+}//end of class DisplayBareBones
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------

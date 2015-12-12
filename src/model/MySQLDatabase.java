@@ -58,8 +58,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,6 +81,15 @@ public class MySQLDatabase
     private final String password = "jpftesting";
     
     private Connection connection;
+    
+    //Table names -- back quotes so that they can be easily put in cmd strings
+    private final String batchesTable = "`BATCHES`";
+    private final String customersTable = "`CUSTOMERS`";
+    private final String racksTable = "`RACKS`";
+    private final String truckCompaniesTable = "`TRUCK_COMPANIES`";
+    private final String truckDriversTable = "`TRUCK_DRIVERS`";
+    private final String trucksTable = "`TRUCKS`";
+    
     
     //--------------------------------------------------------------------------
     // MySQLDatabase::MySQLDatabase (constructor)
@@ -134,7 +147,6 @@ public class MySQLDatabase
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
         
         return (count > 0);
         
@@ -152,7 +164,7 @@ public class MySQLDatabase
     // connect and when to close the connection.
     //
 
-    private void closeDatabaseConnection()
+    public void closeDatabaseConnection()
     {
         
         try { 
@@ -209,20 +221,22 @@ public class MySQLDatabase
     // connect and when to close the connection.
     //
 
-    private boolean connectToDatabase()
+    public boolean connectToDatabase()
     {
         
         boolean success = true;
         
         try { 
             //return true if we are already connected
-            if(connection != null && !connection.isClosed()) { return success; }
+            if(connection != null && !connection.isClosed() 
+                    && connection.isValid(10)) { return success; }
             
             connection = DriverManager.getConnection(url, username, password);
+            
         }
-        catch (SQLException e) { 
+        catch (SQLException e) {
             success = false;
-            logSevere(e.getMessage() + " - Error: 191"); 
+            logSevere(e.getMessage() + " - Error: 240"); 
         }
         
         return success;
@@ -246,8 +260,11 @@ public class MySQLDatabase
         //conection can't be established
         if (!connectToDatabase()) { return stmt; }
         
-        try { stmt = connection.prepareStatement(pCommand); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 216"); }
+        try { 
+            stmt = connection.prepareStatement(pCommand, 
+                                            Statement.RETURN_GENERATED_KEYS);
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 266"); }
         
         return stmt;
 
@@ -255,29 +272,29 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteCustomer
+    // MySQLDatabase::deleteBatch
     //
-    // Deletes pCustomer from the CUSTOMERS table in the database.
+    // Deletes pRec from the batches table in the database.
     //
 
-    public void deleteCustomer(Customer pCustomer)
+    public void deleteBatch(Record pRec)
     {
         
-        String cmd = "DELETE FROM `CUSTOMERS` WHERE `skoonie_key`=?";
+        deleteRecord(pRec, batchesTable);
+
+    }// end of MySQLDatabase::deleteBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::deleteCustomer
+    //
+    // Deletes pRec from the customers table in the database.
+    //
+
+    public void deleteCustomer(Record pRec)
+    {
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pCustomer.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 237"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        deleteRecord(pRec, customersTable);
 
     }// end of MySQLDatabase::deleteCustomer
     //--------------------------------------------------------------------------
@@ -285,55 +302,55 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::deleteRack
     //
-    // Deletes pRack from the RACKS table in the database.
+    // Deletes pRec from the racks table in the database.
     //
 
-    public void deleteRack(Rack pRack)
+    public void deleteRack(Record pRec)
     {
         
-        String cmd = "DELETE FROM `RACKS` WHERE `skoonie_key`=?";
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pRack.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 265"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        deleteRecord(pRec, racksTable);
 
     }// end of MySQLDatabase::deleteRack
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteTruckCompany
+    // MySQLDatabase::deleteRecord
     //
-    // Deletes pCompany from the TRUCK COMPANIES table in the database.
+    // Deletes pRec from pTable.
     //
 
-    public void deleteTruckCompany(TruckCompany pCompany)
+    public void deleteRecord(Record pRec, String pTable)
     {
         
-        String cmd = "DELETE FROM `TRUCK_COMPANIES` WHERE `skoonie_key`=?";
+        //create the command string
+        String cmd = "DELETE FROM " + pTable + " WHERE `skoonie_key`=?";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pCompany.getSkoonieKey());
+            stmt.setString(1, pRec.getSkoonieKey());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 332"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 338"); }
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::deleteRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::deleteTruckCompany
+    //
+    // Deletes pRec from the truck companies table in the database.
+    //
+
+    public void deleteTruckCompany(Record pRec)
+    {
+        
+        deleteRecord(pRec, truckCompaniesTable);
 
     }// end of MySQLDatabase::deleteTruckCompany
     //--------------------------------------------------------------------------
@@ -341,27 +358,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::deleteTruckDriver
     //
-    // Deletes pTruckDriver from the TRUCK_DRIVERS table in the database.
+    // Deletes pRec from the truck drivers table in the database.
     //
 
-    public void deleteTruckDriver(TruckDriver pTruckDriver)
+    public void deleteTruckDriver(Record pRec)
     {
         
-        String cmd = "DELETE FROM `TRUCK_DRIVERS` WHERE `skoonie_key`=?";
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pTruckDriver.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 360"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        deleteRecord(pRec, truckDriversTable);
 
     }// end of MySQLDatabase::deleteTruckDriver
     //--------------------------------------------------------------------------
@@ -369,299 +372,177 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::deleteTruck
     //
-    // Deletes pTruck from the TRUCKS table in the database.
+    // Deletes pRec from the trucks table in the database.
     //
 
-    public void deleteTruck(Truck pTruck)
+    public void deleteTruck(Record pRec)
     {
         
-        String cmd = "DELETE FROM `TRUCKS` WHERE `skoonie_key`=?";
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pTruck.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 360"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        deleteRecord(pRec, trucksTable);
 
     }// end of MySQLDatabase::deleteTruck
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getBatches
+    // MySQLDatabase::emptyTable
     //
-    // Gets and returns all of the batches in the BATCHES table and stores all
-    // of the data pertaining to a batch in a Batch object. All of the Batch 
-    // objects are returned in an array list.
+    // Deletes all of the data in pTable from the database.
+    //
+    // //DEBUG HSS// -- for testing purposes only
     //
 
-    public ArrayList<Batch> getBatches()
+    public void emptyTable(String pTable)
     {
         
-        ArrayList<Batch> batches = new ArrayList();
-
-        String cmd = "SELECT * FROM `BATCHES` ORDER BY `id` ASC"; //WIP HSS// -- order by should be specified by user
+        String cmd = "TRUNCATE " + pTable;
         PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
         
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String date     = set.getString("date");
-                String quantity = set.getString("quantity");
-                String length   = set.getString("total_length");
-                String cKey     = set.getString("customer_key");
-                String rKey     = set.getString("rack_key");
-                String trCKey   = set.getString("truck_company_key");
-                String trKey    = set.getString("truck_key");
-                String trDKey   = set.getString("truck_driver_key");
-                String comments = set.getString("comments");
-                
-                //store the batch information
-                batches.add(new Batch(sKey, id, date, quantity, length, cKey,
-                                        rKey, trCKey, trKey, trDKey, comments));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error:433"); }
+        //execute the statement
+        try { stmt.execute(); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 402"); }
         
         //clean up environment
-        closeResultSet(set);
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
+
+    }// end of MySQLDatabase::emptyTable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::getBatches
+    //
+    // Gets and returns all of the records in the batches table.
+    //
+
+    public ArrayList<Record> getBatches()
+    {
         
-        return batches;
+        return getRecords(batchesTable);
 
     }// end of MySQLDatabase::getBatches
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getCustomer
-    //
-    // Gets and returns the customer associated with pSkoonieKey from the 
-    // CUSTOMERS table in a Customer object.
-    //
-
-    public Customer getCustomer(String pSkoonieKey)
-    {
-        
-        Customer c = null;
-
-        String cmd = "SELECT * FROM `CUSTOMERS` WHERE `skoonie_key` = ?";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        //perform query
-        try {
-            stmt.setString(1, pSkoonieKey);
-            
-            ResultSet set = performQuery(stmt);
-            
-            //extract the data from the ResultSet
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                String line1    = set.getString("address_line_1");
-                String line2    = set.getString("address_line_2");
-                String city     = set.getString("city");
-                String state    = set.getString("state");
-                String zip      = set.getString("zip_code");
-                
-                //store the customer information
-                c = new Customer(sKey, id, name, line1, line2, 
-                                    city, state, zip);
-            }
-            
-            //clean up environment
-            closeResultSet(set);
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 306"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return c;
-
-    }// end of MySQLDatabase::getCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::getCustomers
     //
-    // Gets and returns all of the customers in the CUSTOMERS table and stores
-    // all of the data pertaining to a customer in a Customer object. All of 
-    // the Customer objects are returned in an array list.
+    // Gets and returns all of the records in the customers table.
     //
 
-    public ArrayList<Customer> getCustomers()
+    public ArrayList<Record> getCustomers()
     {
         
-        ArrayList<Customer> customers = new ArrayList();
-
-        String cmd = "SELECT * FROM `CUSTOMERS` ORDER BY `name` ASC";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                String line1    = set.getString("address_line_1");
-                String line2    = set.getString("address_line_2");
-                String city     = set.getString("city");
-                String state    = set.getString("state");
-                String zip      = set.getString("zip_code");
-                
-                //store the customer information
-                customers.add(new Customer(sKey, id, name, line1, line2, 
-                                                city, state, zip));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 351"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return customers;
+        return getRecords(customersTable);
 
     }// end of MySQLDatabase::getCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getRack
-    //
-    // Gets and returns the rack associated with pSkoonieKey from the RACKS 
-    // table in a Rack object.
-    //
-
-    public Rack getRack(String pSkoonieKey)
-    {
-        
-        Rack r = null;
-
-        String cmd = "SELECT * FROM `RACKS` WHERE `skoonie_key` = ?";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set;
-        
-        //perform query
-        try {
-            stmt.setString(1, pSkoonieKey);
-            set = performQuery(stmt);
-            
-            //extract the data from the ResultSet
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                
-                //store the rack information
-                r = new Rack(sKey, id, name);
-            }
-            
-            //clean up environment
-            closeResultSet(set);
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 434"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return r;
-
-    }// end of MySQLDatabase::getRack
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::getRacks
     //
-    // Gets and returns all of the racks in the RACKS table and stores all of 
-    // the data pertaining to a rack in a Rack object. All of the Rack objects 
-    // are returned in an array list.
+    // Gets and returns all of the records in the racks table.
     //
 
-    public ArrayList<Rack> getRacks()
+    public ArrayList<Record> getRacks()
     {
         
-        ArrayList<Rack> racks = new ArrayList();
-
-        String cmd = "SELECT * FROM `RACKS` ORDER BY `name` ASC";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                
-                //store the rack information
-                racks.add(new Rack(sKey, id, name));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 387"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return racks;
+        return getRecords(racksTable);
 
     }// end of MySQLDatabase::getRacks
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getTruckCompanies
+    // MySQLDatabase::getRecord
     //
-    // Gets and returns all of the truck companeis in the TRUCK COMPANIES table
-    // and stores all of the data pertaining to a truck company in a 
-    // TruckCompany object. All of the TruckCompany objects are returned in an
-    // array list.
+    // Gets and returns the record in pTable associated with pSkoonieKey
     //
 
-    public ArrayList<TruckCompany> getTruckCompanies()
+    public Record getRecord(String pSkoonieKey, String pTable)
     {
         
-        ArrayList<TruckCompany> companies = new ArrayList();
+        Record r = new Record();
+        r.setSkoonieKey(pSkoonieKey);
 
-        String cmd = "SELECT * FROM `TRUCK_COMPANIES` ORDER BY `name` ASC";
+        String cmd = "SELECT * FROM " + pTable 
+                            + "WHERE `skoonie_key`=" + pSkoonieKey;
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set = performQuery(stmt);
         
         //extract the data from the ResultSet
         try {
+            ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
                 
-                //store the truck company information
-                companies.add(new TruckCompany(sKey, id, name));
+                //put attributes in record
+                //start count at 2 since Skoonie Key is at 1
+                for (int i=2; i<d.getColumnCount(); i++) {
+                    String key = d.getColumnName(i);
+                    r.addColumn(key, set.getString(key));
+                }
+                
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 569"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error:635"); }
         
         //clean up environment
         closeResultSet(set);
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
         
-        return companies;
+        return r;
+
+    }// end of MySQLDatabase::getRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::getRecords
+    //
+    // Gets and returns all of the records in pTable.
+    //
+
+    public ArrayList<Record> getRecords(String pTable)
+    {
+        
+        ArrayList<Record> recs = new ArrayList();
+
+        String cmd = "SELECT * FROM " + pTable;
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            ResultSetMetaData d = set.getMetaData();
+            while (set.next()) { 
+                
+                Record r = new Record();
+                //put columns into the record
+                for (int i=1; i<d.getColumnCount(); i++) {
+                    String key = d.getColumnName(i);
+                    r.addColumn(key, set.getString(key));
+                }
+                
+                //store the record
+                recs.add(r);
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error:635"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        
+        return recs;
+
+    }// end of MySQLDatabase::getRecords
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::getTruckCompanies
+    //
+    // Gets and returns all of the records in the truck companies table.
+    //
+
+    public ArrayList<Record> getTruckCompanies()
+    {
+        
+        return getRecords(truckCompaniesTable);
 
     }// end of MySQLDatabase::getTruckCompanies
     //--------------------------------------------------------------------------
@@ -669,40 +550,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::getTruckDrivers
     //
-    // Gets and returns all of the truck drivers in the TRUCKDRIVERS table and 
-    // stores all of the data pertaining to a truck driver in a TruckDriver
-    // object. All of the TruckDriver objects are returned in an array list.
+    // Gets and returns all of the records in the truck drivers table.
     //
 
-    public ArrayList<TruckDriver> getTruckDrivers()
+    public ArrayList<Record> getTruckDrivers()
     {
         
-        ArrayList<TruckDriver> drivers = new ArrayList();
-
-        String cmd = "SELECT * FROM `TRUCK_DRIVERS` ORDER BY `name` ASC";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                String comp_key = set.getString("truck_company_key");
-                
-                //store the driver information
-                drivers.add(new TruckDriver(sKey, id, name, comp_key));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 666"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return drivers;
+        return getRecords(truckDriversTable);
 
     }// end of MySQLDatabase::getTruckDrivers
     //--------------------------------------------------------------------------
@@ -710,40 +564,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::getTrucks
     //
-    // Gets and returns all of the trucks in the TRUCKS table and stores all of
-    // the data pertaining to a truck company in a Truck object. All of the 
-    // Truck objects are returned in an array list.
+    // Gets and returns all of the records in the trucks table.
     //
 
-    public ArrayList<Truck> getTrucks()
+    public ArrayList<Record> getTrucks()
     {
         
-        ArrayList<Truck> trucks = new ArrayList();
-
-        String cmd = "SELECT * FROM `TRUCKS` ORDER BY `name` ASC";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
-        try {
-            while (set.next()) { 
-                String sKey     = set.getString("skoonie_key");
-                String id       = set.getString("id");
-                String name     = set.getString("name");
-                String comp_key = set.getString("truck_company_key");
-                
-                //store the truck information
-                trucks.add(new Truck(sKey, id, name, comp_key));
-            }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 638"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
-        
-        return trucks;
+        return getRecords(trucksTable);
 
     }// end of MySQLDatabase::getTrucks
     //--------------------------------------------------------------------------
@@ -751,59 +578,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::insertBatch
     //
-    // Inserts pBatch into the database.
+    // Inserts pRec into the batches table.
     //
 
-    public void insertBatch(Batch pBatch)
+    public void insertBatch(Record pRec)
     {
         
-        String cmd = "INSERT INTO `BATCHES` ("
-                        + "`id`,"
-                        + "`date`,"
-                        + "`quantity`,"
-                        + "`total_length`,"
-                        + "`customer_key`,"
-                        + "`rack_key`,"
-                        + "`truck_company_key`,"
-                        + "`truck_key`,"
-                        + "`truck_driver_key`,"
-                        + "`comments`"
-                        + ")"
-                        + "VALUES ("
-                        + "?,"  //placeholder 1     Id
-                        + "?,"  //placeholder 2     Date
-                        + "?,"  //placeholder 3     Quantity
-                        + "?,"  //placeholder 4     Total Length
-                        + "?,"  //placeholder 5     Customer Key
-                        + "?,"  //placeholder 6     Rack Key
-                        + "?,"  //placeholder 7     Truck Company Key
-                        + "?,"  //placeholder 8     Truck Key
-                        + "?,"  //placeholder 9     Truck Driver Key
-                        + "?"   //placeholder 10    Comments
-                        + ")";
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1,   pBatch.getId());
-            stmt.setString(2,   pBatch.getDate());
-            stmt.setString(3,   pBatch.getQuantity());
-            stmt.setString(4,   pBatch.getTotalLength());
-            stmt.setString(5,   pBatch.getCustomerKey());
-            stmt.setString(6,   pBatch.getRackKey());
-            stmt.setString(7,   pBatch.getTruckCompanyKey());
-            stmt.setString(8,   pBatch.getTruckKey());
-            stmt.setString(9,   pBatch.getTruckDriverKey());
-            stmt.setString(10,  pBatch.getComments());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 802"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        insertRecord(pRec, batchesTable);
                 
     }// end of MySQLDatabase::insertBatch
     //--------------------------------------------------------------------------
@@ -811,44 +592,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::insertCustomer
     //
-    // Inserts pCustomer into the database.
+    // Inserts pRec into the customers table.
     //
 
-    public void insertCustomer(Customer pCustomer)
+    public void insertCustomer(Record pRec)
     {
         
-        String cmd = "INSERT INTO `CUSTOMERS` ("
-                        + "`id`,`name`,"
-                        + "`address_line_1`,`address_line_2`,"
-                        + "`city`,`state`,`zip_code`) "
-                        + "VALUES ("
-                        + "?,"  //placeholder 1     Id
-                        + "?,"  //placeholder 2     Name
-                        + "?,"  //placeholder 3     Address Line 1
-                        + "?,"  //placeholder 4     Address Line 2
-                        + "?,"  //placeholder 5     City
-                        + "?,"  //placeholder 6     State
-                        + "?)"; //placeholder 7     Zip Code
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pCustomer.getId());
-            stmt.setString(2, pCustomer.getName());
-            stmt.setString(3, pCustomer.getAddressLine1());
-            stmt.setString(4, pCustomer.getAddressLine2());
-            stmt.setString(5, pCustomer.getCity());
-            stmt.setString(6, pCustomer.getState());
-            stmt.setString(7, pCustomer.getZipCode());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 437"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        insertRecord(pRec, customersTable);
                 
     }// end of MySQLDatabase::insertCustomer
     //--------------------------------------------------------------------------
@@ -856,100 +606,103 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::insertRack
     //
-    // Inserts pRack into the database.
+    // Inserts pRec into the racks table.
     //
 
-    public void insertRack(Rack pRack)
+    public void insertRack(Record pRec)
     {
         
-        String cmd = "INSERT INTO `RACKS` ("
-                        + "`id`,`name`) "
-                        + "VALUES ("
-                        + "?,"  //placeholder 1     Id
-                        + "?)"; //placeholder 2     Name
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pRack.getId());
-            stmt.setString(2, pRack.getName());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 510"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        insertRecord(pRec, racksTable);
                 
     }// end of MySQLDatabase::insertRack
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::insertTruck
+    // MySQLDatabase::insertRecord
     //
-    // Inserts pTruck into the database.
+    // Inserts pRec into pTable.
     //
 
-    public void insertTruck(Truck pTruck)
+    public int insertRecord(Record pRec, String pTable)
     {
         
-        String cmd = "INSERT INTO `TRUCKS` ("
-                        + "`id`,`name`,`truck_company_key`) "
-                        + "VALUES ("
-                        + "?,"  //placeholder 1     Id
-                        + "?,"  //placeholder 2     Name
-                        + "?)"; //placeholder 3     Truck Company Key
+        int skoonieKey = -1;
+        
+        String cmd = "INSERT INTO " + pTable + " (";
+        
+        //get the attributes of pRec and put them in a set
+        Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
+        
+        //use the keys in the Record attributes as the column names
+        int c=0;
+        for (Map.Entry<String, String> a : attrs) {
+            //add a comma to separate this column from the last one
+            if(c!=0) { cmd += ","; }
+            
+            //add the key to the command string
+            cmd += "`" + a.getKey() + "`";
+            
+            //count number of times we've looped through
+            ++c;
+        }
+        
+        //put some more SQL into the command string
+        cmd += ") VALUES (";
+        
+        //use the length of attrs to determine how many placeholders to put
+        for (int i=0; i<attrs.size(); i++) {
+            //add a comma to separate this placeholder from the last one
+            if(i!=0) { cmd += ","; }
+            
+            //add a placeholder to the command string
+            cmd += "?";
+        }
+        
+        //finish up the command string
+        cmd += ")";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pTruck.getId());
-            stmt.setString(2, pTruck.getName());
-            stmt.setString(3, pTruck.getTruckCompanyKey());
+            //for every attribute, put the value into the proper placeholder
+            int place = 1;
+            for (Map.Entry<String, String> a : attrs) {
+                stmt.setString(place++, a.getValue());
+            }
             
             //execute the statement
             stmt.execute();
+            
+            ResultSet set = stmt.getGeneratedKeys();
+
+            if (set.next()) { skoonieKey = set.getInt(1); }
+            
+            //clean up environment
+            closeResultSet(set);
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 801"); }
+        catch (SQLException e) { 
+            //DEBUG HSS//
+            System.out.println(e.getMessage());
+            logSevere(e.getMessage() + " - Error: 667"); }
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        
+        return skoonieKey;
                 
-    }// end of MySQLDatabase::insertTruck
+    }// end of MySQLDatabase::insertRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
     // MySQLDatabase::insertTruckCompany
     //
-    // Inserts pCompany into the database.
+    // Inserts pRec into the truck companies table.
     //
 
-    public void insertTruckCompany(TruckCompany pCompany)
+    public void insertTruckCompany(Record pRec)
     {
         
-        String cmd = "INSERT INTO `TRUCK_COMPANIES` ("
-                        + "`id`,`name`) "
-                        + "VALUES ("
-                        + "?,"  //placeholder 1     Id
-                        + "?)"; //placeholder 2     Name
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pCompany.getId());
-            stmt.setString(2, pCompany.getName());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 758"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        insertRecord(pRec, truckCompaniesTable);
                 
     }// end of MySQLDatabase::insertTruckCompany
     //--------------------------------------------------------------------------
@@ -957,36 +710,29 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::insertTruckDriver
     //
-    // Inserts pTruckDriver into the database.
+    // Inserts pRec into the truck drivers table.
     //
 
-    public void insertTruckDriver(TruckDriver pTruckDriver)
+    public void insertTruckDriver(Record pRec)
     {
         
-        String cmd = "INSERT INTO `TRUCK_DRIVERS` ("
-                        + "`id`,`name`,`truck_company_key`) "
-                        + "VALUES ("
-                        + "?,"  //placeholder 1     Id
-                        + "?,"  //placeholder 2     Name
-                        + "?)"; //placeholder 3     Truck Company Key
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pTruckDriver.getId());
-            stmt.setString(2, pTruckDriver.getName());
-            stmt.setString(3, pTruckDriver.getTruckCompanyKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 938"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        insertRecord(pRec, truckDriversTable);
                 
     }// end of MySQLDatabase::insertTruckDriver
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::insertTruck
+    //
+    // Inserts pRec into the trucks table.
+    //
+
+    public void insertTruck(Record pRec)
+    {
+        
+        insertRecord(pRec, trucksTable);
+                
+    }// end of MySQLDatabase::insertTruck
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -1066,48 +812,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateBatch
     //
-    // Updates pBatch in the database.
+    // Updates pRec in the batches table.
     //
 
-    public void updateBatch(Batch pBatch)
+    public void updateBatch(Record pRec)
     {
         
-        String cmd = "UPDATE `BATCHES` SET "
-                        + "`id`=?,"                 //placeholder 1     id
-                        + "`date`=?,"               //placeholder 2     date
-                        + "`quantity`=?,"           //placeholder 3     quantity
-                        + "`total_length`=?,"       //placeholder 4     total length
-                        + "`customer_key`=?,"       //placeholder 5     customer key
-                        + "`rack_key`=?,"           //placeholder 6     rack key
-                        + "`truck_company_key`=?,"  //placeholder 7     truck company key
-                        + "`truck_key`=?,"          //placeholder 8     truck key
-                        + "`truck_driver_key`=?,"   //placeholder 9     truck driver key
-                        + "`comments`=?"            //placeholder 10    comments
-                        + "WHERE `skoonie_key`=?";  //placeholder 11    skoonie key
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1,   pBatch.getId());
-            stmt.setString(2,   pBatch.getDate());
-            stmt.setString(3,   pBatch.getQuantity());
-            stmt.setString(4,   pBatch.getTotalLength());
-            stmt.setString(5,   pBatch.getCustomerKey());
-            stmt.setString(6,   pBatch.getRackKey());
-            stmt.setString(7,   pBatch.getTruckCompanyKey());
-            stmt.setString(8,   pBatch.getTruckKey());
-            stmt.setString(9,   pBatch.getTruckDriverKey());
-            stmt.setString(10,  pBatch.getComments());
-            stmt.setString(11,  pBatch.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1100"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        updateRecord(pRec, batchesTable);
                 
     }// end of MySQLDatabase::updateBatch
     //--------------------------------------------------------------------------
@@ -1115,42 +826,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateCustomer
     //
-    // Updates pCustomer in the database.
+    // Updates pRec in the customers table.
     //
 
-    public void updateCustomer(Customer pCustomer)
+    public void updateCustomer(Record pRec)
     {
         
-        String cmd = "UPDATE `CUSTOMERS` SET "
-                        + "`id`=?,"                 //placeholder 1
-                        + "`name`=?,"               //placeholder 2
-                        + "`address_line_1`=?,"     //placeholder 3
-                        + "`address_line_2`=?,"     //placeholder 4
-                        + "`city`=?,"               //placeholder 5
-                        + "`state`=?,"              //placeholder 6
-                        + "`zip_code`=? "           //placeholder 7
-                        + "WHERE `skoonie_key`=?";  //placeholder 8
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pCustomer.getId());
-            stmt.setString(2, pCustomer.getName());
-            stmt.setString(3, pCustomer.getAddressLine1());
-            stmt.setString(4, pCustomer.getAddressLine2());
-            stmt.setString(5, pCustomer.getCity());
-            stmt.setString(6, pCustomer.getState());
-            stmt.setString(7, pCustomer.getZipCode());
-            stmt.setString(8, pCustomer.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 517"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        updateRecord(pRec, customersTable);
                 
     }// end of MySQLDatabase::updateCustomer
     //--------------------------------------------------------------------------
@@ -1158,100 +840,95 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateRack
     //
-    // Updates pRack in the database.
+    // Updates pRec in the racks table.
     //
 
-    public void updateRack(Rack pRack)
+    public void updateRack(Record pRec)
     {
         
-        String cmd = "UPDATE `RACKS` SET "
-                        + "`id`=?,"                 //placeholder 1     Id
-                        + "`name`=?"                //placeholder 2     Name
-                        + "WHERE `skoonie_key`=?";  //placeholder 3     Skoonie Key
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pRack.getId());
-            stmt.setString(2, pRack.getName());
-            stmt.setString(3, pRack.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 662"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        updateRecord(pRec, racksTable);
                 
     }// end of MySQLDatabase::updateRack
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::updateTruckCompany
+    // MySQLDatabase::updateRecord
     //
-    // Updates pTruckCompany in the database.
+    // Updates pRec in pTable.
     //
 
-    public void updateTruckCompany(TruckCompany pCompany)
+    public void updateRecord(Record pRec, String pTable)
     {
         
-        String cmd = "UPDATE `TRUCK_COMPANIES` SET "
-                        + "`id`=?,"                 //placeholder 1
-                        + "`name`=?"                //placeholder 2
-                        + "WHERE `skoonie_key`=?";  //placeholder 3
+        //start the command string
+        String cmd = "UPDATE " + pTable + " SET ";
+        
+        //get the attributes of pRec and put them in a set
+        Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
+        
+        //use the keys in the Record attributes as the column names
+        int c=0;
+        for (Map.Entry<String, String> a : attrs) {
+            //add a comma to separate this column from the last one
+            if(c!=0) { cmd += ","; }
+            
+            //add the key and a placeholder to the command string
+            cmd += "`" + a.getKey() + "`" + "=?";
+            
+            //count number of times we've looped through
+            ++c;
+        }
+        
+        //finish up the command string
+        cmd += "WHERE `skoonie_key`=?";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pCompany.getId());
-            stmt.setString(2, pCompany.getName());
-            stmt.setString(3, pCompany.getSkoonieKey());
+            //for every attribute, put the value into the proper placeholder
+            int place = 1;
+            for (Map.Entry<String, String> a : attrs) {
+                stmt.setString(place++, a.getValue());
+            }
+            
+            //set the Skoonie Key
+            stmt.setString(place, pRec.getSkoonieKey());
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 982"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1308"); }
         
         //clean up environment
         closePreparedStatement(stmt);
-        closeDatabaseConnection();
+                
+    }// end of MySQLDatabase::updateRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::updateTruckCompany
+    //
+    // Updates pRec in the truck companies table.
+    //
+
+    public void updateTruckCompany(Record pRec)
+    {
+        
+        updateRecord(pRec, truckCompaniesTable);
                 
     }// end of MySQLDatabase::updateTruckCompany
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::updateTruck
+    // MySQLDatabase::updateTruckDriver
     //
-    // Updates pTruckDriver in the database.
+    // Updates pRec in the truck drivers table.
     //
 
-    public void updateTruckDriver(TruckDriver pTruckDriver)
+    public void updateTruckDriver(Record pRec)
     {
         
-        String cmd = "UPDATE `TRUCK_DRIVERS` SET "
-                        + "`id`=?,"                 //placeholder 1
-                        + "`name`=?,"               //placeholder 2
-                        + "`truck_company_key`=?"   //placeholder 3
-                        + "WHERE `skoonie_key`=?";  //placeholder 4
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pTruckDriver.getId());
-            stmt.setString(2, pTruckDriver.getName());
-            stmt.setString(3, pTruckDriver.getTruckCompanyKey());
-            stmt.setString(4, pTruckDriver.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1197"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        updateRecord(pRec, truckDriversTable);
                 
     }// end of MySQLDatabase::updateTruckDriver
     //--------------------------------------------------------------------------
@@ -1259,34 +936,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateTruck
     //
-    // Updates pTruck in the database.
+    // Updates pRec in the trucks table.
     //
 
-    public void updateTruck(Truck pTruck)
+    public void updateTruck(Record pRec)
     {
         
-        String cmd = "UPDATE `TRUCKS` SET "
-                        + "`id`=?,"                 //placeholder 1
-                        + "`name`=?,"               //placeholder 2
-                        + "`truck_company_key`=?"   //placeholder 3
-                        + "WHERE `skoonie_key`=?";  //placeholder 4
-        
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        try {
-            stmt.setString(1, pTruck.getId());
-            stmt.setString(2, pTruck.getName());
-            stmt.setString(3, pTruck.getTruckCompanyKey());
-            stmt.setString(4, pTruck.getSkoonieKey());
-            
-            //execute the statement
-            stmt.execute();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1093"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
-        closeDatabaseConnection();
+        updateRecord(pRec, trucksTable);
                 
     }// end of MySQLDatabase::updateTruck
     //--------------------------------------------------------------------------

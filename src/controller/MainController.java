@@ -28,75 +28,52 @@
 * to an EventHandler object -- in this case the Controller is designated to the
 * View as the EventHandler.
 *
-* Open Source Policy:
-*
-* This source code is Public Domain and free to any interested party.  Any
-* person, company, or organization may do with it as they please.
-*
 */
 
 //------------------------------------------------------------------------------
 
 package controller;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import command.CommandHandler;
+import command.CommandListener;
+import command.Command;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.TableModelEvent;
-import model.Options;
+import java.util.Map;
 import view.MainView;
-import java.sql.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import toolkit.Tools;
-import view.AltusJDialog;
-import view.CustomersWindow;
-import view.MainFrame;
-import view.MainMenu;
-import view.RacksWindow;
-import view.TruckCompaniesWindow;
-import view.TruckDriversWindow;
-import view.TrucksWindow;
+import model.ConfigFile;
+import model.MySQLDatabase;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class MainController
 //
 
-public class MainController implements EventHandler, Runnable
+public class MainController implements CommandListener, Runnable
 {
-
-    private MainView view;
-
-    private Options options;
-
-    private String errorMessage;
-
-    private SwingWorker workerThread;
-
-    private final DecimalFormat decimalFormat1 = new DecimalFormat("#.0");
-
-    private Font tSafeFont;
-    private String tSafeText;
+    
+    private final MySQLDatabase db = new MySQLDatabase();
+    
+    private final ConfigFile attrsConfigFile
+                                        = new ConfigFile("attributes.config");
+    
+    private final BatchActionHandler batchActionHandler 
+                                = new BatchActionHandler(db, attrsConfigFile);
+    
+    private final CustomerActionHandler customerActionHandler 
+                                = new CustomerActionHandler(db, attrsConfigFile);
 
     private int displayUpdateTimer = 0;
 
-    private String XMLPageFromRemote;
-
     private boolean shutDown = false;
-
-    private final String newline = "\n";
 
     //--------------------------------------------------------------------------
     // MainController::MainController (constructor)
@@ -117,283 +94,62 @@ public class MainController implements EventHandler, Runnable
     public void init()
     {
         
+        //register this as a controller listener
+        CommandHandler.registerControllerListener(this);
+        
         //set up the logger
         setupJavaLogger();
+        
+        //initialize database
+        db.init();
+        
+        //initialize the attributes config file
+        try { attrsConfigFile.init(); }
+        catch (IOException e) { logSevere(e.getMessage() + " - Error: 108"); }
+        
+        //set up the batch action handler
+        batchActionHandler.init();
+        
+        //set up the customer action handler
+        customerActionHandler.init();
 
-        view = new MainView(this);
-        view.init();
-
-        //create and load the program options
-        options = new Options();
+        //set up the view
+        MainView v = new MainView(db);
+        v.init();
 
         //start the control thread
         new Thread(this).start();
 
-        view.setupAndStartMainTimer();
-
     }// end of MainController::init
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainController::actionPerformed
+    // MainController::commandPerformed
     //
-    // Responds to events.
+    // Performs different actions depending on pCommand.
     //
-    // This is identical to the method employed by  ActionListener objects. 
-    // This object is not an ActionListener, but uses the same concept for 
-    // clarity. The "MainView" (MVC Concept) objects catch GUI events and call 
-    // this method to pass those events to this "MainController" object.
+    // The function will do nothing if pCommand was not intended for controller.
+    //
+    // Called by the CommandHandler everytime a controller command is performed.
     //
 
     @Override
-    public void actionPerformed(ActionEvent e)
+    public void commandPerformed(String pCommand)
     {
         
-        String actionId;
+        if (!Command.isControllerCommand(pCommand)) { return; }
         
-        //MainFrame
-        actionId = MainFrame.getActionId();
+        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
         
-        if (Tools.generateActionCommand(MainFrame.getActionId(), "Create Invoice")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateInvoiceWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Create Report")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateReportWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Make Payment")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayMakePaymentWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Material Info")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayMaterialInfoWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Move Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayMoveMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Receive Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayReceiveMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Reserve Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayReserveMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Ship Material")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayShipMaterialWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Transfer Material")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTransferMaterialWindow();
-        }
-        //end of MainFrame
-        
-        //MainMenu
-        actionId = MainMenu.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Display About")
-                .equals(e.getActionCommand()))
-        {
-            view.displayAbout();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Display Help")
-                .equals(e.getActionCommand()))
-        {
-            view.displayHelp();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Exit")
-                .equals(e.getActionCommand()))
-        {
-            shutDown();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Customers")
-                .equals(e.getActionCommand()))
-        {
-            view.displayCustomersWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Racks")
-                .equals(e.getActionCommand()))
-        {
-            view.displayRacksWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Truck Companies")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTruckCompaniesWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Truck Drivers")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTruckDriversWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "View All Trucks")
-                .equals(e.getActionCommand()))
-        {
-            view.displayTrucksWindow();
-        }
-        //end of MainMenu
-        
-        //AltusJDialog
-        actionId = AltusJDialog.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Cancel")
-                .equals(e.getActionCommand())) 
-        {
-            view.cancelAltusJDialogAction();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Confirm")
-                .equals(e.getActionCommand())) 
-        {
-            view.confirmAltusJDialogAction();
-        }
-        //end of AltusJDialog
-        
-        //Customers window
-        actionId = CustomersWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Customer")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateCustomerWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Customer")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteCustomer();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Customer")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditCustomerWindow();
-        }
-        //end of Customers window
-        
-        //Racks window
-        actionId = RacksWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Rack")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateRackWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Rack")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteRack();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Rack")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditRackWindow();
-        }
-        //end of Racks window
-        
-        //Truck Companies window
-        actionId = TruckCompaniesWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Company")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateTruckCompanyWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Company")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteTruckCompany();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Company")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditTruckCompanyWindow();
-        }
-        //end of Truck Companies window
-        
-        //Trucks window
-        actionId = TrucksWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Truck")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateTruckWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Truck")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteTruck();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Truck")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditTruckWindow();
-        }
-        //end of Trucks window
-        
-        //Truck Drivers window
-        actionId = TruckDriversWindow.getActionId();
-        
-        if (Tools.generateActionCommand(actionId, "Create Driver")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayCreateTruckDriverWindow();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Delete Driver")
-                .equals(e.getActionCommand())) 
-        {
-            view.deleteTruckDriver();
-        }
-        
-        else if (Tools.generateActionCommand(actionId, "Edit Driver")
-                .equals(e.getActionCommand())) 
-        {
-            view.displayEditTruckDriverWindow();
-        }
-        //end of Truck Drivers window
-
-        else if ("Timer".equals(e.getActionCommand())) { 
-            doTimerActions(); 
+        switch (command.get("action")) {
+            case "empty database": //DEBUG HSS// -- testing purposes only
+                emptyDatabase();
+                break;
         }
 
-    }//end of MainController::actionPerformed
+    }//end of MainController::commandPerformed
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
     // MainController::run
     //
@@ -422,47 +178,7 @@ public class MainController implements EventHandler, Runnable
 
     }//end of MainController::run
     //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::stateChanged
-    //
-
-    @Override
-    public void stateChanged(ChangeEvent ce)
-    {
-
-    }//end of MainController::stateChanged
-    //--------------------------------------------------------------------------
     
-    //--------------------------------------------------------------------------
-    // MainController::tableChanged
-    //
-    
-    @Override
-    public void tableChanged(TableModelEvent tme) {
-        
-        int col = tme.getColumn();
-        int row = tme.getFirstRow();
-        if (col == 0) { view.checkBoxChanged(row); }
-        
-    }//end of MainController::tableChanged
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::windowClosing
-    //
-    // Handles actions necessary when the window is closing
-    //
-
-    @Override
-    public void windowClosing(WindowEvent e)
-    {
-
-        //perform all shut down procedures
-
-    }//end of MainController::windowClosing
-    //--------------------------------------------------------------------------
-
     //--------------------------------------------------------------------------
     // MainController::control
     //
@@ -477,7 +193,6 @@ public class MainController implements EventHandler, Runnable
             displayUpdateTimer = 0;
             //call function to update stuff here
         }
-
 
         //If a shut down is initiated, clean up and exit the program.
 
@@ -512,108 +227,31 @@ public class MainController implements EventHandler, Runnable
 
     }//end of MainController::deleteFileIfOverSizeLimit
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // MainController::displayErrorMessage
+    // MainController::emptyDatabase
     //
-    // Displays an error dialog with message pMessage.
+    // Deletes all of the data in the database.
+    //
+    // //DEBUG HSS// -- for testing purposes only
     //
 
-    public void displayErrorMessage(String pMessage)
+    private void emptyDatabase()
     {
 
-        view.displayErrorMessage(pMessage);
+        db.connectToDatabase();
+        
+        db.emptyTable("BATCHES");
+        
+        db.emptyTable("CUSTOMERS");
+        
+        db.emptyTable("MOVEMENTS");
+        
+        db.emptyTable("RECEIVEMENTS");
+        
+        db.closeDatabaseConnection();
 
-    }//end of MainController::displayErrorMessage
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::doSomethingInWorkerThread
-    //
-    // Does nothing right now -- modify it to call a function which takes a 
-    // long time to finish. It will be run in a background thread so the GUI 
-    // is still responsive.
-    //
-    // -- CHANGE THE NAME TO REFLECT THE ACTION BEING DONE --
-    //
-
-    private void doSomethingInWorkerThread()
-    {
-
-        //define and instantiate a worker thread to create the file
-
-
-        //----------------------------------------------------------------------
-        //class SwingWorker
-        //
-
-        workerThread = new SwingWorker<Void, String>() {
-            @Override
-            public Void doInBackground() {
-
-                //do the work here by calling a function
-
-                return(null);
-
-            }//end of doInBackground
-
-            @Override
-            public void done() {
-
-                //clear in progress message here if one is being displayed
-
-                try {
-
-                    //use get(); function here to retrieve results if necessary
-                    //note that Void type here and above would be replaced with
-                    //the type of variable to be returned
-
-                    Void v = get();
-
-                } catch (InterruptedException ignore) {}
-                catch (java.util.concurrent.ExecutionException e) {
-                    String why;
-                    Throwable cause = e.getCause();
-                    if (cause != null) {
-                        why = cause.getMessage();
-                    } else {
-                        why = e.getMessage();
-                    }
-                    System.err.println("Error creating file: " + why);
-                }//catch
-
-            }//end of done
-
-            @Override
-            protected void process(java.util.List <String> pairs) {
-
-                //this method is not used by this application as it 
-                //is limited the publish method cannot be easily called 
-                //outside the class, so messages are displayed using a 
-                //ThreadSafeLogger object and status components are 
-                //updated using a GUIUpdater object
-
-            }//end of process
-
-        };//end of class SwingWorker
-        //----------------------------------------------------------------------
-
-    }//end of MainController::doSomethingInWorkerThread
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::doTimerActions
-    //
-    // Performs actions driven by the timer.
-    //
-    // Not used for accessing network -- see run function for details.
-    //
-
-    public void doTimerActions()
-    {
-
-
-    }//end of MainController::doTimerActions
+    }//end of MainController::emptyDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -728,43 +366,7 @@ public class MainController implements EventHandler, Runnable
 
     }//end of MainController::threadSleep
     //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::(various window listener functions)
-    //
-    // These functions are implemented per requirements of interface 
-    // WindowListener but do nothing at the present time.  As code is added to 
-    // each function, it should be moved from this section and formatted 
-    // properly.
-    //
-
-    @Override
-    public void windowActivated(WindowEvent e){}
-    @Override
-    public void windowDeactivated(WindowEvent e){}
-    @Override
-    public void windowOpened(WindowEvent e){}
-    //@Override
-    //public void windowClosing(WindowEvent e){}
-    @Override
-    public void windowClosed(WindowEvent e){}
-    @Override
-    public void windowIconified(WindowEvent e){}
-    @Override
-    public void windowDeiconified(WindowEvent e){}
-
-    //end of MainController::(various window listener functions)
-    //--------------------------------------------------------------------------
-     
-}//end of class MainController
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
-//DEBUG HSS// -- this class is only temporary and should be removed later
-class Parameters {
-
-    ResultSet resultSet;
     
-    public Parameters() {}
-        
-}
+}//end of class MainController
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
