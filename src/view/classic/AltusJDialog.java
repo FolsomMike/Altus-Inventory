@@ -69,9 +69,6 @@ public abstract class AltusJDialog extends JDialog
     public void init() 
     {
         
-        //initialize database
-        db.init();
-        
         //setup window
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
