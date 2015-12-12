@@ -52,6 +52,8 @@ public class DisplayClassic extends JFrame implements Display, ActionListener
     
     private final MySQLDatabase db;
     private final JPanel mainPanel;
+    
+    CustomersWindow customersWindow;
 
     //--------------------------------------------------------------------------
     // DisplayClassic::DisplayClassic (constructor)
@@ -102,8 +104,8 @@ public class DisplayClassic extends JFrame implements Display, ActionListener
     public void displayCustomers()
     {
         
-        CustomersWindow window = new CustomersWindow(this, db, this);
-        window.init();
+        customersWindow = new CustomersWindow(this, db, this);
+        customersWindow.init();
 
     }//end of DisplayClassic::displayCustomers
     //--------------------------------------------------------------------------
