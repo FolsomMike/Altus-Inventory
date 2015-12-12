@@ -82,15 +82,6 @@ public class MySQLDatabase
     
     private Connection connection;
     
-    //Table names -- back quotes so that they can be easily put in cmd strings
-    private final String batchesTable = "`BATCHES`";
-    private final String customersTable = "`CUSTOMERS`";
-    private final String racksTable = "`RACKS`";
-    private final String truckCompaniesTable = "`TRUCK_COMPANIES`";
-    private final String truckDriversTable = "`TRUCK_DRIVERS`";
-    private final String trucksTable = "`TRUCKS`";
-    
-    
     //--------------------------------------------------------------------------
     // MySQLDatabase::MySQLDatabase (constructor)
     //
@@ -272,48 +263,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteBatch
-    //
-    // Deletes pRec from the batches table in the database.
-    //
-
-    public void deleteBatch(Record pRec)
-    {
-        
-        deleteRecord(pRec, batchesTable);
-
-    }// end of MySQLDatabase::deleteBatch
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteCustomer
-    //
-    // Deletes pRec from the customers table in the database.
-    //
-
-    public void deleteCustomer(Record pRec)
-    {
-        
-        deleteRecord(pRec, customersTable);
-
-    }// end of MySQLDatabase::deleteCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteRack
-    //
-    // Deletes pRec from the racks table in the database.
-    //
-
-    public void deleteRack(Record pRec)
-    {
-        
-        deleteRecord(pRec, racksTable);
-
-    }// end of MySQLDatabase::deleteRack
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::deleteRecord
     //
     // Deletes pRec from pTable.
@@ -342,48 +291,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteTruckCompany
-    //
-    // Deletes pRec from the truck companies table in the database.
-    //
-
-    public void deleteTruckCompany(Record pRec)
-    {
-        
-        deleteRecord(pRec, truckCompaniesTable);
-
-    }// end of MySQLDatabase::deleteTruckCompany
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteTruckDriver
-    //
-    // Deletes pRec from the truck drivers table in the database.
-    //
-
-    public void deleteTruckDriver(Record pRec)
-    {
-        
-        deleteRecord(pRec, truckDriversTable);
-
-    }// end of MySQLDatabase::deleteTruckDriver
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteTruck
-    //
-    // Deletes pRec from the trucks table in the database.
-    //
-
-    public void deleteTruck(Record pRec)
-    {
-        
-        deleteRecord(pRec, trucksTable);
-
-    }// end of MySQLDatabase::deleteTruck
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::emptyTable
     //
     // Deletes all of the data in pTable from the database.
@@ -405,48 +312,6 @@ public class MySQLDatabase
         closePreparedStatement(stmt);
 
     }// end of MySQLDatabase::emptyTable
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getBatches
-    //
-    // Gets and returns all of the records in the batches table.
-    //
-
-    public ArrayList<Record> getBatches()
-    {
-        
-        return getRecords(batchesTable);
-
-    }// end of MySQLDatabase::getBatches
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getCustomers
-    //
-    // Gets and returns all of the records in the customers table.
-    //
-
-    public ArrayList<Record> getCustomers()
-    {
-        
-        return getRecords(customersTable);
-
-    }// end of MySQLDatabase::getCustomers
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getRacks
-    //
-    // Gets and returns all of the records in the racks table.
-    //
-
-    public ArrayList<Record> getRacks()
-    {
-        
-        return getRecords(racksTable);
-
-    }// end of MySQLDatabase::getRacks
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -536,90 +401,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getTruckCompanies
-    //
-    // Gets and returns all of the records in the truck companies table.
-    //
-
-    public ArrayList<Record> getTruckCompanies()
-    {
-        
-        return getRecords(truckCompaniesTable);
-
-    }// end of MySQLDatabase::getTruckCompanies
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getTruckDrivers
-    //
-    // Gets and returns all of the records in the truck drivers table.
-    //
-
-    public ArrayList<Record> getTruckDrivers()
-    {
-        
-        return getRecords(truckDriversTable);
-
-    }// end of MySQLDatabase::getTruckDrivers
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::getTrucks
-    //
-    // Gets and returns all of the records in the trucks table.
-    //
-
-    public ArrayList<Record> getTrucks()
-    {
-        
-        return getRecords(trucksTable);
-
-    }// end of MySQLDatabase::getTrucks
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::insertBatch
-    //
-    // Inserts pRec into the batches table.
-    //
-
-    public void insertBatch(Record pRec)
-    {
-        
-        insertRecord(pRec, batchesTable);
-                
-    }// end of MySQLDatabase::insertBatch
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::insertCustomer
-    //
-    // Inserts pRec into the customers table.
-    //
-
-    public void insertCustomer(Record pRec)
-    {
-        
-        insertRecord(pRec, customersTable);
-                
-    }// end of MySQLDatabase::insertCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::insertRack
-    //
-    // Inserts pRec into the racks table.
-    //
-
-    public void insertRack(Record pRec)
-    {
-        
-        insertRecord(pRec, racksTable);
-                
-    }// end of MySQLDatabase::insertRack
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::insertRecord
     //
     // Inserts pRec into pTable.
@@ -696,48 +477,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::insertTruckCompany
-    //
-    // Inserts pRec into the truck companies table.
-    //
-
-    public void insertTruckCompany(Record pRec)
-    {
-        
-        insertRecord(pRec, truckCompaniesTable);
-                
-    }// end of MySQLDatabase::insertTruckCompany
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::insertTruckDriver
-    //
-    // Inserts pRec into the truck drivers table.
-    //
-
-    public void insertTruckDriver(Record pRec)
-    {
-        
-        insertRecord(pRec, truckDriversTable);
-                
-    }// end of MySQLDatabase::insertTruckDriver
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::insertTruck
-    //
-    // Inserts pRec into the trucks table.
-    //
-
-    public void insertTruck(Record pRec)
-    {
-        
-        insertRecord(pRec, trucksTable);
-                
-    }// end of MySQLDatabase::insertTruck
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::logSevere
     //
     // Logs pMessage with level SEVERE using the Java logger.
@@ -811,47 +550,6 @@ public class MySQLDatabase
 
     }// end of MySQLDatabase::registerJDBCDriver
     //--------------------------------------------------------------------------
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::updateBatch
-    //
-    // Updates pRec in the batches table.
-    //
-
-    public void updateBatch(Record pRec)
-    {
-        
-        updateRecord(pRec, batchesTable);
-                
-    }// end of MySQLDatabase::updateBatch
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::updateCustomer
-    //
-    // Updates pRec in the customers table.
-    //
-
-    public void updateCustomer(Record pRec)
-    {
-        
-        updateRecord(pRec, customersTable);
-                
-    }// end of MySQLDatabase::updateCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::updateRack
-    //
-    // Updates pRec in the racks table.
-    //
-
-    public void updateRack(Record pRec)
-    {
-        
-        updateRecord(pRec, racksTable);
-                
-    }// end of MySQLDatabase::updateRack
-    //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
     // MySQLDatabase::updateRecord
@@ -906,49 +604,7 @@ public class MySQLDatabase
                 
     }// end of MySQLDatabase::updateRecord
     //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::updateTruckCompany
-    //
-    // Updates pRec in the truck companies table.
-    //
-
-    public void updateTruckCompany(Record pRec)
-    {
         
-        updateRecord(pRec, truckCompaniesTable);
-                
-    }// end of MySQLDatabase::updateTruckCompany
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::updateTruckDriver
-    //
-    // Updates pRec in the truck drivers table.
-    //
-
-    public void updateTruckDriver(Record pRec)
-    {
-        
-        updateRecord(pRec, truckDriversTable);
-                
-    }// end of MySQLDatabase::updateTruckDriver
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::updateTruck
-    //
-    // Updates pRec in the trucks table.
-    //
-
-    public void updateTruck(Record pRec)
-    {
-        
-        updateRecord(pRec, trucksTable);
-                
-    }// end of MySQLDatabase::updateTruck
-    //--------------------------------------------------------------------------
-    
 }// end of class MySQLDatabase
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
