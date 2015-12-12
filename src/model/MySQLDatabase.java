@@ -512,9 +512,11 @@ public class MySQLDatabase
             while (set.next()) { 
                 
                 Record r = new Record();
+                r.setSkoonieKey(set.getString("skoonie_key")); //set skoonie key
                 //put columns into the record
-                for (int i=1; i<d.getColumnCount(); i++) {
+                for (int i=1; i<=d.getColumnCount(); i++) {
                     String key = d.getColumnName(i);
+                    if(key.equals("skoonie_key")) { continue; } //already set
                     r.addColumn(key, set.getString(key));
                 }
                 
@@ -522,7 +524,7 @@ public class MySQLDatabase
                 recs.add(r);
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error:635"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error:525"); }
         
         //clean up environment
         closeResultSet(set);
