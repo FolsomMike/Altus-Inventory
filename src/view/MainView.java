@@ -29,6 +29,7 @@ package view;
 
 import command.CommandListener;
 import command.Command;
+import java.util.Map;
 import model.MySQLDatabase;
 import view.barebones.DisplayBareBones;
 import view.classic.DisplayClassic;
@@ -90,7 +91,16 @@ public class MainView implements CommandListener
     public void commandPerformed(String pCommand)
     {
         
+        //return if this is not a view command
         if (!Command.isViewCommand(pCommand)) { return; }
+        
+        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
+        
+        switch (command.get("action")) {
+            case "display customers":
+                display.displayCustomers();
+                break;
+        }
 
     }//end of MainView::commandPerformed
     //--------------------------------------------------------------------------
