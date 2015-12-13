@@ -9,6 +9,7 @@
 *
 * Currently handles actions:
 *   add descriptor
+*   delete descriptor
 *
 */
 
@@ -60,6 +61,7 @@ public class DescriptorActionHandler extends RecordActionHandler
         
         //set up the descriptor keys
         descriptorKeys.add("name");
+        descriptorKeys.add("for_table");
         descriptorKeys.add("duplicates_allowed");
         descriptorKeys.add("removable");
 
@@ -70,6 +72,11 @@ public class DescriptorActionHandler extends RecordActionHandler
     // DescriptorActionHandler::addDescriptor
     //
     // Adds a descriptor using the information in pCommand.
+    //
+    // Adding a descriptor invovles three steps:
+    //      1. adding the descriptor to the descriptors table
+    //      2. creating the table to contain the values of the descriptor
+    //      3. add a column to the proper table for the descriptor
     //
 
     public void addDescriptor(Map<String, String> pCommand)
@@ -91,13 +98,51 @@ public class DescriptorActionHandler extends RecordActionHandler
         
         getDatabase().createTable(key, columns);
 
-        ///add the descriptor to the proper table
+        ///add the column for the descriptor to the proper table
         String column = "`" + key + "` INT(255) NULL";
-        getDatabase().addColumn(pCommand.get("to table"), column);
+        getDatabase().addColumn(pCommand.get("for_table"), column);
         
         getDatabase().closeDatabaseConnection();
 
     }//end of DescriptorActionHandler::addDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DescriptorActionHandler::deleteDescriptor
+    //
+    // Deletes a descriptor using the information in pCommand.
+    //
+    // Deleting a descriptor invovles three steps:
+    //      1. dropping the column from the table that the descriptor was
+    //          created for
+    //      2. dropping the descriptor table from the database
+    //      3. deleting the descriptor from the descriptors table
+    //
+
+    public void deleteDescriptor(Map<String, String> pCommand)
+    {
+        
+        getDatabase().connectToDatabase();
+        
+        //get the skoonie key of the descriptor from pCommand
+        String key = pCommand.get("skoonie_key");
+        
+        //get the descriptor from the database so that we can use some 
+        //information about it to get rid of it
+        Record descriptor = getDatabase().getRecord(key, descriptorsTable);
+        
+        ///drop the descriptor from the table
+        getDatabase().dropColumn(descriptor.getValue("for_table"), key);
+        
+        //drop the descriptor table from the database
+        getDatabase().dropTable(key);
+        
+        //delete the descriptor record from the descriptors table
+        deleteRecord(pCommand, descriptorsTable);
+        
+        getDatabase().closeDatabaseConnection();
+
+    }//end of DescriptorActionHandler::deleteDescriptor
     //--------------------------------------------------------------------------
     
 }//end of class DescriptorActionHandler
