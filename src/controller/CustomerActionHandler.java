@@ -16,7 +16,6 @@
 
 package controller;
 
-import command.Command;
 import java.util.Map;
 import model.MySQLDatabase;
 import model.Record;
@@ -70,28 +69,6 @@ public class CustomerActionHandler extends RecordActionHandler
     @Override
     public void commandPerformed(String pCommand)
     {
-        
-        //return if this is not a controller command or does not pertain to a
-        //batch
-        if(!Command.isControllerCommand(pCommand) 
-                && !pCommand.contains("record-type=customer")) { return; }
-        
-        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
-        
-        switch (command.get("action")) {
-            case "add":
-                addCustomer(command);
-                break;
-                
-            case "delete":
-                deleteRecord(command, getCustomersTableName());
-                break;
-                
-            case "update":
-                updateRecord(command, getCustomerKeys(), 
-                                        getCustomersTableName());
-                break;
-        }
 
     }//end of CustomerActionHandler::commandPerformed
     //--------------------------------------------------------------------------
@@ -102,7 +79,7 @@ public class CustomerActionHandler extends RecordActionHandler
     // Adds a customer using the information in pCommand.
     //
 
-    private void addCustomer(Map<String, String> pCommand)
+    public void addCustomer(Map<String, String> pCommand)
     {
         
         getDatabase().connectToDatabase();
@@ -115,6 +92,34 @@ public class CustomerActionHandler extends RecordActionHandler
         getDatabase().closeDatabaseConnection();
 
     }//end of CustomerActionHandler::addCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomerActionHandler::deleteCustomer
+    //
+    // Deletes a customer using the information in pCommand.
+    //
+
+    public void deleteCustomer(Map<String, String> pCommand)
+    {
+        
+        deleteRecord(pCommand, getCustomersTableName());
+
+    }//end of CustomerActionHandler::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomerActionHandler::updateCustomer
+    //
+    // Updates a customer using the information in pCommand.
+    //
+
+    public void updateCustomer(Map<String, String> pCommand)
+    {
+        
+        updateRecord(pCommand, getCustomerKeys(), getCustomersTableName());
+
+    }//end of CustomerActionHandler::updateCustomer
     //--------------------------------------------------------------------------
     
 }//end of class CustomerActionHandler

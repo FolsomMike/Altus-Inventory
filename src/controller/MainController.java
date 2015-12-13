@@ -155,6 +155,19 @@ public class MainController implements CommandListener, Runnable
                 batchActionHandler.updateBatch(command);
                 break;
                 
+            //customer actions
+            case "add customer":
+                customerActionHandler.addCustomer(command);
+                break;
+                
+            case "delete customer":
+                customerActionHandler.deleteCustomer(command);
+                break;
+                
+            case "update customer":
+                customerActionHandler.updateCustomer(command);
+                break;
+                
         }
 
     }//end of MainController::commandPerformed
