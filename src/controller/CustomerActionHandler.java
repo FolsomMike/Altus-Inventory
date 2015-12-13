@@ -18,7 +18,6 @@ package controller;
 
 import command.Command;
 import java.util.Map;
-import model.ConfigFile;
 import model.MySQLDatabase;
 import model.Record;
 
@@ -34,10 +33,10 @@ public class CustomerActionHandler extends RecordActionHandler
     // CustomerActionHandler::CustomerActionHandler (constructor)
     //
 
-    public CustomerActionHandler(MySQLDatabase pDatabase, ConfigFile pAttrsFile)
+    public CustomerActionHandler(MySQLDatabase pDatabase)
     {
 
-       super(pDatabase, pAttrsFile);
+       super(pDatabase);
 
     }//end of CustomerActionHandler::CustomerActionHandler (constructor)
     //--------------------------------------------------------------------------

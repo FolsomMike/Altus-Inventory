@@ -24,7 +24,6 @@ import command.CommandListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import model.ConfigFile;
 import model.MySQLDatabase;
 import model.Record;
 
@@ -41,8 +40,6 @@ public abstract class RecordActionHandler implements CommandListener
     
     private final MySQLDatabase db;
     public final MySQLDatabase getDatabase() { return db; }
-    
-    private final ConfigFile attrsConfigFile;
     
     //Command keys -- keys to look for when handling a command
     private final List<String> batchKeys = new ArrayList<>();
@@ -74,11 +71,10 @@ public abstract class RecordActionHandler implements CommandListener
     // RecordActionHandler::RecordActionHandler (constructor)
     //
 
-    public RecordActionHandler(MySQLDatabase pDatabase, ConfigFile pAttrsFile)
+    public RecordActionHandler(MySQLDatabase pDatabase)
     {
 
         db = pDatabase;
-        attrsConfigFile = pAttrsFile;
 
     }//end of RecordActionHandler::RecordActionHandler (constructor)
     //--------------------------------------------------------------------------

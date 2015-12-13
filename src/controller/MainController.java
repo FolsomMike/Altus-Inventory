@@ -49,7 +49,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import model.ConfigFile;
 import model.MySQLDatabase;
 
 //------------------------------------------------------------------------------
@@ -62,14 +61,11 @@ public class MainController implements CommandListener, Runnable
     
     private final MySQLDatabase db = new MySQLDatabase();
     
-    private final ConfigFile attrsConfigFile
-                                        = new ConfigFile("attributes.config");
-    
     private final BatchActionHandler batchActionHandler 
-                                = new BatchActionHandler(db, attrsConfigFile);
+                                            = new BatchActionHandler(db);
     
     private final CustomerActionHandler customerActionHandler 
-                                = new CustomerActionHandler(db, attrsConfigFile);
+                                            = new CustomerActionHandler(db);
 
     private int displayUpdateTimer = 0;
 
@@ -102,10 +98,6 @@ public class MainController implements CommandListener, Runnable
         
         //initialize database
         db.init();
-        
-        //initialize the attributes config file
-        try { attrsConfigFile.init(); }
-        catch (IOException e) { logSevere(e.getMessage() + " - Error: 108"); }
         
         //set up the batch action handler
         batchActionHandler.init();

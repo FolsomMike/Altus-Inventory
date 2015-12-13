@@ -22,7 +22,6 @@ package controller;
 import command.Command;
 import java.util.ArrayList;
 import java.util.Map;
-import model.ConfigFile;
 import model.MySQLDatabase;
 import model.Record;
 
@@ -38,10 +37,10 @@ public class BatchActionHandler extends RecordActionHandler
     // BatchActionHandler::BatchActionHandler (constructor)
     //
 
-    public BatchActionHandler(MySQLDatabase pDatabase, ConfigFile pAttrsFile)
+    public BatchActionHandler(MySQLDatabase pDatabase)
     {
 
-        super(pDatabase, pAttrsFile);
+        super(pDatabase);
 
     }//end of BatchActionHandler::BatchActionHandler (constructor)
     //--------------------------------------------------------------------------
