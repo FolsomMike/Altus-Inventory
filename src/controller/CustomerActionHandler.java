@@ -18,6 +18,8 @@
 
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import model.MySQLDatabase;
 import model.Record;
@@ -29,6 +31,9 @@ import model.Record;
 
 public class CustomerActionHandler extends RecordActionHandler
 {
+    
+    //Command keys -- keys to look for when handling a command
+    private final List<String> customerKeys = new ArrayList<>();
     
     //Table names
     private final String customersTable = "CUSTOMERS";
@@ -73,7 +78,7 @@ public class CustomerActionHandler extends RecordActionHandler
         
         //add the customer to the database
         Record customerRecord = new Record();
-        getValues(customerRecord, pCommand, getCustomerKeys());
+        getValues(customerRecord, pCommand, customerKeys);
         getDatabase().insertRecord(customerRecord, customersTable);
         
         getDatabase().closeDatabaseConnection();
@@ -104,7 +109,7 @@ public class CustomerActionHandler extends RecordActionHandler
     public void updateCustomer(Map<String, String> pCommand)
     {
         
-        updateRecord(pCommand, getCustomerKeys(), customersTable);
+        updateRecord(pCommand, customerKeys, customersTable);
 
     }//end of CustomerActionHandler::updateCustomer
     //--------------------------------------------------------------------------

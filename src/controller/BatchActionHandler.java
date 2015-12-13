@@ -20,6 +20,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import model.MySQLDatabase;
 import model.Record;
@@ -31,6 +32,13 @@ import model.Record;
 
 public class BatchActionHandler extends RecordActionHandler
 {
+    
+    //Command keys -- keys to look for when handling a command
+    private final List<String> batchKeys = new ArrayList<>();
+    
+    private final List<String> movementKeys = new ArrayList<>();
+    
+    private final List<String> receivementKeys = new ArrayList<>();
     
     //Table names
     private final String batchesTable = "BATCHES";
@@ -113,12 +121,12 @@ public class BatchActionHandler extends RecordActionHandler
         //update the batch in the database
         Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
-        getValues(batchRecord, pCommand, getBatchKeys());
+        getValues(batchRecord, pCommand, batchKeys);
         getDatabase().updateRecord(batchRecord, batchesTable);
        
         //document the movement
         Record moveRecord = new Record();
-        getValues(moveRecord, pCommand, getMovementKeys());
+        getValues(moveRecord, pCommand, movementKeys);
         moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
         getDatabase().insertRecord(moveRecord, movementsTable);
         
@@ -144,11 +152,11 @@ public class BatchActionHandler extends RecordActionHandler
         
         //record for the batch
         Record batchRecord = new Record();
-        getValues(batchRecord, pCommand, getBatchKeys());
+        getValues(batchRecord, pCommand, batchKeys);
        
         //record for the receivement
         Record receiveRecord = new Record();
-        getValues(receiveRecord, pCommand, getReceivementKeys());
+        getValues(receiveRecord, pCommand, receivementKeys);
 
         //insert the batch into the database and store the skoonie key
         int skoonieKey = getDatabase().insertRecord(batchRecord, batchesTable);
@@ -173,7 +181,7 @@ public class BatchActionHandler extends RecordActionHandler
     public void updateBatch(Map<String, String> pCommand)
     {
         
-        updateRecord(pCommand, getBatchKeys(), batchesTable);
+        updateRecord(pCommand, batchKeys, batchesTable);
 
     }//end of BatchActionHandler::updateBatch
     //--------------------------------------------------------------------------
