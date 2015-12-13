@@ -179,6 +179,10 @@ public class MainController implements CommandListener, Runnable
             case "add descriptor":
                 descriptorActionHandler.addDescriptor(command);
                 break;
+                
+            case "delete descriptor":
+                descriptorActionHandler.deleteDescriptor(command);
+                break;
             
         }
 
