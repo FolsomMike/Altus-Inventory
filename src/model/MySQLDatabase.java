@@ -349,6 +349,54 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::dropColumn
+    //
+    // Drops pColumn from pTable.
+    //
+
+    public void dropColumn(String pTable, String pColumn)
+    {
+        
+        //create the sql command string
+        String cmd = "ALTER TABLE `" + pTable + "` DROP `" + pColumn + "`";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        //execute the statement
+        try { stmt.execute(); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 367"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+                
+    }// end of MySQLDatabase::dropColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::dropTable
+    //
+    // Drops pTable from the database.
+    //
+
+    public void dropTable(String pTable)
+    {
+        
+        //create the sql command string
+        String cmd = "DROP TABLE `" + pTable + "`";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        //execute the statement
+        try { stmt.execute(); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 367"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+                
+    }// end of MySQLDatabase::dropTable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::emptyTable
     //
     // Deletes all of the data in pTable from the database.
@@ -385,7 +433,7 @@ public class MySQLDatabase
         r.setSkoonieKey(pSkoonieKey);
 
         String cmd = "SELECT * FROM " + pTable 
-                            + "WHERE `skoonie_key`=" + pSkoonieKey;
+                            + " WHERE `skoonie_key`=" + pSkoonieKey;
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set = performQuery(stmt);
         
