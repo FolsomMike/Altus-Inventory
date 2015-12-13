@@ -66,6 +66,9 @@ public class MainController implements CommandListener, Runnable
     
     private final CustomerActionHandler customerActionHandler 
                                             = new CustomerActionHandler(db);
+    
+    private final DescriptorActionHandler descriptorActionHandler 
+                                            = new DescriptorActionHandler(db);
 
     private int displayUpdateTimer = 0;
 
@@ -104,6 +107,9 @@ public class MainController implements CommandListener, Runnable
         
         //set up the customer action handler
         customerActionHandler.init();
+        
+        //set up the descriptor action handler
+        descriptorActionHandler.init();
 
         //set up the view
         MainView v = new MainView(db);
@@ -134,6 +140,7 @@ public class MainController implements CommandListener, Runnable
         Map<String, String> command = Command.extractKeyValuePairs(pCommand);
         
         switch (command.get("action")) {
+            
             case "empty database": //DEBUG HSS// -- testing purposes only
                 emptyDatabase();
                 break;
@@ -168,6 +175,11 @@ public class MainController implements CommandListener, Runnable
                 customerActionHandler.updateCustomer(command);
                 break;
                 
+            //descriptor actions
+            case "add descriptor":
+                descriptorActionHandler.addDescriptor(command);
+                break;
+            
         }
 
     }//end of MainController::commandPerformed
@@ -267,6 +279,8 @@ public class MainController implements CommandListener, Runnable
         db.emptyTable("BATCHES");
         
         db.emptyTable("CUSTOMERS");
+        
+        db.emptyTable("DESCRIPTORS");
         
         db.emptyTable("MOVEMENTS");
         
