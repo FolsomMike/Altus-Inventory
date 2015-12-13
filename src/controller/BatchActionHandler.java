@@ -31,6 +31,11 @@ import model.Record;
 
 public class BatchActionHandler extends RecordActionHandler
 {
+    
+    //Table names
+    private final String batchesTable = "BATCHES";
+    private final String receivementsTable = "RECEIVEMENTS";
+    private final String movementsTable = "MOVEMENTS";
 
     //--------------------------------------------------------------------------
     // BatchActionHandler::BatchActionHandler (constructor)
@@ -76,16 +81,15 @@ public class BatchActionHandler extends RecordActionHandler
         //delete the batch
         Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
-        getDatabase().deleteRecord(batchRecord, getBatchesTableName());
+        getDatabase().deleteRecord(batchRecord, batchesTable);
         
         //delete the receivement associated with the batch
         ArrayList<Record> receivementRecords 
-                        = getDatabase().getRecords(getReceivementsTableName());
+                        = getDatabase().getRecords(receivementsTable);
         String batchKey = batchRecord.getSkoonieKey();
         for (Record receivement : receivementRecords) {
             if (receivement.getValue("batch_key").equals(batchKey)) {
-                getDatabase().deleteRecord(receivement, 
-                                            getReceivementsTableName());
+                getDatabase().deleteRecord(receivement, receivementsTable);
                 break;
             }
         }
@@ -110,13 +114,13 @@ public class BatchActionHandler extends RecordActionHandler
         Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(batchRecord, pCommand, getBatchKeys());
-        getDatabase().updateRecord(batchRecord, getBatchesTableName());
+        getDatabase().updateRecord(batchRecord, batchesTable);
        
         //document the movement
         Record moveRecord = new Record();
         getValues(moveRecord, pCommand, getMovementKeys());
         moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
-        getDatabase().insertRecord(moveRecord, getMovementsTableName());
+        getDatabase().insertRecord(moveRecord, movementsTable);
         
         getDatabase().closeDatabaseConnection();
 
@@ -147,14 +151,13 @@ public class BatchActionHandler extends RecordActionHandler
         getValues(receiveRecord, pCommand, getReceivementKeys());
 
         //insert the batch into the database and store the skoonie key
-        int skoonieKey = getDatabase().insertRecord(batchRecord, 
-                                                        getBatchesTableName());
+        int skoonieKey = getDatabase().insertRecord(batchRecord, batchesTable);
 
         //add the batch skoonie key to the receivement
         receiveRecord.addColumn("batch_key", Integer.toString(skoonieKey));
 
         //insert the receivement into the database
-        getDatabase().insertRecord(receiveRecord, getReceivementsTableName());
+        getDatabase().insertRecord(receiveRecord, receivementsTable);
         
         getDatabase().closeDatabaseConnection();
 
@@ -170,7 +173,7 @@ public class BatchActionHandler extends RecordActionHandler
     public void updateBatch(Map<String, String> pCommand)
     {
         
-        updateRecord(pCommand, getBatchKeys(), getBatchesTableName());
+        updateRecord(pCommand, getBatchKeys(), batchesTable);
 
     }//end of BatchActionHandler::updateBatch
     //--------------------------------------------------------------------------

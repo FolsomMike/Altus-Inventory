@@ -9,6 +9,8 @@
 *
 * Currently handles actions:
 *   add customer
+*   delete customer
+*   update customer
 *
 */
 
@@ -27,6 +29,9 @@ import model.Record;
 
 public class CustomerActionHandler extends RecordActionHandler
 {
+    
+    //Table names
+    private final String customersTable = "CUSTOMERS";
 
     //--------------------------------------------------------------------------
     // CustomerActionHandler::CustomerActionHandler (constructor)
@@ -69,7 +74,7 @@ public class CustomerActionHandler extends RecordActionHandler
         //add the customer to the database
         Record customerRecord = new Record();
         getValues(customerRecord, pCommand, getCustomerKeys());
-        getDatabase().insertRecord(customerRecord, getCustomersTableName());
+        getDatabase().insertRecord(customerRecord, customersTable);
         
         getDatabase().closeDatabaseConnection();
 
@@ -85,7 +90,7 @@ public class CustomerActionHandler extends RecordActionHandler
     public void deleteCustomer(Map<String, String> pCommand)
     {
         
-        deleteRecord(pCommand, getCustomersTableName());
+        deleteRecord(pCommand, customersTable);
 
     }//end of CustomerActionHandler::deleteCustomer
     //--------------------------------------------------------------------------
@@ -99,7 +104,7 @@ public class CustomerActionHandler extends RecordActionHandler
     public void updateCustomer(Map<String, String> pCommand)
     {
         
-        updateRecord(pCommand, getCustomerKeys(), getCustomersTableName());
+        updateRecord(pCommand, getCustomerKeys(), customersTable);
 
     }//end of CustomerActionHandler::updateCustomer
     //--------------------------------------------------------------------------
