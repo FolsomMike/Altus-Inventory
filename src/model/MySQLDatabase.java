@@ -107,6 +107,30 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::addColumn
+    //
+    // Adds pColumn to the end of pTable.
+    //
+
+    public void addColumn(String pTable, String pColumn)
+    {
+        
+        //create the sql command string
+        String cmd = "ALTER TABLE " + pTable + " ADD " + pColumn;
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        //execute the statement
+        try { stmt.execute(); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 125"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+                
+    }// end of MySQLDatabase::addColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::checkForValue
     //
     // Checks for pValue in pTable under pColumn.
@@ -260,6 +284,40 @@ public class MySQLDatabase
         return stmt;
 
     }// end of MySQLDatabase::createPreparedStatement
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::createTable
+    //
+    // Creates pTable containing pColumns in the database.
+    //
+
+    public void createTable(String pTable, String[] pColumns)
+    {
+        
+        //start the sql command string
+        String cmd = "CREATE TABLE `" + pTable + "` (";
+        
+        //put the columns and types into the command
+        for (int i=0; i<pColumns.length; i++) { 
+            //add a comma to separate this column from the last one
+            if(i!=0) { cmd += ","; }
+            cmd += pColumns[i];
+        }
+        
+        //finish up the command string
+        cmd += ")";
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        
+        //execute the statement
+        try { stmt.execute(); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 291"); }
+        
+        //clean up environment
+        closePreparedStatement(stmt);
+                
+    }// end of MySQLDatabase::createTable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
