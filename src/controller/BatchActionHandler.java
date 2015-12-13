@@ -19,7 +19,6 @@
 
 package controller;
 
-import command.Command;
 import java.util.ArrayList;
 import java.util.Map;
 import model.MySQLDatabase;
@@ -74,31 +73,6 @@ public class BatchActionHandler extends RecordActionHandler
     @Override
     public void commandPerformed(String pCommand)
     {
-        
-        //return if this is not a controller command or does not pertain to a
-        //batch
-        if(!Command.isControllerCommand(pCommand) 
-                && !pCommand.contains("record-type=batch")) { return; }
-        
-        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
-        
-        switch (command.get("action")) {
-            case "receive":
-                receiveBatch(command);
-                break;
-                
-            case "delete": //DEBUG HSS -- for testing purposes only
-                deleteBatch(command);
-                break;
-                
-            case "move":
-            moveBatch(command);
-                break;
-                
-            case "update":
-                updateRecord(command, getBatchKeys(), getBatchesTableName());
-                break;
-        }
 
     }//end of BatchActionHandler::commandPerformed
     //--------------------------------------------------------------------------
@@ -112,7 +86,7 @@ public class BatchActionHandler extends RecordActionHandler
     // //DEBUG HSS// -- testing purposes only
     //
 
-    private void deleteBatch(Map<String, String> pCommand)
+    public void deleteBatch(Map<String, String> pCommand)
     {
         
         getDatabase().connectToDatabase();
@@ -145,7 +119,7 @@ public class BatchActionHandler extends RecordActionHandler
     // Moves a batch using the information in pCommand.
     //
 
-    private void moveBatch(Map<String, String> pCommand)
+    public void moveBatch(Map<String, String> pCommand)
     {
         
         getDatabase().connectToDatabase();
@@ -177,7 +151,7 @@ public class BatchActionHandler extends RecordActionHandler
     //      one for a new batch
     //
 
-    private void receiveBatch(Map<String, String> pCommand)
+    public void receiveBatch(Map<String, String> pCommand)
     {
         
         getDatabase().connectToDatabase();
@@ -203,6 +177,20 @@ public class BatchActionHandler extends RecordActionHandler
         getDatabase().closeDatabaseConnection();
 
     }//end of BatchActionHandler::receiveBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // BatchActionHandler::updateBatch
+    //
+    // Updates a batch using the information in pCommand.
+    //
+
+    public void updateBatch(Map<String, String> pCommand)
+    {
+        
+        updateRecord(pCommand, getBatchKeys(), getBatchesTableName());
+
+    }//end of BatchActionHandler::updateBatch
     //--------------------------------------------------------------------------
     
 }//end of class BatchActionHandler

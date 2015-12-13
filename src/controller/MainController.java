@@ -137,6 +137,24 @@ public class MainController implements CommandListener, Runnable
             case "empty database": //DEBUG HSS// -- testing purposes only
                 emptyDatabase();
                 break;
+                
+            //batch actions
+            case "delete batch": //DEBUG HSS -- for testing purposes only
+                batchActionHandler.deleteBatch(command);
+                break;
+                
+            case "move batch":
+                batchActionHandler.moveBatch(command);
+                break;
+                
+            case "receive batch":
+                batchActionHandler.receiveBatch(command);
+                break;
+                
+            case "update batch":
+                batchActionHandler.updateBatch(command);
+                break;
+                
         }
 
     }//end of MainController::commandPerformed
