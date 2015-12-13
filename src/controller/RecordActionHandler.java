@@ -45,16 +45,16 @@ public class RecordActionHandler
     public final List<String> getReceivementKeys() { return receivementKeys; }
     
     //Table names -- back quotes so that they can be easily put in cmd strings
-    private final String batchesTable = "`BATCHES`";
+    private final String batchesTable = "BATCHES";
     public final String getBatchesTableName() { return batchesTable; }
     
-    private final String customersTable = "`CUSTOMERS`";
+    private final String customersTable = "CUSTOMERS";
     public final String getCustomersTableName() { return customersTable; }
     
-    private final String movementsTable = "`MOVEMENTS`";
+    private final String movementsTable = "MOVEMENTS";
     public final String getMovementsTableName() { return movementsTable; }
     
-    private final String receivementsTable = "`RECEIVEMENTS`";
+    private final String receivementsTable = "RECEIVEMENTS";
     public final String getReceivementsTableName() { return receivementsTable; }
 
     //--------------------------------------------------------------------------

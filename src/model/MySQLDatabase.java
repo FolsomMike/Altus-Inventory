@@ -116,7 +116,7 @@ public class MySQLDatabase
     {
         
         //create the sql command string
-        String cmd = "ALTER TABLE " + pTable + " ADD " + pColumn;
+        String cmd = "ALTER TABLE `" + pTable + "` ADD " + pColumn;
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
@@ -139,7 +139,8 @@ public class MySQLDatabase
     public boolean checkForValue(String pValue, String pTable, String pColumn)
     {
 
-        String cmd = "SELECT COUNT(*) FROM " +pTable+ " WHERE " +pColumn+ "=?";
+        String cmd = "SELECT COUNT(*) FROM `" + pTable
+                            + "` WHERE `" + pColumn + "`=?";
         
         int count = 0;
         
@@ -158,7 +159,7 @@ public class MySQLDatabase
             closeResultSet(set);
             
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 134"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 162"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -188,7 +189,7 @@ public class MySQLDatabase
             
             connection.close();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 129"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 192"); }
         
     }// end of MySQLDatabase::closeDatabaseConnection
     //--------------------------------------------------------------------------
@@ -203,7 +204,7 @@ public class MySQLDatabase
     {
         
         try { if (pSet != null) { pSet.close(); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 144"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 207"); }
 
     }// end of MySQLDatabase::closeResultSet
     //--------------------------------------------------------------------------
@@ -218,7 +219,7 @@ public class MySQLDatabase
     {
         
         try { if (pStatement != null) { pStatement.close(); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 161"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 222"); }
 
     }// end of MySQLDatabase::closePreparedStatement
     //--------------------------------------------------------------------------
@@ -251,7 +252,7 @@ public class MySQLDatabase
         }
         catch (SQLException e) {
             success = false;
-            logSevere(e.getMessage() + " - Error: 240"); 
+            logSevere(e.getMessage() + " - Error: 255"); 
         }
         
         return success;
@@ -279,7 +280,7 @@ public class MySQLDatabase
             stmt = connection.prepareStatement(pCommand, 
                                             Statement.RETURN_GENERATED_KEYS);
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 266"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 283"); }
         
         return stmt;
 
@@ -298,7 +299,7 @@ public class MySQLDatabase
         //start the sql command string
         String cmd = "CREATE TABLE `" + pTable + "` (";
         
-        //put the columns and types into the command
+        //put the columns into the command
         for (int i=0; i<pColumns.length; i++) { 
             //add a comma to separate this column from the last one
             if(i!=0) { cmd += ","; }
@@ -312,7 +313,7 @@ public class MySQLDatabase
         
         //execute the statement
         try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 291"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 316"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -330,7 +331,7 @@ public class MySQLDatabase
     {
         
         //create the command string
-        String cmd = "DELETE FROM " + pTable + " WHERE `skoonie_key`=?";
+        String cmd = "DELETE FROM `" + pTable + "` WHERE `skoonie_key`=?";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
@@ -340,7 +341,7 @@ public class MySQLDatabase
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 338"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 344"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -364,7 +365,7 @@ public class MySQLDatabase
         
         //execute the statement
         try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 367"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 368"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -388,7 +389,7 @@ public class MySQLDatabase
         
         //execute the statement
         try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 367"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 392"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -407,12 +408,12 @@ public class MySQLDatabase
     public void emptyTable(String pTable)
     {
         
-        String cmd = "TRUNCATE " + pTable;
+        String cmd = "TRUNCATE `" + pTable + "`";
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         //execute the statement
         try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 402"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 416"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -432,7 +433,7 @@ public class MySQLDatabase
         Record r = new Record();
         r.setSkoonieKey(pSkoonieKey);
 
-        String cmd = "SELECT * FROM " + pTable 
+        String cmd = "SELECT * FROM `" + pTable + "`"
                             + " WHERE `skoonie_key`=" + pSkoonieKey;
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set = performQuery(stmt);
@@ -451,7 +452,7 @@ public class MySQLDatabase
                 
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error:635"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 455"); }
         
         //clean up environment
         closeResultSet(set);
@@ -473,7 +474,7 @@ public class MySQLDatabase
         
         ArrayList<Record> recs = new ArrayList();
 
-        String cmd = "SELECT * FROM " + pTable;
+        String cmd = "SELECT * FROM `" + pTable + "`";
         PreparedStatement stmt = createPreparedStatement(cmd);
         ResultSet set = performQuery(stmt);
         
@@ -495,7 +496,7 @@ public class MySQLDatabase
                 recs.add(r);
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error:525"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 499"); }
         
         //clean up environment
         closeResultSet(set);
@@ -517,7 +518,7 @@ public class MySQLDatabase
         
         int skoonieKey = -1;
         
-        String cmd = "INSERT INTO " + pTable + " (";
+        String cmd = "INSERT INTO `" + pTable + "` (";
         
         //get the attributes of pRec and put them in a set
         Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
@@ -569,10 +570,7 @@ public class MySQLDatabase
             //clean up environment
             closeResultSet(set);
         }
-        catch (SQLException e) { 
-            //DEBUG HSS//
-            System.out.println(e.getMessage());
-            logSevere(e.getMessage() + " - Error: 667"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 573"); }
         
         //clean up environment
         closePreparedStatement(stmt);
@@ -632,7 +630,7 @@ public class MySQLDatabase
         if (!connectToDatabase()) { return set; }
         
         try { set = pStatement.executeQuery(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 718"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 633"); }
         
         return set;
 
@@ -651,7 +649,7 @@ public class MySQLDatabase
         //Register JDBC driver
         try { Class.forName("com.mysql.jdbc.Driver"); }
         catch (ClassNotFoundException e) { 
-            logSevere(e.getMessage() + " - Error: 477"); 
+            logSevere(e.getMessage() + " - Error: 652"); 
         }
 
     }// end of MySQLDatabase::registerJDBCDriver
@@ -667,7 +665,7 @@ public class MySQLDatabase
     {
         
         //start the command string
-        String cmd = "UPDATE " + pTable + " SET ";
+        String cmd = "UPDATE `" + pTable + "` SET ";
         
         //get the attributes of pRec and put them in a set
         Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
@@ -703,7 +701,7 @@ public class MySQLDatabase
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 1308"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 704"); }
         
         //clean up environment
         closePreparedStatement(stmt);
