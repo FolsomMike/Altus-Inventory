@@ -7,11 +7,6 @@
 *
 * This class contains general functions and performs general operations
 * necessary to listen for record actions.
-* 
-* No record action commands are handled in this class. It is intended to be 
-* extended by children that handle actions for specific records, such as 
-* RecordActionHandler or CustomerActionHandler. Actions should be handled in
-* those children classes.
 *
 */
 
@@ -19,8 +14,6 @@
 
 package controller;
 
-import command.CommandHandler;
-import command.CommandListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +25,8 @@ import model.Record;
 // class RecordActionHandler
 //
 
-public abstract class RecordActionHandler implements CommandListener
+public class RecordActionHandler
 {
-    
-    @Override
-    public abstract void commandPerformed(String pCommand);
     
     private final MySQLDatabase db;
     public final MySQLDatabase getDatabase() { return db; }
@@ -87,9 +77,6 @@ public abstract class RecordActionHandler implements CommandListener
 
     public void init()
     {
-        
-        //register this as a controller listener
-        CommandHandler.registerControllerListener(this);
         
         //setup the batch keys
         setupBatchKeys();

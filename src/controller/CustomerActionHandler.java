@@ -56,24 +56,6 @@ public class CustomerActionHandler extends RecordActionHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomerActionHandler::commandPerformed
-    //
-    // Performs different actions depending on pCommand.
-    //
-    // The function will do nothing if pCommand was not intended for controller
-    // or if it is not a customer action command.
-    //
-    // Called by the CommandHandler everytime a controller command is performed.
-    //
-
-    @Override
-    public void commandPerformed(String pCommand)
-    {
-
-    }//end of CustomerActionHandler::commandPerformed
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // CustomerActionHandler::addCustomer
     //
     // Adds a customer using the information in pCommand.

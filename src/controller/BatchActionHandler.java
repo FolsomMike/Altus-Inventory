@@ -60,24 +60,6 @@ public class BatchActionHandler extends RecordActionHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::commandPerformed
-    //
-    // Performs different actions depending on pCommand.
-    //
-    // The function will do nothing if pCommand was not intended for controller
-    // or if it is not a batch action command.
-    //
-    // Called by the CommandHandler everytime a controller command is performed.
-    //
-
-    @Override
-    public void commandPerformed(String pCommand)
-    {
-
-    }//end of BatchActionHandler::commandPerformed
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // BatchActionHandler::deleteBatch
     //
     // Deletes a batch and the receivement associated with that batch using the
