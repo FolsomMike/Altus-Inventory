@@ -15,20 +15,18 @@
 
 //------------------------------------------------------------------------------
 
-package controller;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import model.MySQLDatabase;
-import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class DescriptorActionHandler
+// class DescriptorHandler
 //
 
-public class DescriptorActionHandler extends RecordActionHandler
+public class DescriptorHandler extends RecordHandler
 {
     
     private final List<String> descriptorKeys = new ArrayList<>();
@@ -36,19 +34,19 @@ public class DescriptorActionHandler extends RecordActionHandler
     private final String descriptorsTable = "DESCRIPTORS";
 
     //--------------------------------------------------------------------------
-    // DescriptorActionHandler::DescriptorActionHandler (constructor)
+    // DescriptorHandler::DescriptorHandler (constructor)
     //
 
-    public DescriptorActionHandler(MySQLDatabase pDatabase)
+    public DescriptorHandler(MySQLDatabase pDatabase)
     {
 
         super(pDatabase);
 
-    }//end of DescriptorActionHandler::DescriptorActionHandler (constructor)
+    }//end of DescriptorHandler::DescriptorHandler (constructor)
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // DescriptorActionHandler::init
+    // DescriptorHandler::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -65,11 +63,11 @@ public class DescriptorActionHandler extends RecordActionHandler
         descriptorKeys.add("duplicates_allowed");
         descriptorKeys.add("removable");
 
-    }// end of DescriptorActionHandler::init
+    }// end of DescriptorHandler::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DescriptorActionHandler::addDescriptor
+    // DescriptorHandler::addDescriptor
     //
     // Adds a descriptor using the information in pCommand.
     //
@@ -104,11 +102,11 @@ public class DescriptorActionHandler extends RecordActionHandler
         
         getDatabase().closeDatabaseConnection();
 
-    }//end of DescriptorActionHandler::addDescriptor
+    }//end of DescriptorHandler::addDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DescriptorActionHandler::deleteDescriptor
+    // DescriptorHandler::deleteDescriptor
     //
     // Deletes a descriptor using the information in pCommand.
     //
@@ -142,9 +140,9 @@ public class DescriptorActionHandler extends RecordActionHandler
         
         getDatabase().closeDatabaseConnection();
 
-    }//end of DescriptorActionHandler::deleteDescriptor
+    }//end of DescriptorHandler::deleteDescriptor
     //--------------------------------------------------------------------------
     
-}//end of class DescriptorActionHandler
+}//end of class DescriptorHandler
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

@@ -16,20 +16,18 @@
 
 //------------------------------------------------------------------------------
 
-package controller;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import model.MySQLDatabase;
-import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class CustomerActionHandler
+// class CustomerHandler
 //
 
-public class CustomerActionHandler extends RecordActionHandler
+public class CustomerHandler extends RecordHandler
 {
     
     //Command keys -- keys to look for when handling a command
@@ -39,19 +37,19 @@ public class CustomerActionHandler extends RecordActionHandler
     private final String customersTable = "CUSTOMERS";
 
     //--------------------------------------------------------------------------
-    // CustomerActionHandler::CustomerActionHandler (constructor)
+    // CustomerHandler::CustomerHandler (constructor)
     //
 
-    public CustomerActionHandler(MySQLDatabase pDatabase)
+    public CustomerHandler(MySQLDatabase pDatabase)
     {
 
        super(pDatabase);
 
-    }//end of CustomerActionHandler::CustomerActionHandler (constructor)
+    }//end of CustomerHandler::CustomerHandler (constructor)
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // CustomerActionHandler::init
+    // CustomerHandler::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -62,11 +60,11 @@ public class CustomerActionHandler extends RecordActionHandler
         
         super.init();
 
-    }// end of CustomerActionHandler::init
+    }// end of CustomerHandler::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomerActionHandler::addCustomer
+    // CustomerHandler::addCustomer
     //
     // Adds a customer using the information in pCommand.
     //
@@ -83,11 +81,11 @@ public class CustomerActionHandler extends RecordActionHandler
         
         getDatabase().closeDatabaseConnection();
 
-    }//end of CustomerActionHandler::addCustomer
+    }//end of CustomerHandler::addCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomerActionHandler::deleteCustomer
+    // CustomerHandler::deleteCustomer
     //
     // Deletes a customer using the information in pCommand.
     //
@@ -97,11 +95,11 @@ public class CustomerActionHandler extends RecordActionHandler
         
         deleteRecord(pCommand, customersTable);
 
-    }//end of CustomerActionHandler::deleteCustomer
+    }//end of CustomerHandler::deleteCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomerActionHandler::updateCustomer
+    // CustomerHandler::updateCustomer
     //
     // Updates a customer using the information in pCommand.
     //
@@ -111,9 +109,9 @@ public class CustomerActionHandler extends RecordActionHandler
         
         updateRecord(pCommand, customerKeys, customersTable);
 
-    }//end of CustomerActionHandler::updateCustomer
+    }//end of CustomerHandler::updateCustomer
     //--------------------------------------------------------------------------
     
-}//end of class CustomerActionHandler
+}//end of class CustomerHandler
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

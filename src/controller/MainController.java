@@ -34,6 +34,9 @@
 
 package controller;
 
+import model.BatchHandler;
+import model.CustomerHandler;
+import model.DescriptorHandler;
 import command.CommandHandler;
 import command.CommandListener;
 import command.Command;
@@ -61,14 +64,14 @@ public class MainController implements CommandListener, Runnable
     
     private final MySQLDatabase db = new MySQLDatabase();
     
-    private final BatchActionHandler batchActionHandler 
-                                            = new BatchActionHandler(db);
+    private final BatchHandler batchActionHandler 
+                                            = new BatchHandler(db);
     
-    private final CustomerActionHandler customerActionHandler 
-                                            = new CustomerActionHandler(db);
+    private final CustomerHandler customerActionHandler 
+                                            = new CustomerHandler(db);
     
-    private final DescriptorActionHandler descriptorActionHandler 
-                                            = new DescriptorActionHandler(db);
+    private final DescriptorHandler descriptorActionHandler 
+                                            = new DescriptorHandler(db);
 
     private int displayUpdateTimer = 0;
 

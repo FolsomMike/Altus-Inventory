@@ -17,20 +17,18 @@
 
 //------------------------------------------------------------------------------
 
-package controller;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import model.MySQLDatabase;
-import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class BatchActionHandler
+// class BatchHandler
 //
 
-public class BatchActionHandler extends RecordActionHandler
+public class BatchHandler extends RecordHandler
 {
     
     //Command keys -- keys to look for when handling a command
@@ -46,19 +44,19 @@ public class BatchActionHandler extends RecordActionHandler
     private final String movementsTable = "MOVEMENTS";
 
     //--------------------------------------------------------------------------
-    // BatchActionHandler::BatchActionHandler (constructor)
+    // BatchHandler::BatchHandler (constructor)
     //
 
-    public BatchActionHandler(MySQLDatabase pDatabase)
+    public BatchHandler(MySQLDatabase pDatabase)
     {
 
         super(pDatabase);
 
-    }//end of BatchActionHandler::BatchActionHandler (constructor)
+    }//end of BatchHandler::BatchHandler (constructor)
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // BatchActionHandler::init
+    // BatchHandler::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -69,11 +67,11 @@ public class BatchActionHandler extends RecordActionHandler
         
         super.init();
 
-    }// end of BatchActionHandler::init
+    }// end of BatchHandler::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::deleteBatch
+    // BatchHandler::deleteBatch
     //
     // Deletes a batch and the receivement associated with that batch using the
     // information in pCommand.
@@ -104,11 +102,11 @@ public class BatchActionHandler extends RecordActionHandler
        
         getDatabase().closeDatabaseConnection();
         
-    }//end of BatchActionHandler::deleteBatch
+    }//end of BatchHandler::deleteBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::moveBatch
+    // BatchHandler::moveBatch
     //
     // Moves a batch using the information in pCommand.
     //
@@ -132,11 +130,11 @@ public class BatchActionHandler extends RecordActionHandler
         
         getDatabase().closeDatabaseConnection();
 
-    }//end of BatchActionHandler::moveBatch
+    }//end of BatchHandler::moveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::receiveBatch
+    // BatchHandler::receiveBatch
     //
     // Receives a batch using the information in pCommand.
     //
@@ -169,11 +167,11 @@ public class BatchActionHandler extends RecordActionHandler
         
         getDatabase().closeDatabaseConnection();
 
-    }//end of BatchActionHandler::receiveBatch
+    }//end of BatchHandler::receiveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // BatchActionHandler::updateBatch
+    // BatchHandler::updateBatch
     //
     // Updates a batch using the information in pCommand.
     //
@@ -183,9 +181,9 @@ public class BatchActionHandler extends RecordActionHandler
         
         updateRecord(pCommand, batchKeys, batchesTable);
 
-    }//end of BatchActionHandler::updateBatch
+    }//end of BatchHandler::updateBatch
     //--------------------------------------------------------------------------
     
-}//end of class BatchActionHandler
+}//end of class BatchHandler
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

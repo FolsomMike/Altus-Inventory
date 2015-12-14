@@ -12,38 +12,36 @@
 
 //------------------------------------------------------------------------------
 
-package controller;
+package model;
 
 import java.util.List;
 import java.util.Map;
-import model.MySQLDatabase;
-import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class RecordActionHandler
+// class RecordHandler
 //
 
-public class RecordActionHandler
+public class RecordHandler
 {
     
     private final MySQLDatabase db;
     public final MySQLDatabase getDatabase() { return db; }
 
     //--------------------------------------------------------------------------
-    // RecordActionHandler::RecordActionHandler (constructor)
+    // RecordHandler::RecordHandler (constructor)
     //
 
-    public RecordActionHandler(MySQLDatabase pDatabase)
+    public RecordHandler(MySQLDatabase pDatabase)
     {
 
         db = pDatabase;
 
-    }//end of RecordActionHandler::RecordActionHandler (constructor)
+    }//end of RecordHandler::RecordHandler (constructor)
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // RecordActionHandler::init
+    // RecordHandler::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -51,11 +49,11 @@ public class RecordActionHandler
     public void init()
     {
 
-    }// end of RecordActionHandler::init
+    }// end of RecordHandler::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordActionHandler::deleteRecord
+    // RecordHandler::deleteRecord
     //
     // Deletes the record assoicated with the skoonie key found in pCommand from
     // pTable.
@@ -75,11 +73,11 @@ public class RecordActionHandler
        
         db.closeDatabaseConnection();
         
-    }//end of RecordActionHandler::deleteRecord
+    }//end of RecordHandler::deleteRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordActionHandler::getValues
+    // RecordHandler::getValues
     //
     // The value of every key in pKeyValuePairs that matches one of the keys in 
     // pKeys is added to pRec, using the key as the column.
@@ -115,11 +113,11 @@ public class RecordActionHandler
 
         }
 
-    }//end of RecordActionHandler::getValues
+    }//end of RecordHandler::getValues
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordActionHandler::updateRecord
+    // RecordHandler::updateRecord
     //
     // Updates the record in pTable associated with the skoonie key found in 
     // pCommand using information extracted from pCommand using pKeys.
@@ -138,9 +136,9 @@ public class RecordActionHandler
         
         db.closeDatabaseConnection();
         
-    }//end of RecordActionHandler::updateRecord
+    }//end of RecordHandler::updateRecord
     //--------------------------------------------------------------------------
     
-}//end of class RecordActionHandler
+}//end of class RecordHandler
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
