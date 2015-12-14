@@ -132,9 +132,7 @@ public class CustomersWindow extends AltusJDialog
         
         //Add Customer button
         panel.add(createButton( "Add", 
-                                "Add a new customer.", 
-                                Command.createViewCommand
-                                    ("action=display add customer")));
+                                "Add a new customer.", ""));
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         

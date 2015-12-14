@@ -143,6 +143,25 @@ public class DescriptorHandler extends RecordHandler
     }//end of DescriptorHandler::deleteDescriptor
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // DescriptorHandler::getDescriptors
+    //
+    // Gets the descriptors of pTable.
+    //
+    // Getting the descriptors invovles three steps:
+    //      1. getting all the column names of pTable, excluding skoonie_key
+    //      2. getting the information about the descriptor from the descriptors
+    //          table
+    //
+
+    public void getDescriptors(String pTable)
+    {
+        
+        //WIP HSS// -- do stuff
+
+    }//end of DescriptorHandler::deleteDescriptor
+    //--------------------------------------------------------------------------
+    
 }//end of class DescriptorHandler
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

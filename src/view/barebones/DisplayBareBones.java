@@ -28,15 +28,17 @@ import view.Display;
 // class DisplayBareBones
 //
 
-public class DisplayBareBones implements Display
+public class DisplayBareBones extends Display
 {
 
     //--------------------------------------------------------------------------
     // DisplayBareBones::DisplayBareBones (constructor)
     //
 
-    public DisplayBareBones()
+    public DisplayBareBones(CommandHandler pView)
     {
+        
+        super(pView);
 
     }//end of DisplayBareBones::DisplayBareBones (constructor)
     //--------------------------------------------------------------------------
@@ -55,7 +57,7 @@ public class DisplayBareBones implements Display
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Next command:");
-            CommandHandler.performControllerCommand(scanner.nextLine());
+            //DEBUG HSS//sendCommandToController(scanner.nextLine());
         }
 
     }// end of DisplayBareBones::init

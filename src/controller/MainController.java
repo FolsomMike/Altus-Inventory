@@ -38,7 +38,6 @@ import model.BatchHandler;
 import model.CustomerHandler;
 import model.DescriptorHandler;
 import command.CommandHandler;
-import command.CommandListener;
 import command.Command;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -59,8 +58,10 @@ import model.MySQLDatabase;
 // class MainController
 //
 
-public class MainController implements CommandListener, Runnable
+public class MainController implements CommandHandler, Runnable
 {
+    
+    private CommandHandler view;
     
     private final MySQLDatabase db = new MySQLDatabase();
     
@@ -96,9 +97,6 @@ public class MainController implements CommandListener, Runnable
     public void init()
     {
         
-        //register this as a controller listener
-        CommandHandler.registerControllerListener(this);
-        
         //set up the logger
         setupJavaLogger();
         
@@ -115,8 +113,8 @@ public class MainController implements CommandListener, Runnable
         descriptorActionHandler.init();
 
         //set up the view
-        MainView v = new MainView(db);
-        v.init();
+        view = new MainView(this, db);
+        ((MainView)view).init();
 
         //start the control thread
         new Thread(this).start();
@@ -125,24 +123,19 @@ public class MainController implements CommandListener, Runnable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainController::commandPerformed
+    // MainController::handleCommand
     //
     // Performs different actions depending on pCommand.
     //
-    // The function will do nothing if pCommand was not intended for controller.
-    //
-    // Called by the CommandHandler everytime a controller command is performed.
+    // The function will change the target to view and send it back to there if
+    // none of the actions are recognized.
     //
 
     @Override
-    public void commandPerformed(String pCommand)
+    public void handleCommand(Map<String, String> pCommand)
     {
         
-        if (!Command.isControllerCommand(pCommand)) { return; }
-        
-        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
-        
-        switch (command.get("action")) {
+        switch (pCommand.get("action")) {
             
             case "empty database": //DEBUG HSS// -- testing purposes only
                 emptyDatabase();
@@ -150,43 +143,48 @@ public class MainController implements CommandListener, Runnable
                 
             //batch actions
             case "delete batch": //DEBUG HSS -- for testing purposes only
-                batchActionHandler.deleteBatch(command);
+                batchActionHandler.deleteBatch(pCommand);
                 break;
                 
             case "move batch":
-                batchActionHandler.moveBatch(command);
+                batchActionHandler.moveBatch(pCommand);
                 break;
                 
             case "receive batch":
-                batchActionHandler.receiveBatch(command);
+                batchActionHandler.receiveBatch(pCommand);
                 break;
                 
             case "update batch":
-                batchActionHandler.updateBatch(command);
+                batchActionHandler.updateBatch(pCommand);
                 break;
                 
             //customer actions
             case "add customer":
-                customerActionHandler.addCustomer(command);
+                customerActionHandler.addCustomer(pCommand);
                 break;
                 
             case "delete customer":
-                customerActionHandler.deleteCustomer(command);
+                customerActionHandler.deleteCustomer(pCommand);
                 break;
                 
             case "update customer":
-                customerActionHandler.updateCustomer(command);
+                customerActionHandler.updateCustomer(pCommand);
                 break;
                 
             //descriptor actions
             case "add descriptor":
-                descriptorActionHandler.addDescriptor(command);
+                descriptorActionHandler.addDescriptor(pCommand);
                 break;
                 
             case "delete descriptor":
-                descriptorActionHandler.deleteDescriptor(command);
+                descriptorActionHandler.deleteDescriptor(pCommand);
                 break;
-            
+                
+            //none of the actions are recognized, so give it back to view
+            default:
+                Command.addressToView(pCommand);
+                view.handleCommand(pCommand);
+                break;
         }
 
     }//end of MainController::commandPerformed

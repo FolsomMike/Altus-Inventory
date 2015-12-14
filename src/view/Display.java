@@ -5,8 +5,7 @@
 *
 * Purpose:
 *
-* This interface provides methods that all displays need to function as 
-* displays.
+* This 
 * 
 */
 
@@ -16,13 +15,87 @@ package view;
 
 //------------------------------------------------------------------------------
 
-public interface Display
+import command.Command;
+import command.CommandHandler;
+import java.util.Map;
+
+
+public abstract class Display implements CommandHandler
 {
     
-    public void init();
+    //Required functions for customer actions
+    protected abstract void displayCustomers();
+    protected abstract void displayAddCustomer();
     
-    //Function relating to customers
-    public void displayCustomers();
-    public void displayAddCustomer();
+    private final CommandHandler view;
     
-}
+    //--------------------------------------------------------------------------
+    // DisplayBareBones::DisplayBareBones (constructor)
+    //
+
+    public Display(CommandHandler pView)
+    {
+        
+        view = pView;
+
+    }//end of DisplayBareBones::DisplayBareBones (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Display::init
+    //
+    // Initializes the object. Must be called immediately after instantiation.
+    //
+    
+    public void init() 
+    {
+        
+    }//end of Display::init
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Display::handleCommand
+    //
+    // Performs different actions depending on pCommand.
+    //
+    
+    @Override
+    public void handleCommand(Map<String, String> pCommand) 
+    {
+        
+        switch (pCommand.get("action")) {
+            
+            //customer actions
+            case "display customers":
+                displayCustomers();
+                break;
+                
+            case "display add customer":
+                displayAddCustomer();
+                break;
+                
+        }
+        
+    }//end of Display::handleCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Display::sendCommandToController
+    //
+    // Sends pCommand to the controller through view.
+    //
+    
+    protected void sendCommandToController(Map<String, String> pCommand) 
+    {
+        
+        //address pCommand to controller
+        Command.addressToController(pCommand);
+        
+        view.handleCommand(pCommand);
+        
+    }//end of Display::sendCommandToController
+    //--------------------------------------------------------------------------
+    
+}//end of class Display
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------

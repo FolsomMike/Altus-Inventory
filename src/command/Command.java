@@ -5,9 +5,7 @@
 *
 * Purpose:
 *
-* This class contains helper functions and variables for creating commands for
-* the CommandHandler.
-*
+* This class contains helper functions and variables for commands.
 */
 
 //-----------------------------------------------------------------------------
@@ -16,7 +14,6 @@ package command;
 
 //------------------------------------------------------------------------------
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -26,113 +23,88 @@ import java.util.Map;
 
 public class Command {
     
-    private final static String controllerCommandId  = "target=controller listeners|";
-    private final static String viewCommandId  = "target=view listeners|";
+    private final static String controllerId  = "controller";
+    private final static String viewId  = "view";
     
     //--------------------------------------------------------------------------
-    // Command::createControllerCommand
+    // Command::addressToController
     //
-    // Creates and returns a controller command by adding the controller command
-    // id to the beginning of pCommand.
+    // Addresses the passed in command to the controller.
     //
 
-    public static String createControllerCommand(String pCommand)
+    public static void addressToController(Map<String, String> pCommand)
     {
         
-        //if pCommand is null or empty then just return an empty string
-        if (pCommand == null || pCommand.isEmpty()) { return ""; }
+        //if pCommand is null then return
+        if (pCommand == null) { return; }
         
-        //if pCommand is already a controller commmand, then just give it back
-        if (isControllerCommand(pCommand)) { return pCommand; }
+        //if pCommand is already addressed to controller, then do nothing
+        if (isAddressedToController(pCommand)) { return; }
         
-        return controllerCommandId + pCommand;
+        //set the source to controller
+        pCommand.put("src", controllerId);
 
-    }//end of Command::createControllerCommand
+    }//end of Command::addressToController
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Command::createViewCommand
+    // Command::addressToView
     //
-    // Creates and returns a view command by adding the view command id to the
-    // beginning of pCommand.
+    // Addresses the passed in command to the view.
     //
 
-    public static String createViewCommand(String pCommand)
+    public static void addressToView(Map<String, String> pCommand)
     {
         
-        //if pCommand is null or empty then just return an empty string
-        if (pCommand == null || pCommand.isEmpty()) { return ""; }
+        //if pCommand is null then return
+        if (pCommand == null) { return; }
         
-        //if pCommand is already a view commmand, then just give it back
-        if (isViewCommand(pCommand)) { return pCommand; }
+        //if pCommand is already addressed to view, then do nothing
+        if (isAddressedToView(pCommand)) { return; }
         
-        return viewCommandId + pCommand;
+        //set the source to view
+        pCommand.put("src", viewId);
 
-    }//end of Command::createViewCommand
+    }//end of Command::addressToController
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Command::extractKeyValuePairs
+    // Command::isAddressedToController
     //
-    // Extracts all of the key value pairs from pCommand and returns them in a
-    // Map.
-    //
-
-    public static Map<String, String> extractKeyValuePairs(String pCommand)
-    {
-        
-        Map<String, String> map = new HashMap<>();
-        
-        if (pCommand == null || pCommand.isEmpty()) { return map; }
-        
-        //pairs array will contain key-value pairs
-        String[] pairs = pCommand.split("\\|");
-        
-        for (String pair : pairs) {
-            //keyat index 0; value at index 1
-            String[] keyValue = pair.split("=");
-            map.put(keyValue[0], keyValue[1]);
-        }
-        
-        return map;
-
-    }//end of Command::extractKeyValuePairs
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::isControllerCommand
-    //
-    // Determines whether or not the passed in command is a controller command.
+    // Determines whether or not the passed in command is addressed to the
+    // controller.
     //
     // Returns true if it is; false if not.
     //
 
-    public static boolean isControllerCommand(String pCommand)
+    public static boolean isAddressedToController(Map<String, String> pCommand)
     {
         
+        //return false if pCommand is null or empty
         if (pCommand == null || pCommand.isEmpty()) { return false; }
         
-        return pCommand.startsWith(controllerCommandId);
+        return pCommand.containsKey(controllerId);
 
-    }//end of Command::isControllerCommand
+    }//end of Command::isAddressedToController
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Command::isViewCommand
+    // Command::isAddressedToView
     //
-    // Determines whether or not the passed in command is a view command.
+    // Determines whether or not the passed in command is addressed to the view.
     //
     // Returns true if it is; false if not.
     //
 
-    public static boolean isViewCommand(String pCommand)
+    public static boolean isAddressedToView(Map<String, String> pCommand)
     {
         
+        //return false if pCommand is null or empty
         if (pCommand == null || pCommand.isEmpty()) { return false; }
         
-        return pCommand.startsWith(viewCommandId);
+        return pCommand.containsKey(viewId);
 
-    }//end of Command::isViewCommand
+    }//end of Command::isAddressedToView
     //--------------------------------------------------------------------------
     
 }//end of class Command

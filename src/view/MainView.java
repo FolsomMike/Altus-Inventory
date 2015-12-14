@@ -27,7 +27,6 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import command.CommandListener;
 import command.Command;
 import command.CommandHandler;
 import java.util.Map;
@@ -40,8 +39,10 @@ import view.classic.DisplayClassic;
 // class MainView
 //
 
-public class MainView implements CommandListener
+public class MainView implements CommandHandler
 {
+    
+    private final CommandHandler controller;
     
     private final MySQLDatabase db;
     
@@ -54,8 +55,10 @@ public class MainView implements CommandListener
     // MainView::MainView (constructor)
     //
 
-    public MainView(MySQLDatabase pDatabase)
+    public MainView(CommandHandler pController, MySQLDatabase pDatabase)
     {
+        
+        controller = pController;
 
         db = pDatabase;
         
@@ -73,38 +76,35 @@ public class MainView implements CommandListener
     public void init()
     {
         
-        //register this as a view listener
-        CommandHandler.registerViewListener(this);
-        
         setupDisplay();
 
     }// end of MainView::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainView::commandPerformed
+    // MainView::handleCommand
     //
     // Performs different actions depending on pCommand.
     //
-    // The function will do nothing if pCommand was not intended for view.
-    //
-    // Called by the CommandHandler everytime a view command is performed.
+    // If the function is meant for the controller, then it passes it on to the
+    // controller.
     //
 
     @Override
-    public void commandPerformed(String pCommand)
+    public void handleCommand(Map<String, String> pCommand)
     {
         
-        //return if this is not a view command
-        if (!Command.isViewCommand(pCommand)) { return; }
-        
-        Map<String, String> command = Command.extractKeyValuePairs(pCommand);
-        
-        switch (command.get("action")) {
-            case "display customers":
-                display.displayCustomers();
-                break;
+        //pass the command to the controller if necessary
+        if (Command.isAddressedToController(pCommand)) { 
+            controller.handleCommand(pCommand);
+            return;
         }
+        //if we somehow ended up with some weird command not addressed to the
+        //controller or the view then just do nothing
+        else if (!Command.isAddressedToView(pCommand)) { return; }
+        
+        //hand the command down to the display
+        display.handleCommand(pCommand);
 
     }//end of MainView::commandPerformed
     //--------------------------------------------------------------------------
@@ -120,11 +120,11 @@ public class MainView implements CommandListener
         
         switch (displayMode) {
             case displayModeBareBones:
-                display = new DisplayBareBones();
+                display = new DisplayBareBones(this);
                 break;
                 
             case displayModeClassic:
-                display = new DisplayClassic(db);
+                display = new DisplayClassic(this, db);
                 break;
         }
         
