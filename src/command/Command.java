@@ -27,8 +27,9 @@ public class Command {
     
     private final static List<CommandHandler> commandHandlers = new ArrayList<>();
     
-    private final String message;
+    private String message;
     public String getMessage() { return message; }
+    public void setMessage(String pMessage) { message = pMessage; }
     
     private final Map<String, Object> map;
     public Object get(String pKey) { return map.get(pKey); }
