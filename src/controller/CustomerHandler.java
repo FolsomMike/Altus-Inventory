@@ -16,11 +16,15 @@
 
 //------------------------------------------------------------------------------
 
-package model;
+package controller;
 
+import command.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import model.MySQLDatabase;
+import model.Record;
+import model.RecordHandler;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -96,6 +100,25 @@ public class CustomerHandler extends RecordHandler
         deleteRecord(pCommand, customersTable);
 
     }//end of CustomerHandler::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomerHandler::getCustomers
+    //
+    // Gets the customers from the database and sticks them in pCommand.
+    //
+
+    public void getCustomers(Command pCommand)
+    {
+        
+        getDatabase().connectToDatabase();
+        
+        //get the customers and sticks them in pCommand
+        pCommand.put("customers", getDatabase().getRecords(customersTable));
+        
+        getDatabase().closeDatabaseConnection();
+
+    }//end of CustomerHandler::getCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

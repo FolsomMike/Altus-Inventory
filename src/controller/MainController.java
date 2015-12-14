@@ -35,7 +35,6 @@
 package controller;
 
 import model.BatchHandler;
-import model.CustomerHandler;
 import model.DescriptorHandler;
 import command.CommandHandler;
 import command.Command;
@@ -162,7 +161,9 @@ public class MainController implements CommandHandler, Runnable
             case "delete customer": //WIP HSS// -- delete the customer
                 break;
                 
-            case "display customers": //WIP HSS// -- add data to the command before passing down the line
+            case "get customers":
+                customerHandler.getCustomers(pCommand);
+                pCommand.setMessage("display customers");
                 break;
                 
             case "update customer": //WIP HSS// -- update the customer
