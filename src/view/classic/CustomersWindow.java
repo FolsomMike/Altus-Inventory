@@ -15,7 +15,6 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
-import command.Command;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
@@ -42,8 +41,8 @@ public class CustomersWindow extends AltusJDialog
     
     private ArrayList<Record> customers;
     
-    //Table names -- back quotes so that they can be easily put in cmd strings
-    private final String customersDbTable = "`CUSTOMERS`";
+    //Table names
+    private final String customersDbTable = "CUSTOMERS";
 
     //--------------------------------------------------------------------------
     // CustomersWindow::CustomersWindow (constructor)

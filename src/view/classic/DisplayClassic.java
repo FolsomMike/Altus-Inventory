@@ -16,13 +16,11 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
-import command.Command;
 import command.CommandHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.JPanel;
 import model.MySQLDatabase;
 import view.Display;
 
@@ -35,6 +33,9 @@ public class DisplayClassic extends Display implements ActionListener
 {
     
     private final MySQLDatabase db;
+    
+    private final MainFrame mainFrame;
+    private CustomersWindow customersWindow;
 
     //--------------------------------------------------------------------------
     // DisplayClassic::DisplayClassic (constructor)
@@ -46,6 +47,8 @@ public class DisplayClassic extends Display implements ActionListener
         super(pView);
         
         db = pDatabase;
+        
+        mainFrame = new MainFrame(this, db);
 
     }//end of DisplayClassic::DisplayClassic (constructor)
     //--------------------------------------------------------------------------
@@ -61,6 +64,9 @@ public class DisplayClassic extends Display implements ActionListener
     {
         
         super.init();
+        
+        //initialize the MainFrame
+        mainFrame.init();
 
     }// end of DisplayClassic::init
     //--------------------------------------------------------------------------
@@ -75,7 +81,8 @@ public class DisplayClassic extends Display implements ActionListener
     public void displayCustomers()
     {
         
-        //WIP HSS// -- DO STUFF
+        customersWindow = new CustomersWindow(mainFrame, db, this);
+        customersWindow.init();
 
     }//end of DisplayClassic::displayCustomers
     //--------------------------------------------------------------------------

@@ -42,7 +42,7 @@ public class Command {
         if (isAddressedToController(pCommand)) { return; }
         
         //set the source to controller
-        pCommand.put("src", controllerId);
+        pCommand.put("target", controllerId);
 
     }//end of Command::addressToController
     //--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public class Command {
         if (isAddressedToView(pCommand)) { return; }
         
         //set the source to view
-        pCommand.put("src", viewId);
+        pCommand.put("target", viewId);
 
     }//end of Command::addressToController
     //--------------------------------------------------------------------------
@@ -81,9 +81,10 @@ public class Command {
     {
         
         //return false if pCommand is null or empty
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        if (pCommand == null || pCommand.isEmpty() 
+                || pCommand.get("target") == null) { return false; }
         
-        return pCommand.containsKey(controllerId);
+        return pCommand.get("target").equals(controllerId);
 
     }//end of Command::isAddressedToController
     //--------------------------------------------------------------------------
@@ -100,9 +101,10 @@ public class Command {
     {
         
         //return false if pCommand is null or empty
-        if (pCommand == null || pCommand.isEmpty()) { return false; }
+        if (pCommand == null || pCommand.isEmpty() 
+                || pCommand.get("target") == null) { return false; }
         
-        return pCommand.containsKey(viewId);
+        return pCommand.get("target").equals(viewId);
 
     }//end of Command::isAddressedToView
     //--------------------------------------------------------------------------
