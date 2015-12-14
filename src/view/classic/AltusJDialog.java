@@ -17,7 +17,6 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
-import command.Command;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import java.awt.Dialog;
