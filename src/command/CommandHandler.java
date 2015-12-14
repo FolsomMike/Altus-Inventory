@@ -17,9 +17,6 @@ package command;
 
 //------------------------------------------------------------------------------
 
-import java.util.Map;
-
-
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // interface CommandHandler
@@ -27,7 +24,7 @@ import java.util.Map;
 
 public interface CommandHandler {
     
-    public void handleCommand(Map<String, String> pCommand);
+    public void handleCommand(Command pCommand);
 
 }//end of interface CommandHandler
 //------------------------------------------------------------------------------

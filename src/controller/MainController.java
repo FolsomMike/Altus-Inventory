@@ -44,7 +44,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import view.MainView;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -52,6 +51,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import model.MySQLDatabase;
+import model.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -65,14 +65,11 @@ public class MainController implements CommandHandler, Runnable
     
     private final MySQLDatabase db = new MySQLDatabase();
     
-    private final BatchHandler batchActionHandler 
-                                            = new BatchHandler(db);
+    private final BatchHandler batchHandler = new BatchHandler(db);
     
-    private final CustomerHandler customerActionHandler 
-                                            = new CustomerHandler(db);
+    private final CustomerHandler customerHandler = new CustomerHandler(db);
     
-    private final DescriptorHandler descriptorActionHandler 
-                                            = new DescriptorHandler(db);
+    private final DescriptorHandler descriptorHandler = new DescriptorHandler(db);
 
     private int displayUpdateTimer = 0;
 
@@ -97,20 +94,24 @@ public class MainController implements CommandHandler, Runnable
     public void init()
     {
         
+        //register this as a command handler -- should be the only registered
+        //one throughout the entire program
+        Command.registerHandler(this);
+        
         //set up the logger
         setupJavaLogger();
         
         //initialize database
         db.init();
         
-        //set up the batch action handler
-        batchActionHandler.init();
+        //set up the batch handler
+        batchHandler.init();
         
-        //set up the customer action handler
-        customerActionHandler.init();
+        //set up the customer handler
+        customerHandler.init();
         
         //set up the descriptor action handler
-        descriptorActionHandler.init();
+        descriptorHandler.init();
 
         //set up the view
         view = new MainView(this, db);
@@ -127,15 +128,15 @@ public class MainController implements CommandHandler, Runnable
     //
     // Performs different actions depending on pCommand.
     //
-    // The function will change the target to view and send it back to there if
-    // none of the actions are recognized.
+    // Command will always be sent down the chain to view after handling has
+    // been done here.
     //
 
     @Override
-    public void handleCommand(Map<String, String> pCommand)
+    public void handleCommand(Command pCommand)
     {
         
-        switch (pCommand.get("action")) {
+        switch (pCommand.getMessage()) {
             
             case "empty database": //DEBUG HSS// -- testing purposes only
                 emptyDatabase();
@@ -143,49 +144,40 @@ public class MainController implements CommandHandler, Runnable
                 
             //batch actions
             case "delete batch": //DEBUG HSS -- for testing purposes only
-                batchActionHandler.deleteBatch(pCommand);
                 break;
                 
-            case "move batch":
-                batchActionHandler.moveBatch(pCommand);
+            case "move batch": //WIP HSS// -- move the batch
                 break;
                 
-            case "receive batch":
-                batchActionHandler.receiveBatch(pCommand);
+            case "receive batch": //WIP HSS// -- receive the batch
                 break;
                 
-            case "update batch":
-                batchActionHandler.updateBatch(pCommand);
+            case "update batch": //WIP HSS// -- update the batch
                 break;
                 
             //customer actions
-            case "add customer":
-                customerActionHandler.addCustomer(pCommand);
+            case "add customer": //WIP HSS// -- add the customer
                 break;
                 
-            case "delete customer":
-                customerActionHandler.deleteCustomer(pCommand);
+            case "delete customer": //WIP HSS// -- delete the customer
                 break;
                 
-            case "update customer":
-                customerActionHandler.updateCustomer(pCommand);
+            case "display customers": //WIP HSS// -- add data to the command before passing down the line
+                break;
+                
+            case "update customer": //WIP HSS// -- update the customer
                 break;
                 
             //descriptor actions
-            case "add descriptor":
-                descriptorActionHandler.addDescriptor(pCommand);
+            case "add descriptor": //WIP HSS// -- add the descriptor
                 break;
                 
-            case "delete descriptor":
-                descriptorActionHandler.deleteDescriptor(pCommand);
-                break;
-                
-            //none of the actions are recognized, so give it back to view
-            default:
-                Command.addressToView(pCommand);
-                view.handleCommand(pCommand);
+            case "delete descriptor": //WIP HSS// -- delete the descriptor
                 break;
         }
+        
+        //pass the command down the chain to view
+        view.handleCommand(pCommand);
 
     }//end of MainController::commandPerformed
     //--------------------------------------------------------------------------

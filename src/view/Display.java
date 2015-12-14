@@ -17,15 +17,14 @@ package view;
 
 import command.Command;
 import command.CommandHandler;
-import java.util.Map;
 
 
 public abstract class Display implements CommandHandler
 {
     
     //Required functions for customer actions
-    protected abstract void displayCustomers();
-    protected abstract void displayAddCustomer();
+    protected abstract void displayAddCustomerFrame();
+    protected abstract void displayCustomersFrame();
     
     private final CommandHandler view;
     
@@ -60,40 +59,23 @@ public abstract class Display implements CommandHandler
     //
     
     @Override
-    public void handleCommand(Map<String, String> pCommand) 
+    public void handleCommand(Command pCommand) 
     {
         
-        switch (pCommand.get("action")) {
+        switch (pCommand.getMessage()) {
             
             //customer actions
-            case "display customers":
-                displayCustomers();
+            case "display add customer frame":
+                displayAddCustomerFrame();
                 break;
                 
-            case "display add customer":
-                displayAddCustomer();
+            case "display customers frame":
+                displayCustomersFrame();
                 break;
                 
         }
         
     }//end of Display::handleCommand
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Display::sendCommandToController
-    //
-    // Sends pCommand to the controller through view.
-    //
-    
-    protected void sendCommandToController(Map<String, String> pCommand) 
-    {
-        
-        //address pCommand to controller
-        Command.addressToController(pCommand);
-        
-        view.handleCommand(pCommand);
-        
-    }//end of Display::sendCommandToController
     //--------------------------------------------------------------------------
     
 }//end of class Display

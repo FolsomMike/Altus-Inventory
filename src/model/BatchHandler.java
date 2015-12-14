@@ -73,32 +73,20 @@ public class BatchHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // BatchHandler::deleteBatch
     //
-    // Deletes a batch and the receivement associated with that batch using the
-    // information in pCommand.
+    // Deletes a batch using the information in pRecord.
     //
     // //DEBUG HSS// -- testing purposes only
     //
 
-    public void deleteBatch(Map<String, String> pCommand)
+    public void deleteBatch(Record pRecord)
     {
         
         getDatabase().connectToDatabase();
         
         //delete the batch
         Record batchRecord = new Record();
-        batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
+        batchRecord.setSkoonieKey(pRecord.getSkoonieKey());
         getDatabase().deleteRecord(batchRecord, batchesTable);
-        
-        //delete the receivement associated with the batch
-        ArrayList<Record> receivementRecords 
-                        = getDatabase().getRecords(receivementsTable);
-        String batchKey = batchRecord.getSkoonieKey();
-        for (Record receivement : receivementRecords) {
-            if (receivement.getValue("batch_key").equals(batchKey)) {
-                getDatabase().deleteRecord(receivement, receivementsTable);
-                break;
-            }
-        }
        
         getDatabase().closeDatabaseConnection();
         
@@ -114,7 +102,9 @@ public class BatchHandler extends RecordHandler
     public void moveBatch(Map<String, String> pCommand)
     {
         
-        getDatabase().connectToDatabase();
+        //DEBUG HSS//
+        
+        /*getDatabase().connectToDatabase();
         
         //update the batch in the database
         Record batchRecord = new Record();
@@ -128,7 +118,7 @@ public class BatchHandler extends RecordHandler
         moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
         getDatabase().insertRecord(moveRecord, movementsTable);
         
-        getDatabase().closeDatabaseConnection();
+        getDatabase().closeDatabaseConnection();*/
 
     }//end of BatchHandler::moveBatch
     //--------------------------------------------------------------------------
@@ -146,7 +136,9 @@ public class BatchHandler extends RecordHandler
     public void receiveBatch(Map<String, String> pCommand)
     {
         
-        getDatabase().connectToDatabase();
+        //DEBUG HSS//
+        
+        /*getDatabase().connectToDatabase();
         
         //record for the batch
         Record batchRecord = new Record();
@@ -165,7 +157,7 @@ public class BatchHandler extends RecordHandler
         //insert the receivement into the database
         getDatabase().insertRecord(receiveRecord, receivementsTable);
         
-        getDatabase().closeDatabaseConnection();
+        getDatabase().closeDatabaseConnection();*/
 
     }//end of BatchHandler::receiveBatch
     //--------------------------------------------------------------------------

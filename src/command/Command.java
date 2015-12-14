@@ -1,5 +1,5 @@
 /******************************************************************************
-* Title: Commands.java
+* Title: Command.java
 * Author: Hunter Schoonover
 * Date: 12/08/15
 *
@@ -14,6 +14,8 @@ package command;
 
 //------------------------------------------------------------------------------
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -23,90 +25,62 @@ import java.util.Map;
 
 public class Command {
     
-    private final static String controllerId  = "controller";
-    private final static String viewId  = "view";
+    private final static List<CommandHandler> commandHandlers = new ArrayList<>();
+    
+    private final String message;
+    public String getMessage() { return message; }
+    
+    private final Map<String, Object> map;
+    public Object get(String pKey) { return map.get(pKey); }
+    public void put(String pKey, Object pValue) { map.put(pKey, pValue); }
     
     //--------------------------------------------------------------------------
-    // Command::addressToController
+    // Command::registerHandler (static)
     //
-    // Addresses the passed in command to the controller.
+    // Registers pHandler as a command handler to be called every time a command
+    // is performed.
     //
 
-    public static void addressToController(Map<String, String> pCommand)
+    public static void registerHandler(CommandHandler pHandler)
     {
         
-        //if pCommand is null then return
-        if (pCommand == null) { return; }
+        //return false if pHandler is null
+        if (pHandler == null) { return; }
         
-        //if pCommand is already addressed to controller, then do nothing
-        if (isAddressedToController(pCommand)) { return; }
-        
-        //set the source to controller
-        pCommand.put("target", controllerId);
+        commandHandlers.add(pHandler);
 
-    }//end of Command::addressToController
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Command::addressToView
-    //
-    // Addresses the passed in command to the view.
-    //
-
-    public static void addressToView(Map<String, String> pCommand)
-    {
-        
-        //if pCommand is null then return
-        if (pCommand == null) { return; }
-        
-        //if pCommand is already addressed to view, then do nothing
-        if (isAddressedToView(pCommand)) { return; }
-        
-        //set the source to view
-        pCommand.put("target", viewId);
-
-    }//end of Command::addressToController
+    }//end of Command::registerHandler (static)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Command::isAddressedToController
-    //
-    // Determines whether or not the passed in command is addressed to the
-    // controller.
-    //
-    // Returns true if it is; false if not.
+    // Command::Command (constructor)
     //
 
-    public static boolean isAddressedToController(Map<String, String> pCommand)
+    public Command(String pMessage)
     {
         
-        //return false if pCommand is null or empty
-        if (pCommand == null || pCommand.isEmpty() 
-                || pCommand.get("target") == null) { return false; }
-        
-        return pCommand.get("target").equals(controllerId);
+        message = pMessage;
+        map = null;
 
-    }//end of Command::isAddressedToController
+    }//end of Command::Command (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // Command::isAddressedToView
+    // Command::perform
     //
-    // Determines whether or not the passed in command is addressed to the view.
-    //
-    // Returns true if it is; false if not.
+    // Performs the command by sending it to all of the handlers registered with
+    // the Command class.
     //
 
-    public static boolean isAddressedToView(Map<String, String> pCommand)
+    public void perform()
     {
         
-        //return false if pCommand is null or empty
-        if (pCommand == null || pCommand.isEmpty() 
-                || pCommand.get("target") == null) { return false; }
+        //return if there are no registered handlers
+        if (commandHandlers.isEmpty()) { return; }
         
-        return pCommand.get("target").equals(viewId);
+        for (CommandHandler h : commandHandlers) { h.handleCommand(this); }
 
-    }//end of Command::isAddressedToView
+    }//end of Command::perform
     //--------------------------------------------------------------------------
     
 }//end of class Command

@@ -65,10 +65,10 @@ public class DisplayBareBones extends Display
 
     //functions required for Display interface
     @Override
-    public void displayCustomers() {}
-    
+    protected void displayAddCustomerFrame() {}
+
     @Override
-    public void displayAddCustomer() {}
+    protected void displayCustomersFrame() {}
 
 }//end of class DisplayBareBones
 //------------------------------------------------------------------------------

@@ -16,11 +16,10 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
+import command.Command;
 import command.CommandHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
 import model.MySQLDatabase;
 import view.Display;
 
@@ -72,51 +71,47 @@ public class DisplayClassic extends Display implements ActionListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DisplayClassic::displayCustomers
+    // DisplayClassic::displayCustomersFrame
     //
     // Displays the Customers window.
     //
 
     @Override
-    public void displayCustomers()
+    public void displayCustomersFrame()
     {
         
         customersWindow = new CustomersWindow(mainFrame, db, this);
         customersWindow.init();
 
-    }//end of DisplayClassic::displayCustomers
+    }//end of DisplayClassic::displayCustomersFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DisplayClassic::displayAddCustomer
+    // DisplayClassic::displayAddCustomerFrame
     //
     // Displays the Add Customer window.
     //
 
     @Override
-    public void displayAddCustomer()
+    public void displayAddCustomerFrame()
     {
         
         //WIP HSS// -- put stuff here
 
-    }//end of DisplayClassic::displayCustomer
+    }//end of DisplayClassic::displayCustomerFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
     // DisplayClassic::actionPerformed
     //
-    // Passes the action event message to the controller.
+    // Creates a command using the action event message and performs it.
     //
 
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        
-        Map<String, String> command = new HashMap<>();
-        
-        command.put("action", e.getActionCommand());
 
-        sendCommandToController(command);
+        (new Command(e.getActionCommand())).perform();
         
     }//end of DisplayClassic::actionPerformed
     //--------------------------------------------------------------------------
