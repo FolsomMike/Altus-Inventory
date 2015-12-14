@@ -34,8 +34,8 @@ import javax.swing.table.TableModel;
 public class CustomTable extends JTable
 {
     
-    Color oddRowColor   = Color.WHITE;
-    Color evenRowColor  = Color.decode("#E6E6E6");
+    Color oddRowColor   = Color.decode("#E6E6E6");
+    Color evenRowColor  = Color.WHITE;;
     
     //--------------------------------------------------------------------------
     // CustomTable::CustomTable (constructor)
