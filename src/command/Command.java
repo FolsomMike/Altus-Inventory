@@ -15,6 +15,7 @@ package command;
 //------------------------------------------------------------------------------
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class Command {
     public String getMessage() { return message; }
     public void setMessage(String pMessage) { message = pMessage; }
     
-    private final Map<String, Object> map;
+    private final Map<String, Object> map = new HashMap<>();
     public Object get(String pKey) { return map.get(pKey); }
     public void put(String pKey, Object pValue) { map.put(pKey, pValue); }
     
@@ -61,7 +62,6 @@ public class Command {
     {
         
         message = pMessage;
-        map = null;
 
     }//end of Command::Command (constructor)
     //--------------------------------------------------------------------------
