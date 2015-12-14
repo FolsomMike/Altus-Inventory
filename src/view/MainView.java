@@ -29,7 +29,6 @@ package view;
 
 import command.Command;
 import command.CommandHandler;
-import model.MySQLDatabase;
 import view.barebones.DisplayBareBones;
 import view.classic.DisplayClassic;
 
@@ -43,8 +42,6 @@ public class MainView implements CommandHandler
     
     private final CommandHandler controller;
     
-    private final MySQLDatabase db;
-    
     private Display display;
     private final String displayMode;
     private final String displayModeBareBones = "BareBones";
@@ -54,12 +51,10 @@ public class MainView implements CommandHandler
     // MainView::MainView (constructor)
     //
 
-    public MainView(CommandHandler pController, MySQLDatabase pDatabase)
+    public MainView(CommandHandler pController)
     {
         
         controller = pController;
-
-        db = pDatabase;
         
         displayMode = displayModeClassic;
         
@@ -114,7 +109,7 @@ public class MainView implements CommandHandler
                 break;
                 
             case displayModeClassic:
-                display = new DisplayClassic(this, db);
+                display = new DisplayClassic(this);
                 break;
         }
         

@@ -27,7 +27,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import model.MySQLDatabase;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -42,9 +41,6 @@ public abstract class AltusJDialog extends JDialog
     
     private final Window parent;
     
-    private final MySQLDatabase db;
-    protected final MySQLDatabase getDatabase() { return db; }
-    
     private final ActionListener actionListener;
 
     private JPanel mainPanel;
@@ -54,14 +50,12 @@ public abstract class AltusJDialog extends JDialog
     // AltusJDialog::AltusJDialog (constructor)
     //
 
-    public AltusJDialog(String pTitle, Window pParent, MySQLDatabase pDatabase,
-                            ActionListener pListener)
+    public AltusJDialog(String pTitle, Window pParent, ActionListener pListener)
     {
 
         super(pParent, pTitle);
         
         parent = pParent;
-        db = pDatabase;
         actionListener = pListener;
 
     }//end of AltusJDialog::AltusJDialog (constructor)

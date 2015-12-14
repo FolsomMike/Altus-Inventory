@@ -114,7 +114,7 @@ public class MainController implements CommandHandler, Runnable
         descriptorHandler.init();
 
         //set up the view
-        view = new MainView(this, db);
+        view = new MainView(this);
         ((MainView)view).init();
 
         //start the control thread

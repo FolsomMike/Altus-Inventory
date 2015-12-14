@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import model.MySQLDatabase;
 import toolkit.Tools;
 import view.MainView;
 
@@ -46,19 +45,16 @@ public class MainFrame extends JFrame
 {
     
     private final ActionListener actionListener;
-    private final MySQLDatabase db;
     private final JPanel mainPanel;
 
     //--------------------------------------------------------------------------
     // MainFrame::MainFrame (constructor)
     //
 
-    public MainFrame(ActionListener pActionListener, MySQLDatabase pDatabase)
+    public MainFrame(ActionListener pActionListener)
     {
         
         actionListener = pActionListener;
-        
-        db = pDatabase;
         
         mainPanel = new JPanel();
 

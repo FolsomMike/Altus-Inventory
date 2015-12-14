@@ -20,7 +20,6 @@ import command.Command;
 import command.CommandHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import model.MySQLDatabase;
 import view.Display;
 
 //------------------------------------------------------------------------------
@@ -31,8 +30,6 @@ import view.Display;
 public class DisplayClassic extends Display implements ActionListener
 {
     
-    private final MySQLDatabase db;
-    
     private final MainFrame mainFrame;
     private CustomersWindow customersWindow;
 
@@ -40,14 +37,12 @@ public class DisplayClassic extends Display implements ActionListener
     // DisplayClassic::DisplayClassic (constructor)
     //
 
-    public DisplayClassic(CommandHandler pView, MySQLDatabase pDatabase)
+    public DisplayClassic(CommandHandler pView)
     {
         
         super(pView);
         
-        db = pDatabase;
-        
-        mainFrame = new MainFrame(this, db);
+        mainFrame = new MainFrame(this);
 
     }//end of DisplayClassic::DisplayClassic (constructor)
     //--------------------------------------------------------------------------
@@ -80,7 +75,7 @@ public class DisplayClassic extends Display implements ActionListener
     public void displayCustomersFrame()
     {
         
-        customersWindow = new CustomersWindow(mainFrame, db, this);
+        customersWindow = new CustomersWindow(mainFrame, this);
         customersWindow.init();
 
     }//end of DisplayClassic::displayCustomersFrame
