@@ -105,11 +105,11 @@ public class MainView implements CommandHandler
         
         switch (displayMode) {
             case displayModeBareBones:
-                display = new DisplayBareBones(this);
+                display = new DisplayBareBones();
                 break;
                 
             case displayModeClassic:
-                display = new DisplayClassic(this);
+                display = new DisplayClassic();
                 break;
         }
         

@@ -17,9 +17,10 @@ package view.classic;
 //------------------------------------------------------------------------------
 
 import command.Command;
-import command.CommandHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import model.Record;
 import view.Display;
 
 //------------------------------------------------------------------------------
@@ -37,10 +38,10 @@ public class DisplayClassic extends Display implements ActionListener
     // DisplayClassic::DisplayClassic (constructor)
     //
 
-    public DisplayClassic(CommandHandler pView)
+    public DisplayClassic()
     {
         
-        super(pView);
+        super();
         
         mainFrame = new MainFrame(this);
 
@@ -66,6 +67,36 @@ public class DisplayClassic extends Display implements ActionListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DisplayClassic::displayAddCustomerFrame
+    //
+    // Displays the Add Customer window.
+    //
+
+    @Override
+    public void displayAddCustomerFrame()
+    {
+        
+        //WIP HSS// -- put stuff here
+
+    }//end of DisplayClassic::displayCustomerFrame
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayCustomers
+    //
+    // Displays the Customers contained in pCustomers.
+    //
+
+    @Override
+    public void displayCustomers(List<Record> pCustomers)
+    {
+        
+        customersWindow.displayCustomers(pCustomers);
+
+    }//end of DisplayClassic::displayCustomers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DisplayClassic::displayCustomersFrame
     //
     // Displays the Customers window.
@@ -79,21 +110,6 @@ public class DisplayClassic extends Display implements ActionListener
         customersWindow.init();
 
     }//end of DisplayClassic::displayCustomersFrame
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // DisplayClassic::displayAddCustomerFrame
-    //
-    // Displays the Add Customer window.
-    //
-
-    @Override
-    public void displayAddCustomerFrame()
-    {
-        
-        //WIP HSS// -- put stuff here
-
-    }//end of DisplayClassic::displayCustomerFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

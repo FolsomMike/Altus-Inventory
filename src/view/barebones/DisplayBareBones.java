@@ -20,7 +20,9 @@ package view.barebones;
 //------------------------------------------------------------------------------
 
 import command.CommandHandler;
+import java.util.List;
 import java.util.Scanner;
+import model.Record;
 import view.Display;
 
 //------------------------------------------------------------------------------
@@ -35,10 +37,10 @@ public class DisplayBareBones extends Display
     // DisplayBareBones::DisplayBareBones (constructor)
     //
 
-    public DisplayBareBones(CommandHandler pView)
+    public DisplayBareBones()
     {
         
-        super(pView);
+        super();
 
     }//end of DisplayBareBones::DisplayBareBones (constructor)
     //--------------------------------------------------------------------------
@@ -69,6 +71,9 @@ public class DisplayBareBones extends Display
 
     @Override
     protected void displayCustomersFrame() {}
+
+    @Override
+    protected void displayCustomers(List<Record> pRecords) {}
 
 }//end of class DisplayBareBones
 //------------------------------------------------------------------------------

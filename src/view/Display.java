@@ -17,6 +17,8 @@ package view;
 
 import command.Command;
 import command.CommandHandler;
+import java.util.List;
+import model.Record;
 
 
 public abstract class Display implements CommandHandler
@@ -24,18 +26,15 @@ public abstract class Display implements CommandHandler
     
     //Required functions for customer actions
     protected abstract void displayAddCustomerFrame();
+    protected abstract void displayCustomers(List<Record> pRecords);
     protected abstract void displayCustomersFrame();
-    
-    private final CommandHandler view;
     
     //--------------------------------------------------------------------------
     // DisplayBareBones::DisplayBareBones (constructor)
     //
 
-    public Display(CommandHandler pView)
+    public Display()
     {
-        
-        view = pView;
 
     }//end of DisplayBareBones::DisplayBareBones (constructor)
     //--------------------------------------------------------------------------
@@ -71,6 +70,10 @@ public abstract class Display implements CommandHandler
                 
             case "display customers frame":
                 displayCustomersFrame();
+                break;
+                
+            case "display customers":
+                displayCustomers((List<Record>)pCommand.get("customers"));
                 break;
                 
         }

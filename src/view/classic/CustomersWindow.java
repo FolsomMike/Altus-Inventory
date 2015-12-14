@@ -15,11 +15,12 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
+import command.Command;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,7 +39,7 @@ public class CustomersWindow extends AltusJDialog
     private CustomTable table;
     private DefaultTableModel model;
     
-    private ArrayList<Record> customers;
+    private List<Record> customers;
 
     //--------------------------------------------------------------------------
     // CustomersWindow::CustomersWindow (constructor)
@@ -61,9 +62,11 @@ public class CustomersWindow extends AltusJDialog
     @Override
     public void init() 
     {
-        
-        //has to be called before data is loaded
+        //set up the table model -- has to be done before data is received
         setupTableModel();
+        
+        //perform a command to get the customers
+        (new Command("get customers")).perform();
         
         super.init();
         
@@ -137,10 +140,36 @@ public class CustomersWindow extends AltusJDialog
         //Delete Customer button
         panel.add(createButton("Delete", "Delete the selected customer.", "")); //WIP HSS// -- add action command
         
-        
         return panel;
         
     }// end of CustomersWindow::createButtonsPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::displayCustomers
+    //
+    // Adds the customers in pCustomers to the table.
+    //
+    
+    public void displayCustomers(List<Record> pCustomers) 
+    {
+        
+        //store the customers
+        customers = pCustomers;
+        
+        //remove all of the data already in the model
+        int rowCount = model.getRowCount();
+        //Remove rows one by one from the end of the table
+        for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
+        
+        //add the ids and names of the customers to the table
+        for (Record customer : customers) {
+            model.addRow(new String[] { customer.getValue("id"), 
+                                        customer.getValue("name")
+                                        });
+        }
+        
+    }// end of CustomersWindow::displayCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
