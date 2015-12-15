@@ -22,7 +22,7 @@ package view.barebones;
 import command.CommandHandler;
 import java.util.List;
 import java.util.Scanner;
-import model.Record;
+import model.Table;
 import view.Display;
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ public class DisplayBareBones extends Display
     protected void displayCustomersFrame() {}
 
     @Override
-    protected void displayCustomers(List<Record> pRecords) {}
+    protected void displayCustomers(List<Table> pRecords) {}
 
 }//end of class DisplayBareBones
 //------------------------------------------------------------------------------

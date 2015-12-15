@@ -17,6 +17,7 @@
 
 package model;
 
+import model.database.MySQLDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,18 +30,22 @@ import java.util.Map;
 public class DescriptorHandler extends RecordHandler
 {
     
-    private final List<String> descriptorKeys = new ArrayList<>();
-    
+    //this is the table that this instance takes care of descriptors for
+    private final String forTable;
     private final String descriptorsTable = "DESCRIPTORS";
+    
+    private final List<String> descriptorKeys = new ArrayList<>();
 
     //--------------------------------------------------------------------------
     // DescriptorHandler::DescriptorHandler (constructor)
     //
 
-    public DescriptorHandler(MySQLDatabase pDatabase)
+    public DescriptorHandler(MySQLDatabase pDatabase, String pForTable)
     {
 
         super(pDatabase);
+        
+        forTable = pForTable;
 
     }//end of DescriptorHandler::DescriptorHandler (constructor)
     //--------------------------------------------------------------------------
@@ -69,7 +74,7 @@ public class DescriptorHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // DescriptorHandler::addDescriptor
     //
-    // Adds a descriptor using the information in pCommand.
+    // //WIP HSS// -- add function description
     //
     // Adding a descriptor invovles three steps:
     //      1. adding the descriptor to the descriptors table
@@ -80,7 +85,9 @@ public class DescriptorHandler extends RecordHandler
     public void addDescriptor(Map<String, String> pCommand)
     {
         
-        getDatabase().connectToDatabase();
+        //WIP HSS// -- need to do some stuff!
+        
+        /*getDatabase().connectToDatabase();
         
         //insert the descriptor into the database and store the skoonie key
         Record descriptor = new Record();
@@ -100,7 +107,7 @@ public class DescriptorHandler extends RecordHandler
         String column = "`" + key + "` INT(255) NULL";
         getDatabase().addColumn(pCommand.get("for_table"), column);
         
-        getDatabase().closeDatabaseConnection();
+        getDatabase().closeDatabaseConnection();*/
 
     }//end of DescriptorHandler::addDescriptor
     //--------------------------------------------------------------------------
@@ -108,7 +115,7 @@ public class DescriptorHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // DescriptorHandler::deleteDescriptor
     //
-    // Deletes a descriptor using the information in pCommand.
+    // //WIP HSS// -- add function description
     //
     // Deleting a descriptor invovles three steps:
     //      1. dropping the column from the table that the descriptor was
@@ -120,7 +127,9 @@ public class DescriptorHandler extends RecordHandler
     public void deleteDescriptor(Map<String, String> pCommand)
     {
         
-        getDatabase().connectToDatabase();
+        //WIP HSS// -- need to do stuff!
+        
+        /*getDatabase().connectToDatabase();
         
         //get the skoonie key of the descriptor from pCommand
         String key = pCommand.get("skoonie_key");
@@ -138,7 +147,7 @@ public class DescriptorHandler extends RecordHandler
         //delete the descriptor record from the descriptors table
         deleteRecord(pCommand, descriptorsTable);
         
-        getDatabase().closeDatabaseConnection();
+        getDatabase().closeDatabaseConnection();*/
 
     }//end of DescriptorHandler::deleteDescriptor
     //--------------------------------------------------------------------------
@@ -146,7 +155,7 @@ public class DescriptorHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // DescriptorHandler::getDescriptors
     //
-    // Gets the descriptors of pTable.
+    // //WIP HSS// -- add function description
     //
     // Getting the descriptors invovles three steps:
     //      1. getting all the column names of pTable, excluding skoonie_key
@@ -154,12 +163,48 @@ public class DescriptorHandler extends RecordHandler
     //          table
     //
 
-    public void getDescriptors(String pTable)
+    public List<Descriptor> getDescriptors()
     {
         
-        //WIP HSS// -- do stuff
+        getDatabase().connectToDatabase();
+        
+        List<Entries>
+        
+        //get the descriptor from the database so that we can use some 
+        //information about it to get rid of it
+        Record descriptor = getDatabase().getRecord(key, descriptorsTable);
+        
+        ///drop the descriptor from the table
+        getDatabase().dropColumn(descriptor.getValue("for_table"), key);
+        
+        //drop the descriptor table from the database
+        getDatabase().dropTable(key);
+        
+        //delete the descriptor record from the descriptors table
+        deleteRecord(pCommand, descriptorsTable);
+        
+        getDatabase().closeDatabaseConnection();
 
-    }//end of DescriptorHandler::deleteDescriptor
+    }//end of DescriptorHandler::getDescriptors
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DescriptorHandler::writeDescriptors
+    //
+    // //WIP HSS// -- add function description
+    //
+    // Adding a descriptor invovles three steps:
+    //      1. adding the descriptor to the descriptors table
+    //      2. creating the table to contain the values of the descriptor
+    //      3. add a column to the proper table for the descriptor
+    //
+
+    public void writeDescriptors(List<Descriptor> pDescriptors)
+    {
+        
+        //WIP HSS// -- DO THIS
+
+    }//end of DescriptorHandler::addDescriptor
     //--------------------------------------------------------------------------
     
 }//end of class DescriptorHandler

@@ -50,7 +50,7 @@
 
 //------------------------------------------------------------------------------
 
-package model;
+package model.database;
 
 //------------------------------------------------------------------------------
 
@@ -62,6 +62,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -322,12 +323,12 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::deleteRecord
+    // MySQLDatabase::deleteEntry
     //
-    // Deletes pRec from pTable.
+    // Deletes the entry associated with pSkoonieKey from pTable.
     //
 
-    public void deleteRecord(Record pRec, String pTable)
+    public void deleteEntry(String pTable, String pSkoonieKey)
     {
         
         //create the command string
@@ -336,7 +337,7 @@ public class MySQLDatabase
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            stmt.setString(1, pRec.getSkoonieKey());
+            stmt.setString(1, pSkoonieKey);
             
             //execute the statement
             stmt.execute();
@@ -346,7 +347,7 @@ public class MySQLDatabase
         //clean up environment
         closePreparedStatement(stmt);
                 
-    }// end of MySQLDatabase::deleteRecord
+    }// end of MySQLDatabase::deleteEntry
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -402,8 +403,6 @@ public class MySQLDatabase
     //
     // Deletes all of the data in pTable from the database.
     //
-    // //DEBUG HSS// -- for testing purposes only
-    //
 
     public void emptyTable(String pTable)
     {
@@ -422,16 +421,13 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getRecord
+    // MySQLDatabase::getEntry
     //
-    // Gets and returns the record in pTable associated with pSkoonieKey
+    // Gets and returns the entry in pTable associated with pSkoonieKey.
     //
 
-    public Record getRecord(String pSkoonieKey, String pTable)
+    public DatabaseEntry getEntry(String pSkoonieKey, String pTable)
     {
-        
-        Record r = new Record();
-        r.setSkoonieKey(pSkoonieKey);
 
         String cmd = "SELECT * FROM `" + pTable + "`"
                             + " WHERE `skoonie_key`=" + pSkoonieKey;
@@ -439,40 +435,40 @@ public class MySQLDatabase
         ResultSet set = performQuery(stmt);
         
         //extract the data from the ResultSet
+        DatabaseEntry entry = new DatabaseEntry();
         try {
             ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
                 
-                //put attributes in record
-                //start count at 2 since Skoonie Key is at 1
+                //store all of the columns in the database entry
                 for (int i=2; i<d.getColumnCount(); i++) {
                     String key = d.getColumnName(i);
-                    r.addColumn(key, set.getString(key));
+                    entry.storeColumn(key, set.getString(key));
                 }
                 
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 455"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 450"); }
         
         //clean up environment
         closeResultSet(set);
         closePreparedStatement(stmt);
         
-        return r;
+        return entry;
 
-    }// end of MySQLDatabase::getRecord
+    }// end of MySQLDatabase::getEntry
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::getRecords
+    // MySQLDatabase::getEntries
     //
-    // Gets and returns all of the records in pTable.
+    // Gets and returns all of the entries in pTable.
     //
 
-    public ArrayList<Record> getRecords(String pTable)
+    public List<DatabaseEntry> getEntries(String pTable)
     {
         
-        ArrayList<Record> recs = new ArrayList();
+        List<DatabaseEntry> entries = new ArrayList();
 
         String cmd = "SELECT * FROM `" + pTable + "`";
         PreparedStatement stmt = createPreparedStatement(cmd);
@@ -483,101 +479,122 @@ public class MySQLDatabase
             ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
                 
-                Record r = new Record();
-                r.setSkoonieKey(set.getString("skoonie_key")); //set skoonie key
-                //put columns into the record
+                //get the columns and values of the entry
+                DatabaseEntry entry = new DatabaseEntry();
                 for (int i=1; i<=d.getColumnCount(); i++) {
-                    String key = d.getColumnName(i);
-                    if(key.equals("skoonie_key")) { continue; } //already set
-                    r.addColumn(key, set.getString(key));
+                    String columnName = d.getColumnName(i);
+                    entry.storeColumn(columnName, set.getString(columnName));
                 }
                 
-                //store the record
-                recs.add(r);
+                //store the entry
+                entries.add(entry);
             }
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 499"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 493"); }
         
         //clean up environment
         closeResultSet(set);
         closePreparedStatement(stmt);
         
-        return recs;
+        return entries;
 
-    }// end of MySQLDatabase::getRecords
+    }// end of MySQLDatabase::getEntries
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::insertRecord
+    // MySQLDatabase::getSkoonieKeys
     //
-    // Inserts pRec into pTable.
+    // Gets and returns all of the skoonie keys of the entries in pTable.
     //
 
-    public int insertRecord(Record pRec, String pTable)
+    public List<String> getSkoonieKeys(String pTable)
+    {
+        
+        List<String> keys = new ArrayList<>();
+
+        String cmd = "SELECT `skoonie_key` FROM `" + pTable + "`";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try { while (set.next()) { keys.add(set.getString("skoonie_key")); } }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 521"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        
+        return keys;
+
+    }// end of MySQLDatabase::getSkoonieKeys
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::insertEntry
+    //
+    // Inserts pEntry into pTable and returns the skoonie key assigned to that
+    // entry inside the database.
+    //
+
+    public int insertEntry(DatabaseEntry pEntry, String pTable)
     {
         
         int skoonieKey = -1;
         
-        String cmd = "INSERT INTO `" + pTable + "` (";
+        Set<Map.Entry<String, String>> columns = pEntry.getColumns().entrySet();
         
-        //get the attributes of pRec and put them in a set
-        Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
-        
-        //use the keys in the Record attributes as the column names
-        int c=0;
-        for (Map.Entry<String, String> a : attrs) {
-            //add a comma to separate this column from the last one
-            if(c!=0) { cmd += ","; }
+        String columnNames = "";
+        String columnValuePlaceholders = "";
+        int numberOfColumns = 0;
+        for (Map.Entry<String, String> column : columns) {
+            if (numberOfColumns>0) { 
+                //add a comma to separate this column name and from the last one
+                columnNames += ",";
+                //add a comma to separate this placeholder form the last one
+                columnValuePlaceholders += ",";
+            }
             
-            //add the key to the command string
-            cmd += "`" + a.getKey() + "`";
+            //add the column name
+            columnNames += "`" + column.getKey() + "`";
             
-            //count number of times we've looped through
-            ++c;
+            //add a value placeholder
+            columnValuePlaceholders += "?";
+            
+            //number of columns has increased by one
+            ++numberOfColumns;
         }
         
-        //put some more SQL into the command string
-        cmd += ") VALUES (";
-        
-        //use the length of attrs to determine how many placeholders to put
-        for (int i=0; i<attrs.size(); i++) {
-            //add a comma to separate this placeholder from the last one
-            if(i!=0) { cmd += ","; }
-            
-            //add a placeholder to the command string
-            cmd += "?";
-        }
-        
-        //finish up the command string
-        cmd += ")";
+        //construct the sql command string
+        String cmd = "INSERT INTO `" + pTable + "` (" + columnNames 
+                        + ") VALUES (" + columnValuePlaceholders + ")";
         
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            //for every attribute, put the value into the proper placeholder
+            //for every column, put the value into the proper placeholder
             int place = 1;
-            for (Map.Entry<String, String> a : attrs) {
-                stmt.setString(place++, a.getValue());
+            for (Map.Entry<String, String> column : columns) {
+                stmt.setString(place++, column.getValue());
             }
             
             //execute the statement
             stmt.execute();
             
+            //get the skoonie key given to the entry
             ResultSet set = stmt.getGeneratedKeys();
-
             if (set.next()) { skoonieKey = set.getInt(1); }
             
             //clean up environment
             closeResultSet(set);
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 573"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 562"); }
         
         //clean up environment
         closePreparedStatement(stmt);
         
         return skoonieKey;
                 
-    }// end of MySQLDatabase::insertRecord
+    }// end of MySQLDatabase::insertEntry
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -656,31 +673,30 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::updateRecord
+    // MySQLDatabase::updateEntry
     //
-    // Updates pRec in pTable.
+    // Updates pEntry in pTable.
     //
 
-    public void updateRecord(Record pRec, String pTable)
+    public void updateEntry(DatabaseEntry pEntry, String pTable)
     {
         
         //start the command string
         String cmd = "UPDATE `" + pTable + "` SET ";
         
-        //get the attributes of pRec and put them in a set
-        Set<Map.Entry<String, String>> attrs = pRec.getColumns().entrySet();
+        //get the columns of pEntry and put them in a set
+        Set<Map.Entry<String, String>> columns = pEntry.getColumns().entrySet();
         
-        //use the keys in the Record attributes as the column names
-        int c=0;
-        for (Map.Entry<String, String> a : attrs) {
+        int numberOfColumns = 0;
+        for (Map.Entry<String, String> column : columns) {
             //add a comma to separate this column from the last one
-            if(c!=0) { cmd += ","; }
+            if(numberOfColumns>0) { cmd += ","; }
             
-            //add the key and a placeholder to the command string
-            cmd += "`" + a.getKey() + "`" + "=?";
+            //add the column name and a placeholder for the value
+            cmd += "`" + column.getKey() + "`" + "=?";
             
-            //count number of times we've looped through
-            ++c;
+            //number of columns has increased by one
+            ++numberOfColumns;
         }
         
         //finish up the command string
@@ -689,24 +705,24 @@ public class MySQLDatabase
         PreparedStatement stmt = createPreparedStatement(cmd);
         
         try {
-            //for every attribute, put the value into the proper placeholder
+            //for every column, put the value into the proper placeholder
             int place = 1;
-            for (Map.Entry<String, String> a : attrs) {
-                stmt.setString(place++, a.getValue());
+            for (Map.Entry<String, String> column : columns) {
+                stmt.setString(place++, column.getValue());
             }
             
             //set the Skoonie Key
-            stmt.setString(place, pRec.getSkoonieKey());
+            stmt.setString(place, pEntry.getValue("skoonie_key"));
             
             //execute the statement
             stmt.execute();
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 704"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 692"); }
         
         //clean up environment
         closePreparedStatement(stmt);
                 
-    }// end of MySQLDatabase::updateRecord
+    }// end of MySQLDatabase::updateEntry
     //--------------------------------------------------------------------------
         
 }// end of class MySQLDatabase

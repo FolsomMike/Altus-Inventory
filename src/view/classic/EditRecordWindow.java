@@ -1,11 +1,12 @@
 /*******************************************************************************
-* Title: CustomersWindow.java
+* Title: EditRecordWindow.java
 * Author: Hunter Schoonover
-* Date: 12/11/15
+* Date: 12/14/15
 *
 * Purpose:
 *
-* This class is the Customers window.
+* This class is the Edit Record window. It displays the information stored in
+* the Record passed in upon construction and allows the user to edit it.
 *
 */
 
@@ -15,46 +16,48 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
-import command.Command;
+import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class CustomersWindow
+// class EditRecordWindow
 //
 
-public class CustomersWindow extends AltusJDialog
+public class EditRecordWindow extends AltusJDialog
 {
     
-    private CustomTable table;
-    private DefaultTableModel model;
-    
-    private List<Table> customers;
+    private final Table record;
 
     //--------------------------------------------------------------------------
-    // CustomersWindow::CustomersWindow (constructor)
+    // EditRecordWindow::EditRecordWindow (constructor)
     //
 
-    public CustomersWindow(Window pParent, ActionListener pListener)
+    public EditRecordWindow(String pTitle, Window pParent, 
+                                ActionListener pListener, Table pRecord)
     {
 
-        super("Customers", pParent, pListener);
+        super(pTitle, pParent, pListener);
+        
+        record = pRecord;
 
-    }//end of CustomersWindow::CustomersWindow (constructor)
+    }//end of EditRecordWindow::EditRecordWindow (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::init
+    // EditRecordWindow::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -63,19 +66,13 @@ public class CustomersWindow extends AltusJDialog
     public void init() 
     {
         
-        //set up the table model -- has to be done before data is received
-        setupTableModel();
-        
-        //perform a command to get the customers
-        (new Command("get customers")).perform();
-        
         super.init();
         
-    }// end of CustomersWindow::init
+    }// end of EditRecordWindow::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::createGui
+    // EditRecordWindow::createGui
     //
     // Creates and adds the GUI to the window.
     //
@@ -84,71 +81,56 @@ public class CustomersWindow extends AltusJDialog
     protected void createGui() 
     {
         
-        //set the main panel layout to add components left to right
-        setMainPanelLayout(BoxLayout.X_AXIS);
+        //set the main panel layout to add components top to bottom
+        setMainPanelLayout(BoxLayout.Y_AXIS);
+
+        for (Map.Entry<String, String> entry : record.getColumns().entrySet()) 
+        {
+            createInputPanel(entry.getKey(), entry.getValue(), "");
+            
+            //vertical spacer
+            addToMainPanel(Tools.createHorizontalSpacer(20));
+        }
         
-        //set up the table
-        table = new CustomTable(model);
-        table.init();
-        
-        //put the table in a scroll pane and add it to the main panel
-        JScrollPane sp = new JScrollPane(table);
-        sp.setAlignmentX(LEFT_ALIGNMENT);
-        sp.setAlignmentY(TOP_ALIGNMENT);
-        Tools.setSizes(sp, 400, 300);
-        addToMainPanel(sp);
-        
-        //horizontal spacer
-        addToMainPanel(Tools.createHorizontalSpacer(10));
-        
-        //add the buttons panel
-        addToMainPanel(createButtonsPanel());
-        
-    }// end of CustomersWindow::createGui
+    }// end of EditRecordWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::createButtonsPanel
+    // EditRecordWindow::createInputPanel
     //
-    // Creates and returns a JPanel containing all of the buttons for the
-    // window.
+    // Creates and returns an input panel containing a JLabel and a JTextField.
     //
-    
-    private JPanel createButtonsPanel() 
+    // The JTextField contained in this input panel is stored in an InputField
+    // which is then stored in inputFields, with pLabel as they key.
+    //
+
+    private JPanel createInputPanel(String pLabel, String pInputFieldText,
+                                        String pToolTip)
     {
-        
+
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        int buttonSpacer = 20;
+        JLabel label = new JLabel(pLabel);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
         
-        //Add Customer button
-        panel.add(createButton( "Add", 
-                                "Add a new customer.", 
-                                "display add customer frame"));
-        
-        panel.add(Tools.createVerticalSpacer(buttonSpacer));
-        
-        //Edit Customer button
-        panel.add(createButton( "Edit", 
-                                "Edit information about the selected "
-                                    + "customer.", 
-                                "")); //WIP HSS// -- add action command
-        
-        panel.add(Tools.createVerticalSpacer(buttonSpacer));
-        
-        //Delete Customer button
-        panel.add(createButton("Delete", "Delete the selected customer.", "")); //WIP HSS// -- add action command
-        
+        JTextField field = new JTextField();
+        field.setAlignmentX(LEFT_ALIGNMENT);
+        field.setToolTipText(pToolTip);
+        field.setText(pInputFieldText);
+        Tools.setSizes(field, 200, 25);
+        panel.add(field);
+
         return panel;
-        
-    }// end of CustomersWindow::createButtonsPanel
+
+    }// end of EditRecordWindow::createInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::displayCustomers
+    // EditRecordWindow::displayCustomers
     //
     // Adds the customers in pCustomers to the table.
     //
@@ -171,11 +153,11 @@ public class CustomersWindow extends AltusJDialog
                                         });
         }
         
-    }// end of CustomersWindow::displayCustomers
+    }// end of EditRecordWindow::displayCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::setupTableModel
+    // EditRecordWindow::setupTableModel
     //
     // Sets up the table model for use
     //
@@ -193,9 +175,9 @@ public class CustomersWindow extends AltusJDialog
         //add the column names to the model
         model.setColumnIdentifiers(new String[]{"Id", "Name"});
         
-    }// end of CustomersWindow::setupTableModel
+    }// end of EditRecordWindow::setupTableModel
     //--------------------------------------------------------------------------
 
-}//end of class CustomersWindow
+}//end of class EditRecordWindow
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

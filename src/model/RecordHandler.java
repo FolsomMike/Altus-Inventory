@@ -14,6 +14,7 @@
 
 package model;
 
+import model.database.MySQLDatabase;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public class RecordHandler
         db.connectToDatabase();
         
         //delete the record
-        Record record = new Record();
+        Table record = new Table();
         record.setSkoonieKey(pCommand.get("skoonie_key"));
         db.deleteRecord(record, pTable);
        
@@ -86,7 +87,7 @@ public class RecordHandler
     // is used as the column.
     //
 
-    protected void getValues(Record pRec, Map<String, String> pKeyValuePairs, 
+    protected void getValues(Table pRec, Map<String, String> pKeyValuePairs, 
                                 List<String> pKeys)
     {
         
@@ -129,7 +130,7 @@ public class RecordHandler
         db.connectToDatabase();
         
         //update the record
-        Record record = new Record();
+        Table record = new Table();
         record.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(record, pCommand, pKeys);
         db.updateRecord(record, pTable);

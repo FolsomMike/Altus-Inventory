@@ -11,20 +11,22 @@
 *   add customer
 *   delete customer
 *   update customer
+* 
+*   add customer descriptor
+*   delete customer descriptor
 *
 */
 
 //------------------------------------------------------------------------------
 
-package controller;
+package model;
 
+import model.database.DatabaseEntry;
+import model.database.MySQLDatabase;
 import command.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import model.MySQLDatabase;
-import model.Record;
-import model.RecordHandler;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -39,6 +41,8 @@ public class CustomerHandler extends RecordHandler
     
     //Table names
     private final String customersTable = "CUSTOMERS";
+    
+    private final DescriptorHandler descriptorHandler;
 
     //--------------------------------------------------------------------------
     // CustomerHandler::CustomerHandler (constructor)
@@ -48,6 +52,8 @@ public class CustomerHandler extends RecordHandler
     {
 
        super(pDatabase);
+       
+       descriptorHandler = new DescriptorHandler(pDatabase, customersTable);
 
     }//end of CustomerHandler::CustomerHandler (constructor)
     //--------------------------------------------------------------------------
@@ -63,6 +69,8 @@ public class CustomerHandler extends RecordHandler
     {
         
         super.init();
+        
+        descriptorHandler.init();
 
     }// end of CustomerHandler::init
     //--------------------------------------------------------------------------
@@ -70,16 +78,20 @@ public class CustomerHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // CustomerHandler::addCustomer
     //
-    // Adds a customer using the information in pCommand.
+    // Adds a customer using the information in pCustomer.
     //
 
-    public void addCustomer(Map<String, String> pCommand)
+    public void addCustomer(Table pCustomer)
     {
         
         getDatabase().connectToDatabase();
         
         //add the customer to the database
-        Record customerRecord = new Record();
+        DatabaseEntry entry = new DatabaseEntry();
+        entry.storeColumn("skoonie_key", pCustomer.getSkoonieKey());
+        for (Descriptor d : pCustomer.getDescriptors()) {
+            d.getName();
+        }
         getValues(customerRecord, pCommand, customerKeys);
         getDatabase().insertRecord(customerRecord, customersTable);
         
@@ -105,13 +117,19 @@ public class CustomerHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // CustomerHandler::getCustomers
     //
-    // Gets the customers from the database and sticks them in pCommand.
+    // Gets and returns the customers from the database.
     //
 
-    public void getCustomers(Command pCommand)
+    public Table getCustomers()
     {
         
+        Table customers = new Table();
+        
         getDatabase().connectToDatabase();
+        
+        customers.setSkoonieKeys(getDatabase().getSkoonieKeys(customersTable));
+        
+        customers.setDescriptors(descriptorHandler.getDescriptors());
         
         //get the customers and sticks them in pCommand
         pCommand.put("customers", getDatabase().getRecords(customersTable));

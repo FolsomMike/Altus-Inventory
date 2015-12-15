@@ -19,6 +19,7 @@
 
 package model;
 
+import model.database.MySQLDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,13 +79,13 @@ public class BatchHandler extends RecordHandler
     // //DEBUG HSS// -- testing purposes only
     //
 
-    public void deleteBatch(Record pRecord)
+    public void deleteBatch(Table pRecord)
     {
         
         getDatabase().connectToDatabase();
         
         //delete the batch
-        Record batchRecord = new Record();
+        Table batchRecord = new Table();
         batchRecord.setSkoonieKey(pRecord.getSkoonieKey());
         getDatabase().deleteRecord(batchRecord, batchesTable);
        
@@ -107,13 +108,13 @@ public class BatchHandler extends RecordHandler
         /*getDatabase().connectToDatabase();
         
         //update the batch in the database
-        Record batchRecord = new Record();
+        Table batchRecord = new Table();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(batchRecord, pCommand, batchKeys);
         getDatabase().updateRecord(batchRecord, batchesTable);
        
         //document the movement
-        Record moveRecord = new Record();
+        Table moveRecord = new Table();
         getValues(moveRecord, pCommand, movementKeys);
         moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
         getDatabase().insertRecord(moveRecord, movementsTable);
@@ -141,11 +142,11 @@ public class BatchHandler extends RecordHandler
         /*getDatabase().connectToDatabase();
         
         //record for the batch
-        Record batchRecord = new Record();
+        Table batchRecord = new Table();
         getValues(batchRecord, pCommand, batchKeys);
        
         //record for the receivement
-        Record receiveRecord = new Record();
+        Table receiveRecord = new Table();
         getValues(receiveRecord, pCommand, receivementKeys);
 
         //insert the batch into the database and store the skoonie key

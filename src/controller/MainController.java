@@ -34,6 +34,7 @@
 
 package controller;
 
+import model.CustomerHandler;
 import model.BatchHandler;
 import model.DescriptorHandler;
 import command.CommandHandler;
@@ -49,8 +50,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import model.MySQLDatabase;
-import model.Record;
+import model.MainModel;
+import model.Table;
+import model.database.MySQLDatabase;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -60,15 +62,8 @@ import model.Record;
 public class MainController implements CommandHandler, Runnable
 {
     
+    private final MainModel model = new MainModel();
     private CommandHandler view;
-    
-    private final MySQLDatabase db = new MySQLDatabase();
-    
-    private final BatchHandler batchHandler = new BatchHandler(db);
-    
-    private final CustomerHandler customerHandler = new CustomerHandler(db);
-    
-    private final DescriptorHandler descriptorHandler = new DescriptorHandler(db);
 
     private int displayUpdateTimer = 0;
 
@@ -100,17 +95,8 @@ public class MainController implements CommandHandler, Runnable
         //set up the logger
         setupJavaLogger();
         
-        //initialize database
-        db.init();
-        
-        //set up the batch handler
-        batchHandler.init();
-        
-        //set up the customer handler
-        customerHandler.init();
-        
-        //set up the descriptor action handler
-        descriptorHandler.init();
+        //set up the model
+        model.init();
 
         //set up the view
         view = new MainView(this);
@@ -156,6 +142,7 @@ public class MainController implements CommandHandler, Runnable
                 
             //customer actions
             case "add customer": //WIP HSS// -- add the customer
+                model.addCustomer((Table)pCommand.get("customer"));
                 break;
                 
             case "delete customer": //WIP HSS// -- delete the customer

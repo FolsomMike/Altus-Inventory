@@ -20,7 +20,7 @@ import command.Command;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import model.Record;
+import model.Table;
 import view.Display;
 
 //------------------------------------------------------------------------------
@@ -76,7 +76,8 @@ public class DisplayClassic extends Display implements ActionListener
     public void displayAddCustomerFrame()
     {
         
-        //WIP HSS// -- put stuff here
+        EditRecordWindow window = new EditRecordWindow(new Table());
+        window.init();
 
     }//end of DisplayClassic::displayCustomerFrame
     //--------------------------------------------------------------------------
@@ -88,7 +89,7 @@ public class DisplayClassic extends Display implements ActionListener
     //
 
     @Override
-    public void displayCustomers(List<Record> pCustomers)
+    public void displayCustomers(List<Table> pCustomers)
     {
         
         customersWindow.displayCustomers(pCustomers);
