@@ -50,10 +50,10 @@ public class DatabaseEntry
     public String getValue(String pColumn) 
     {
         
-        String attr = columns.get(pColumn);
-        return attr!=null ? attr : "";
+        String value = columns.get(pColumn);
+        return value!=null ? value : "";
 
-    }//end of DatabaseEntry::storeColumn
+    }//end of DatabaseEntry::getValue
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

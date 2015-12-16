@@ -20,7 +20,7 @@ import command.Command;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import model.Table;
+import shared.Record;
 import view.Display;
 
 //------------------------------------------------------------------------------
@@ -76,8 +76,8 @@ public class DisplayClassic extends Display implements ActionListener
     public void displayAddCustomerFrame()
     {
         
-        EditRecordWindow window = new EditRecordWindow(new Table());
-        window.init();
+        /*EditRecordWindow window = new EditRecordWindow(new Record());
+        window.init();*/ //DEBUG HSS//
 
     }//end of DisplayClassic::displayCustomerFrame
     //--------------------------------------------------------------------------
@@ -89,7 +89,7 @@ public class DisplayClassic extends Display implements ActionListener
     //
 
     @Override
-    public void displayCustomers(List<Table> pCustomers)
+    public void displayCustomers(List<Record> pCustomers)
     {
         
         customersWindow.displayCustomers(pCustomers);

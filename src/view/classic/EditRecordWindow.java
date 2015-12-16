@@ -21,14 +21,11 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import model.Table;
+import shared.Record;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -39,14 +36,14 @@ import toolkit.Tools;
 public class EditRecordWindow extends AltusJDialog
 {
     
-    private final Table record;
+    private final Record record;
 
     //--------------------------------------------------------------------------
     // EditRecordWindow::EditRecordWindow (constructor)
     //
 
     public EditRecordWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, Table pRecord)
+                                ActionListener pListener, Record pRecord)
     {
 
         super(pTitle, pParent, pListener);
@@ -83,14 +80,6 @@ public class EditRecordWindow extends AltusJDialog
         
         //set the main panel layout to add components top to bottom
         setMainPanelLayout(BoxLayout.Y_AXIS);
-
-        for (Map.Entry<String, String> entry : record.getColumns().entrySet()) 
-        {
-            createInputPanel(entry.getKey(), entry.getValue(), "");
-            
-            //vertical spacer
-            addToMainPanel(Tools.createHorizontalSpacer(20));
-        }
         
     }// end of EditRecordWindow::createGui
     //--------------------------------------------------------------------------
@@ -127,55 +116,6 @@ public class EditRecordWindow extends AltusJDialog
         return panel;
 
     }// end of EditRecordWindow::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // EditRecordWindow::displayCustomers
-    //
-    // Adds the customers in pCustomers to the table.
-    //
-    
-    public void displayCustomers(List<Table> pCustomers) 
-    {
-        
-        //store the customers
-        customers = pCustomers;
-        
-        //remove all of the data already in the model
-        int rowCount = model.getRowCount();
-        //Remove rows one by one from the end of the table
-        for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
-        
-        //add the ids and names of the customers to the table
-        for (Table customer : customers) {
-            model.addRow(new String[] { customer.getValue("id"), 
-                                        customer.getValue("name")
-                                        });
-        }
-        
-    }// end of EditRecordWindow::displayCustomers
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // EditRecordWindow::setupTableModel
-    //
-    // Sets up the table model for use
-    //
-    
-    private void setupTableModel() 
-    {
-        
-        //initialize model -- allows no editable cells
-        model = new DefaultTableModel() {
-            @Override public boolean isCellEditable(int pR, int pC) {
-                return false;
-            }
-        };
-        
-        //add the column names to the model
-        model.setColumnIdentifiers(new String[]{"Id", "Name"});
-        
-    }// end of EditRecordWindow::setupTableModel
     //--------------------------------------------------------------------------
 
 }//end of class EditRecordWindow

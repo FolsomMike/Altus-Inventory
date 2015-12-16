@@ -19,6 +19,7 @@
 
 package model;
 
+import shared.Record;
 import model.database.MySQLDatabase;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,15 +80,15 @@ public class BatchHandler extends RecordHandler
     // //DEBUG HSS// -- testing purposes only
     //
 
-    public void deleteBatch(Table pRecord)
+    public void deleteBatch(Record pRecord)
     {
         
         getDatabase().connectToDatabase();
         
         //delete the batch
-        Table batchRecord = new Table();
+        Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pRecord.getSkoonieKey());
-        getDatabase().deleteRecord(batchRecord, batchesTable);
+        //DEBUG HSS//getDatabase().deleteRecord(batchRecord, batchesTable);
        
         getDatabase().closeDatabaseConnection();
         
@@ -108,13 +109,13 @@ public class BatchHandler extends RecordHandler
         /*getDatabase().connectToDatabase();
         
         //update the batch in the database
-        Table batchRecord = new Table();
+        Record batchRecord = new Record();
         batchRecord.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(batchRecord, pCommand, batchKeys);
         getDatabase().updateRecord(batchRecord, batchesTable);
        
         //document the movement
-        Table moveRecord = new Table();
+        Record moveRecord = new Record();
         getValues(moveRecord, pCommand, movementKeys);
         moveRecord.addColumn("batch_key", batchRecord.getSkoonieKey());
         getDatabase().insertRecord(moveRecord, movementsTable);
@@ -142,11 +143,11 @@ public class BatchHandler extends RecordHandler
         /*getDatabase().connectToDatabase();
         
         //record for the batch
-        Table batchRecord = new Table();
+        Record batchRecord = new Record();
         getValues(batchRecord, pCommand, batchKeys);
        
         //record for the receivement
-        Table receiveRecord = new Table();
+        Record receiveRecord = new Record();
         getValues(receiveRecord, pCommand, receivementKeys);
 
         //insert the batch into the database and store the skoonie key

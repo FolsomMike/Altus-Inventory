@@ -14,6 +14,7 @@
 
 package model;
 
+import shared.Record;
 import model.database.MySQLDatabase;
 import java.util.List;
 import java.util.Map;
@@ -68,9 +69,9 @@ public class RecordHandler
         db.connectToDatabase();
         
         //delete the record
-        Table record = new Table();
+        Record record = new Record();
         record.setSkoonieKey(pCommand.get("skoonie_key"));
-        db.deleteRecord(record, pTable);
+        //DEBUG HSS//db.deleteRecord(record, pTable);
        
         db.closeDatabaseConnection();
         
@@ -87,7 +88,7 @@ public class RecordHandler
     // is used as the column.
     //
 
-    protected void getValues(Table pRec, Map<String, String> pKeyValuePairs, 
+    protected void getValues(Record pRec, Map<String, String> pKeyValuePairs, 
                                 List<String> pKeys)
     {
         
@@ -106,7 +107,7 @@ public class RecordHandler
                 //column
                 String value;
                 if((value=pKeyValuePairs.get(key)) != null) { 
-                    pRec.addColumn(allKeys[0], value);
+                   //DEBUG HSS// pRec.addColumn(allKeys[0], value);
                     break; 
                 }
                 
@@ -130,10 +131,10 @@ public class RecordHandler
         db.connectToDatabase();
         
         //update the record
-        Table record = new Table();
+        Record record = new Record();
         record.setSkoonieKey(pCommand.get("skoonie_key"));
         getValues(record, pCommand, pKeys);
-        db.updateRecord(record, pTable);
+        //DEBUG HSS//db.updateRecord(record, pTable);
         
         db.closeDatabaseConnection();
         

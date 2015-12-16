@@ -34,9 +34,6 @@
 
 package controller;
 
-import model.CustomerHandler;
-import model.BatchHandler;
-import model.DescriptorHandler;
 import command.CommandHandler;
 import command.Command;
 import java.io.IOException;
@@ -51,8 +48,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import model.MainModel;
-import model.Table;
-import model.database.MySQLDatabase;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -124,7 +119,7 @@ public class MainController implements CommandHandler, Runnable
         switch (pCommand.getMessage()) {
             
             case "empty database": //DEBUG HSS// -- testing purposes only
-                emptyDatabase();
+                model.emptyDatabase();
                 break;
                 
             //batch actions
@@ -142,14 +137,13 @@ public class MainController implements CommandHandler, Runnable
                 
             //customer actions
             case "add customer": //WIP HSS// -- add the customer
-                model.addCustomer((Table)pCommand.get("customer"));
                 break;
                 
             case "delete customer": //WIP HSS// -- delete the customer
                 break;
                 
             case "get customers":
-                customerHandler.getCustomers(pCommand);
+                pCommand.put("customers", model.getCustomers());
                 pCommand.setMessage("display customers");
                 break;
                 
@@ -246,34 +240,6 @@ public class MainController implements CommandHandler, Runnable
         }
 
     }//end of MainController::deleteFileIfOverSizeLimit
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::emptyDatabase
-    //
-    // Deletes all of the data in the database.
-    //
-    // //DEBUG HSS// -- for testing purposes only
-    //
-
-    private void emptyDatabase()
-    {
-
-        db.connectToDatabase();
-        
-        db.emptyTable("BATCHES");
-        
-        db.emptyTable("CUSTOMERS");
-        
-        db.emptyTable("DESCRIPTORS");
-        
-        db.emptyTable("MOVEMENTS");
-        
-        db.emptyTable("RECEIVEMENTS");
-        
-        db.closeDatabaseConnection();
-
-    }//end of MainController::emptyDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

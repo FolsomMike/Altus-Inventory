@@ -10,21 +10,13 @@
 * Currently stores:
 *   Skoonie Key
 *   Name
-*   For Table
-*   Duplicates Allowed
-*   Removable
+*   Values Table Name
 *
 */
 
 //------------------------------------------------------------------------------
 
-package model;
-
-//------------------------------------------------------------------------------
-
-import java.util.HashMap;
-import java.util.Map;
-
+package shared;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -42,24 +34,9 @@ public class Descriptor
     public String getName() { return name; }
     public void setName(String pName) { name = pName; }
     
-    private String forTable;
-    public String getForTable() { return forTable; }
-    public void setForTable(String pForTable) { forTable = pForTable; }
-    
-    private boolean duplicatesAllowed;
-    public boolean getDuplicatesAllowed() { return duplicatesAllowed; }
-    public void setDuplicatesAllowed(boolean pBool) {duplicatesAllowed = pBool;}
-    
-    private boolean removable;
-    public boolean getRemovable() { return removable; }
-    public void setRemovable(boolean pBool) { removable = pBool; }
-    
-    //key=skoonie key; value=value
-    private final Map<String, String> values = new HashMap<>();
-    public Map<String, String> getValues() { return values; }
-    public void storeValue(String pKey, String pValue) { 
-        values.put(pKey, pValue);
-    }
+    private String valuesTable;
+    public String getValuesTable() { return valuesTable; }
+    public void setValuesTable(String pTable) { valuesTable = pTable; }
     
     //--------------------------------------------------------------------------
     // Descriptor::Descriptor (constructor)
@@ -83,7 +60,7 @@ public class Descriptor
         boolean allowed = false;
         if (pAllowed.equals("true")) { allowed = true; }
         
-        duplicatesAllowed = allowed;
+        //DEBUG HSS//duplicatesAllowed = allowed;
 
     }//end of DatabaseEntry::setDuplicatesAllowed
     //--------------------------------------------------------------------------
@@ -100,7 +77,7 @@ public class Descriptor
         boolean bool = false;
         if (pRemovable.equals("true")) { bool = true; }
         
-        removable = bool;
+        //DEBUG HSS//removable = bool;
 
     }//end of DatabaseEntry::setRemovable
     //--------------------------------------------------------------------------

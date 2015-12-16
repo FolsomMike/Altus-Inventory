@@ -8,12 +8,7 @@
 * This class handles commands pertaining to customers
 *
 * Currently handles actions:
-*   add customer
-*   delete customer
-*   update customer
-* 
-*   add customer descriptor
-*   delete customer descriptor
+*   get customers
 *
 */
 
@@ -21,9 +16,10 @@
 
 package model;
 
+import shared.Record;
+import shared.Descriptor;
 import model.database.DatabaseEntry;
 import model.database.MySQLDatabase;
-import command.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,10 +77,10 @@ public class CustomerHandler extends RecordHandler
     // Adds a customer using the information in pCustomer.
     //
 
-    public void addCustomer(Table pCustomer)
+    public void addCustomer(Record pCustomer)
     {
-        
-        getDatabase().connectToDatabase();
+        //DEBUG HSS//
+        /*getDatabase().connectToDatabase();
         
         //add the customer to the database
         DatabaseEntry entry = new DatabaseEntry();
@@ -95,7 +91,7 @@ public class CustomerHandler extends RecordHandler
         getValues(customerRecord, pCommand, customerKeys);
         getDatabase().insertRecord(customerRecord, customersTable);
         
-        getDatabase().closeDatabaseConnection();
+        getDatabase().closeDatabaseConnection();*/
 
     }//end of CustomerHandler::addCustomer
     //--------------------------------------------------------------------------
@@ -119,22 +115,58 @@ public class CustomerHandler extends RecordHandler
     //
     // Gets and returns the customers from the database.
     //
+    // //WIP HSS// -- should actually perform check to see if the main column in
+    //                  the descriptor values table is a descriptor that needs to
+    //                  be read from
+    //
 
-    public Table getCustomers()
+    public List<Record> getCustomers()
     {
         
-        Table customers = new Table();
+        List<Record> customers = new ArrayList<>();
         
         getDatabase().connectToDatabase();
         
-        customers.setSkoonieKeys(getDatabase().getSkoonieKeys(customersTable));
+        //get the customer entries and all descriptors from the database
+        List<DatabaseEntry> entries = getDatabase().getEntries(customersTable);
+        Map<String, Descriptor> descriptors = descriptorHandler.getDescriptors();
         
-        customers.setDescriptors(descriptorHandler.getDescriptors());
-        
-        //get the customers and sticks them in pCommand
-        pCommand.put("customers", getDatabase().getRecords(customersTable));
+        //extract data from entries and descriptors
+        for (DatabaseEntry e : entries) {
+            
+            Record r = new Record();
+            
+            //iterate through the columns and column values
+            for (Map.Entry<String, String> c : e.getColumns().entrySet()) {
+                
+                //key=column name; value=column value
+                String name = c.getKey();
+                String value = c.getValue();
+                
+                //if the column is the skoonie_key, 
+                //then store it and continue to the
+                //next one
+                if(name.equals("skoonie_key")) { 
+                    r.setSkoonieKey(value);
+                    continue;
+                }
+                
+                //get the Descriptor for the record
+                Descriptor descriptor = descriptors.get(c.getKey());
+                
+                //if the Descriptor is not null store it and the value
+                if(descriptor!= null) { r.storeDescriptor(descriptor, value); }
+            
+            }
+            
+            //store the record
+            customers.add(r);
+            
+        }
         
         getDatabase().closeDatabaseConnection();
+        
+        return customers;
 
     }//end of CustomerHandler::getCustomers
     //--------------------------------------------------------------------------

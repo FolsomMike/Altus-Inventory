@@ -25,7 +25,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
-import model.Table;
+import shared.Record;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ public class CustomersWindow extends AltusJDialog
     private CustomTable table;
     private DefaultTableModel model;
     
-    private List<Table> customers;
+    private List<Record> customers;
 
     //--------------------------------------------------------------------------
     // CustomersWindow::CustomersWindow (constructor)
@@ -153,7 +153,7 @@ public class CustomersWindow extends AltusJDialog
     // Adds the customers in pCustomers to the table.
     //
     
-    public void displayCustomers(List<Table> pCustomers) 
+    public void displayCustomers(List<Record> pCustomers) 
     {
         
         //store the customers
@@ -165,10 +165,10 @@ public class CustomersWindow extends AltusJDialog
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
         
         //add the ids and names of the customers to the table
-        for (Table customer : customers) {
-            model.addRow(new String[] { customer.getValue("id"), 
-                                        customer.getValue("name")
-                                        });
+        for (Record customer : customers) {
+            String id = customer.getValueByDescriptorName("Id");
+            String name = customer.getValueByDescriptorName("Name");
+            model.addRow( new String[] { id, name });
         }
         
     }// end of CustomersWindow::displayCustomers

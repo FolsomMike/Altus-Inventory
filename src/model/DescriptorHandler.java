@@ -17,10 +17,13 @@
 
 package model;
 
+import shared.Descriptor;
 import model.database.MySQLDatabase;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.database.DatabaseEntry;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -155,35 +158,31 @@ public class DescriptorHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // DescriptorHandler::getDescriptors
     //
-    // //WIP HSS// -- add function description
+    // Gets and returns all of the descriptors from the descriptors table.
     //
-    // Getting the descriptors invovles three steps:
-    //      1. getting all the column names of pTable, excluding skoonie_key
-    //      2. getting the information about the descriptor from the descriptors
-    //          table
+    // For convenience purposes, each descriptor is mapped to its skoonie key.
+    //
+    // NOTE: Assumes database connection is opened and closed elsewhere.
     //
 
-    public List<Descriptor> getDescriptors()
+    public Map<String, Descriptor> getDescriptors()
     {
         
-        getDatabase().connectToDatabase();
+        Map<String, Descriptor> descriptors = new HashMap<>();
         
-        List<Entries>
+        for (DatabaseEntry e : getDatabase().getEntries(descriptorsTable)) {
+            
+            String key = e.getValue("skoonie_key");
+            
+            Descriptor d = new Descriptor();
+            d.setSkoonieKey(key);
+            d.setName(e.getValue("name"));
+            d.setValuesTable(e.getValue("values_table"));
+            
+            descriptors.put(key, d);
+        }
         
-        //get the descriptor from the database so that we can use some 
-        //information about it to get rid of it
-        Record descriptor = getDatabase().getRecord(key, descriptorsTable);
-        
-        ///drop the descriptor from the table
-        getDatabase().dropColumn(descriptor.getValue("for_table"), key);
-        
-        //drop the descriptor table from the database
-        getDatabase().dropTable(key);
-        
-        //delete the descriptor record from the descriptors table
-        deleteRecord(pCommand, descriptorsTable);
-        
-        getDatabase().closeDatabaseConnection();
+        return descriptors;
 
     }//end of DescriptorHandler::getDescriptors
     //--------------------------------------------------------------------------

@@ -13,22 +13,11 @@
 
 package model;
 
+import shared.Record;
 import model.database.MySQLDatabase;
-import controller.*;
-import command.CommandHandler;
-import command.Command;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import view.MainView;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -71,9 +60,6 @@ public class MainModel
         
         //initialize the customer handler
         customerHandler.init();
-        
-        //initialize the descriptor  handler
-        descriptorHandler.init();
 
     }// end of MainModel::init
     //--------------------------------------------------------------------------
@@ -84,7 +70,7 @@ public class MainModel
     // Adds pCustomer to the database.
     //
 
-    public void addCustomer(Table pCustomer)
+    public void addCustomer(Record pCustomer)
     {
 
         //WIP HSS// -- add the customer
@@ -95,13 +81,13 @@ public class MainModel
     //--------------------------------------------------------------------------
     // MainModel::getCustomers
     //
-    // Gets and returns all of the customers from the database
+    // Gets and returns all of the customers in the database
     //
 
-    public List<Table> getCustomers()
+    public List<Record> getCustomers()
     {
 
-        return customerHandler.getCustomers(null);
+        return customerHandler.getCustomers();
 
     }//end of MainModel::getCustomers
     //--------------------------------------------------------------------------

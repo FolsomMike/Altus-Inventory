@@ -426,7 +426,7 @@ public class MySQLDatabase
     // Gets and returns the entry in pTable associated with pSkoonieKey.
     //
 
-    public DatabaseEntry getEntry(String pSkoonieKey, String pTable)
+    public DatabaseEntry getEntry(String pTable, String pSkoonieKey)
     {
 
         String cmd = "SELECT * FROM `" + pTable + "`"

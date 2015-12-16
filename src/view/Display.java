@@ -18,7 +18,7 @@ package view;
 import command.Command;
 import command.CommandHandler;
 import java.util.List;
-import model.Table;
+import shared.Record;
 
 
 public abstract class Display implements CommandHandler
@@ -26,7 +26,7 @@ public abstract class Display implements CommandHandler
     
     //Required functions for customer actions
     protected abstract void displayAddCustomerFrame();
-    protected abstract void displayCustomers(List<Table> pRecords);
+    protected abstract void displayCustomers(List<Record> pRecords);
     protected abstract void displayCustomersFrame();
     
     //--------------------------------------------------------------------------
@@ -73,7 +73,7 @@ public abstract class Display implements CommandHandler
                 break;
                 
             case "display customers":
-                displayCustomers((List<Table>)pCommand.get("customers"));
+                displayCustomers((List<Record>)pCommand.get("customers"));
                 break;
                 
         }

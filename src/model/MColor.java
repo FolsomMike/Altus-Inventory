@@ -21,7 +21,7 @@ import java.awt.Color;
 // class MColor
 //
 
-class MColor extends Color 
+public class MColor extends Color 
 {
 
     //--------------------------------------------------------------------------
