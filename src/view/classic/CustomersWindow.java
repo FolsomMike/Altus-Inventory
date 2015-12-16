@@ -21,7 +21,6 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
-import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -196,12 +195,11 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     private void deleteSelectedCustomer() 
     {
         
-        /*Command command = new Command("delete customer");
-        String key = customers.get(table.getSelectedRow()).getSkoonieKey();
+        Command command = new Command("delete customer");
+        Record rec = customers.getRecords().get(table.getSelectedRow());
+        String key = rec.getSkoonieKey();
         command.put("customer key", key);
-        command.perform();*/
-        
-        //DEBUG HSS//
+        command.perform();
         
     }// end of CustomersWindow::deleteSelectedCustomer
     //--------------------------------------------------------------------------
@@ -238,6 +236,9 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         int rowCount = model.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
+        
+        //if there are no records to display, we can just quit now
+        if (customers.getRecords().isEmpty()) { return; }
         
         String idKey = customers.getDescriptorKeyByName("Id");
         String nameKey = customers.getDescriptorKeyByName("Name");

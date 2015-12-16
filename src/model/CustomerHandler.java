@@ -131,12 +131,14 @@ public class CustomerHandler extends RecordHandler
         Table customers = new Table();
         
         //this list will contain the skoonie keys of all
-        //the descriptors that need to retrieved from the
-        //database
+        //the descriptors that need to be retrieved from
+        //the database
         List<String> descKeys = new ArrayList<>();
         
         //get the customer data from the database
         List<DatabaseEntry> entries = getDatabase().getEntries(customersTable);
+        
+        if (entries.isEmpty()) { return customers; }
         
         //iterate through through the entries
         for (DatabaseEntry e : entries) {
