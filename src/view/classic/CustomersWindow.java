@@ -213,9 +213,10 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     private void displayAddCustomerWindow() 
     {
         
-        /*editRecordWindow = new EditRecordWindow("Add Customer", this, 
-                                                getActionListener(), );
-        editRecordWindow.init();*/ //DEBUG HSS//
+        editRecordWindow = new EditRecordWindow("Add Customer", this, 
+                                                getActionListener(),
+                                                customers, null);
+        editRecordWindow.init();
         
     }// end of CustomersWindow::displayAddCustomerWindow
     //--------------------------------------------------------------------------
@@ -236,9 +237,6 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         int rowCount = model.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
-        
-        //if there are no records to display, we can just quit now
-        if (customers.getRecords().isEmpty()) { return; }
         
         String idKey = customers.getDescriptorKeyByName("Id");
         String nameKey = customers.getDescriptorKeyByName("Name");

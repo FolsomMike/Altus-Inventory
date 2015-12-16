@@ -135,10 +135,16 @@ public class CustomerHandler extends RecordHandler
         //the database
         List<String> descKeys = new ArrayList<>();
         
+        //get the descriptor keys for this table from the database
+        for (String columnName : getDatabase().getColumnNames(customersTable)) {
+            if (!columnName.equals("skoonie_key")) { descKeys.add(columnName); }
+        }
+        
+        //get and store the descriptors for the table
+        customers.setDescriptors(descriptorHandler.getDescriptors(descKeys));
+        
         //get the customer data from the database
         List<DatabaseEntry> entries = getDatabase().getEntries(customersTable);
-        
-        if (entries.isEmpty()) { return customers; }
         
         //iterate through through the entries
         for (DatabaseEntry e : entries) {
@@ -154,20 +160,14 @@ public class CustomerHandler extends RecordHandler
                 
                 //if the column is the skoonie_key,
                 //store it and continue to next one
-                if(name.equals("skoonie_key")) { 
-                    r.setSkoonieKey(value);
-                    continue;
-                }
+                if(name.equals("skoonie_key")) { r.setSkoonieKey(value); }
                 
-                //if the column name is not "skoonie_key",
-                //then we know the name is the skoonie 
-                //key of a descriptor
-                descKeys.add(name);
-                
-                //store the column value in the record,
-                //using the skoonie key of the descriptor
+                //if the column name matches a descriptor key, store the column
+                //value in the record, using the skoonie key of the descriptor
                 //it belongs to as the key
-                r.addValue(name, value);
+                else if (customers.getDescriptor(name) != null) {
+                    r.addValue(name, value);
+                }
             
             }
             
@@ -175,9 +175,6 @@ public class CustomerHandler extends RecordHandler
             customers.addRecord(r);
             
         }
-        
-        //get and store the descriptors for the table
-        customers.setDescriptors(descriptorHandler.getDescriptors(descKeys));
         
         getDatabase().closeDatabaseConnection();
         

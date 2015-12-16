@@ -25,6 +25,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import shared.Descriptor;
 import shared.Table;
 import toolkit.Tools;
 
@@ -36,36 +37,23 @@ import toolkit.Tools;
 public class EditRecordWindow extends AltusJDialog
 {
     
-    private final Table record;
+    private final Table table;
+    private final String recordSkoonieKey;
 
     //--------------------------------------------------------------------------
     // EditRecordWindow::EditRecordWindow (constructor)
     //
 
     public EditRecordWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, Table pRecord)
+                                ActionListener pListener, Table pTable, 
+                                String pRecordSkoonieKey)
     {
 
         super(pTitle, pParent, pListener);
         
-        record = pRecord;
-
-    }//end of EditRecordWindow::EditRecordWindow (constructor)
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // EditRecordWindow::EditRecordWindow (constructor)
-    //
-
-    public EditRecordWindow(String pTitle, Window pParent, 
-                                ActionListener pListener)
-    {
-
-        super(pTitle, pParent, pListener);
+        table = pTable;
         
-        record = null;
-        
-        //WIP HSS//
+        recordSkoonieKey = pRecordSkoonieKey;
 
     }//end of EditRecordWindow::EditRecordWindow (constructor)
     //--------------------------------------------------------------------------
@@ -97,6 +85,12 @@ public class EditRecordWindow extends AltusJDialog
         
         //set the main panel layout to add components top to bottom
         setMainPanelLayout(BoxLayout.Y_AXIS);
+        
+        for (Descriptor d : table.getDescriptors()) {
+            addToMainPanel(createInputPanel(d.getName(), "", ""));
+            
+            addToMainPanel(Tools.createVerticalSpacer(20));
+        }
         
     }// end of EditRecordWindow::createGui
     //--------------------------------------------------------------------------
