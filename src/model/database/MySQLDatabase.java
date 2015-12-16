@@ -421,6 +421,33 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getColumnNames
+    //
+    // Gets and returns the column names of pTable.
+    //
+
+    public List<String> getColumnNames(String pTable)
+    {
+
+        String cmd = "SHOW COLUMNS FROM `" + pTable + "`";
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+
+        //store all of the columns names
+        List<String> names = new ArrayList<>();
+        try { while (set.next()) { names.add(set.getString("Field")); } }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 435"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        
+        return names;
+
+    }// end of MySQLDatabase::getColumnNames
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getEntry
     //
     // Gets and returns the entry in pTable associated with pSkoonieKey.
@@ -441,7 +468,7 @@ public class MySQLDatabase
             while (set.next()) { 
                 
                 //store all of the columns in the database entry
-                for (int i=2; i<d.getColumnCount(); i++) {
+                for (int i=1; i<d.getColumnCount(); i++) {
                     String key = d.getColumnName(i);
                     entry.storeColumn(key, set.getString(key));
                 }
