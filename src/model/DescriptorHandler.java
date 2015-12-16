@@ -158,28 +158,27 @@ public class DescriptorHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // DescriptorHandler::getDescriptors
     //
-    // Gets and returns all of the descriptors from the descriptors table.
-    //
-    // For convenience purposes, each descriptor is mapped to its skoonie key.
+    // Gets and returns all of the descriptors with skoonie keys matching pKeys
+    // from the descriptors table.
     //
     // NOTE: Assumes database connection is opened and closed elsewhere.
     //
 
-    public Map<String, Descriptor> getDescriptors()
+    public List<Descriptor> getDescriptors(List<String> pKeys)
     {
         
-        Map<String, Descriptor> descriptors = new HashMap<>();
+        List<Descriptor> descriptors = new ArrayList<>();
         
-        for (DatabaseEntry e : getDatabase().getEntries(descriptorsTable)) {
-            
-            String key = e.getValue("skoonie_key");
+        List<DatabaseEntry> entries = getDatabase().getEntries(descriptorsTable,
+                                                                    pKeys);
+        for (DatabaseEntry e : entries) {
             
             Descriptor d = new Descriptor();
-            d.setSkoonieKey(key);
+            d.setSkoonieKey(e.getValue("skoonie_key"));
             d.setName(e.getValue("name"));
             d.setValuesTable(e.getValue("values_table"));
             
-            descriptors.put(key, d);
+            descriptors.add(d);
         }
         
         return descriptors;

@@ -502,6 +502,57 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MySQLDatabase::getEntries
+    //
+    // Gets and returns all of the entries whose skoonie keys are those in pKeys
+    // from pTable.
+    //
+
+    public List<DatabaseEntry> getEntries(String pTable, List<String> pKeys)
+    {
+        
+        List<DatabaseEntry> entries = new ArrayList();
+
+        //start the sql command string
+        String cmd = "SELECT * FROM `" + pTable + "` WHERE ";
+        
+        //add the key condidtions to the command string
+        for (int i=0; i<pKeys.size(); i++) {
+            if (i>0) { cmd += " OR "; }
+            cmd += "`skoonie_key`=" + pKeys.get(i);
+        }
+        
+        PreparedStatement stmt = createPreparedStatement(cmd);
+        ResultSet set = performQuery(stmt);
+        
+        //extract the data from the ResultSet
+        try {
+            ResultSetMetaData d = set.getMetaData();
+            while (set.next()) { 
+                
+                //get the columns and values of the entry
+                DatabaseEntry entry = new DatabaseEntry();
+                for (int i=1; i<=d.getColumnCount(); i++) {
+                    String columnName = d.getColumnName(i);
+                    entry.storeColumn(columnName, set.getString(columnName));
+                }
+                
+                //store the entry
+                entries.add(entry);
+            }
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 493"); }
+        
+        //clean up environment
+        closeResultSet(set);
+        closePreparedStatement(stmt);
+        
+        return entries;
+
+    }// end of MySQLDatabase::getEntries
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MySQLDatabase::getSkoonieKeys
     //
     // Gets and returns all of the skoonie keys of the entries in pTable.

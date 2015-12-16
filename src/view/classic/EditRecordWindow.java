@@ -25,7 +25,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import shared.Record;
+import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -36,19 +36,36 @@ import toolkit.Tools;
 public class EditRecordWindow extends AltusJDialog
 {
     
-    private final Record record;
+    private final Table record;
 
     //--------------------------------------------------------------------------
     // EditRecordWindow::EditRecordWindow (constructor)
     //
 
     public EditRecordWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, Record pRecord)
+                                ActionListener pListener, Table pRecord)
     {
 
         super(pTitle, pParent, pListener);
         
         record = pRecord;
+
+    }//end of EditRecordWindow::EditRecordWindow (constructor)
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditRecordWindow::EditRecordWindow (constructor)
+    //
+
+    public EditRecordWindow(String pTitle, Window pParent, 
+                                ActionListener pListener)
+    {
+
+        super(pTitle, pParent, pListener);
+        
+        record = null;
+        
+        //WIP HSS//
 
     }//end of EditRecordWindow::EditRecordWindow (constructor)
     //--------------------------------------------------------------------------

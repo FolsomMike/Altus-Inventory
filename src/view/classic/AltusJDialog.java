@@ -42,6 +42,7 @@ public abstract class AltusJDialog extends JDialog
     private final Window parent;
     
     private final ActionListener actionListener;
+    public ActionListener getActionListener() { return actionListener; }
 
     private JPanel mainPanel;
     protected final void addToMainPanel(Component pC) { mainPanel.add(pC); }

@@ -5,7 +5,7 @@
 *
 * Purpose:
 *
-* This class stores information about a table.
+* This class stores information about a record.
 *
 */
 
@@ -20,7 +20,7 @@ import java.util.Map;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class Record
+// class Records
 //
 // This class is used to wrap information about a record.
 //
@@ -32,51 +32,24 @@ public class Record
     public String getSkoonieKey() { return skoonieKey; }
     public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
     
-    private final Map<Descriptor, String> descriptors = new HashMap<>();
-    public Map<Descriptor, String> getDescriptors() { return descriptors; }
+    //key=descriptor skoonie key; value=value
+    private final Map<String, String> values = new HashMap<>();
+    
+    public String getValue(String pKey) { return values.get(pKey); }
+    
+    public void addValue(String pKey, String pValue) {values.put(pKey, pValue);}
     
     //--------------------------------------------------------------------------
-    // Record::Record (constructor)
+    // Records::Records (constructor)
     //
 
     public Record()
     {
         
-    }//end of Record::Record (constructor)
+    }//end of Records::Records (constructor)
     //--------------------------------------------------------------------------
     
-    //--------------------------------------------------------------------------
-    // Record::getValueByDescriptorName
-    //
-    // Returns the value of associated with the descriptor that contains the
-    // passed in name.
-    //
-
-    public String getValueByDescriptorName(String pName)
-    {
-        
-        for (Map.Entry<Descriptor, String> d : descriptors.entrySet()) {
-            if (d.getKey().getName().equals(pName)) { return d.getValue(); }
-        }
-        
-        return null;
-        
-    }//end of Record::getValueByDescriptorName
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // Record::storeDescriptor
-    //
-
-    public void storeDescriptor(Descriptor pDescriptor, String pValue)
-    {
-        
-        descriptors.put(pDescriptor, pValue);
-        
-    }//end of Record::storeDescriptor
-    //--------------------------------------------------------------------------
-    
-}//end of class Record
+}//end of class Records
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

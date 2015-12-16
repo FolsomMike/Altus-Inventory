@@ -17,18 +17,16 @@ package view.classic;
 //------------------------------------------------------------------------------
 
 import command.Command;
+import command.CommandHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import shared.Record;
-import view.Display;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class DisplayClassic
 //
 
-public class DisplayClassic extends Display implements ActionListener
+public class DisplayClassic implements CommandHandler, ActionListener
 {
     
     private final MainFrame mainFrame;
@@ -54,11 +52,8 @@ public class DisplayClassic extends Display implements ActionListener
     // Initializes the object. Must be called immediately after instantiation.
     //
 
-    @Override
     public void init()
     {
-        
-        super.init();
         
         //initialize the MainFrame
         mainFrame.init();
@@ -67,49 +62,29 @@ public class DisplayClassic extends Display implements ActionListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DisplayClassic::deleteSelectedCusomter
+    // DisplayClassic::handleCommand
     //
-    // Displays the Customers window.
+    // Performs different actions depending on pCommand.
     //
-
-    @Override
-    public void deleteSelectedCustomer()
-    {
-        
-        customersWindow.deleteSelectedCustomer();
-
-    }//end of DisplayClassic::deleteSelectedCustomer
-    //--------------------------------------------------------------------------
     
-    //--------------------------------------------------------------------------
-    // DisplayClassic::displayAddCustomerFrame
-    //
-    // Displays the Add Customer window.
-    //
-
     @Override
-    public void displayAddCustomerFrame()
+    public void handleCommand(Command pCommand) 
     {
         
-        /*EditRecordWindow window = new EditRecordWindow(new Record());
-        window.init();*/ //DEBUG HSS//
-
-    }//end of DisplayClassic::displayCustomerFrame
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // DisplayClassic::displayCustomers
-    //
-    // Displays the Customers contained in pCustomers.
-    //
-
-    @Override
-    public void displayCustomers(List<Record> pCustomers)
-    {
+        switch (pCommand.getMessage()) {
+            
+            //customer display actions
+            case "display customers window":
+                displayCustomersFrame();
+                break;
+                
+        }
         
-        customersWindow.displayCustomers(pCustomers);
-
-    }//end of DisplayClassic::displayCustomers
+        //pass the command to all command handlers that aren't null
+        //DEBUG HSS//if (mainFrame != null) { mainFrame.handleCommand(pCommand); }
+        if (customersWindow != null) {customersWindow.handleCommand(pCommand);}
+        
+    }//end of DisplayClassic::handleCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -117,9 +92,8 @@ public class DisplayClassic extends Display implements ActionListener
     //
     // Displays the Customers window.
     //
-
-    @Override
-    public void displayCustomersFrame()
+    
+    private void displayCustomersFrame()
     {
         
         customersWindow = new CustomersWindow(mainFrame, this);

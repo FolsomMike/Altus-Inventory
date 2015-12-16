@@ -16,13 +16,14 @@
 
 package model;
 
-import shared.Record;
+import shared.Table;
 import shared.Descriptor;
 import model.database.DatabaseEntry;
 import model.database.MySQLDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import shared.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -77,7 +78,7 @@ public class CustomerHandler extends RecordHandler
     // Adds a customer using the information in pCustomer.
     //
 
-    public void addCustomer(Record pCustomer)
+    public void addCustomer(Table pCustomer)
     {
         //DEBUG HSS//
         /*getDatabase().connectToDatabase();
@@ -122,18 +123,22 @@ public class CustomerHandler extends RecordHandler
     //                  be read from
     //
 
-    public List<Record> getCustomers()
+    public Table getCustomers()
     {
-        
-        List<Record> customers = new ArrayList<>();
         
         getDatabase().connectToDatabase();
         
-        //get the customer entries and all descriptors from the database
-        List<DatabaseEntry> entries = getDatabase().getEntries(customersTable);
-        Map<String, Descriptor> descriptors = descriptorHandler.getDescriptors();
+        Table customers = new Table();
         
-        //extract data from entries and descriptors
+        //this list will contain the skoonie keys of all
+        //the descriptors that need to retrieved from the
+        //database
+        List<String> descKeys = new ArrayList<>();
+        
+        //get the customer data from the database
+        List<DatabaseEntry> entries = getDatabase().getEntries(customersTable);
+        
+        //iterate through through the entries
         for (DatabaseEntry e : entries) {
             
             Record r = new Record();
@@ -145,26 +150,32 @@ public class CustomerHandler extends RecordHandler
                 String name = c.getKey();
                 String value = c.getValue();
                 
-                //if the column is the skoonie_key, 
-                //then store it and continue to the
-                //next one
+                //if the column is the skoonie_key,
+                //store it and continue to next one
                 if(name.equals("skoonie_key")) { 
                     r.setSkoonieKey(value);
                     continue;
                 }
                 
-                //get the Descriptor for the record
-                Descriptor descriptor = descriptors.get(c.getKey());
+                //if the column name is not "skoonie_key",
+                //then we know the name is the skoonie 
+                //key of a descriptor
+                descKeys.add(name);
                 
-                //if the Descriptor is not null store it and the value
-                if(descriptor!= null) { r.storeDescriptor(descriptor, value); }
+                //store the column value in the record,
+                //using the skoonie key of the descriptor
+                //it belongs to as the key
+                r.addValue(name, value);
             
             }
             
             //store the record
-            customers.add(r);
+            customers.addRecord(r);
             
         }
+        
+        //get and store the descriptors for the table
+        customers.setDescriptors(descriptorHandler.getDescriptors(descKeys));
         
         getDatabase().closeDatabaseConnection();
         

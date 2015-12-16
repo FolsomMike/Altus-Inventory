@@ -29,7 +29,6 @@ package view;
 
 import command.Command;
 import command.CommandHandler;
-import view.barebones.DisplayBareBones;
 import view.classic.DisplayClassic;
 
 //------------------------------------------------------------------------------
@@ -42,7 +41,7 @@ public class MainView implements CommandHandler
     
     private final CommandHandler controller;
     
-    private Display display;
+    private CommandHandler display;
     private final String displayMode;
     private final String displayModeBareBones = "BareBones";
     private final String displayModeClassic = "Classic";
@@ -103,17 +102,12 @@ public class MainView implements CommandHandler
     private void setupDisplay()
     {
         
-        switch (displayMode) {
-            case displayModeBareBones:
-                display = new DisplayBareBones();
-                break;
-                
+        switch (displayMode) {  
             case displayModeClassic:
                 display = new DisplayClassic();
+                ((DisplayClassic)display).init();
                 break;
         }
-        
-        display.init();
 
     }//end of MainView::setupDisplay
     //--------------------------------------------------------------------------

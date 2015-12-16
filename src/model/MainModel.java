@@ -13,7 +13,7 @@
 
 package model;
 
-import shared.Record;
+import shared.Table;
 import model.database.MySQLDatabase;
 import java.util.List;
 import java.util.logging.Level;
@@ -70,7 +70,7 @@ public class MainModel
     // Adds pCustomer to the database.
     //
 
-    public void addCustomer(Record pCustomer)
+    public void addCustomer(Table pCustomer)
     {
 
         //WIP HSS// -- add the customer
@@ -98,7 +98,7 @@ public class MainModel
     // Gets and returns all of the customers in the database
     //
 
-    public List<Record> getCustomers()
+    public Table getCustomers()
     {
 
         return customerHandler.getCustomers();

@@ -16,6 +16,7 @@ package view.classic;
 //------------------------------------------------------------------------------
 
 import command.Command;
+import command.CommandHandler;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
@@ -26,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import shared.Record;
+import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -33,13 +35,15 @@ import toolkit.Tools;
 // class CustomersWindow
 //
 
-public class CustomersWindow extends AltusJDialog
+public class CustomersWindow extends AltusJDialog implements CommandHandler
 {
     
     private CustomTable table;
     private DefaultTableModel model;
     
-    private List<Record> customers;
+    private Table customers;
+    
+    private EditRecordWindow editRecordWindow;
 
     //--------------------------------------------------------------------------
     // CustomersWindow::CustomersWindow (constructor)
@@ -108,6 +112,41 @@ public class CustomersWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // CustomersWindow::handleCommand
+    //
+    // Performs different actions depending on pCommand.
+    //
+    
+    @Override
+    public void handleCommand(Command pCommand) 
+    {
+        
+        switch (pCommand.getMessage()) {
+            
+            //actions necessary for all display interfaces
+            case "display add customer window":
+                displayAddCustomerWindow();
+                break;
+                
+            //customer actions
+            case "delete selected customer":
+                deleteSelectedCustomer();
+                break;
+            
+            case "display customers":
+                displayCustomers((Table)pCommand.get("customers"));
+                break;
+                
+        }
+        
+        if (editRecordWindow != null) {
+            //DEBUG HSS//editRecordWindow.handleCommand(pCommand);
+        }
+        
+    }//end of CustomersWindow::handleCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // CustomersWindow::createButtonsPanel
     //
     // Creates and returns a JPanel containing all of the buttons for the
@@ -127,7 +166,7 @@ public class CustomersWindow extends AltusJDialog
         //Add Customer button
         panel.add(createButton( "Add", 
                                 "Add a new customer.", 
-                                "display add customer frame"));
+                                "display add customer window"));
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
@@ -141,7 +180,7 @@ public class CustomersWindow extends AltusJDialog
         
         //Delete Customer button
         panel.add(createButton("Delete", "Delete the selected customer.", 
-                                "delete selected customer")); //WIP HSS// -- add action command
+                                "delete selected customer"));
         
         return panel;
         
@@ -154,15 +193,33 @@ public class CustomersWindow extends AltusJDialog
     // Deletes the customer selected in the table.
     //
     
-    public void deleteSelectedCustomer() 
+    private void deleteSelectedCustomer() 
     {
         
-        Command command = new Command("delete customer");
+        /*Command command = new Command("delete customer");
         String key = customers.get(table.getSelectedRow()).getSkoonieKey();
         command.put("customer key", key);
-        command.perform();
+        command.perform();*/
+        
+        //DEBUG HSS//
         
     }// end of CustomersWindow::deleteSelectedCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::displayAddCustomerWindow
+    //
+    // Displays the Add Customer window.
+    //
+    
+    private void displayAddCustomerWindow() 
+    {
+        
+        /*editRecordWindow = new EditRecordWindow("Add Customer", this, 
+                                                getActionListener(), );
+        editRecordWindow.init();*/ //DEBUG HSS//
+        
+    }// end of CustomersWindow::displayAddCustomerWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -171,7 +228,7 @@ public class CustomersWindow extends AltusJDialog
     // Adds the customers in pCustomers to the table.
     //
     
-    public void displayCustomers(List<Record> pCustomers) 
+    private void displayCustomers(Table pCustomers) 
     {
         
         //store the customers
@@ -182,10 +239,13 @@ public class CustomersWindow extends AltusJDialog
         //Remove rows one by one from the end of the table
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
         
+        String idKey = customers.getDescriptorKeyByName("Id");
+        String nameKey = customers.getDescriptorKeyByName("Name");
+        
         //add the ids and names of the customers to the table
-        for (Record customer : customers) {
-            String id = customer.getValueByDescriptorName("Id");
-            String name = customer.getValueByDescriptorName("Name");
+        for (Record customer : customers.getRecords()) {
+            String id = customer.getValue(idKey);
+            String name = customer.getValue(nameKey);
             model.addRow( new String[] { id, name });
         }
         
