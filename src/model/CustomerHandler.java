@@ -99,13 +99,15 @@ public class CustomerHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // CustomerHandler::deleteCustomer
     //
-    // Deletes a customer using the information in pCommand.
+    // Deletes the customer associated with pSkoonieKey from the database.
     //
 
-    public void deleteCustomer(Map<String, String> pCommand)
+    public void deleteCustomer(String pSkoonieKey)
     {
         
-        deleteRecord(pCommand, customersTable);
+        //WIP HSS// -- perform check to see if he can be deleted
+        
+        deleteRecord(customersTable, pSkoonieKey);
 
     }//end of CustomerHandler::deleteCustomer
     //--------------------------------------------------------------------------

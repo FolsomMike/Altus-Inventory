@@ -24,10 +24,12 @@ import shared.Record;
 public abstract class Display implements CommandHandler
 {
     
-    //Required functions for customer actions
+    //Required functions for customer display actions
     protected abstract void displayAddCustomerFrame();
     protected abstract void displayCustomers(List<Record> pRecords);
     protected abstract void displayCustomersFrame();
+    //Required functions for customer actions
+    protected abstract void deleteSelectedCustomer();
     
     //--------------------------------------------------------------------------
     // DisplayBareBones::DisplayBareBones (constructor)
@@ -63,7 +65,7 @@ public abstract class Display implements CommandHandler
         
         switch (pCommand.getMessage()) {
             
-            //customer actions
+            //customer display actions
             case "display add customer frame":
                 displayAddCustomerFrame();
                 break;
@@ -74,6 +76,11 @@ public abstract class Display implements CommandHandler
                 
             case "display customers":
                 displayCustomers((List<Record>)pCommand.get("customers"));
+                break;
+                
+            //customer actions
+            case "delete selected customer":
+                deleteSelectedCustomer();
                 break;
                 
         }

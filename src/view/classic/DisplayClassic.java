@@ -67,6 +67,21 @@ public class DisplayClassic extends Display implements ActionListener
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DisplayClassic::deleteSelectedCusomter
+    //
+    // Displays the Customers window.
+    //
+
+    @Override
+    public void deleteSelectedCustomer()
+    {
+        
+        customersWindow.deleteSelectedCustomer();
+
+    }//end of DisplayClassic::deleteSelectedCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DisplayClassic::displayAddCustomerFrame
     //
     // Displays the Add Customer window.

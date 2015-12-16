@@ -140,11 +140,29 @@ public class CustomersWindow extends AltusJDialog
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Delete Customer button
-        panel.add(createButton("Delete", "Delete the selected customer.", "")); //WIP HSS// -- add action command
+        panel.add(createButton("Delete", "Delete the selected customer.", 
+                                "delete selected customer")); //WIP HSS// -- add action command
         
         return panel;
         
     }// end of CustomersWindow::createButtonsPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::deleteSelectedCustomer
+    //
+    // Deletes the customer selected in the table.
+    //
+    
+    public void deleteSelectedCustomer() 
+    {
+        
+        Command command = new Command("delete customer");
+        String key = customers.get(table.getSelectedRow()).getSkoonieKey();
+        command.put("customer key", key);
+        command.perform();
+        
+    }// end of CustomersWindow::deleteSelectedCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

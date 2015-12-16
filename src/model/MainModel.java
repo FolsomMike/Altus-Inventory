@@ -79,6 +79,20 @@ public class MainModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainModel::deleteCustomer
+    //
+    // Deletes the customer associated with pSkoonieKey from the database.
+    //
+
+    public void deleteCustomer(String pSkoonieKey)
+    {
+
+        customerHandler.deleteCustomer(pSkoonieKey);
+
+    }//end of MainModel::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainModel::getCustomers
     //
     // Gets and returns all of the customers in the database

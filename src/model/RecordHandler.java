@@ -57,21 +57,15 @@ public class RecordHandler
     //--------------------------------------------------------------------------
     // RecordHandler::deleteRecord
     //
-    // Deletes the record assoicated with the skoonie key found in pCommand from
-    // pTable.
-    //
-    // //DEBUG HSS// -- testing purposes only
+    // Deletes the entry associated with pSkoonieKey from pTable.
     //
 
-    protected void deleteRecord(Map<String, String> pCommand, String pTable)
+    protected void deleteRecord(String pTable, String pSkoonieKey)
     {
         
         db.connectToDatabase();
         
-        //delete the record
-        Record record = new Record();
-        record.setSkoonieKey(pCommand.get("skoonie_key"));
-        //DEBUG HSS//db.deleteRecord(record, pTable);
+        db.deleteEntry(pTable, pSkoonieKey);
        
         db.closeDatabaseConnection();
         
