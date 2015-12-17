@@ -39,8 +39,6 @@ import view.classic.DisplayClassic;
 public class MainView implements CommandHandler
 {
     
-    private final CommandHandler controller;
-    
     private CommandHandler display;
     private final String displayMode;
     private final String displayModeClassic = "Classic";
@@ -49,10 +47,8 @@ public class MainView implements CommandHandler
     // MainView::MainView (constructor)
     //
 
-    public MainView(CommandHandler pController)
+    public MainView()
     {
-        
-        controller = pController;
         
         displayMode = displayModeClassic;
         

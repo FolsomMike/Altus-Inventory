@@ -94,7 +94,7 @@ public class MainController implements CommandHandler, Runnable
         model.init();
 
         //set up the view
-        view = new MainView(this);
+        view = new MainView();
         ((MainView)view).init();
 
         //start the control thread
