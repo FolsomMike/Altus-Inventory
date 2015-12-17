@@ -43,7 +43,6 @@ public class MainView implements CommandHandler
     
     private CommandHandler display;
     private final String displayMode;
-    private final String displayModeBareBones = "BareBones";
     private final String displayModeClassic = "Classic";
 
     //--------------------------------------------------------------------------
