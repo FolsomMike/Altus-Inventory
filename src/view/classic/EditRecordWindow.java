@@ -88,12 +88,12 @@ public class EditRecordWindow extends AltusJDialog
         if (getHeight()>maxHeight){Tools.setSizes(this, getWidth(), maxHeight);}
         
         //the scroll bar was previously set to always so that we can guarantee
-        //that it would be included in the max width, but we change it to only
+        //that it would be included in the width, but we can change it to only
         //appear as needed now
         int policy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
         inputsScrollPane.setVerticalScrollBarPolicy(policy);
         
-        //repack
+        //repack gui components since we changed stuff
         pack();
         
         //center and make visible
@@ -193,8 +193,6 @@ public class EditRecordWindow extends AltusJDialog
         
         int panelsPerRow = 3;
         int panelSpacer = 10;
-        
-        //determine what the total number of panels per row will be
         
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<count; i++) {
