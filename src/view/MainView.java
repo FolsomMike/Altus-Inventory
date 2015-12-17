@@ -39,7 +39,7 @@ import view.classic.DisplayClassic;
 public class MainView implements CommandHandler
 {
     
-    private CommandHandler display;
+    private CommandHandler downStream;
     private final String displayMode;
     private final String displayModeClassic = "Classic";
 
@@ -82,8 +82,8 @@ public class MainView implements CommandHandler
     public void handleCommand(Command pCommand)
     {
         
-        //hand the command down to the display
-        display.handleCommand(pCommand);
+        //hand the command down stream
+        downStream.handleCommand(pCommand);
 
     }//end of MainView::commandPerformed
     //--------------------------------------------------------------------------
@@ -99,8 +99,8 @@ public class MainView implements CommandHandler
         
         switch (displayMode) {  
             case displayModeClassic:
-                display = new DisplayClassic();
-                ((DisplayClassic)display).init();
+                downStream = new DisplayClassic();
+                ((DisplayClassic)downStream).init();
                 break;
         }
 
