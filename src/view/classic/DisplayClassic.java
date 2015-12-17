@@ -50,7 +50,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
     
     private final JPanel mainPanel;
     
-    private CustomersWindow customersWindow;
+    private CommandHandler downStream;
 
     //--------------------------------------------------------------------------
     // DisplayClassic::DisplayClassic (constructor)
@@ -107,9 +107,8 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                 
         }
         
-        //pass the command to all command handlers that aren't null
-        //DEBUG HSS//if (mainFrame != null) { mainFrame.handleCommand(pCommand); }
-        if (customersWindow != null) {customersWindow.handleCommand(pCommand);}
+        //pass the command downstream
+        if (downStream != null) { downStream.handleCommand(pCommand); }
         
     }//end of DisplayClassic::handleCommand
     //--------------------------------------------------------------------------
@@ -307,14 +306,17 @@ public class DisplayClassic extends JFrame implements CommandHandler,
     //--------------------------------------------------------------------------
     // DisplayClassic::displayCustomersFrame
     //
-    // Displays the Customers window.
+    // Displays the Customers window and sets it to the downstream
     //
     
     private void displayCustomersFrame()
     {
         
-        customersWindow = new CustomersWindow(this, this);
-        customersWindow.init();
+        downStream = new CustomersWindow(this, this);
+        ((CustomersWindow)downStream).init();
+        
+        //this will not be called until after the customers window closes
+        downStream = null;
 
     }//end of DisplayClassic::displayCustomersFrame
     //--------------------------------------------------------------------------
