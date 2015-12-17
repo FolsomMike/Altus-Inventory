@@ -92,10 +92,6 @@ public abstract class AltusJDialog extends JDialog
         //arrange all the GUI items
         pack();
         
-        //center the dialog and make it visible
-        Tools.centerJDialog(this, parent);
-        setVisible(true);
-        
     }// end of AltusJDialog::init
     //--------------------------------------------------------------------------
     
@@ -134,6 +130,21 @@ public abstract class AltusJDialog extends JDialog
         mainPanel.setLayout(new BoxLayout(mainPanel, pLayout));
 
     }// end of AltusJDialog::setMainPanelLayout
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // AltusJDialog::setVisible
+    //
+    // Center the dialog and make it visible.
+    //
+
+    public void setVisible()
+    {
+
+        Tools.centerJDialog(this, parent);
+        setVisible(true);
+
+    }// end of AltusJDialog::setVisible
     //--------------------------------------------------------------------------
 
 }//end of class AltusJDialog

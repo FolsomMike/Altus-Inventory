@@ -66,13 +66,16 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     public void init() 
     {
         
-        //set up the table model -- has to be done before data is received
+        //set up the table model
         setupTableModel();
         
         //perform a command to get the customers
         (new Command("get customers")).perform();
         
         super.init();
+        
+        //center and make visible
+        setVisible();
         
     }// end of CustomersWindow::init
     //--------------------------------------------------------------------------

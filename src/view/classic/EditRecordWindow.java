@@ -16,19 +16,22 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
+import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
-import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import shared.Descriptor;
 import shared.Table;
 import toolkit.Tools;
@@ -43,6 +46,10 @@ public class EditRecordWindow extends AltusJDialog
     
     private final Table table;
     private final String recordSkoonieKey;
+    
+    JScrollPane inputsScrollPane;
+    
+    private final int maxHeight = 350;
     
     private final int inputPanelWidth = 200;
 
@@ -76,6 +83,22 @@ public class EditRecordWindow extends AltusJDialog
         
         super.init();
         
+        //now that the GUI has been created and packed, we can set the maximum
+        //height of the frame
+        if (getHeight()>maxHeight){Tools.setSizes(this, getWidth(), maxHeight);}
+        
+        //the scroll bar was previously set to always so that we can guarantee
+        //that it would be included in the max width, but we change it to only
+        //appear as needed now
+        int policy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+        inputsScrollPane.setVerticalScrollBarPolicy(policy);
+        
+        //repack
+        pack();
+        
+        //center and make visible
+        setVisible();
+        
     }// end of EditRecordWindow::init
     //--------------------------------------------------------------------------
     
@@ -95,7 +118,59 @@ public class EditRecordWindow extends AltusJDialog
         //add the input panels for the descriptors to the gui
         addToMainPanel(createDescriptorInputsPanel());
         
+        //add the cancel confirm panel
+        addToMainPanel(createCancelConfirmPanel());
+        
     }// end of EditRecordWindow::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditRecordWindow::createCancelConfirmPanel
+    //
+    // Creates and returns a panel containing the Cancel and OK buttons.
+    //
+
+    private JPanel createCancelConfirmPanel()
+    {
+
+        //this outer panel is needed so that we can add a vertical spacer
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(BOTTOM_ALIGNMENT);
+        panel.setBorder(BorderFactory.createMatteBorder(1,0,0,0, Color.GRAY));
+        
+        //vertical spacer
+        panel.add(Tools.createVerticalSpacer(10));
+        
+        //panel to hold the buttons
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        buttonsPanel.setAlignmentX(LEFT_ALIGNMENT);
+        buttonsPanel.setAlignmentY(BOTTOM_ALIGNMENT);
+        
+        //horizontal center 
+        //-- only works to "push" to the center if another glue is used
+        buttonsPanel.add(Box.createHorizontalGlue());
+        
+        //add the Cancel button
+        buttonsPanel.add(createButton("Cancel", "" , "")); //WIP HSS// -- need to pass in values
+        
+        //horizontal spacer
+        buttonsPanel.add(Tools.createHorizontalSpacer(20));
+        
+        //add the OK button
+        buttonsPanel.add(createButton("OK", "" , "")); //WIP HSS// -- need to pass in values
+        
+        //horizontal center 
+        //-- only works to "push" to the center if another glue is used
+        buttonsPanel.add(Box.createHorizontalGlue());
+        
+        panel.add(buttonsPanel);
+
+        return panel;
+
+    }// end of EditRecordWindow::createCancelConfirmPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -107,10 +182,9 @@ public class EditRecordWindow extends AltusJDialog
     private JScrollPane createDescriptorInputsPanel()
     {
 
+        //create a panel to go inside of a scroll pane
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
         
         //get the descriptors from the table
         List<Descriptor> descriptors = table.getDescriptors();
@@ -120,8 +194,6 @@ public class EditRecordWindow extends AltusJDialog
         int panelSpacer = 10;
         
         //determine what the total number of panels per row will be
-        int totalPanelsPerRow = panelsPerRow;
-        if(count < panelsPerRow) { totalPanelsPerRow = count; }
         
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<count; i++) {
@@ -131,28 +203,26 @@ public class EditRecordWindow extends AltusJDialog
             //if we've reached the number of panels
             //allowed per row, or the end of the
             //descriptors, create a row panel from
-            //the input panels in the row list, empty
-            //the list and start again
-            //the column count back to 0
-            if (i>=panelsPerRow || i>=count-1) {
+            //the input panels in the row list, and
+            //empty the list to start a new row
+            if (row.size()>=panelsPerRow || i>=(count-1)) {
                 panel.add(createRow(row, panelSpacer));
+                panel.add(Tools.createVerticalSpacer(10));
                 row.clear();
             }
             
         }
         
-        //calculate the width of the panel
-        int width = inputPanelWidth*totalPanelsPerRow 
-                        + panelSpacer*(totalPanelsPerRow-1);
+        //put the panel into a scroll pane and add it to the inputspanel
+        inputsScrollPane = new JScrollPane(panel);
+        inputsScrollPane.setAlignmentX(LEFT_ALIGNMENT);
+        inputsScrollPane.setAlignmentY(TOP_ALIGNMENT);
+        inputsScrollPane.setBorder(null);
         
-        //put the inputs panel into a scroll pane and add it to the main panel
-        JScrollPane sp = new JScrollPane(panel);
-        sp.setAlignmentX(LEFT_ALIGNMENT);
-        sp.setAlignmentY(TOP_ALIGNMENT);
-        sp.setBorder(null);
-        sp.setMaximumSize(new Dimension(width, 350));
+        int policy = ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+        inputsScrollPane.setVerticalScrollBarPolicy(policy);
         
-        return sp;
+        return inputsScrollPane;
 
     }// end of EditRecordWindow::createDescriptorInputsPanel
     //--------------------------------------------------------------------------
