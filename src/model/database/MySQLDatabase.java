@@ -495,7 +495,7 @@ public class MySQLDatabase
     public List<DatabaseEntry> getEntries(String pTable)
     {
         
-        List<DatabaseEntry> entries = new ArrayList();
+        List<DatabaseEntry> entries = new ArrayList<>();
 
         String cmd = "SELECT * FROM `" + pTable + "`";
         PreparedStatement stmt = createPreparedStatement(cmd);
@@ -538,7 +538,7 @@ public class MySQLDatabase
     public List<DatabaseEntry> getEntries(String pTable, List<String> pKeys)
     {
         
-        List<DatabaseEntry> entries = new ArrayList();
+        List<DatabaseEntry> entries = new ArrayList<>();
 
         //start the sql command string
         String cmd = "SELECT * FROM `" + pTable + "` WHERE ";
