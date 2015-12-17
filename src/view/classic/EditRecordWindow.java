@@ -176,7 +176,8 @@ public class EditRecordWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     // EditRecordWindow::createDescriptorInputsPanel
     //
-    // //WIP HSS// -- describe this function
+    // Creates and returns a scroll pane containing all of the input panels for
+    // the descriptors.
     //
 
     private JScrollPane createDescriptorInputsPanel()
