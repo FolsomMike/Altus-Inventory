@@ -58,7 +58,7 @@ public class MainController implements CommandHandler, Runnable
 {
     
     private final MainModel model = new MainModel();
-    private CommandHandler view;
+    private CommandHandler downStream;
 
     private int displayUpdateTimer = 0;
 
@@ -94,8 +94,8 @@ public class MainController implements CommandHandler, Runnable
         model.init();
 
         //set up the view
-        view = new MainView();
-        ((MainView)view).init();
+        downStream = new MainView();
+        ((MainView)downStream).init();
 
         //start the control thread
         new Thread(this).start();
@@ -161,8 +161,8 @@ public class MainController implements CommandHandler, Runnable
                 break;
         }
         
-        //pass the command down the chain to view
-        view.handleCommand(pCommand);
+        //pass the command down the stream to view
+        downStream.handleCommand(pCommand);
 
     }//end of MainController::commandPerformed
     //--------------------------------------------------------------------------
