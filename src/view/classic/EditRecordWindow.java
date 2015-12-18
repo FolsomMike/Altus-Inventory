@@ -425,8 +425,12 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
             //if input is empty but can't be, add desriptor name to list
             if (d.getRequired() && empty) { badInputs.add(d.getName()); }
             
-            //only add the value if its not empty
-            if (!empty) { record.addValue(descKey, input);} //WIP HSS// -- needs to add if value has changed
+            //only add value if its not empty or the empty value replaces a
+            //previous value
+            String oldValue = record.getValue(descKey);
+            if (!empty || (oldValue!=null && !oldValue.equals(input))) { 
+                record.addValue(descKey, input);
+            }
         }
         
         //if there are any bad inputs, display a message to the user and set
