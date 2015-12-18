@@ -95,6 +95,28 @@ public class Table
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // Table::getRecord
+    //
+    // Returns the Record whose skoonie key is pSkoonieKey.
+    //
+
+    public Record getRecord(String pSkoonieKey)
+    {
+        
+        Record record = null;
+        
+        if (pSkoonieKey==null || records.isEmpty()) { return record; }
+        
+        for (Record r : records) {
+            if(r.getSkoonieKey().equals(pSkoonieKey)) { record = r; break; }
+        }
+            
+        return record;
+        
+    }//end of Table::getRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // Table::setDescriptors
     //
     // Sets the descriptors list to pDescriptors and sets up the descriptors
