@@ -8,7 +8,9 @@
 * This class handles commands pertaining to customers
 *
 * Currently handles actions:
+*   add customer
 *   get customers
+*   update customer
 *
 */
 
@@ -91,7 +93,10 @@ public class CustomerHandler extends RecordHandler
         DatabaseEntry entry = new DatabaseEntry();
         for (Descriptor d : pCustomers.getDescriptors()) {
             String descKey = d.getSkoonieKey();
-            entry.storeColumn(descKey, record.getValue(descKey));
+            
+             //store the value for the descriptor
+            String value = record.getValue(descKey);
+            if (value != null) { entry.storeColumn(descKey, value); }
         }
         
         getDatabase().insertEntry(entry, customersTable);
@@ -207,7 +212,10 @@ public class CustomerHandler extends RecordHandler
         entry.storeColumn("skoonie_key", record.getSkoonieKey());
         for (Descriptor d : pCustomers.getDescriptors()) {
             String descKey = d.getSkoonieKey();
-            entry.storeColumn(descKey, record.getValue(descKey));
+            
+             //store the value for the descriptor
+            String value = record.getValue(descKey);
+            if (value != null) { entry.storeColumn(descKey, value); }
         }
         
         getDatabase().updateEntry(entry, customersTable);
