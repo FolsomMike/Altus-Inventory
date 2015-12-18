@@ -140,6 +140,14 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     public void handleCommand(Command pCommand) 
     {
         
+        switch (pCommand.getMessage()) {
+            
+            case "EditRecordWindow -- cancel":
+                dispose();
+                break;
+                
+        }
+        
     }//end of EditRecordWindow::handleCommand
     //--------------------------------------------------------------------------
     
@@ -173,7 +181,8 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         buttonsPanel.add(Box.createHorizontalGlue());
         
         //add the Cancel button
-        buttonsPanel.add(createButton("Cancel", "" , "")); //WIP HSS// -- need to pass in values
+        buttonsPanel.add(createButton("Cancel", "" , 
+                                        "EditRecordWindow -- cancel"));
         
         //horizontal spacer
         buttonsPanel.add(Tools.createHorizontalSpacer(20));
