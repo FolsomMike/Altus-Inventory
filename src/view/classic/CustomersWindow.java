@@ -42,7 +42,7 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     
     private Table customers;
     
-    private EditRecordWindow editRecordWindow;
+    private CommandHandler downStream;
 
     //--------------------------------------------------------------------------
     // CustomersWindow::CustomersWindow (constructor)
@@ -143,9 +143,7 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
                 
         }
         
-        if (editRecordWindow != null) {
-            //DEBUG HSS//editRecordWindow.handleCommand(pCommand);
-        }
+        if (downStream != null) { downStream.handleCommand(pCommand); }
         
     }//end of CustomersWindow::handleCommand
     //--------------------------------------------------------------------------
@@ -203,10 +201,10 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         
         Record rec = customers.getRecords().get(table.getSelectedRow());
         String key = rec.getSkoonieKey();
-        editRecordWindow = new EditRecordWindow("Edit Customer", this, 
+        downStream = new EditRecordWindow("Edit Customer", this, 
                                                 getActionListener(),
                                                 customers, key);
-        editRecordWindow.init();
+        ((EditRecordWindow)downStream).init();
         
     }// end of CustomersWindow::editSelectedCustomer
     //--------------------------------------------------------------------------
@@ -238,10 +236,10 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     private void displayAddCustomerWindow() 
     {
         
-        editRecordWindow = new EditRecordWindow("Add Customer", this, 
+        downStream = new EditRecordWindow("Add Customer", this, 
                                                 getActionListener(),
                                                 customers, null);
-        editRecordWindow.init();
+        ((EditRecordWindow)downStream).init();
         
     }// end of CustomersWindow::displayAddCustomerWindow
     //--------------------------------------------------------------------------
