@@ -140,25 +140,25 @@ public class MainController implements CommandHandler, Runnable
             case "add customer":
                 model.addCustomer((Table)pCommand.get("table"), 
                                     (String)pCommand.get("record key"));
-                pCommand.put("customers", model.getCustomers());
+                pCommand.put("table", model.getCustomers());
                 pCommand.setMessage("display customers");
                 break;
                 
             case "delete customer":
-                model.deleteCustomer((String)pCommand.get("customer key"));
-                pCommand.put("customers", model.getCustomers());
+                model.deleteCustomer((String)pCommand.get("record key"));
+                pCommand.put("table", model.getCustomers());
                 pCommand.setMessage("display customers");
                 break;
                 
             case "get customers":
-                pCommand.put("customers", model.getCustomers());
+                pCommand.put("table", model.getCustomers());
                 pCommand.setMessage("display customers");
                 break;
                 
             case "update customer":
                 model.updateCustomer((Table)pCommand.get("table"), 
                                     (String)pCommand.get("record key"));
-                pCommand.put("customers", model.getCustomers());
+                pCommand.put("table", model.getCustomers());
                 pCommand.setMessage("display customers");
                 break;
                 

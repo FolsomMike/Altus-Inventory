@@ -1,11 +1,12 @@
 /*******************************************************************************
-* Title: CustomersWindow.java
+* Title: RecordsWindow.java
 * Author: Hunter Schoonover
-* Date: 12/11/15
+* Date: 12/18/15
 *
 * Purpose:
 *
-* This class is the Customers window.
+* This class is the Records window. It is used to view, add, edit, and delete 
+* different types of records.
 *
 */
 
@@ -32,33 +33,47 @@ import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class CustomersWindow
+// class RecordsWindow
 //
 
-public class CustomersWindow extends AltusJDialog implements CommandHandler
+public class RecordsWindow extends AltusJDialog implements CommandHandler
 {
+    
+    private final String addRecordWindowTitle;
+    private final String editRecordWindowTitle;
+    private final String recordName;
+    private final String recordNamePlural;
     
     private CustomTable table;
     private DefaultTableModel model;
     
-    private Table customers;
+    private Table records;
     
     private CommandHandler downStream;
 
     //--------------------------------------------------------------------------
-    // CustomersWindow::CustomersWindow (constructor)
+    // RecordsWindow::RecordsWindow (constructor)
     //
 
-    public CustomersWindow(Window pParent, ActionListener pListener)
+    public RecordsWindow(String pTitle, String pAddRecordWindowTitle, 
+                            String pEditRecordWindowTitle, String pRecordName, 
+                            String pRecordNamePlural, Window pParent,
+                            ActionListener pListener)
     {
 
-        super("Customers", pParent, pListener);
+        super(pTitle, pParent, pListener);
+        
+        addRecordWindowTitle = pAddRecordWindowTitle;
+        editRecordWindowTitle = pEditRecordWindowTitle;
+        
+        recordName = pRecordName;
+        recordNamePlural = pRecordNamePlural;
 
-    }//end of CustomersWindow::CustomersWindow (constructor)
+    }//end of RecordsWindow::RecordsWindow (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::init
+    // RecordsWindow::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -70,19 +85,19 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         //set up the table model
         setupTableModel();
         
-        //perform a command to get the customers
-        (new Command("get customers")).perform();
+        //perform a command to get the records
+        (new Command("get " + recordNamePlural)).perform();
         
         super.init();
         
         //center and make visible
         setVisible();
         
-    }// end of CustomersWindow::init
+    }// end of RecordsWindow::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::createGui
+    // RecordsWindow::createGui
     //
     // Creates and adds the GUI to the window.
     //
@@ -111,11 +126,11 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         //add the buttons panel
         addToMainPanel(createButtonsPanel());
         
-    }// end of CustomersWindow::createGui
+    }// end of RecordsWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::handleCommand
+    // RecordsWindow::handleCommand
     //
     // Performs different actions depending on pCommand.
     //
@@ -124,33 +139,28 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     public void handleCommand(Command pCommand) 
     {
         
-        switch (pCommand.getMessage()) {
-            
-            case "edit selected customer":
-                editSelectedCustomer();
-                break;
-            
-            case "display add customer window":
-                displayAddCustomerWindow();
-                break;
-                
-            case "delete selected customer":
-                deleteSelectedCustomer();
-                break;
-            
-            case "display customers":
-                displayCustomers((Table)pCommand.get("customers"));
-                break;
-                
+        String msg = pCommand.getMessage();
+        
+        if (msg.equals("display " + recordNamePlural)) {
+            displayRecords((Table)pCommand.get("table"));
+        }
+        else if (msg.equals("display add record window")) {
+            displayAddRecordWindow();
+        }
+        else if (msg.equals("edit selected record")) {
+            editSelectedRecord();
+        }
+        else if (msg.equals("delete selected record")) {
+            deleteSelectedRecord();
         }
         
         if (downStream != null) { downStream.handleCommand(pCommand); }
         
-    }//end of CustomersWindow::handleCommand
+    }//end of RecordsWindow::handleCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::createButtonsPanel
+    // RecordsWindow::createButtonsPanel
     //
     // Creates and returns a JPanel containing all of the buttons for the
     // window.
@@ -166,70 +176,70 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         
         int buttonSpacer = 20;
         
-        //Add Customer button
+        //Add Record button
         panel.add(createButton( "Add", 
-                                "Add a new customer.", 
-                                "display add customer window"));
+                                "Add a new " + recordName + ".", 
+                                "display add record window"));
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
-        //Edit Customer button
+        //Edit Record button
         panel.add(createButton( "Edit", 
-                                "Edit information about the selected "
-                                    + "customer.", 
-                                "edit selected customer"));
+                                "Edit information about the selected " 
+                                    + recordName + ".", 
+                                "edit selected record"));
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
-        //Delete Customer button
-        panel.add(createButton("Delete", "Delete the selected customer.", 
-                                "delete selected customer"));
+        //Delete Record button
+        panel.add(createButton("Delete", "Delete the selected "+recordName+".", 
+                                "delete selected record"));
         
         return panel;
         
-    }// end of CustomersWindow::createButtonsPanel
+    }// end of RecordsWindow::createButtonsPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::editSelectedCustomer
+    // RecordsWindow::editSelectedRecord
     //
-    // Gets the selected customer skoonie key from the table and passes it on to
+    // Gets the selected record skoonie key from the table and passes it on to
     // the EditRecordWindow.
     //
     
-    private void editSelectedCustomer() 
+    private void editSelectedRecord() 
     {
         
         Record rec;
         
-        //return if there was a problem when getting the selected customer
-        if ((rec=getSelectedCustomer())==null) { return; }
+        //return if there was a problem when getting the selected record
+        if ((rec=getSelectedRecord())==null) { return; }
         
         String key = rec.getSkoonieKey();
-        downStream = new EditRecordWindow("Edit Customer", this, 
+        downStream = new EditRecordWindow(editRecordWindowTitle, this, 
                                                 getActionListener(),
-                                                "customer", customers, key);
+                                                recordName, records, key);
         ((EditRecordWindow)downStream).init();
         
-    }// end of CustomersWindow::editSelectedCustomer
+    }// end of RecordsWindow::editSelectedRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::deleteSelectedCustomer
+    // RecordsWindow::deleteSelectedRecord
     //
-    // Deletes the customer selected in the table.
+    // Deletes the record selected in the table, if verified by the user.
     //
     
-    private void deleteSelectedCustomer() 
+    private void deleteSelectedRecord() 
     {
         
         Record rec;
         
-        //return if there was a problem when getting the selected customer
-        if ((rec=getSelectedCustomer())==null) { return; }
+        //return if there was a problem when getting the selected record
+        if ((rec=getSelectedRecord())==null) { return; }
         
-        String msg = "Are you sure you want to delete customer \"" 
-                        + rec.getValue(customers.getDescriptorKeyByName("Name"))
+        String msg = "Are you sure you want to delete " + recordName + " \"" 
+                        + rec.getValue(records.getDescriptorKeyByName("Name"))
                         + "\"? This cannot be undone.";
 
         //verify the delete action
@@ -246,85 +256,86 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         if (verify == no || verify == JOptionPane.CLOSED_OPTION) { return; }
         
         
-        Command command = new Command("delete customer");
+        Command command = new Command("delete " + recordName);
         String key = rec.getSkoonieKey();
-        command.put("customer key", key);
+        command.put("record key", key);
         command.perform();
         
-    }// end of CustomersWindow::deleteSelectedCustomer
+    }// end of RecordsWindow::deleteSelectedRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::displayAddCustomerWindow
+    // RecordsWindow::displayAddRecordWindow
     //
-    // Displays the Add Customer window.
+    // Displays the Add Record window.
     //
     
-    private void displayAddCustomerWindow() 
+    private void displayAddRecordWindow() 
     {
         
-        downStream = new EditRecordWindow("Add Customer", this, 
+        downStream = new EditRecordWindow(addRecordWindowTitle, this, 
                                                 getActionListener(),
-                                                "customer", customers, null);
+                                                recordName, records, null);
         ((EditRecordWindow)downStream).init();
         
-    }// end of CustomersWindow::displayAddCustomerWindow
+    }// end of RecordsWindow::displayAddRecordWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::displayCustomers
+    // RecordsWindow::displayRecords
     //
-    // Adds the customers in pCustomers to the table.
+    // Adds the records in pRecords to the table.
     //
     
-    private void displayCustomers(Table pCustomers) 
+    private void displayRecords(Table pRecords) 
     {
         
-        //store the customers
-        customers = pCustomers;
+        //store the records
+        records = pRecords;
         
         //remove all of the data already in the model
         int rowCount = model.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
         
-        String idKey = customers.getDescriptorKeyByName("Id");
-        String nameKey = customers.getDescriptorKeyByName("Name");
+        //everything sent here should ALWAYS have Id and Name
+        String idKey = records.getDescriptorKeyByName("Id");
+        String nameKey = records.getDescriptorKeyByName("Name");
         
-        //add the ids and names of the customers to the table
-        for (Record customer : customers.getRecords()) {
-            String id = customer.getValue(idKey);
-            String name = customer.getValue(nameKey);
+        //add the ids and names of the records to the table
+        for (Record rec : records.getRecords()) {
+            String id = rec.getValue(idKey);
+            String name = rec.getValue(nameKey);
             model.addRow( new String[] { id, name });
         }
         
-    }// end of CustomersWindow::displayCustomers
+    }// end of RecordsWindow::displayRecords
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::getSelectedCustomer
+    // RecordsWindow::getSelectedRecord
     //
-    // Get the selected customer from the table, or display a message and return
+    // Get the selected record from the table, or display a message and return
     // null if one is not selected.
     //
     
-    private Record getSelectedCustomer() 
+    private Record getSelectedRecord() 
     {
         Record rec = null;
         
         int row = table.getSelectedRow();
         if (row==-1) {
-            JOptionPane.showMessageDialog(this, "No customer selected.");
+            JOptionPane.showMessageDialog(this, "No "+recordName+" selected.");
         }
-        else { rec = customers.getRecords().get(row); }
+        else { rec = records.getRecords().get(row); }
         
         return rec;
         
-    }// end of CustomersWindow::getSelectedCustomer
+    }// end of RecordsWindow::getSelectedRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // CustomersWindow::setupTableModel
+    // RecordsWindow::setupTableModel
     //
     // Sets up the table model for use
     //
@@ -342,9 +353,9 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         //add the column names to the model
         model.setColumnIdentifiers(new String[]{"Id", "Name"});
         
-    }// end of CustomersWindow::setupTableModel
+    }// end of RecordsWindow::setupTableModel
     //--------------------------------------------------------------------------
 
-}//end of class CustomersWindow
+}//end of class RecordsWindow
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

@@ -312,8 +312,10 @@ public class DisplayClassic extends JFrame implements CommandHandler,
     private void displayCustomersFrame()
     {
         
-        downStream = new CustomersWindow(this, this);
-        ((CustomersWindow)downStream).init();
+        downStream = new RecordsWindow("Customers", "Add Customer", 
+                                        "Edit Customer", "customer",
+                                        "customers", this, this);
+        ((RecordsWindow)downStream).init();
         
         //this will not be called until after the customers window closes
         downStream = null;
