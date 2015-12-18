@@ -10,7 +10,7 @@
 * Currently stores:
 *   Skoonie Key
 *   Name
-*   Values Table Name
+*   Required
 *
 */
 
@@ -30,13 +30,15 @@ public class Descriptor
     public String getSkoonieKey() { return skoonieKey; }
     public void setSkoonieKey(String pKey) { skoonieKey = pKey; }
     
+    //Examples: Id, Name, Quantity
     private String name;
     public String getName() { return name; }
     public void setName(String pName) { name = pName; }
     
-    private String valuesTable;
-    public String getValuesTable() { return valuesTable; }
-    public void setValuesTable(String pTable) { valuesTable = pTable; }
+    //required means that the input field cannot be empty
+    private boolean required;
+    public boolean getRequired() { return required; }
+    public void setRequired(boolean pRequired) { required = pRequired; }
     
     //--------------------------------------------------------------------------
     // Descriptor::Descriptor (constructor)

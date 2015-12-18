@@ -20,7 +20,6 @@ package model;
 import shared.Descriptor;
 import model.database.MySQLDatabase;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.database.DatabaseEntry;
@@ -176,7 +175,7 @@ public class DescriptorHandler extends RecordHandler
             Descriptor d = new Descriptor();
             d.setSkoonieKey(e.getValue("skoonie_key"));
             d.setName(e.getValue("name"));
-            d.setValuesTable(e.getValue("values_table"));
+            d.setRequired(e.getValue("required").equals("1"));
             
             descriptors.add(d);
         }
