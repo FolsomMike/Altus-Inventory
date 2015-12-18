@@ -16,6 +16,8 @@ package view.classic;
 
 //------------------------------------------------------------------------------
 
+import command.Command;
+import command.CommandHandler;
 import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -43,7 +45,7 @@ import toolkit.Tools;
 // class EditRecordWindow
 //
 
-public class EditRecordWindow extends AltusJDialog
+public class EditRecordWindow extends AltusJDialog implements CommandHandler
 {
     
     private final Table table;
@@ -126,6 +128,19 @@ public class EditRecordWindow extends AltusJDialog
         addToMainPanel(createCancelConfirmPanel());
         
     }// end of EditRecordWindow::createGui
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditRecordWindow::handleCommand
+    //
+    // Performs different actions depending on pCommand.
+    //
+    
+    @Override
+    public void handleCommand(Command pCommand) 
+    {
+        
+    }//end of EditRecordWindow::handleCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
