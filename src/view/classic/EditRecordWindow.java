@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -178,11 +180,8 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     private void confirm() 
     {
         
-        for (Descriptor d : table.getDescriptors()) {
-            String descKey = d.getSkoonieKey();
-            String input = inputs.get(descKey).getText();
-            if (!input.isEmpty()) { record.addValue(descKey, input);}
-        }
+        //return if user input is bad
+        if (!getUserInput()) { return; }
         
         String message;
         
@@ -380,6 +379,64 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         return panel;
 
     }// end of AltusJDialog::createRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditRecordWindow::getUserInput
+    //
+    // Gets and checks the user input. If Descriptor.getRequired() is true, then
+    // the input tied to that descriptor cannot be empty. If any are empty, the
+    // user input is considered bad.
+    //
+    // Returns true if user input is good; false if not.
+    //
+    
+    private boolean getUserInput() 
+    {
+        
+        boolean good = true;
+        
+        //names of all the descriptors whose inputs can't be empty, but are
+        List<String> badInputs = new ArrayList<>();
+        
+        for (Descriptor d : table.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            String input = inputs.get(descKey).getText();
+            
+            boolean empty = input.isEmpty();
+            
+            //if input is empty but can't be, add desriptor name to list
+            if (d.getRequired() && empty) { badInputs.add(d.getName()); }
+            
+            //only add the value if its not empty
+            if (!empty) { record.addValue(descKey, input);} //WIP HSS// -- needs to add if value has changed
+        }
+        
+        //if there are any bad inputs, display a message to the user and set
+        //good to false
+        if (!badInputs.isEmpty()) {
+            String title = "Inputs Cannot Be Empty";
+            
+            //create the message string
+            String msg = "<html>The following inputs cannot be empty:<ul>";
+            for (String s : badInputs) { msg += "<li><b>" +s+ "</b></li>"; }
+            msg += "</ul></html>";
+            
+            //put the message into a JLabel so html can be used
+            JLabel label = new JLabel(msg);
+            label.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+            
+            //display the warning to the user
+            JOptionPane.showMessageDialog(this, label, title, 
+                                            JOptionPane.ERROR_MESSAGE);
+            
+            //input was bad
+            good = false;
+        }
+        
+        return good;
+        
+    }//end of EditRecordWindow::getUserInput
     //--------------------------------------------------------------------------
 
 }//end of class EditRecordWindow
