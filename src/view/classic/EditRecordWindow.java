@@ -5,8 +5,20 @@
 *
 * Purpose:
 *
-* This class is the Edit Record window. It displays the information stored in
-* the Record passed in upon construction and allows the user to edit it.
+* This class is the Edit Record window, which can be used to edit or create a 
+* Record.
+* 
+* Create:
+*   Displays inputs for each of the descriptors in the Table, allowing users to
+*       define a new Record.
+*   To use the class to create a new Record, then pass null in for the Skoonie
+*       Key of the record.
+* 
+* Edit:
+*   Displays the information stored in the Record passed in upon construction 
+*       and allows the user to edit it.
+*   To use the class to edit a Record, then pass in the Skoonie Key of the
+*       Record in the Table -- both passed in upon construction.
 *
 */
 
@@ -174,7 +186,12 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     //--------------------------------------------------------------------------
     // EditRecordWindow::confirm
     //
-    // Confirms the edit of the record. //WIP HSS// -- better description
+    // Confirms that the user wants to user wants to confirm their inputs to
+    // either create or edit a Record, depending on whether or not the Skoonie
+    // Key passed in upon construction is null or not.
+    //
+    // If the user input is bad, a message is displayed to the user and this 
+    // function is returned.
     //
     
     private void confirm() 
@@ -357,7 +374,7 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // AltusJDialog::createRow
+    // EditRecordWindow::createRow
     //
     // Creates and returns a row of JPanels using pPanels, using pSpacer as the
     // spacing between the panels.
@@ -378,7 +395,7 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         
         return panel;
 
-    }// end of AltusJDialog::createRow
+    }// end of EditRecordWindow::createRow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
