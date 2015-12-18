@@ -190,13 +190,29 @@ public class CustomerHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // CustomerHandler::updateCustomer
     //
-    // Updates a customer using the information in pCommand.
+    // Updates the customer in pCustomers associated with pCustomerKey to the
+    // database.
     //
 
-    public void updateCustomer(Map<String, String> pCommand)
+    public void updateCustomer(Table pCustomers, String pCustomerKey)
     {
         
-        updateRecord(pCommand, customerKeys, customersTable);
+        getDatabase().connectToDatabase();
+        
+        //get the proper record from pCustomers
+        Record record = pCustomers.getRecord(pCustomerKey);
+        
+        //add the customer to the database
+        DatabaseEntry entry = new DatabaseEntry();
+        entry.storeColumn("skoonie_key", record.getSkoonieKey());
+        for (Descriptor d : pCustomers.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            entry.storeColumn(descKey, record.getValue(descKey));
+        }
+        
+        getDatabase().updateEntry(entry, customersTable);
+        
+        getDatabase().closeDatabaseConnection();
 
     }//end of CustomerHandler::updateCustomer
     //--------------------------------------------------------------------------

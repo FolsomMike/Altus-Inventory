@@ -155,7 +155,11 @@ public class MainController implements CommandHandler, Runnable
                 pCommand.setMessage("display customers");
                 break;
                 
-            case "update customer": //WIP HSS// -- update the customer
+            case "update customer":
+                model.updateCustomer((Table)pCommand.get("table"), 
+                                    (String)pCommand.get("record key"));
+                pCommand.put("customers", model.getCustomers());
+                pCommand.setMessage("display customers");
                 break;
                 
             //descriptor actions

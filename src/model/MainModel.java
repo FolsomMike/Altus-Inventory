@@ -164,6 +164,21 @@ public class MainModel
     }//end of MainModel::logStackTrace
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // MainModel::updateCustomer
+    //
+    // Updates the customer in pCustomers associated with pCustomerKey to the
+    // database.
+    //
+
+    public void updateCustomer(Table pCustomers, String pCustomerKey)
+    {
+
+        customerHandler.updateCustomer(pCustomers, pCustomerKey);
+
+    }//end of MainModel::updateCustomer
+    //--------------------------------------------------------------------------
+    
 }//end of class MainModel
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
