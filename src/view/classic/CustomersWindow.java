@@ -125,12 +125,14 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         
         switch (pCommand.getMessage()) {
             
-            //actions necessary for all display interfaces
+            case "edit selected customer":
+                editSelectedCustomer();
+                break;
+            
             case "display add customer window":
                 displayAddCustomerWindow();
                 break;
                 
-            //customer actions
             case "delete selected customer":
                 deleteSelectedCustomer();
                 break;
@@ -176,7 +178,7 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         panel.add(createButton( "Edit", 
                                 "Edit information about the selected "
                                     + "customer.", 
-                                "")); //WIP HSS// -- add action command
+                                "edit selected customer"));
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
@@ -187,6 +189,26 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         return panel;
         
     }// end of CustomersWindow::createButtonsPanel
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::editSelectedCustomer
+    //
+    // Gets the selected customer skoonie key from the table and passes it on to
+    // the EditRecordWindow.
+    //
+    
+    private void editSelectedCustomer() 
+    {
+        
+        Record rec = customers.getRecords().get(table.getSelectedRow());
+        String key = rec.getSkoonieKey();
+        editRecordWindow = new EditRecordWindow("Edit Customer", this, 
+                                                getActionListener(),
+                                                customers, key);
+        editRecordWindow.init();
+        
+    }// end of CustomersWindow::editSelectedCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
