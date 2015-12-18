@@ -67,13 +67,14 @@ public class MainModel
     //--------------------------------------------------------------------------
     // MainModel::addCustomer
     //
-    // Adds pCustomer to the database.
+    // Adds the customer in pCustomers associated with pCustomerKey to the
+    // database.
     //
 
-    public void addCustomer(Table pCustomer)
+    public void addCustomer(Table pCustomers, String pCustomerKey)
     {
 
-        //WIP HSS// -- add the customer
+        customerHandler.addCustomer(pCustomers, pCustomerKey);
 
     }//end of MainModel::addCustomer
     //--------------------------------------------------------------------------

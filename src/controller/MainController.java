@@ -48,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import model.MainModel;
+import shared.Table;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -136,10 +137,14 @@ public class MainController implements CommandHandler, Runnable
                 break;
                 
             //customer actions
-            case "add customer": //WIP HSS// -- add the customer
+            case "add customer":
+                model.addCustomer((Table)pCommand.get("table"), 
+                                    (String)pCommand.get("record key"));
+                pCommand.put("customers", model.getCustomers());
+                pCommand.setMessage("display customers");
                 break;
                 
-            case "delete customer": //WIP HSS// -- delete the customer
+            case "delete customer":
                 model.deleteCustomer((String)pCommand.get("customer key"));
                 pCommand.put("customers", model.getCustomers());
                 pCommand.setMessage("display customers");

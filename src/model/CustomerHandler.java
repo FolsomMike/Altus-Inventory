@@ -75,24 +75,28 @@ public class CustomerHandler extends RecordHandler
     //--------------------------------------------------------------------------
     // CustomerHandler::addCustomer
     //
-    // Adds a customer using the information in pCustomer.
+    // Adds the customer in pCustomers associated with pCustomerKey to the
+    // database.
     //
 
-    public void addCustomer(Table pCustomer)
+    public void addCustomer(Table pCustomers, String pCustomerKey)
     {
-        //DEBUG HSS//
-        /*getDatabase().connectToDatabase();
+        
+        getDatabase().connectToDatabase();
+        
+        //get the proper record from pCustomers
+        Record record = pCustomers.getRecord(pCustomerKey);
         
         //add the customer to the database
         DatabaseEntry entry = new DatabaseEntry();
-        entry.storeColumn("skoonie_key", pCustomer.getSkoonieKey());
-        for (Descriptor d : pCustomer.getDescriptors()) {
-            d.getName();
+        for (Descriptor d : pCustomers.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            entry.storeColumn(descKey, record.getValue(descKey));
         }
-        getValues(customerRecord, pCommand, customerKeys);
-        getDatabase().insertRecord(customerRecord, customersTable);
         
-        getDatabase().closeDatabaseConnection();*/
+        getDatabase().insertEntry(entry, customersTable);
+        
+        getDatabase().closeDatabaseConnection();
 
     }//end of CustomerHandler::addCustomer
     //--------------------------------------------------------------------------
