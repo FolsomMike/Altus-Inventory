@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import shared.Descriptor;
+import shared.Record;
 import shared.Table;
 import toolkit.Tools;
 
@@ -48,8 +49,10 @@ import toolkit.Tools;
 public class EditRecordWindow extends AltusJDialog implements CommandHandler
 {
     
+    private final String recordType;
     private final Table table;
     private final String recordSkoonieKey;
+    private Record record;
     
     private final Map<String, JTextField> inputs = new HashMap<>();
     
@@ -64,11 +67,13 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     //
 
     public EditRecordWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, Table pTable, 
-                                String pRecordSkoonieKey)
+                                ActionListener pListener, String pRecordType,
+                                Table pTable, String pRecordSkoonieKey)
     {
 
         super(pTitle, pParent, pListener);
+        
+        recordType = pRecordType;
         
         table = pTable;
         
@@ -86,6 +91,15 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     @Override
     public void init() 
     {
+        
+        //get the record from the table, or create a new one
+        if (recordSkoonieKey != null) { 
+            record = table.getRecord(recordSkoonieKey);
+        }
+        else {
+            record = new Record();
+            table.addRecord(record);
+        }
         
         super.init();
         
@@ -146,9 +160,55 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
                 dispose();
                 break;
                 
+            case "EditRecordWindow -- confirm":
+                confirm();
+                break;
+                
         }
         
     }//end of EditRecordWindow::handleCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // EditRecordWindow::confirm
+    //
+    // Confirms the edit of the record. //WIP HSS// -- better description
+    //
+    
+    private void confirm() 
+    {
+        
+        for (Descriptor d : table.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            String input = inputs.get(descKey).getText();
+            if (!input.isEmpty()) { record.addValue(descKey, input);}
+        }
+        
+        String message;
+        
+        //editing existing record -- need to update, not add
+        if (recordSkoonieKey != null ) { message = "update "; }
+        //adding new record -- need to add, not update
+        else { message = "add "; record.setSkoonieKey("new"); }
+        
+        //add the record type to the message
+        message += recordType;
+        
+        //create the command
+        Command command = new Command(message);
+        
+        //put the table into the command
+        command.put("table", table);
+        
+        //put the skoonie key of the record into the command
+        command.put("record key", record.getSkoonieKey());
+        
+        command.perform();
+        
+        //dispose of this the window
+        dispose();
+        
+    }//end of EditRecordWindow::confirm
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -188,7 +248,7 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         buttonsPanel.add(Tools.createHorizontalSpacer(20));
         
         //add the OK button
-        buttonsPanel.add(createButton("OK", "" , "")); //WIP HSS// -- need to pass in values
+        buttonsPanel.add(createButton("OK", "" , "EditRecordWindow -- confirm"));
         
         //horizontal center 
         //-- only works to "push" to the center if another glue is used

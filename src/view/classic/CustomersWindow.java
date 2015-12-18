@@ -203,7 +203,7 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         String key = rec.getSkoonieKey();
         downStream = new EditRecordWindow("Edit Customer", this, 
                                                 getActionListener(),
-                                                customers, key);
+                                                "customer", customers, key);
         ((EditRecordWindow)downStream).init();
         
     }// end of CustomersWindow::editSelectedCustomer
@@ -238,7 +238,7 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         
         downStream = new EditRecordWindow("Add Customer", this, 
                                                 getActionListener(),
-                                                customers, null);
+                                                "customer", customers, null);
         ((EditRecordWindow)downStream).init();
         
     }// end of CustomersWindow::displayAddCustomerWindow
