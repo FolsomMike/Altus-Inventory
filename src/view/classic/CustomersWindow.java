@@ -22,6 +22,7 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
@@ -199,7 +200,11 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     private void editSelectedCustomer() 
     {
         
-        Record rec = customers.getRecords().get(table.getSelectedRow());
+        Record rec;
+        
+        //return if there was a problem when getting the selected customer
+        if ((rec=getSelectedCustomer())==null) { return; }
+        
         String key = rec.getSkoonieKey();
         downStream = new EditRecordWindow("Edit Customer", this, 
                                                 getActionListener(),
@@ -218,8 +223,12 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
     private void deleteSelectedCustomer() 
     {
         
+        Record rec;
+        
+        //return if there was a problem when getting the selected customer
+        if ((rec=getSelectedCustomer())==null) { return; }
+        
         Command command = new Command("delete customer");
-        Record rec = customers.getRecords().get(table.getSelectedRow());
         String key = rec.getSkoonieKey();
         command.put("customer key", key);
         command.perform();
@@ -272,6 +281,28 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         }
         
     }// end of CustomersWindow::displayCustomers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // CustomersWindow::getSelectedCustomer
+    //
+    // Get the selected customer from the table, or display a message and return
+    // null if one is not selected.
+    //
+    
+    private Record getSelectedCustomer() 
+    {
+        Record rec = null;
+        
+        int row = table.getSelectedRow();
+        if (row==-1) {
+            JOptionPane.showMessageDialog(this, "No customer selected.");
+        }
+        else { rec = customers.getRecords().get(row); }
+        
+        return rec;
+        
+    }// end of CustomersWindow::getSelectedCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
