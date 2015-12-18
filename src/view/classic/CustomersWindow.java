@@ -228,6 +228,24 @@ public class CustomersWindow extends AltusJDialog implements CommandHandler
         //return if there was a problem when getting the selected customer
         if ((rec=getSelectedCustomer())==null) { return; }
         
+        String msg = "Are you sure you want to delete customer \"" 
+                        + rec.getValue(customers.getDescriptorKeyByName("Name"))
+                        + "\"? This cannot be undone.";
+
+        //verify the delete action
+        
+        //yes and no are actually backwards -- done for display purposes
+        int no = JOptionPane.OK_OPTION;
+        Object[] options = { "No", "Yes" };
+        int verify = JOptionPane.showOptionDialog(this, msg, "Verify Delete", 
+                                        JOptionPane.DEFAULT_OPTION, 
+                                        JOptionPane.QUESTION_MESSAGE, 
+                                        null, options, null);
+        
+        //return if the user closed window or selected no
+        if (verify == no || verify == JOptionPane.CLOSED_OPTION) { return; }
+        
+        
         Command command = new Command("delete customer");
         String key = rec.getSkoonieKey();
         command.put("customer key", key);
