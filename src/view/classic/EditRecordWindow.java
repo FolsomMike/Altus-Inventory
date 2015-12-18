@@ -23,7 +23,9 @@ import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -46,6 +48,8 @@ public class EditRecordWindow extends AltusJDialog
     
     private final Table table;
     private final String recordSkoonieKey;
+    
+    private final Map<String, JTextField> inputs = new HashMap<>();
     
     JScrollPane inputsScrollPane;
     
@@ -197,7 +201,7 @@ public class EditRecordWindow extends AltusJDialog
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<count; i++) {
             
-            row.add(createInputPanel(descriptors.get(i).getName(), "", ""));
+            row.add(createInputPanel(descriptors.get(i)));
             
             //if we've reached the number of panels
             //allowed per row, or the end of the
@@ -229,14 +233,14 @@ public class EditRecordWindow extends AltusJDialog
     //--------------------------------------------------------------------------
     // EditRecordWindow::createInputPanel
     //
-    // Creates and returns an input panel containing a JLabel and a JTextField.
+    // Creates and returns an input panel containing a JLabel and a JTextField
+    // using the information in pDescriptor.
     //
-    // The JTextField contained in this input panel is stored in an InputField
-    // which is then stored in inputFields, with pLabel as they key.
+    // The JTextField contained in this input panel is stored in the inputs
+    // map, using pDescriptor.getSkoonie() as the key.
     //
 
-    private JPanel createInputPanel(String pLabel, String pInputFieldText,
-                                        String pToolTip)
+    private JPanel createInputPanel(Descriptor pDescriptor)
     {
 
         JPanel panel = new JPanel();
@@ -244,15 +248,24 @@ public class EditRecordWindow extends AltusJDialog
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        JLabel label = new JLabel(pLabel);
+        JLabel label = new JLabel(pDescriptor.getName());
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(label);
         
         JTextField field = new JTextField();
         field.setAlignmentX(LEFT_ALIGNMENT);
-        field.setToolTipText(pToolTip);
-        field.setText(pInputFieldText);
         Tools.setSizes(field, inputPanelWidth, 25);
+        
+        String descKey = pDescriptor.getSkoonieKey();
+        //set the text of the input field to the text for the record, if one
+        //is specified
+        if (recordSkoonieKey != null) {
+            field.setText(table.getRecord(recordSkoonieKey).getValue(descKey));
+        }
+        //store the input field
+        inputs.put(descKey, field);
+        
+        //add the field to the panel
         panel.add(field);
 
         return panel;
