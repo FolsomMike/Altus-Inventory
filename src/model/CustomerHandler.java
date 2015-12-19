@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Title: CustomerActionHandler.java
+* Title: CustomerHandler.java
 * Author: Hunter Schoonover
 * Date: 12/10/15
 *
@@ -9,6 +9,7 @@
 *
 * Currently handles actions:
 *   add customer
+*   delete customer
 *   get customers
 *   update customer
 *

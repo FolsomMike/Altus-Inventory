@@ -15,7 +15,6 @@ package model;
 
 import shared.Table;
 import model.database.MySQLDatabase;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
