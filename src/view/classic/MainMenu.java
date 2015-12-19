@@ -21,6 +21,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -36,6 +37,9 @@ class MainMenu extends JMenuBar
     
     JMenu viewMenu;
     JMenuItem customersMenuItem;
+    
+    JMenu settingsMenu;
+    JMenuItem settingsCustomerMenuItem;
 
     //--------------------------------------------------------------------------
     // MainMenu::MainMenu (constructor)
@@ -57,8 +61,12 @@ class MainMenu extends JMenuBar
 
     public void init()
     {
+        
+        addSpacer(5);
 
         createViewMenu();
+        
+        createSettingsMenu();
 
     }//end of MainMenu::init
     //--------------------------------------------------------------------------
@@ -80,7 +88,7 @@ class MainMenu extends JMenuBar
 
         boolean selected = false;
 
-        if (viewMenu.isSelected())
+        if (viewMenu.isSelected() || settingsMenu.isSelected())
         {
             selected = true;
         }
@@ -88,6 +96,50 @@ class MainMenu extends JMenuBar
         return selected;
 
     }//end of ::isSelected
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::addSpacer
+    //
+    // Creates and adds a spacer of pWidth to the menu bar.
+    //
+
+    private void addSpacer(int pWidth)
+    {
+
+        JMenu spacer = new JMenu();
+        spacer.setEnabled(false);
+        Tools.setSizes(spacer, pWidth, 1);
+        add(spacer);
+
+    }//end of MainMenu::addSpacer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainMenu::createSettingsMenu
+    //
+    // Creates the Settings menu and adds it to the menu bar.
+    //
+
+    private void createSettingsMenu()
+    {
+        
+        //Settings menu
+        settingsMenu = new JMenu("Settings");
+        settingsMenu.setMnemonic(KeyEvent.VK_S);
+        settingsMenu.setToolTipText("Settings");
+        add(settingsMenu);
+
+        //Settings/Descriptors menu item
+        settingsCustomerMenuItem = new JMenuItem("Customer");
+        settingsCustomerMenuItem.setMnemonic(KeyEvent.VK_C);
+        settingsCustomerMenuItem.setToolTipText("Customer Settings.");
+        settingsCustomerMenuItem.setActionCommand("display customer settings "
+                                                    + "window");
+        settingsCustomerMenuItem.addActionListener(actionListener);
+        settingsMenu.add(settingsCustomerMenuItem);
+
+    }//end of MainMenu::createSettingsMenu
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
