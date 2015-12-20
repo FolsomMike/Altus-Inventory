@@ -120,7 +120,6 @@ public class MainController implements CommandHandler, Runnable
         switch (pCommand.getMessage()) {
             
             case "empty database": //DEBUG HSS// -- testing purposes only
-                model.emptyDatabase();
                 break;
                 
             //batch actions
@@ -163,11 +162,11 @@ public class MainController implements CommandHandler, Runnable
                 break;
                 
             //descriptor actions
-            case "add descriptor": //WIP HSS// -- add the descriptor
+            case "get customer descriptors": //WIP HSS// -- add the descriptor
+                pCommand.put("descriptors", model.getCustomerDescriptors());
+                pCommand.setMessage("display descriptors");
                 break;
                 
-            case "delete descriptor": //WIP HSS// -- delete the descriptor
-                break;
         }
         
         //pass the command down the stream to view

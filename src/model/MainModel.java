@@ -14,7 +14,6 @@
 package model;
 
 import shared.Table;
-import model.database.MySQLDatabase;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,11 +25,7 @@ import java.util.logging.Logger;
 public class MainModel
 {
     
-    private final MySQLDatabase db = new MySQLDatabase();
-    
-    private final BatchHandler batchHandler = new BatchHandler(db);
-    
-    private final CustomerHandler customerHandler = new CustomerHandler(db);
+    private final RecordHandler recordHandler = new RecordHandler();
 
     //--------------------------------------------------------------------------
     // MainModel::MainModel (constructor)
@@ -50,15 +45,6 @@ public class MainModel
 
     public void init()
     {
-        
-        //initialize database
-        db.init();
-        
-        //initialize the batch handler
-        batchHandler.init();
-        
-        //initialize the customer handler
-        customerHandler.init();
 
     }// end of MainModel::init
     //--------------------------------------------------------------------------
@@ -73,7 +59,7 @@ public class MainModel
     public void addCustomer(Table pCustomers, String pCustomerKey)
     {
 
-        customerHandler.addCustomer(pCustomers, pCustomerKey);
+        recordHandler.addCustomer(pCustomers, pCustomerKey);
 
     }//end of MainModel::addCustomer
     //--------------------------------------------------------------------------
@@ -87,7 +73,7 @@ public class MainModel
     public void deleteCustomer(String pSkoonieKey)
     {
 
-        customerHandler.deleteCustomer(pSkoonieKey);
+        recordHandler.deleteCustomer(pSkoonieKey);
 
     }//end of MainModel::deleteCustomer
     //--------------------------------------------------------------------------
@@ -101,37 +87,24 @@ public class MainModel
     public Table getCustomers()
     {
 
-        return customerHandler.getCustomers();
+        return recordHandler.getCustomers();
 
     }//end of MainModel::getCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainModel::emptyDatabase
+    // MainModel::getCustomerDescriptors
     //
-    // Deletes all of the data in the database.
-    //
-    // //DEBUG HSS// -- for testing purposes only
+    // Gets and returns all of the customers in the database
     //
 
-    public void emptyDatabase()
+    public Table getCustomerDescriptors()
     {
 
-        db.connectToDatabase();
-        
-        db.emptyTable("BATCHES");
-        
-        db.emptyTable("CUSTOMERS");
-        
-        db.emptyTable("DESCRIPTORS");
-        
-        db.emptyTable("MOVEMENTS");
-        
-        db.emptyTable("RECEIVEMENTS");
-        
-        db.closeDatabaseConnection();
+        return null;
+        //DEBUG HSS//return recordHandler.getDescriptors();
 
-    }//end of MainModel::emptyDatabase
+    }//end of MainModel::getCustomerDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -173,7 +146,7 @@ public class MainModel
     public void updateCustomer(Table pCustomers, String pCustomerKey)
     {
 
-        customerHandler.updateCustomer(pCustomers, pCustomerKey);
+        recordHandler.updateCustomer(pCustomers, pCustomerKey);
 
     }//end of MainModel::updateCustomer
     //--------------------------------------------------------------------------

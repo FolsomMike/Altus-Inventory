@@ -1,12 +1,18 @@
 /*******************************************************************************
-* Title: BatchController.java
+* Title: RecordHandler.java
 * Author: Hunter Schoonover
-* Date: 12/08/15
+* Date: 12/19/15
 *
 * Purpose:
 *
-* This class contains general functions and performs general operations
-* necessary to listen for record actions.
+* This class handles action pertaining to different types of records, such as
+* Customers, Batches, Receivements, etc.
+*
+* Currently handles actions:
+*   add customer
+*   delete customer
+*   get customers
+*   update customer
 *
 */
 
@@ -15,9 +21,13 @@
 package model;
 
 import shared.Table;
-import model.database.MySQLDatabase;
+import shared.Descriptor;
+import model.database.DatabaseEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import model.database.MySQLDatabase;
+import shared.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -27,17 +37,20 @@ import java.util.Map;
 public class RecordHandler
 {
     
-    private final MySQLDatabase db;
-    public final MySQLDatabase getDatabase() { return db; }
+    private final MySQLDatabase db = new MySQLDatabase();
+    
+    //class to hold names of tables in the database
+    private class TableName {
+        public static final String customers = "CUSTOMERS";
+        public static final String descriptors = "DESCRIPTORS";
+    }
 
     //--------------------------------------------------------------------------
     // RecordHandler::RecordHandler (constructor)
     //
 
-    public RecordHandler(MySQLDatabase pDatabase)
+    public RecordHandler()
     {
-
-        db = pDatabase;
 
     }//end of RecordHandler::RecordHandler (constructor)
     //--------------------------------------------------------------------------
@@ -50,22 +63,90 @@ public class RecordHandler
 
     public void init()
     {
+        
+        //initialize the database
+        db.init();
 
     }// end of RecordHandler::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::deleteRecord
+    // RecordHandler::addCustomer
     //
-    // Deletes the entry associated with pSkoonieKey from pTable.
+    // Adds the customer in pCustomers associated with pCustomerKey to the
+    // database.
     //
 
-    protected void deleteRecord(String pTable, String pSkoonieKey)
+    public void addCustomer(Table pCustomers, String pCustomerKey)
+    {
+        
+        addRecord(TableName.customers, pCustomers, pCustomerKey);
+
+    }//end of RecordHandler::addCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::addRecord
+    //
+    // Adds the record in pTable associated with pRecordKey to the database.
+    //
+
+    public void addRecord(String pTableName, Table pTable, String pRecordKey)
     {
         
         db.connectToDatabase();
         
-        db.deleteEntry(pTable, pSkoonieKey);
+        //get the proper record from pTable
+        Record record = pTable.getRecord(pRecordKey);
+        
+        //add the customer to the database
+        DatabaseEntry entry = new DatabaseEntry();
+        for (Descriptor d : pTable.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            
+             //store the value for the descriptor
+            String value = record.getValue(descKey);
+            if (value != null) { entry.storeColumn(descKey, value); }
+        }
+        
+        db.insertEntry(entry, pTableName);
+        
+        db.closeDatabaseConnection();
+
+    }//end of RecordHandler::addRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::deleteCustomer
+    //
+    // Deletes the customer associated with pSkoonieKey from the database.
+    //
+
+    public void deleteCustomer(String pSkoonieKey)
+    {
+        
+        //WIP HSS// -- perform check to see if he can be deleted
+        
+        deleteRecord(TableName.customers, pSkoonieKey);
+
+    }//end of RecordHandler::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::deleteRecord
+    //
+    // Deletes the entry associated with pSkoonieKey from pTableName.
+    //
+
+    public void deleteRecord(String pTableName, String pSkoonieKey)
+    {
+        
+        db.connectToDatabase();
+        
+        //WIP HSS// -- perform check to see if record key exists anywhere else
+        //              Maybe pass in a list of tables to check in?
+        
+        db.deleteEntry(pTableName, pSkoonieKey);
        
         db.closeDatabaseConnection();
         
@@ -73,62 +154,158 @@ public class RecordHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::getValues
+    // RecordHandler::getCustomers
     //
-    // The value of every key in pKeyValuePairs that matches one of the keys in 
-    // pKeys is added to pRec, using the key as the column.
-    //
-    // If a string in pKeys contains two keys for one value, then the first key
-    // is used as the column.
+    // Gets and returns all of the customers from the database.
     //
 
-    protected void getValues(Table pRec, Map<String, String> pKeyValuePairs, 
-                                List<String> pKeys)
+    public Table getCustomers()
     {
         
-        //return if there are no keys to check for
-        if (pKeys.isEmpty() || pKeyValuePairs.isEmpty()) { return; }
+        return getTable(TableName.customers);
+
+    }//end of RecordHandler::getCustomers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::getDescriptors
+    //
+    // Gets and returns all of the descriptors with skoonie keys matching pKeys
+    // from the descriptors table.
+    //
+    // NOTE: Assumes database connection is opened and closed elsewhere.
+    //
+
+    public List<Descriptor> getDescriptors(List<String> pKeys)
+    {
         
-        for (String keys : pKeys) {
+        List<Descriptor> descriptors = new ArrayList<>();
+        
+        List<DatabaseEntry> entries = db.getEntries(TableName.descriptors,
+                                                                        pKeys);
+        for (DatabaseEntry e : entries) {
             
-            //since multiple keys can relate to one value, split up keys into
-            //an array and look for each key in the array
-            String[] allKeys = keys.split("/");
-            for (String key : allKeys) {
-                
-                //if one of the keys is found, then add the value retrieved
-                //using that key to pRec, using the first key in allKeys as the
-                //column
-                String value;
-                if((value=pKeyValuePairs.get(key)) != null) { 
-                   //DEBUG HSS// pRec.addColumn(allKeys[0], value);
-                    break; 
-                }
-                
-            }
-
+            Descriptor d = new Descriptor();
+            d.setSkoonieKey(e.getValue("skoonie_key"));
+            d.setName(e.getValue("name"));
+            d.setRequired(e.getValue("required").equals("1"));
+            
+            descriptors.add(d);
         }
+        
+        return descriptors;
 
-    }//end of RecordHandler::getValues
+    }//end of RecordHandler::getDescriptors
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::getTable
+    //
+    // Gets the entries and descriptors for the table in the database with 
+    // pTableName and puts them into a Table object.
+    //
+
+    public Table getTable(String pTableName)
+    {
+        
+        db.connectToDatabase();
+        
+        Table table = new Table();
+        
+        //this list will contain the skoonie keys of all
+        //the descriptors that need to be retrieved from
+        //the database
+        List<String> descKeys = new ArrayList<>();
+        
+        //get the descriptor keys for this table from the database
+        for (String columnName : db.getColumnNames(pTableName)) {
+            if (!columnName.equals("skoonie_key")) { descKeys.add(columnName); }
+        }
+        
+        //get and store the descriptors for the table
+        table.setDescriptors(getDescriptors(descKeys));
+        
+        //get the table entries from the database
+        List<DatabaseEntry> entries = db.getEntries(pTableName);
+        
+        //iterate through through the entries
+        for (DatabaseEntry e : entries) {
+            
+            Record r = new Record();
+            
+            //iterate through the columns and column values
+            for (Map.Entry<String, String> c : e.getColumns().entrySet()) {
+                
+                //key=column name; value=column value
+                String name = c.getKey();
+                String value = c.getValue();
+                
+                //if the column is the skoonie_key,
+                //store it and continue to next one
+                if(name.equals("skoonie_key")) { r.setSkoonieKey(value); }
+                
+                //if the column name matches a descriptor key, store the column
+                //value in the record, using the skoonie key of the descriptor
+                //it belongs to as the key
+                else if (table.getDescriptor(name) != null) {
+                    r.addValue(name, value);
+                }
+            
+            }
+            
+            //store the record
+            table.addRecord(r);
+            
+        }
+        
+        db.closeDatabaseConnection();
+        
+        return table;
+
+    }//end of RecordHandler::getTable
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::updateCustomer
+    //
+    // Updates the customer in pTable associated with pCustomerKey in the 
+    // database.
+    //
+
+    public void updateCustomer(Table pTable, String pCustomerKey)
+    {
+        
+        updateRecord(TableName.customers, pTable, pCustomerKey);
+        
+    }//end of RecordHandler::updateCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
     // RecordHandler::updateRecord
     //
-    // Updates the record in pTable associated with the skoonie key found in 
-    // pCommand using information extracted from pCommand using pKeys.
+    // Updates the record in pTable associated with pKey to the table in the
+    // database with pTableName.
 
-    protected void updateRecord(Map<String, String> pCommand, 
-                                List<String> pKeys, String pTable)
+    public void updateRecord(String pTableName, Table pTable,  String pKey)
     {
         
         db.connectToDatabase();
         
-        //update the record
-        Table record = new Table();
-        record.setSkoonieKey(pCommand.get("skoonie_key"));
-        getValues(record, pCommand, pKeys);
-        //DEBUG HSS//db.updateRecord(record, pTable);
+        //get the proper record from pTable
+        Record record = pTable.getRecord(pKey);
+        
+        //add the customer to the database
+        DatabaseEntry entry = new DatabaseEntry();
+        entry.storeColumn("skoonie_key", record.getSkoonieKey());
+        for (Descriptor d : pTable.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            
+             //store the value for the descriptor
+            String value = record.getValue(descKey);
+            if (value != null) { entry.storeColumn(descKey, value); }
+        }
+        
+        db.updateEntry(entry, pTableName);
         
         db.closeDatabaseConnection();
         

@@ -105,6 +105,11 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                 displayCustomersFrame();
                 break;
                 
+            //settings display actions
+            case "display customer settings window":
+                displayCustomerSettingsFrame();
+                break;
+                
         }
         
         //pass the command downstream
@@ -321,6 +326,26 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         downStream = null;
 
     }//end of DisplayClassic::displayCustomersFrame
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayCustomerSettingsFrame
+    //
+    // Displays the Customer Settings window and sets it to the downstream.
+    //
+    
+    private void displayCustomerSettingsFrame()
+    {
+        
+        downStream = new RecordsWindow("Customer S", "Add Customer", 
+                                        "Edit Customer", "customer",
+                                        "customers", this, this);
+        ((RecordsWindow)downStream).init();
+        
+        //this will not be called until after the customers window closes
+        downStream = null;
+
+    }//end of DisplayClassic::displayCustomerSettingsFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
