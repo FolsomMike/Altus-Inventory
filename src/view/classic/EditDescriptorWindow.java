@@ -65,6 +65,8 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     
     private final Descriptor descriptor;
     
+    private final int maxHeight = 350;
+    
     private JScrollPane inputsScrollPane;
     
     private JTextField nameInput;
@@ -117,6 +119,22 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     {
         
         super.init();
+        
+        //now that the GUI has been created and packed, we can set the maximum
+        //height of the frame
+        if (getHeight()>maxHeight){Tools.setSizes(this, getWidth(), maxHeight);}
+        
+        //the scroll bar was previously set to always so that we can guarantee
+        //that it would be included in the width, but we can change it to only
+        //appear as needed now
+        int policy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+        inputsScrollPane.setVerticalScrollBarPolicy(policy);
+        
+        //repack gui components since we changed stuff
+        pack();
+        
+        //center and make visible
+        setVisible();
         
     }// end of EditDescriptorWindow::init
     //--------------------------------------------------------------------------
