@@ -290,10 +290,13 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
         panel.add(createNamePanel());
         
         //vertical spacer
-        panel.add(Tools.createVerticalSpacer(20));
+        panel.add(Tools.createVerticalSpacer(10));
         
         //add the Required input
         panel.add(createRequiredPanel());
+        
+        //vertical spacer
+        panel.add(Tools.createVerticalSpacer(20));
         
         //put the panel into a scroll pane and add it to the inputspanel
         inputsScrollPane = new JScrollPane(panel);
@@ -350,19 +353,22 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     {
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        //add the title label to the panel
-        JLabel label = new JLabel("Required");
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(label);
         
         //add the check box to the panel
         JCheckBox input = new JCheckBox();
         input.setSelected(descriptor.getRequired());
         panel.add(input);
+        
+        //horizontal spacer
+        panel.add(Tools.createHorizontalSpacer(5));
+        
+        //add the title label to the panel
+        JLabel label = new JLabel("Required");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(label);
 
         return panel;
 
