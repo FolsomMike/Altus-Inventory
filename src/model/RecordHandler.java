@@ -168,21 +168,48 @@ public class RecordHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // RecordHandler::getCustomersDescriptors
+    //
+    // Gets and returns the descriptors used for customers from the database.
+    //
+
+    public List<Descriptor> getCustomersDescriptors()
+    {
+        
+        return getDescriptors(TableName.customers, true);
+
+    }//end of RecordHandler::getCustomers
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // RecordHandler::getDescriptors
     //
     // Gets and returns all of the descriptors with skoonie keys matching pKeys
     // from the descriptors table.
     //
-    // NOTE: Assumes database connection is opened and closed elsewhere.
+    // NOTE: Only disconnects from database if pCloseConnection is true.
     //
 
-    public List<Descriptor> getDescriptors(List<String> pKeys)
+    public List<Descriptor> getDescriptors(String pTableName, 
+                                            boolean pCloseConnection)
     {
+        
+        db.connectToDatabase();
+        
+        //this list will contain the skoonie keys of all
+        //the descriptors that need to be retrieved from
+        //the database
+        List<String> descKeys = new ArrayList<>();
+        
+        //get the descriptor keys for pTableName from the database
+        for (String columnName : db.getColumnNames(pTableName)) {
+            if (!columnName.equals("skoonie_key")) { descKeys.add(columnName); }
+        }
         
         List<Descriptor> descriptors = new ArrayList<>();
         
         List<DatabaseEntry> entries = db.getEntries(TableName.descriptors,
-                                                                        pKeys);
+                                                                    descKeys);
         for (DatabaseEntry e : entries) {
             
             Descriptor d = new Descriptor();
@@ -192,6 +219,8 @@ public class RecordHandler
             
             descriptors.add(d);
         }
+        
+        if (pCloseConnection) { db.closeDatabaseConnection(); }
         
         return descriptors;
 
@@ -212,18 +241,8 @@ public class RecordHandler
         
         Table table = new Table();
         
-        //this list will contain the skoonie keys of all
-        //the descriptors that need to be retrieved from
-        //the database
-        List<String> descKeys = new ArrayList<>();
-        
-        //get the descriptor keys for this table from the database
-        for (String columnName : db.getColumnNames(pTableName)) {
-            if (!columnName.equals("skoonie_key")) { descKeys.add(columnName); }
-        }
-        
         //get and store the descriptors for the table
-        table.setDescriptors(getDescriptors(descKeys));
+        table.setDescriptors(getDescriptors(pTableName, false));
         
         //get the table entries from the database
         List<DatabaseEntry> entries = db.getEntries(pTableName);

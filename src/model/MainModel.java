@@ -13,9 +13,11 @@
 
 package model;
 
+import java.util.List;
 import shared.Table;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import shared.Descriptor;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -93,18 +95,17 @@ public class MainModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainModel::getCustomerDescriptors
+    // MainModel::getCustomersDescriptors
     //
-    // Gets and returns all of the customers in the database
+    // Gets and returns all of the descriptors used for customers.
     //
 
-    public Table getCustomerDescriptors()
+    public List<Descriptor> getCustomersDescriptors()
     {
 
-        return null;
-        //DEBUG HSS//return recordHandler.getDescriptors();
+        return recordHandler.getCustomersDescriptors();
 
-    }//end of MainModel::getCustomerDescriptors
+    }//end of MainModel::getCustomersDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

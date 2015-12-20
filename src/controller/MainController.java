@@ -162,9 +162,8 @@ public class MainController implements CommandHandler, Runnable
                 break;
                 
             //descriptor actions
-            case "get customer descriptors": //WIP HSS// -- add the descriptor
-                pCommand.put("descriptors", model.getCustomerDescriptors());
-                pCommand.setMessage("display descriptors");
+            case "get customer descriptors":
+                pCommand.put("descriptors", model.getCustomersDescriptors());
                 break;
                 
         }
