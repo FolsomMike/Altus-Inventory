@@ -39,6 +39,7 @@ import toolkit.Tools;
 public class DescriptorsWindow extends AltusJDialog implements CommandHandler
 {
     
+    private final String type; // E.g. customer, batch, etc.
     private final String addWindowTitle;
     private final String editWindowTitle;
     
@@ -66,6 +67,7 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         addWindowTitle = pAddWindowTitle;
         editWindowTitle = pEditWindowTitle;
         
+        type = pType;
         getDescriptorsCommand = "get " + pType + " descriptors";
 
     }//end of DescriptorsWindow::DescriptorsWindow (constructor)
@@ -217,7 +219,8 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         if ((desc=getSelectedDescriptor())==null) { return; }
         
         downStream = new EditDescriptorWindow(editWindowTitle, this, 
-                                                getActionListener(), desc);
+                                                getActionListener(), type, 
+                                                desc);
         ((EditDescriptorWindow)downStream).init();
         
     }// end of DescriptorsWindow::editSelectedRecord
@@ -247,7 +250,7 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
     {
         
         downStream = new EditDescriptorWindow(addWindowTitle, this, 
-                                                getActionListener());
+                                                getActionListener(), type);
         ((EditDescriptorWindow)downStream).init();
         
     }// end of DescriptorsWindow::displayAddWindow

@@ -63,6 +63,7 @@ import toolkit.Tools;
 public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
 {
     
+    private final String type; // E.g. customer, batch, etc.
     private final Descriptor descriptor;
     
     private final int maxHeight = 350;
@@ -81,11 +82,12 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     //
 
     public EditDescriptorWindow(String pTitle, Window pParent, 
-                                ActionListener pListener)
+                                ActionListener pListener, String pType)
     {
 
         super(pTitle, pParent, pListener);
         
+        type = pType;
         descriptor = new Descriptor();
 
     }//end of EditDescriptorWindow::EditDescriptorWindow (constructor)
@@ -98,11 +100,13 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     //
 
     public EditDescriptorWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, Descriptor pDesc)
+                                ActionListener pListener, String pType,
+                                Descriptor pDesc)
     {
 
         super(pTitle, pParent, pListener);
         
+        type = pType;
         descriptor = pDesc;
 
     }//end of EditDescriptorWindow::EditDescriptorWindow (constructor)
@@ -205,16 +209,20 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
         
         String message;
         
+        //we need to create/add the descriptor
+        if (descriptor.getSkoonieKey().isEmpty()) { message = "add "; }
+        //we need to update the descriptor
+        else { message = "update "; }
+        
+        message += type + " descriptor";
+        
         //create the command
-        /*Command command = new Command(message);
+        Command command = new Command(message);
         
-        //put the table into the command
-        command.put("table", table);
+        //put the descriptor into the command
+        command.put("descriptor", descriptor);
         
-        //put the skoonie key of the record into the command
-        command.put("record key", record.getSkoonieKey());
-        
-        command.perform();*/ //WIP HSS// -- need to perform command
+        command.perform();
         
         //dispose of this the window
         dispose();
