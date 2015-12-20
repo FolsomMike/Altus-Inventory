@@ -106,8 +106,8 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                 break;
                 
             //settings display actions
-            case "display customer settings window":
-                displayCustomerSettingsFrame();
+            case "display customer descriptors window":
+                displayCustomerDescriptorsFrame();
                 break;
                 
         }
@@ -329,23 +329,23 @@ public class DisplayClassic extends JFrame implements CommandHandler,
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DisplayClassic::displayCustomerSettingsFrame
+    // DisplayClassic::displayCustomerDescriptorsFrame
     //
-    // Displays the Customer Settings window and sets it to the downstream.
+    // Displays the Customer Descriptors window and sets it to the downstream.
     //
     
-    private void displayCustomerSettingsFrame()
+    private void displayCustomerDescriptorsFrame()
     {
         
-        downStream = new RecordsWindow("Customer S", "Add Customer", 
-                                        "Edit Customer", "customer",
-                                        "customers", this, this);
-        ((RecordsWindow)downStream).init();
+        downStream = new DescriptorsWindow("Customer Descriptors", this, this,
+                                            "customer", "Add Descriptor", 
+                                            "Edit Descriptor");
+        ((DescriptorsWindow)downStream).init();
         
         //this will not be called until after the customers window closes
         downStream = null;
 
-    }//end of DisplayClassic::displayCustomerSettingsFrame
+    }//end of DisplayClassic::displayCustomerDescriptorsFrame
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
