@@ -95,17 +95,17 @@ public class MainModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainModel::getCustomersDescriptors
+    // MainModel::getCustomerDescriptors
     //
     // Gets and returns all of the descriptors used for customers.
     //
 
-    public List<Descriptor> getCustomersDescriptors()
+    public List<Descriptor> getCustomerDescriptors()
     {
 
-        return recordHandler.getCustomersDescriptors();
+        return recordHandler.getCustomerDescriptors();
 
-    }//end of MainModel::getCustomersDescriptors
+    }//end of MainModel::getCustomerDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

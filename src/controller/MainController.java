@@ -163,7 +163,7 @@ public class MainController implements CommandHandler, Runnable
                 
             //descriptor actions
             case "get customer descriptors":
-                pCommand.put("descriptors", model.getCustomersDescriptors());
+                pCommand.put("descriptors", model.getCustomerDescriptors());
                 break;
                 
         }

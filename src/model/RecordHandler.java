@@ -168,17 +168,17 @@ public class RecordHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::getCustomersDescriptors
+    // RecordHandler::getCustomerDescriptors
     //
     // Gets and returns the descriptors used for customers from the database.
     //
 
-    public List<Descriptor> getCustomersDescriptors()
+    public List<Descriptor> getCustomerDescriptors()
     {
         
         return getDescriptors(TableName.customers, true);
 
-    }//end of RecordHandler::getCustomers
+    }//end of RecordHandler::getCustomerDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
