@@ -332,11 +332,11 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
         panel.add(label);
         
         //add the text field to the panel
-        JTextField field = new JTextField();
-        field.setAlignmentX(LEFT_ALIGNMENT);
-        Tools.setSizes(field, inputPanelWidth, 25);
-        field.setText(descriptor.getName());
-        panel.add(field);
+        nameInput = new JTextField();
+        nameInput.setAlignmentX(LEFT_ALIGNMENT);
+        Tools.setSizes(nameInput, inputPanelWidth, 25);
+        nameInput.setText(descriptor.getName());
+        panel.add(nameInput);
 
         return panel;
 
@@ -358,9 +358,9 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
         panel.setAlignmentY(TOP_ALIGNMENT);
         
         //add the check box to the panel
-        JCheckBox input = new JCheckBox();
-        input.setSelected(descriptor.getRequired());
-        panel.add(input);
+        requiredInput = new JCheckBox();
+        requiredInput.setSelected(descriptor.getRequired());
+        panel.add(requiredInput);
         
         //horizontal spacer
         panel.add(Tools.createHorizontalSpacer(5));
