@@ -39,7 +39,7 @@ class MainMenu extends JMenuBar
     JMenuItem customersMenuItem;
     
     JMenu settingsMenu;
-    JMenuItem settingsCustomerMenuItem;
+    JMenuItem settingsCustomerDescriptorsMenuItem;
 
     //--------------------------------------------------------------------------
     // MainMenu::MainMenu (constructor)
@@ -130,14 +130,20 @@ class MainMenu extends JMenuBar
         settingsMenu.setToolTipText("Settings");
         add(settingsMenu);
 
-        //Settings/Descriptors menu item
-        settingsCustomerMenuItem = new JMenuItem("Customer");
-        settingsCustomerMenuItem.setMnemonic(KeyEvent.VK_C);
-        settingsCustomerMenuItem.setToolTipText("Customer Settings.");
-        settingsCustomerMenuItem.setActionCommand("display customer settings "
-                                                    + "window");
-        settingsCustomerMenuItem.addActionListener(actionListener);
-        settingsMenu.add(settingsCustomerMenuItem);
+        //Settings/Customer Descriptors menu item
+        settingsCustomerDescriptorsMenuItem 
+                                    = new JMenuItem("Customer Descriptors");
+        
+        settingsCustomerDescriptorsMenuItem.setMnemonic(KeyEvent.VK_C);
+        
+        settingsCustomerDescriptorsMenuItem
+                                    .setToolTipText("Customer Descriptors.");
+        
+        settingsCustomerDescriptorsMenuItem
+                                    .setActionCommand("display customer "
+                                                        + "descriptors window");
+        settingsCustomerDescriptorsMenuItem.addActionListener(actionListener);
+        settingsMenu.add(settingsCustomerDescriptorsMenuItem);
 
     }//end of MainMenu::createSettingsMenu
     //--------------------------------------------------------------------------
