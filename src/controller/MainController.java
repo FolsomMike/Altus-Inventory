@@ -48,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import model.MainModel;
+import shared.Descriptor;
 import shared.Table;
 
 //------------------------------------------------------------------------------
@@ -162,7 +163,15 @@ public class MainController implements CommandHandler, Runnable
                 break;
                 
             //descriptor actions
+            case "add customer descriptor":
+                Descriptor desc = (Descriptor)pCommand.get("descriptor");
+                model.addCustomerDescriptor(desc);
+                pCommand.setMessage("display descriptors");
+                pCommand.put("descriptors", model.getCustomerDescriptors());
+                break;
+                
             case "get customer descriptors":
+                pCommand.setMessage("display descriptors");
                 pCommand.put("descriptors", model.getCustomerDescriptors());
                 break;
                 

@@ -142,19 +142,24 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         
         String msg = pCommand.getMessage();
         
-        if (msg.equals(getDescriptorsCommand)) {
-            //NOTE: Last time I looked online, there was no way to get rid of 
-            //      the "unchecked or unsafe operations" error
-            displayDescriptors((List<Descriptor>)pCommand.get("descriptors"));
-        }
-        else if (msg.equals("display add window")) {
-            displayAddWindow();
-        }
-        else if (msg.equals("edit selected descriptor")) {
-            editSelectedDescriptor();
-        }
-        else if (msg.equals("delete selected descriptor")) {
-            deleteSelectedDescriptor();
+        switch (msg) {
+            case "display descriptors":
+                //NOTE: Last time I looked online, there was no way to get rid of
+                //      the "unchecked or unsafe operations" error
+                displayDescriptors((List<Descriptor>)pCommand.get("descriptors"));
+                break;
+                
+            case "display add window":
+                displayAddWindow();
+                break;
+                
+            case "edit selected descriptor":
+                editSelectedDescriptor();
+                break;
+                
+            case "delete selected descriptor":
+                deleteSelectedDescriptor();
+                break;
         }
         
         if (downStream != null) { downStream.handleCommand(pCommand); }

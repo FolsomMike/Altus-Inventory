@@ -67,6 +67,20 @@ public class MainModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainModel::addCustomerDescriptor
+    //
+    // Adds the descriptor to the customers table.
+    //
+
+    public void addCustomerDescriptor(Descriptor pDescriptor)
+    {
+
+        recordHandler.addCustomerDescriptor(pDescriptor);
+
+    }//end of MainModel::addCustomerDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainModel::deleteCustomer
     //
     // Deletes the customer associated with pSkoonieKey from the database.

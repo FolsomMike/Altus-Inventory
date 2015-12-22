@@ -86,6 +86,52 @@ public class RecordHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // RecordHandler::addCustomerDescriptor
+    //
+    // Adds pDescriptor to the customers table.
+    //
+
+    public void addCustomerDescriptor(Descriptor pDescriptor)
+    {
+        
+        addDescriptor(TableName.customers, pDescriptor);
+
+    }//end of RecordHandler::addCustomerDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::addDescriptor
+    //
+    // Adds the record in pTable associated with pRecordKey to the database.
+    //
+
+    public void addDescriptor(String pTableName, Descriptor pDescriptor)
+    {
+        
+        db.connectToDatabase();
+        
+        //entry for the descriptor
+        DatabaseEntry descriptorEntry = new DatabaseEntry();
+        
+        descriptorEntry.storeColumn("name", pDescriptor.getName());
+        
+        //in the database, true=1, and false=0
+        String required = pDescriptor.getRequired() ? "1" : "0";
+        descriptorEntry.storeColumn("required", required);
+            
+        //add the descriptor to the database and get the skoonie key generated
+        int intKey = db.insertEntry(descriptorEntry, TableName.descriptors);
+        String key = Integer.toString(intKey);
+        
+        //add the descriptor key to the table as a column
+        db.addColumn(pTableName, "`" + key + "` VARCHAR(2000) NULL");
+        
+        db.closeDatabaseConnection();
+
+    }//end of RecordHandler::addDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // RecordHandler::addRecord
     //
     // Adds the record in pTable associated with pRecordKey to the database.
