@@ -22,7 +22,9 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -48,7 +50,7 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
     private CustomTable table;
     private DefaultTableModel model;
     
-    private List<Descriptor> descriptors;
+    private final Map<Integer, Descriptor> descriptors = new HashMap<>();
     
     private CommandHandler downStream;
 
@@ -270,18 +272,24 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
     private void displayDescriptors(List<Descriptor> pDescriptors) 
     {
         
-        //store the descriptors
-        descriptors = pDescriptors;
-        
         //remove all of the data already in the model
         int rowCount = model.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
         
-        //add the names of the descriptors to the table
-        for (Descriptor desc : descriptors) {
-            model.addRow(new String[]{ desc.getName() });
+        //remove all of the data from the descriptors list
+        descriptors.clear();
+        
+        //add the descriptors to the map
+        for (Descriptor d : pDescriptors) {
+            descriptors.put(Integer.parseInt(d.getOrderNumber()), d);
         }
+        
+        //add the descriptor names to the table
+        for (int i=0; i<descriptors.size(); i++) {
+            model.addRow(new String[]{ descriptors.get(i).getName() });
+        }
+        
         
     }// end of DescriptorsWindow::displayRecords
     //--------------------------------------------------------------------------
