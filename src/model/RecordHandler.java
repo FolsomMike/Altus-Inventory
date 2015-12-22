@@ -261,6 +261,7 @@ public class RecordHandler
             Descriptor d = new Descriptor();
             d.setSkoonieKey(e.getValue("skoonie_key"));
             d.setName(e.getValue("name"));
+            d.setOrderNumber(e.getValue("order_number"));
             d.setRequired(e.getValue("required").equals("1"));
             
             descriptors.add(d);
