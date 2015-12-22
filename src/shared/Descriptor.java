@@ -10,6 +10,7 @@
 * Currently stores:
 *   Skoonie Key
 *   Name
+*   Order Number
 *   Required
 *
 */
@@ -34,6 +35,11 @@ public class Descriptor
     private String name = "";
     public String getName() { return name; }
     public void setName(String pName) { name = pName; }
+    
+    //order number is the number that decides what order the descriptors go in
+    private String orderNumber;
+    public String getOrderNumber() { return orderNumber; }
+    public void setOrderNumber(String pNumber) { orderNumber = pNumber; }
     
     //required means that the input field cannot be empty
     private boolean required;
