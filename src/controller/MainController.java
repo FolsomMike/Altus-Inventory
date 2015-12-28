@@ -170,6 +170,13 @@ public class MainController implements CommandHandler, Runnable
                 pCommand.put("descriptors", model.getCustomerDescriptors());
                 break;
                 
+            case "delete customer descriptor":
+                model.deleteCustomerDescriptor((Descriptor)pCommand
+                                                            .get("descriptor"));
+                pCommand.setMessage("display descriptors");
+                pCommand.put("descriptors", model.getCustomerDescriptors());
+                break;
+                
             case "get customer descriptors":
                 pCommand.setMessage("display descriptors");
                 pCommand.put("descriptors", model.getCustomerDescriptors());

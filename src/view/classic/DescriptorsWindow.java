@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import shared.Descriptor;
+import shared.Record;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -202,8 +203,21 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Delete button
-        panel.add(createButton("Delete", "Delete the selected descriptor.", 
+        panel.add(createButton( "Delete", "Delete the selected descriptor.", 
                                 "delete selected descriptor"));
+        
+        panel.add(Tools.createVerticalSpacer(buttonSpacer+30));
+        
+        //Move Up button
+        panel.add(createButton( "Move Up", "Move the selected descriptor up.", 
+                                "move selected descriptor up"));
+        
+        panel.add(Tools.createVerticalSpacer(buttonSpacer));
+        
+        //Move Down button
+        panel.add(createButton( "Move Down", 
+                                "Move the selected descriptor down.", 
+                                "move selected descriptor down"));
         
         return panel;
         
@@ -227,7 +241,7 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         
         downStream = new EditDescriptorWindow(editWindowTitle, this, 
                                                 getActionListener(), type, 
-                                                desc);
+                                                model.getRowCount(), desc);
         ((EditDescriptorWindow)downStream).init();
         
     }// end of DescriptorsWindow::editSelectedRecord
@@ -243,6 +257,31 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
     {
         
         //WIP HSS// -- do stuff
+        Descriptor descriptor;
+        
+        //return if there was a problem when getting the selected descriptor
+        if ((descriptor=getSelectedDescriptor())==null) { return; }
+        
+        String msg = "Are you sure you want to delete \"" + descriptor.getName()
+                        + "\"? This cannot be undone.";
+
+        //verify the delete action
+        
+        //yes and no are actually backwards -- done for display purposes
+        int no = JOptionPane.OK_OPTION;
+        Object[] options = { "No", "Yes" };
+        int verify = JOptionPane.showOptionDialog(this, msg, "Verify Delete", 
+                                        JOptionPane.DEFAULT_OPTION, 
+                                        JOptionPane.QUESTION_MESSAGE, 
+                                        null, options, null);
+        
+        //return if the user closed window or selected no
+        if (verify == no || verify == JOptionPane.CLOSED_OPTION) { return; }
+        
+        
+        Command command = new Command("delete " + type + " descriptor");
+        command.put("descriptor", descriptor);
+        command.perform();
         
     }// end of DescriptorsWindow::deleteSelectedDescriptor
     //--------------------------------------------------------------------------
@@ -257,7 +296,8 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
     {
         
         downStream = new EditDescriptorWindow(addWindowTitle, this, 
-                                                getActionListener(), type);
+                                                getActionListener(), type,
+                                                model.getRowCount());
         ((EditDescriptorWindow)downStream).init();
         
     }// end of DescriptorsWindow::displayAddWindow

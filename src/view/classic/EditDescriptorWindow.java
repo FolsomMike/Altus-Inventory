@@ -64,6 +64,7 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
 {
     
     private final String type; // E.g. customer, batch, etc.
+    private final int orderNumber;
     private final Descriptor descriptor;
     
     private final int maxHeight = 350;
@@ -82,12 +83,14 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     //
 
     public EditDescriptorWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, String pType)
+                                ActionListener pListener, String pType,
+                                int pOrderNumber)
     {
 
         super(pTitle, pParent, pListener);
         
         type = pType;
+        orderNumber = pOrderNumber;
         descriptor = new Descriptor();
 
     }//end of EditDescriptorWindow::EditDescriptorWindow (constructor)
@@ -101,12 +104,13 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
 
     public EditDescriptorWindow(String pTitle, Window pParent, 
                                 ActionListener pListener, String pType,
-                                Descriptor pDesc)
+                                int pOrderNumber, Descriptor pDesc)
     {
 
         super(pTitle, pParent, pListener);
         
         type = pType;
+        orderNumber = pOrderNumber;
         descriptor = pDesc;
 
     }//end of EditDescriptorWindow::EditDescriptorWindow (constructor)
@@ -121,6 +125,9 @@ public class EditDescriptorWindow extends AltusJDialog implements CommandHandler
     @Override
     public void init() 
     {
+        
+        //set the order number of the descriptor
+        descriptor.setOrderNumber(Integer.toString(orderNumber));
         
         super.init();
         

@@ -95,6 +95,20 @@ public class MainModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // MainModel::deleteCustomerDescriptor
+    //
+    // Deletes pDescriptor from the database.
+    //
+
+    public void deleteCustomerDescriptor(Descriptor pDescriptor)
+    {
+
+        recordHandler.deleteCustomerDescriptor(pDescriptor);
+
+    }//end of MainModel::deleteCustomerDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // MainModel::getCustomers
     //
     // Gets and returns all of the customers in the database

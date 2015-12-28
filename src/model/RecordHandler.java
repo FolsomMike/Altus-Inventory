@@ -113,11 +113,16 @@ public class RecordHandler
         //entry for the descriptor
         DatabaseEntry descriptorEntry = new DatabaseEntry();
         
+        //store the Name
         descriptorEntry.storeColumn("name", pDescriptor.getName());
         
-        //in the database, true=1, and false=0
+        //store Required -- in the database, true=1, and false=0
         String required = pDescriptor.getRequired() ? "1" : "0";
         descriptorEntry.storeColumn("required", required);
+
+        //store Order Number
+        descriptorEntry.storeColumn("order_number", 
+                                        pDescriptor.getOrderNumber());
             
         //add the descriptor to the database and get the skoonie key generated
         int intKey = db.insertEntry(descriptorEntry, TableName.descriptors);
@@ -176,6 +181,44 @@ public class RecordHandler
         deleteRecord(TableName.customers, pSkoonieKey);
 
     }//end of RecordHandler::deleteCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::deleteCustomerDescriptor
+    //
+    // Deletes pDescriptor as if it were assoicated with the customers table.
+    //
+
+    public void deleteCustomerDescriptor(Descriptor pDescriptor)
+    {
+        
+        deleteDescriptor(TableName.customers, pDescriptor);
+
+    }//end of RecordHandler::deleteCustomerDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::deleteDescriptor
+    //
+    // Removes pDescriptor from the descriptors table and from pTable.
+    //
+
+    public void deleteDescriptor(String pTable, Descriptor pDescriptor)
+    {
+        
+        db.connectToDatabase();
+        
+        String key = pDescriptor.getSkoonieKey();
+        
+        //drop the column from the customers table
+        db.dropColumn(TableName.customers, key);
+        
+        //delete the descriptor entry from the descriptors table
+        db.deleteEntry(TableName.descriptors, key);
+        
+        db.closeDatabaseConnection();
+
+    }//end of RecordHandler::deleteDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
