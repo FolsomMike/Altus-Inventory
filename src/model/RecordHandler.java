@@ -390,6 +390,56 @@ public class RecordHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // RecordHandler::updateCustomerDescriptor
+    //
+    // Updates pDescriptor in the customers table.
+    //
+
+    public void updateCustomerDescriptor(Descriptor pDescriptor)
+    {
+        
+        updateDescriptor(TableName.customers, pDescriptor);
+        
+    }//end of RecordHandler::updateCustomerDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordHandler::updateDescriptor
+    //
+    // Updates pDescriptor in pTableName.
+    //
+
+    public void updateDescriptor(String pTableName, Descriptor pDescriptor)
+    {
+        
+        db.connectToDatabase();
+        
+        //entry for the descriptor
+        DatabaseEntry descriptorEntry = new DatabaseEntry();
+        
+        //store the skoonie key
+        descriptorEntry.storeColumn("skoonie_key", pDescriptor.getSkoonieKey());
+        
+        //store the Name
+        descriptorEntry.storeColumn("name", pDescriptor.getName());
+        
+        //store Required -- in the database, true=1, and false=0
+        String required = pDescriptor.getRequired() ? "1" : "0";
+        descriptorEntry.storeColumn("required", required);
+
+        //store Order Number
+        descriptorEntry.storeColumn("order_number", 
+                                        pDescriptor.getOrderNumber());
+            
+        //update the descriptor in the database
+        db.updateEntry(descriptorEntry, TableName.descriptors);
+        
+        db.closeDatabaseConnection();
+
+    }//end of RecordHandler::updateDescriptor
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // RecordHandler::updateRecord
     //
     // Updates the record in pTable associated with pKey to the table in the

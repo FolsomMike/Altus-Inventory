@@ -241,7 +241,9 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         
         downStream = new EditDescriptorWindow(editWindowTitle, this, 
                                                 getActionListener(), type, 
-                                                model.getRowCount(), desc);
+                                                Integer.parseInt(
+                                                    desc.getOrderNumber()),
+                                                desc);
         ((EditDescriptorWindow)downStream).init();
         
     }// end of DescriptorsWindow::editSelectedRecord
@@ -329,7 +331,6 @@ public class DescriptorsWindow extends AltusJDialog implements CommandHandler
         for (int i=0; i<descriptors.size(); i++) {
             model.addRow(new String[]{ descriptors.get(i).getName() });
         }
-        
         
     }// end of DescriptorsWindow::displayRecords
     //--------------------------------------------------------------------------

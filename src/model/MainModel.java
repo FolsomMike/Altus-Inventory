@@ -180,6 +180,20 @@ public class MainModel
     }//end of MainModel::updateCustomer
     //--------------------------------------------------------------------------
     
+    //--------------------------------------------------------------------------
+    // MainModel::updateCustomerDescriptor
+    //
+    // Updates pDescriptor.
+    //
+
+    public void updateCustomerDescriptor(Descriptor pDescriptor)
+    {
+
+        recordHandler.updateCustomerDescriptor(pDescriptor);
+
+    }//end of MainModel::updateCustomerDescriptor
+    //--------------------------------------------------------------------------
+    
 }//end of class MainModel
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
