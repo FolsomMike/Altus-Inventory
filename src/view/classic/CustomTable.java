@@ -18,6 +18,7 @@ package view.classic;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Toolkit;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -34,8 +35,8 @@ import javax.swing.table.TableModel;
 public class CustomTable extends JTable
 {
     
-    Color oddRowColor   = Color.decode("#E6E6E6");
-    Color evenRowColor  = Color.WHITE;;
+    private final Color oddRowColor   = Color.decode("#E6E6E6");
+    private final Color evenRowColor  = Color.WHITE;
     
     //--------------------------------------------------------------------------
     // CustomTable::CustomTable (constructor)
