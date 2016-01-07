@@ -106,6 +106,9 @@ public class MainModel implements CommandHandler, Runnable
             //other threads
             if (getCommand()!=null) { dbHandler.handleCommand(copyCommand()); }
             
+            //set the command to null so that it is not handled more than once
+            setCommand(null);
+            
             //WIP HSS// -- add a function to check the database for changes
             
             //this will cause to wait for 30 seconds or until notified before
