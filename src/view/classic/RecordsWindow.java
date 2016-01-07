@@ -20,6 +20,9 @@ import command.Command;
 import command.CommandHandler;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -47,6 +50,10 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     private Table records;
     
     private CommandHandler downStream;
+    
+    private Image loadingImage;
+    private boolean paintLoadingImage = false;
+    public void setLoading(boolean pLoading) { paintLoadingImage = pLoading; }
 
     //--------------------------------------------------------------------------
     // RecordsWindow::RecordsWindow (constructor)
@@ -73,11 +80,16 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     public void init() 
     {
         
+        //get the loading image from file
+        String path = "src/view/images/loading.gif";
+        loadingImage = Toolkit.getDefaultToolkit().createImage(path);
+        
         //set up the table model
         setupTableModel();
         
         //perform a command to get the records
         (new Command(info.getGetCommandMessage())).perform();
+        setLoading(true);
         
         super.init();
         
@@ -104,12 +116,8 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         table = new CustomTable(model);
         table.init();
         
-        //put the table in a scroll pane and add it to the main panel
-        JScrollPane sp = new JScrollPane(table);
-        sp.setAlignmentX(LEFT_ALIGNMENT);
-        sp.setAlignmentY(TOP_ALIGNMENT);
-        Tools.setSizes(sp, 400, 300);
-        addToMainPanel(sp);
+        //put the table inside of a scroll pane
+        setUpScrollPane();
         
         //horizontal spacer
         addToMainPanel(Tools.createHorizontalSpacer(10));
@@ -298,6 +306,9 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         String idKey = records.getDescriptorKeyByName("Id");
         String nameKey = records.getDescriptorKeyByName("Name");
         
+        //we are about to add the rows, so tell it we're done loading
+        setLoading(false);
+        
         //add the ids and names of the records to the table
         for (Record rec : records.getRecords()) {
             String id = rec.getValue(idKey);
@@ -328,6 +339,41 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         return rec;
         
     }// end of RecordsWindow::getSelectedRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordsWindow::setUpScrollPane
+    //
+    // Sets up the scroll pane, putting the table inside of it. The 
+    // paintComponent() function of the scroll pane is overridden to paint the
+    // loading image when necessary.
+    //
+    
+    private void setUpScrollPane() 
+    {
+        
+        JScrollPane sp = new JScrollPane(table) {
+            @Override protected void paintComponent(Graphics g)
+            {
+
+                super.paintComponent(g);
+
+                //paint the loading image if necessary
+                if (paintLoadingImage) {
+                    int x = getWidth()/2 - loadingImage.getWidth(null)/2;
+                    int y = getHeight()/2 - loadingImage.getHeight(null)/2;
+                    g.drawImage(loadingImage, x, y, this);
+                    g.dispose();
+                }
+
+            }
+        };
+        sp.setAlignmentX(LEFT_ALIGNMENT);
+        sp.setAlignmentY(TOP_ALIGNMENT);
+        Tools.setSizes(sp, 400, 300);
+        addToMainPanel(sp);
+        
+    }// end of RecordsWindow::setupTableModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
