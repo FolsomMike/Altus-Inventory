@@ -63,9 +63,11 @@ import toolkit.Tools;
 public class EditRecordWindow extends AltusJDialog implements CommandHandler
 {
     
-    private final String recordType;
+    private final RecordWindowInfo info;
+    
     private final Table table;
     private final String recordSkoonieKey;
+    
     private Record record;
     
     private final Map<String, JTextField> inputs = new HashMap<>();
@@ -81,13 +83,14 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     //
 
     public EditRecordWindow(String pTitle, Window pParent, 
-                                ActionListener pListener, String pRecordType,
-                                Table pTable, String pRecordSkoonieKey)
+                                ActionListener pListener, 
+                                RecordWindowInfo pInfo, Table pTable, 
+                                String pRecordSkoonieKey)
     {
 
         super(pTitle, pParent, pListener);
         
-        recordType = pRecordType;
+        info = pInfo;
         
         table = pTable;
         
@@ -107,10 +110,10 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     {
         
         //get the record from the table, or create a new one
-        if (recordSkoonieKey != null) { 
+        if (recordSkoonieKey != null) { //edit mode
             record = table.getRecord(recordSkoonieKey);
         }
-        else {
+        else { //add new mode
             record = new Record();
             table.addRecord(record);
         }
@@ -186,9 +189,9 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     //--------------------------------------------------------------------------
     // EditRecordWindow::confirm
     //
-    // Confirms that the user wants to user wants to confirm their inputs to
-    // either create or edit a Record, depending on whether or not the Skoonie
-    // Key passed in upon construction is null or not.
+    // Confirms that the user wants to use their inputs to either create or edit
+    // a Record, depending on whether or not the Skoonie Key passed in upon 
+    // construction is null or not.
     //
     // If the user input is bad, a message is displayed to the user and this 
     // function is returned.
@@ -202,22 +205,24 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         
         String message;
         
-        //editing existing record -- need to update, not add
-        if (recordSkoonieKey != null ) { message = "update "; }
-        //adding new record -- need to add, not update
-        else { message = "add "; record.setSkoonieKey("new"); }
-        
-        //add the record type to the message
-        message += recordType;
+        //adding new record
+        if (recordSkoonieKey == null ) { 
+            message = info.getAddCommandMessage(); 
+            record.setSkoonieKey("new");
+        }
+        //editing existing record
+        else { 
+            message = info.getEditCommandMessage();
+        }
         
         //create the command
         Command command = new Command(message);
         
         //put the table into the command
-        command.put("table", table);
+        command.put(Command.TABLE, table);
         
         //put the skoonie key of the record into the command
-        command.put("record key", record.getSkoonieKey());
+        command.put(Command.RECORD_KEY, record.getSkoonieKey());
         
         command.perform();
         

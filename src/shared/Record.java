@@ -34,9 +34,9 @@ public class Record
     
     //key=descriptor skoonie key; value=value
     private final Map<String, String> values = new HashMap<>();
-    
+    //pKey=descriptor skoonie key
     public String getValue(String pKey) { return values.get(pKey); }
-    
+    //pKey=descriptor skoonie key; pValue=value
     public void addValue(String pKey, String pValue) {values.put(pKey, pValue);}
     
     //--------------------------------------------------------------------------

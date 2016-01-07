@@ -114,21 +114,53 @@ public class MySQLDatabase
     //
 
     public void addColumn(String pTable, String pColumn)
+            throws DatabaseError
     {
         
         //create the sql command string
         String cmd = "ALTER TABLE `" + pTable + "` ADD " + pColumn;
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        //execute the statement
-        try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 125"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        //attempt to create and execute the statement
+        try { 
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            stmt.execute();
+            //clean up environment
+            closePreparedStatement(stmt);
+        }
+        catch (SQLException e) {
+            throw new DatabaseError(DatabaseError.ADD_COLUMN_ERROR);
+        }  
                 
     }// end of MySQLDatabase::addColumn
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::checkForValue
+    //
+    // Checks the connection to the database. If one is good and can be
+    // established, then this function returns true; false if not.
+    //
+
+    public boolean checkConnection()
+    {
+
+        boolean good = true;
+        
+        try { 
+            
+            //atttempt to connect
+            connectToDatabase();
+            
+            //disconnect so that we don't leave
+            //the connection hanging open
+            disconnectFromDatabase();
+            
+        }
+        catch (DatabaseError e) { good = false; }
+        
+        return good;
+        
+    }// end of MySQLDatabase::checkConnection
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -138,6 +170,7 @@ public class MySQLDatabase
     //
 
     public boolean checkForValue(String pValue, String pTable, String pColumn)
+            throws DatabaseError
     {
 
         String cmd = "SELECT COUNT(*) FROM `" + pTable
@@ -145,54 +178,30 @@ public class MySQLDatabase
         
         int count = 0;
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        //perform query
+        //attempt to check for the value
         try { 
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
             stmt.setString(1, pValue);
             
-            ResultSet set = performQuery(stmt);
+            ResultSet set = stmt.executeQuery();;
             
             //extract the count from the ResultSet
             while (set.next()) { count = set.getInt(1); }
             
             //clean up environment
             closeResultSet(set);
+            closePreparedStatement(stmt);
             
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 162"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return (count > 0);
         
     }// end of MySQLDatabase::checkForValue
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::closeDatabaseConnection
-    //
-    // Closes the connection to the database.
-    //
-    // This should be called after sending commands to the database to improve 
-    // code performance and free up resources.
-    // Read the NOTES at the top of the file for more information on when to
-    // connect and when to close the connection.
-    //
-
-    public void closeDatabaseConnection()
-    {
-        
-        try { 
-            //return if the connection is not open
-            if (connection == null || connection.isClosed()) { return; }
-            
-            connection.close();
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 192"); }
-        
-    }// end of MySQLDatabase::closeDatabaseConnection
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -205,7 +214,7 @@ public class MySQLDatabase
     {
         
         try { if (pSet != null) { pSet.close(); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 207"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 194"); }
 
     }// end of MySQLDatabase::closeResultSet
     //--------------------------------------------------------------------------
@@ -220,7 +229,7 @@ public class MySQLDatabase
     {
         
         try { if (pStatement != null) { pStatement.close(); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 222"); }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 209"); }
 
     }// end of MySQLDatabase::closePreparedStatement
     //--------------------------------------------------------------------------
@@ -231,61 +240,29 @@ public class MySQLDatabase
     // Establishes a connection with the database if one is not already
     // established.
     //
-    // Returns true upon success; false upon failure.
+    // Throws a DatabaseError upon failure; does nothing upon success.
     //
     // This should be called before sending any commands to the database. 
     // Read the NOTES at the top of the file for more information on when to
-    // connect and when to close the connection.
+    // connect and when to disconnect.
     //
 
-    public boolean connectToDatabase()
+    public void connectToDatabase() throws DatabaseError
     {
-        
-        boolean success = true;
         
         try { 
             //return true if we are already connected
             if(connection != null && !connection.isClosed() 
-                    && connection.isValid(10)) { return success; }
+                    && connection.isValid(10)) { return; }
             
             connection = DriverManager.getConnection(url, username, password);
             
         }
-        catch (SQLException e) {
-            success = false;
-            logSevere(e.getMessage() + " - Error: 255"); 
+        catch (SQLException e) { //throw a connection error if we failed
+            throw new DatabaseError(DatabaseError.CONNECTION_ERROR);
         }
-        
-        return success;
         
     }// end of MySQLDatabase::connectToDatabase
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MySQLDatabase::createPreparedStatement
-    //
-    // Creates a PreparedStatment using the passed in SQL command string.
-    // Returns PreparedStatment upon success; null upon failure.
-    //
-
-    private PreparedStatement createPreparedStatement(String pCommand)
-    {
-        
-        PreparedStatement stmt = null;
-        
-        //ensure that we are connected to the database -- return null if a 
-        //conection can't be established
-        if (!connectToDatabase()) { return stmt; }
-        
-        try { 
-            stmt = connection.prepareStatement(pCommand, 
-                                            Statement.RETURN_GENERATED_KEYS);
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 283"); }
-        
-        return stmt;
-
-    }// end of MySQLDatabase::createPreparedStatement
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -293,8 +270,13 @@ public class MySQLDatabase
     //
     // Creates pTable containing pColumns in the database.
     //
+    // Each string in pColumns should contain the name, type, length, and other
+    // things of that sort; each string should be ready to use in an SQL
+    // statement.
+    //
 
     public void createTable(String pTable, String[] pColumns)
+            throws DatabaseError
     {
         
         //start the sql command string
@@ -310,14 +292,18 @@ public class MySQLDatabase
         //finish up the command string
         cmd += ")";
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        //execute the statement
-        try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 316"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        //attempt to create the table
+        try { 
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
+            stmt.execute();
+            
+            //clean up environment
+            closePreparedStatement(stmt);
+        }
+        catch (SQLException e) {
+            throw new DatabaseError(DatabaseError.CREATE_TABLE_ERROR);
+        }
                 
     }// end of MySQLDatabase::createTable
     //--------------------------------------------------------------------------
@@ -329,25 +315,54 @@ public class MySQLDatabase
     //
 
     public void deleteEntry(String pTable, String pSkoonieKey)
+            throws DatabaseError
     {
         
         //create the command string
         String cmd = "DELETE FROM `" + pTable + "` WHERE `skoonie_key`=?";
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
+        //attempt to delete the entry
         try {
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
             stmt.setString(1, pSkoonieKey);
             
-            //execute the statement
             stmt.execute();
+            
+            //clean up environment
+            closePreparedStatement(stmt);
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 344"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.DELETE_ENTRY_ERROR);
+        }
                 
     }// end of MySQLDatabase::deleteEntry
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MySQLDatabase::disconnectFromDatabase
+    //
+    // Closes the connection to the database.
+    //
+    // This should be called after sending commands to the database to improve 
+    // code performance and free up resources.
+    // Read the NOTES at the top of the file for more information on when to
+    // connect and when to close the connection.
+    //
+
+    public void disconnectFromDatabase()
+    {
+        
+        try { 
+            //return if the connection is not open
+            if (connection == null || connection.isClosed()) { return; }
+            
+            connection.close();
+        }
+        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 204"); }
+        
+    }// end of MySQLDatabase::disconnectFromDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -357,19 +372,24 @@ public class MySQLDatabase
     //
 
     public void dropColumn(String pTable, String pColumn)
+            throws DatabaseError
     {
         
         //create the sql command string
         String cmd = "ALTER TABLE `" + pTable + "` DROP `" + pColumn + "`";
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        //execute the statement
-        try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 368"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        //attempt to drop the column
+        try { 
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
+            stmt.execute();
+            
+            //clean up environment
+            closePreparedStatement(stmt);
+        }
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.DROP_COLUMN_ERROR);
+        }
                 
     }// end of MySQLDatabase::dropColumn
     //--------------------------------------------------------------------------
@@ -381,19 +401,24 @@ public class MySQLDatabase
     //
 
     public void dropTable(String pTable)
+            throws DatabaseError
     {
         
         //create the sql command string
         String cmd = "DROP TABLE `" + pTable + "`";
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
-        //execute the statement
-        try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 392"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        //attempt to drop the table
+        try { 
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
+            stmt.execute();
+            
+            //clean up environment
+            closePreparedStatement(stmt);
+        }
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.DROP_TABLE_ERROR);
+        }        
                 
     }// end of MySQLDatabase::dropTable
     //--------------------------------------------------------------------------
@@ -405,17 +430,23 @@ public class MySQLDatabase
     //
 
     public void emptyTable(String pTable)
+            throws DatabaseError
     {
         
         String cmd = "TRUNCATE `" + pTable + "`";
-        PreparedStatement stmt = createPreparedStatement(cmd);
         
-        //execute the statement
-        try { stmt.execute(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 416"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        //attempt to truncate the table
+        try { 
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
+            stmt.execute();
+            
+            //clean up environment
+            closePreparedStatement(stmt);
+        }
+        catch (SQLException e) {
+            throw new DatabaseError(DatabaseError.TRUNCATE_TABLE_ERROR);
+        }
 
     }// end of MySQLDatabase::emptyTable
     //--------------------------------------------------------------------------
@@ -427,20 +458,31 @@ public class MySQLDatabase
     //
 
     public List<String> getColumnNames(String pTable)
+            throws DatabaseError
     {
 
         String cmd = "SHOW COLUMNS FROM `" + pTable + "`";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-
-        //store all of the columns names
-        List<String> names = new ArrayList<>();
-        try { while (set.next()) { names.add(set.getString("Field")); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 435"); }
         
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
+        List<String> names = new ArrayList<>();
+        
+        //attempt to check for the value
+        try { 
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
+            ResultSet set = stmt.executeQuery();
+            
+            //store all of the columns names
+            while (set.next()) { names.add(set.getString("Field")); }
+            
+            //clean up environment
+            closeResultSet(set);
+            closePreparedStatement(stmt);
+            
+        }
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return names;
 
@@ -454,16 +496,20 @@ public class MySQLDatabase
     //
 
     public DatabaseEntry getEntry(String pTable, String pSkoonieKey)
+            throws DatabaseError
     {
 
         String cmd = "SELECT * FROM `" + pTable + "`"
                             + " WHERE `skoonie_key`=" + pSkoonieKey;
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
         
-        //extract the data from the ResultSet
         DatabaseEntry entry = new DatabaseEntry();
+        
+        //attempt to get the entry
         try {
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            ResultSet set = stmt.executeQuery();
+            
             ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
                 
@@ -474,12 +520,15 @@ public class MySQLDatabase
                 }
                 
             }
+            
+            //clean up environment
+            closeResultSet(set);
+            closePreparedStatement(stmt);
+            
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 450"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return entry;
 
@@ -493,16 +542,19 @@ public class MySQLDatabase
     //
 
     public List<DatabaseEntry> getEntries(String pTable)
+            throws DatabaseError
     {
-        
-        List<DatabaseEntry> entries = new ArrayList<>();
 
         String cmd = "SELECT * FROM `" + pTable + "`";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
         
-        //extract the data from the ResultSet
+        List<DatabaseEntry> entries = new ArrayList<>();
+        
+        //attempt to get all of the entries
         try {
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            ResultSet set = stmt.executeQuery();
+            
             ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
                 
@@ -516,12 +568,15 @@ public class MySQLDatabase
                 //store the entry
                 entries.add(entry);
             }
-        }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 493"); }
+            
+            //clean up environment
+            closeResultSet(set);
+            closePreparedStatement(stmt);
         
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
+        }
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return entries;
 
@@ -536,6 +591,7 @@ public class MySQLDatabase
     //
 
     public List<DatabaseEntry> getEntries(String pTable, List<String> pKeys)
+            throws DatabaseError
     {
         
         List<DatabaseEntry> entries = new ArrayList<>();
@@ -549,11 +605,12 @@ public class MySQLDatabase
             cmd += "`skoonie_key`=" + pKeys.get(i);
         }
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
-        
-        //extract the data from the ResultSet
+        //attempt to retrieve the entries
         try {
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            ResultSet set = stmt.executeQuery();
+            
             ResultSetMetaData d = set.getMetaData();
             while (set.next()) { 
                 
@@ -567,12 +624,15 @@ public class MySQLDatabase
                 //store the entry
                 entries.add(entry);
             }
+            
+            //clean up environment
+            closeResultSet(set);
+            closePreparedStatement(stmt);
+            
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 493"); }
-        
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return entries;
 
@@ -586,21 +646,29 @@ public class MySQLDatabase
     //
 
     public List<String> getSkoonieKeys(String pTable)
+            throws DatabaseError
     {
-        
-        List<String> keys = new ArrayList<>();
 
         String cmd = "SELECT `skoonie_key` FROM `" + pTable + "`";
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        ResultSet set = performQuery(stmt);
         
-        //extract the data from the ResultSet
-        try { while (set.next()) { keys.add(set.getString("skoonie_key")); } }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 521"); }
+        List<String> keys = new ArrayList<>();
         
-        //clean up environment
-        closeResultSet(set);
-        closePreparedStatement(stmt);
+        try { 
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            ResultSet set = stmt.executeQuery();
+            
+            //extract the data from the ResultSet
+            while (set.next()) { keys.add(set.getString("skoonie_key")); } 
+        
+            //clean up environment
+            closeResultSet(set);
+            closePreparedStatement(stmt);
+        
+        }
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return keys;
 
@@ -615,6 +683,7 @@ public class MySQLDatabase
     //
 
     public int insertEntry(DatabaseEntry pEntry, String pTable)
+            throws DatabaseError
     {
         
         int skoonieKey = -1;
@@ -646,9 +715,11 @@ public class MySQLDatabase
         String cmd = "INSERT INTO `" + pTable + "` (" + columnNames 
                         + ") VALUES (" + columnValuePlaceholders + ")";
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
         try {
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd, 
+                                            Statement.RETURN_GENERATED_KEYS);
+            
             //for every column, put the value into the proper placeholder
             int place = 1;
             for (Map.Entry<String, String> column : columns) {
@@ -664,11 +735,12 @@ public class MySQLDatabase
             
             //clean up environment
             closeResultSet(set);
+            closePreparedStatement(stmt);
+            
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 562"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        catch (SQLException e) { 
+            throw new DatabaseError(DatabaseError.QUERY_ERROR);
+        }
         
         return skoonieKey;
                 
@@ -705,34 +777,6 @@ public class MySQLDatabase
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MySQLDatabase::performQuery
-    //
-    // Performs a query on the database using the passed in PreparedStatment. 
-    // Returns ResultSet upon success; null upon failure.
-    //
-    // NOTE:    To improve code performance and free up resources, the ResultSet 
-    //          returned should be closed after use by using the 
-    //          closeResultSet() helper function provided by this class.
-    //
-
-    private ResultSet performQuery(PreparedStatement pStatement)
-    {
-        
-        ResultSet set = null;
-        
-        //ensure that we are connected to the database -- return null if a 
-        //conection can't be established
-        if (!connectToDatabase()) { return set; }
-        
-        try { set = pStatement.executeQuery(); }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 633"); }
-        
-        return set;
-
-    }// end of MySQLDatabase::performQuery
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // MySQLDatabase::registerJDBCDriver
     //
     // Loads and registers the JDBC driver.
@@ -744,7 +788,7 @@ public class MySQLDatabase
         //Register JDBC driver
         try { Class.forName("com.mysql.jdbc.Driver"); }
         catch (ClassNotFoundException e) { 
-            logSevere(e.getMessage() + " - Error: 652"); 
+            logSevere(e.getMessage() + " - Error: 771"); 
         }
 
     }// end of MySQLDatabase::registerJDBCDriver
@@ -757,6 +801,7 @@ public class MySQLDatabase
     //
 
     public void updateEntry(DatabaseEntry pEntry, String pTable)
+            throws DatabaseError
     {
         
         //start the command string
@@ -780,9 +825,10 @@ public class MySQLDatabase
         //finish up the command string
         cmd += "WHERE `skoonie_key`=?";
         
-        PreparedStatement stmt = createPreparedStatement(cmd);
-        
         try {
+            
+            PreparedStatement stmt = connection.prepareStatement(cmd);
+            
             //for every column, put the value into the proper placeholder
             int place = 1;
             for (Map.Entry<String, String> column : columns) {
@@ -794,11 +840,13 @@ public class MySQLDatabase
             
             //execute the statement
             stmt.execute();
+            
+            //clean up environment
+            closePreparedStatement(stmt);
         }
-        catch (SQLException e) { logSevere(e.getMessage() + " - Error: 692"); }
-        
-        //clean up environment
-        closePreparedStatement(stmt);
+        catch (SQLException e) {
+            throw new DatabaseError(DatabaseError.UPDATE_ENTRY_ERROR);
+        }
                 
     }// end of MySQLDatabase::updateEntry
     //--------------------------------------------------------------------------

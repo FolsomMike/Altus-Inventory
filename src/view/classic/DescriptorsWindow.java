@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import shared.Descriptor;
-import shared.Record;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------

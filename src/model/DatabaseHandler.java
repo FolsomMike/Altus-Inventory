@@ -1,14 +1,19 @@
 /*******************************************************************************
-* Title: RecordHandler.java
+* Title: DatabaseHandler.java
 * Author: Hunter Schoonover
-* Date: 12/19/15
+* Date: 01/03/16
 *
 * Purpose:
 *
-* This class handles action pertaining to different types of records, such as
-* Customers, Batches, Receivements, etc.
+* This class handles action pertaining to the database. Essentially, it is a
+* translator of the Altus Inventory program to the database package used; it
+* takes objects and variables specific to this program and inputs them into the
+* database.
+* 
+* It handles different types of records, such as Customers, Batches,
+* Receivements, etc.
 *
-* Currently handles actions:
+* It handles different actions for different entities of the program, currently:
 *   add customer
 *   delete customer
 *   get customers
@@ -20,43 +25,49 @@
 
 package model;
 
+import command.Command;
+import command.CommandHandler;
 import shared.Table;
 import shared.Descriptor;
 import model.database.DatabaseEntry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.SwingUtilities;
+import model.database.DatabaseError;
 import model.database.MySQLDatabase;
 import shared.Record;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class RecordHandler
+// class DatabaseHandler
 //
 
-public class RecordHandler
+public class DatabaseHandler implements CommandHandler
 {
     
     private final MySQLDatabase db = new MySQLDatabase();
     
     //class to hold names of tables in the database
     private class TableName {
+        public static final String batches = "BATCHES";
         public static final String customers = "CUSTOMERS";
         public static final String descriptors = "DESCRIPTORS";
+        public static final String receivements = "RECEIVEMENTS";
     }
 
     //--------------------------------------------------------------------------
-    // RecordHandler::RecordHandler (constructor)
+    // DatabaseHandler::DatabaseHandler (constructor)
     //
 
-    public RecordHandler()
+    public DatabaseHandler()
     {
 
-    }//end of RecordHandler::RecordHandler (constructor)
+    }//end of DatabaseHandler::DatabaseHandler (constructor)
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // RecordHandler::init
+    // DatabaseHandler::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -67,45 +78,90 @@ public class RecordHandler
         //initialize the database
         db.init();
 
-    }// end of RecordHandler::init
+    }// end of DatabaseHandler::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::addCustomer
+    // DatabaseHandler::handleCommand
+    //
+    // Performs different actions depending on pCommand.
+    //
+
+    @Override
+    public void handleCommand(Command pCommand)
+    {
+        
+        if (pCommand==null) { return; }
+        
+        try {
+        
+            switch (pCommand.getMessage()) {
+                
+                case Command.ADD_CUSTOMER:
+                    addCustomer((Table)pCommand.get(Command.TABLE),
+                                (String)pCommand.get(Command.RECORD_KEY));
+                    break;
+                    
+                case Command.DELETE_CUSTOMER:
+                    deleteCustomer((String)pCommand.get(Command.SKOONIE_KEY));
+                    break;
+                    
+                case Command.EDIT_CUSTOMER:
+                    editCustomer((Table)pCommand.get(Command.CUSTOMER),
+                                    (String)pCommand.get(Command.RECORD_KEY));
+                    break;
+                    
+                case Command.GET_CUSTOMERS:
+                    getCustomers();
+                    break;
+
+            }
+            
+        }
+        catch (DatabaseError error) { handleDatabaseError(error); }
+
+    }//end of DatabaseHandler::handleCommand
+    //--------------------------------------------------------------------------  
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::addCustomer
     //
     // Adds the customer in pCustomers associated with pCustomerKey to the
     // database.
     //
 
-    public void addCustomer(Table pCustomers, String pCustomerKey)
+    private void addCustomer(Table pCustomers, String pCustomerKey)
+        throws DatabaseError
     {
         
         addRecord(TableName.customers, pCustomers, pCustomerKey);
 
-    }//end of RecordHandler::addCustomer
+    }//end of DatabaseHandler::addCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::addCustomerDescriptor
+    // DatabaseHandler::addCustomerDescriptor
     //
     // Adds pDescriptor to the customers table.
     //
 
-    public void addCustomerDescriptor(Descriptor pDescriptor)
+    private void addCustomerDescriptor(Descriptor pDescriptor)
+        throws DatabaseError
     {
         
         addDescriptor(TableName.customers, pDescriptor);
 
-    }//end of RecordHandler::addCustomerDescriptor
+    }//end of DatabaseHandler::addCustomerDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::addDescriptor
+    // DatabaseHandler::addDescriptor
     //
     // Adds the record in pTable associated with pRecordKey to the database.
     //
 
-    public void addDescriptor(String pTableName, Descriptor pDescriptor)
+    private void addDescriptor(String pTableName, Descriptor pDescriptor)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -131,18 +187,19 @@ public class RecordHandler
         //add the descriptor key to the table as a column
         db.addColumn(pTableName, "`" + key + "` VARCHAR(2000) NULL");
         
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
 
-    }//end of RecordHandler::addDescriptor
+    }//end of DatabaseHandler::addDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::addRecord
+    // DatabaseHandler::addRecord
     //
     // Adds the record in pTable associated with pRecordKey to the database.
     //
 
-    public void addRecord(String pTableName, Table pTable, String pRecordKey)
+    private void addRecord(String pTableName, Table pTable, String pRecordKey)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -162,48 +219,51 @@ public class RecordHandler
         
         db.insertEntry(entry, pTableName);
         
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
 
-    }//end of RecordHandler::addRecord
+    }//end of DatabaseHandler::addRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::deleteCustomer
+    // DatabaseHandler::deleteCustomer
     //
     // Deletes the customer associated with pSkoonieKey from the database.
     //
 
-    public void deleteCustomer(String pSkoonieKey)
+    private void deleteCustomer(String pSkoonieKey)
+        throws DatabaseError
     {
         
         //WIP HSS// -- perform check to see if he can be deleted
         
         deleteRecord(TableName.customers, pSkoonieKey);
 
-    }//end of RecordHandler::deleteCustomer
+    }//end of DatabaseHandler::deleteCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::deleteCustomerDescriptor
+    // DatabaseHandler::deleteCustomerDescriptor
     //
     // Deletes pDescriptor as if it were assoicated with the customers table.
     //
 
-    public void deleteCustomerDescriptor(Descriptor pDescriptor)
+    private void deleteCustomerDescriptor(Descriptor pDescriptor)
+        throws DatabaseError
     {
         
         deleteDescriptor(TableName.customers, pDescriptor);
 
-    }//end of RecordHandler::deleteCustomerDescriptor
+    }//end of DatabaseHandler::deleteCustomerDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::deleteDescriptor
+    // DatabaseHandler::deleteDescriptor
     //
     // Removes pDescriptor from the descriptors table and from pTable.
     //
 
-    public void deleteDescriptor(String pTable, Descriptor pDescriptor)
+    private void deleteDescriptor(String pTable, Descriptor pDescriptor)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -216,18 +276,19 @@ public class RecordHandler
         //delete the descriptor entry from the descriptors table
         db.deleteEntry(TableName.descriptors, key);
         
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
 
-    }//end of RecordHandler::deleteDescriptor
+    }//end of DatabaseHandler::deleteDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::deleteRecord
+    // DatabaseHandler::deleteRecord
     //
     // Deletes the entry associated with pSkoonieKey from pTableName.
     //
 
-    public void deleteRecord(String pTableName, String pSkoonieKey)
+    private void deleteRecord(String pTableName, String pSkoonieKey)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -237,41 +298,49 @@ public class RecordHandler
         
         db.deleteEntry(pTableName, pSkoonieKey);
        
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
         
-    }//end of RecordHandler::deleteRecord
+    }//end of DatabaseHandler::deleteRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::getCustomers
+    // DatabaseHandler::getCustomers
     //
-    // Gets and returns all of the customers from the database.
+    // Gets all of the customers from the database and stick them into a command
+    // to be performed in the main thread.
     //
 
-    public Table getCustomers()
+    private void getCustomers()
+        throws DatabaseError
     {
         
-        return getTable(TableName.customers);
+        Table customers = getTable(TableName.customers);
+        
+        Command c = new Command(Command.CUSTOMERS);
+        c.put(Command.TABLE, customers);
+        
+        performCommandInMainThread(c);
 
-    }//end of RecordHandler::getCustomers
+    }//end of DatabaseHandler::getCustomers
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::getCustomerDescriptors
+    // DatabaseHandler::getCustomerDescriptors
     //
     // Gets and returns the descriptors used for customers from the database.
     //
 
-    public List<Descriptor> getCustomerDescriptors()
+    private List<Descriptor> getCustomerDescriptors()
+        throws DatabaseError
     {
         
         return getDescriptors(TableName.customers, true);
 
-    }//end of RecordHandler::getCustomerDescriptors
+    }//end of DatabaseHandler::getCustomerDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::getDescriptors
+    // DatabaseHandler::getDescriptors
     //
     // Gets and returns all of the descriptors with skoonie keys matching pKeys
     // from the descriptors table.
@@ -279,8 +348,9 @@ public class RecordHandler
     // NOTE: Only disconnects from database if pCloseConnection is true.
     //
 
-    public List<Descriptor> getDescriptors(String pTableName, 
+    private List<Descriptor> getDescriptors(String pTableName, 
                                             boolean pCloseConnection)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -310,21 +380,22 @@ public class RecordHandler
             descriptors.add(d);
         }
         
-        if (pCloseConnection) { db.closeDatabaseConnection(); }
+        if (pCloseConnection) { db.disconnectFromDatabase();}
         
         return descriptors;
 
-    }//end of RecordHandler::getDescriptors
+    }//end of DatabaseHandler::getDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::getTable
+    // DatabaseHandler::getTable
     //
     // Gets the entries and descriptors for the table in the database with 
     // pTableName and puts them into a Table object.
     //
 
-    public Table getTable(String pTableName)
+    private Table getTable(String pTableName)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -367,49 +438,95 @@ public class RecordHandler
             
         }
         
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
         
         return table;
 
-    }//end of RecordHandler::getTable
+    }//end of DatabaseHandler::getTable
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::updateCustomer
+    // DatabaseHandler::handleDatabaseError
+    //
+    // Takes different actions depending on the message of pError.
+    //
+
+    private void handleDatabaseError(DatabaseError pError)
+    {
+        
+        if (pError==null) { return; }
+        
+        String msg = Command.DB_CONNECTION_ERROR;
+        
+        //if the error was not a connection error and the connection to
+        //the database seems fine, then just send a message saying that
+        //we failed to do the last sent command
+        if (!pError.getMessage().equals(DatabaseError.CONNECTION_ERROR)
+                && db.checkConnection()) {
+            msg = Command.FAILURE;
+        }
+
+        performCommandInMainThread(new Command(msg));
+
+    }//end of DatabaseHandler::handleDatabaseError
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::performCommandInMainThread
+    //
+    // Performs pCommand in the main thread.
+    // 
+    // NOTE:    All of this is done in the main thread, so pCommand should not
+    //          be used after it is given to this function.
+    //
+
+    private void performCommandInMainThread(Command pCommand)
+    {
+        
+        SwingUtilities.invokeLater(() -> { pCommand.perform(); });
+
+    }//end of DatabaseHandler::performCommandInMainThread
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::editCustomer
     //
     // Updates the customer in pTable associated with pCustomerKey in the 
     // database.
     //
 
-    public void updateCustomer(Table pTable, String pCustomerKey)
+    private void editCustomer(Table pTable, String pCustomerKey)
+        throws DatabaseError
     {
         
         updateRecord(TableName.customers, pTable, pCustomerKey);
         
-    }//end of RecordHandler::updateCustomer
+    }//end of DatabaseHandler::editCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::updateCustomerDescriptor
+    // DatabaseHandler::updateCustomerDescriptor
     //
     // Updates pDescriptor in the customers table.
     //
 
-    public void updateCustomerDescriptor(Descriptor pDescriptor)
+    private void updateCustomerDescriptor(Descriptor pDescriptor)
+        throws DatabaseError
     {
         
         updateDescriptor(TableName.customers, pDescriptor);
         
-    }//end of RecordHandler::updateCustomerDescriptor
+    }//end of DatabaseHandler::updateCustomerDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::updateDescriptor
+    // DatabaseHandler::updateDescriptor
     //
     // Updates pDescriptor in pTableName.
     //
 
-    public void updateDescriptor(String pTableName, Descriptor pDescriptor)
+    private void updateDescriptor(String pTableName, Descriptor pDescriptor)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -434,18 +551,19 @@ public class RecordHandler
         //update the descriptor in the database
         db.updateEntry(descriptorEntry, TableName.descriptors);
         
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
 
-    }//end of RecordHandler::updateDescriptor
+    }//end of DatabaseHandler::updateDescriptor
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // RecordHandler::updateRecord
+    // DatabaseHandler::updateRecord
     //
     // Updates the record in pTable associated with pKey to the table in the
     // database with pTableName.
 
-    public void updateRecord(String pTableName, Table pTable,  String pKey)
+    private void updateRecord(String pTableName, Table pTable,  String pKey)
+        throws DatabaseError
     {
         
         db.connectToDatabase();
@@ -466,11 +584,11 @@ public class RecordHandler
         
         db.updateEntry(entry, pTableName);
         
-        db.closeDatabaseConnection();
+        db.disconnectFromDatabase();
         
-    }//end of RecordHandler::updateRecord
+    }//end of DatabaseHandler::updateRecord
     //--------------------------------------------------------------------------
     
-}//end of class RecordHandler
+}//end of class DatabaseHandler
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

@@ -13,21 +13,27 @@
 
 package model;
 
-import java.util.List;
-import shared.Table;
+import command.Command;
+import command.CommandHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import shared.Descriptor;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class MainModel
 //
 
-public class MainModel
+public class MainModel implements CommandHandler, Runnable
 {
     
-    private final RecordHandler recordHandler = new RecordHandler();
+    private final Thread thread;
+    
+    private final DatabaseHandler dbHandler = new DatabaseHandler();
+    
+    private Command command;
+    synchronized public void setCommand(Command pC) { command = pC; }
+    synchronized public Command getCommand() { return command; }
+    synchronized public Command copyCommand() { return command.copy(); }
 
     //--------------------------------------------------------------------------
     // MainModel::MainModel (constructor)
@@ -35,10 +41,12 @@ public class MainModel
 
     public MainModel()
     {
+        
+        thread = new Thread(this);
 
     }//end of MainModel::MainModel (constructor)
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
     // MainModel::init
     //
@@ -47,94 +55,67 @@ public class MainModel
 
     public void init()
     {
+        
+        //start the thread
+        thread.start();
 
     }// end of MainModel::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainModel::addCustomer
+    // MainModel::handleCommand
     //
-    // Adds the customer in pCustomers associated with pCustomerKey to the
-    // database.
+    // Stores pCommand in the commands list to be handled later. This can be
+    // called from another thread so long as this only accesses variables
+    // through synchronized functions.
     //
 
-    public void addCustomer(Table pCustomers, String pCustomerKey)
+    @Override
+    public void handleCommand(Command pCommand)
     {
+        
+        //set the command
+        setCommand(pCommand);
+        
+        //notify the thread to stop waiting
+        synchronized(thread) { thread.notify(); }
 
-        recordHandler.addCustomer(pCustomers, pCustomerKey);
-
-    }//end of MainModel::addCustomer
+    }//end of MainModel::handleCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainModel::addCustomerDescriptor
+    // MainModel::run
     //
-    // Adds the descriptor to the customers table.
+    // All actions here will run that in the thread that this class was passed
+    // to.
     //
 
-    public void addCustomerDescriptor(Descriptor pDescriptor)
+    @Override
+    public void run()
     {
+        
+        //this will be only be called when the thread first starts
+        dbHandler.init();
+        
+        //run through these actions continuously
+        while (true) {
+            
+            //handle the stored command -- a copy is created so
+            //that this thread can have his own instance of the
+            //command that is guaranteed to not be affected by
+            //other threads
+            if (getCommand()!=null) { dbHandler.handleCommand(copyCommand()); }
+            
+            //WIP HSS// -- add a function to check the database for changes
+            
+            //this will cause to wait for 30 seconds or until notified before
+            //looping through again
+            makeThreadWait(30000);
+        
+        }
 
-        recordHandler.addCustomerDescriptor(pDescriptor);
-
-    }//end of MainModel::addCustomerDescriptor
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainModel::deleteCustomer
-    //
-    // Deletes the customer associated with pSkoonieKey from the database.
-    //
-
-    public void deleteCustomer(String pSkoonieKey)
-    {
-
-        recordHandler.deleteCustomer(pSkoonieKey);
-
-    }//end of MainModel::deleteCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainModel::deleteCustomerDescriptor
-    //
-    // Deletes pDescriptor from the database.
-    //
-
-    public void deleteCustomerDescriptor(Descriptor pDescriptor)
-    {
-
-        recordHandler.deleteCustomerDescriptor(pDescriptor);
-
-    }//end of MainModel::deleteCustomerDescriptor
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainModel::getCustomers
-    //
-    // Gets and returns all of the customers in the database
-    //
-
-    public Table getCustomers()
-    {
-
-        return recordHandler.getCustomers();
-
-    }//end of MainModel::getCustomers
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainModel::getCustomerDescriptors
-    //
-    // Gets and returns all of the descriptors used for customers.
-    //
-
-    public List<Descriptor> getCustomerDescriptors()
-    {
-
-        return recordHandler.getCustomerDescriptors();
-
-    }//end of MainModel::getCustomerDescriptors
-    //--------------------------------------------------------------------------
+    }//end of MainModel::run
+    //--------------------------------------------------------------------------    
     
     //--------------------------------------------------------------------------
     // MainModel::logSevere
@@ -142,7 +123,7 @@ public class MainModel
     // Logs pMessage with level SEVERE using the Java logger.
     //
 
-    void logSevere(String pMessage)
+    private void logSevere(String pMessage)
     {
 
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage);
@@ -157,7 +138,7 @@ public class MainModel
     // using the Java logger.
     //
 
-    void logStackTrace(String pMessage, Exception pE)
+    private void logStackTrace(String pMessage, Exception pE)
     {
 
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, pMessage, pE);
@@ -166,32 +147,20 @@ public class MainModel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MainModel::updateCustomer
+    // MainController::makeThreadWait
     //
-    // Updates the customer in pCustomers associated with pCustomerKey to the
-    // database.
+    // Causes the thread to wait for the specified amount of time or until it
+    // is notified. The thread uses himself as the monitor.
     //
 
-    public void updateCustomer(Table pCustomers, String pCustomerKey)
+    private void makeThreadWait(int pWaitTime)
     {
 
-        recordHandler.updateCustomer(pCustomers, pCustomerKey);
+        synchronized (thread) {
+            try { thread.wait(pWaitTime); } catch (InterruptedException e) { }
+        }
 
-    }//end of MainModel::updateCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainModel::updateCustomerDescriptor
-    //
-    // Updates pDescriptor.
-    //
-
-    public void updateCustomerDescriptor(Descriptor pDescriptor)
-    {
-
-        recordHandler.updateCustomerDescriptor(pDescriptor);
-
-    }//end of MainModel::updateCustomerDescriptor
+    }//end of MainController::makeThreadWait
     //--------------------------------------------------------------------------
     
 }//end of class MainModel

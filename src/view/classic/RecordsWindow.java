@@ -39,10 +39,7 @@ import toolkit.Tools;
 public class RecordsWindow extends AltusJDialog implements CommandHandler
 {
     
-    private final String addRecordWindowTitle;
-    private final String editRecordWindowTitle;
-    private final String recordName;
-    private final String recordNamePlural;
+    private final RecordWindowInfo info;
     
     private CustomTable table;
     private DefaultTableModel model;
@@ -55,19 +52,13 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     // RecordsWindow::RecordsWindow (constructor)
     //
 
-    public RecordsWindow(String pTitle, String pAddRecordWindowTitle, 
-                            String pEditRecordWindowTitle, String pRecordName, 
-                            String pRecordNamePlural, Window pParent,
-                            ActionListener pListener)
+    public RecordsWindow(String pTitle, Window pParent, 
+                            ActionListener pListener, RecordWindowInfo pInfo)
     {
 
         super(pTitle, pParent, pListener);
         
-        addRecordWindowTitle = pAddRecordWindowTitle;
-        editRecordWindowTitle = pEditRecordWindowTitle;
-        
-        recordName = pRecordName;
-        recordNamePlural = pRecordNamePlural;
+        info = pInfo;
 
     }//end of RecordsWindow::RecordsWindow (constructor)
     //--------------------------------------------------------------------------
@@ -86,7 +77,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         setupTableModel();
         
         //perform a command to get the records
-        (new Command("get " + recordNamePlural)).perform();
+        (new Command(info.getGetCommandMessage())).perform();
         
         super.init();
         
@@ -140,10 +131,11 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     {
         
         String msg = pCommand.getMessage();
-        
-        if (msg.equals("display " + recordNamePlural)) {
-            displayRecords((Table)pCommand.get("table"));
+            
+        if (msg.equals(info.getTypePluralCommandMessage())) {
+            displayRecords((Table)pCommand.get(Command.TABLE));
         }
+
         else if (msg.equals("display add record window")) {
             displayAddRecordWindow();
         }
@@ -175,6 +167,8 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         panel.setAlignmentY(TOP_ALIGNMENT);
         
         int buttonSpacer = 20;
+        
+        String recordName = info.getRecordNameSingular();
         
         //Add Record button
         panel.add(createButton( "Add", 
@@ -216,9 +210,9 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         if ((rec=getSelectedRecord())==null) { return; }
         
         String key = rec.getSkoonieKey();
-        downStream = new EditRecordWindow(editRecordWindowTitle, this, 
+        downStream = new EditRecordWindow(info.getEditRecordWindowTitle(), this, 
                                                 getActionListener(),
-                                                recordName, records, key);
+                                                info, records, key);
         ((EditRecordWindow)downStream).init();
         
     }// end of RecordsWindow::editSelectedRecord
@@ -238,6 +232,8 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         //return if there was a problem when getting the selected record
         if ((rec=getSelectedRecord())==null) { return; }
         
+        String recordName = info.getRecordNameSingular();
+        
         String msg = "Are you sure you want to delete " + recordName + " \"" 
                         + rec.getValue(records.getDescriptorKeyByName("Name"))
                         + "\"? This cannot be undone.";
@@ -256,9 +252,9 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         if (verify == no || verify == JOptionPane.CLOSED_OPTION) { return; }
         
         
-        Command command = new Command("delete " + recordName);
+        Command command = new Command(info.getDeleteCommandMessage());
         String key = rec.getSkoonieKey();
-        command.put("record key", key);
+        command.put(Command.SKOONIE_KEY, key);
         command.perform();
         
     }// end of RecordsWindow::deleteSelectedRecord
@@ -273,9 +269,9 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     private void displayAddRecordWindow() 
     {
         
-        downStream = new EditRecordWindow(addRecordWindowTitle, this, 
+        downStream = new EditRecordWindow(info.getAddRecordWindowTitle(), this, 
                                                 getActionListener(),
-                                                recordName, records, null);
+                                                info, records, null);
         ((EditRecordWindow)downStream).init();
         
     }// end of RecordsWindow::displayAddRecordWindow
@@ -325,7 +321,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         
         int row = table.getSelectedRow();
         if (row==-1) {
-            JOptionPane.showMessageDialog(this, "No "+recordName+" selected.");
+            JOptionPane.showMessageDialog(this, "Nothing is selected.");
         }
         else { rec = records.getRecords().get(row); }
         

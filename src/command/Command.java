@@ -26,6 +26,23 @@ import java.util.Map;
 
 public class Command {
     
+    //messages and keys used throuhout the program for commands
+    public final static String SUCCESS = "SUCCESS";
+    public final static String FAILURE = "FAILURE";
+    public final static String DB_CONNECTION_ERROR = "DB_CONNECTION_ERROR";
+    
+    public final static String RECORD_KEY = "RECORD_KEY";
+    public final static String SKOONIE_KEY = "SKOONIE_KEY";
+    
+    public final static String TABLE = "TABLE";
+    
+    public final static String CUSTOMER = "CUSTOMER";
+    public final static String CUSTOMERS = "CUSTOMERS";
+    public final static String ADD_CUSTOMER = "ADD_CUSTOMER";
+    public final static String DELETE_CUSTOMER = "DELETE_CUSTOMER";
+    public final static String EDIT_CUSTOMER = "EDIT_CUSTOMER";
+    public final static String GET_CUSTOMERS = "GET_CUSTOMERS";
+    
     private final static List<CommandHandler> commandHandlers = new ArrayList<>();
     
     private String message;
@@ -82,6 +99,26 @@ public class Command {
         for (CommandHandler h : commandHandlers) { h.handleCommand(this); }
 
     }//end of Command::perform
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // Command::copy
+    //
+    // Copies all of the data in the current instance of Command into a new
+    // Command object. That new object is returned.
+    //
+
+    public Command copy()
+    {
+        
+        Command c = new Command(message);
+        for (Map.Entry<String, Object> e : map.entrySet()) {
+            c.put(e.getKey(), e.getValue());
+        }
+        
+        return c;
+
+    }//end of Command::copy
     //--------------------------------------------------------------------------
     
 }//end of class Command

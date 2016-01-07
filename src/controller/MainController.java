@@ -48,23 +48,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import model.MainModel;
-import shared.Descriptor;
-import shared.Table;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class MainController
 //
 
-public class MainController implements CommandHandler, Runnable
+public class MainController implements CommandHandler
 {
     
     private final MainModel model = new MainModel();
     private CommandHandler downStream;
-
-    private int displayUpdateTimer = 0;
-
-    private boolean shutDown = false;
 
     //--------------------------------------------------------------------------
     // MainController::MainController (constructor)
@@ -99,9 +93,6 @@ public class MainController implements CommandHandler, Runnable
         downStream = new MainView();
         ((MainView)downStream).init();
 
-        //start the control thread
-        new Thread(this).start();
-
     }// end of MainController::init
     //--------------------------------------------------------------------------
     
@@ -118,137 +109,14 @@ public class MainController implements CommandHandler, Runnable
     public void handleCommand(Command pCommand)
     {
         
-        switch (pCommand.getMessage()) {
-            
-            case "empty database": //DEBUG HSS// -- testing purposes only
-                break;
-                
-            //batch actions
-            case "delete batch": //DEBUG HSS -- for testing purposes only
-                break;
-                
-            case "move batch": //WIP HSS// -- move the batch
-                break;
-                
-            case "receive batch": //WIP HSS// -- receive the batch
-                break;
-                
-            case "update batch": //WIP HSS// -- update the batch
-                break;
-                
-            //customer actions
-            case "add customer":
-                model.addCustomer((Table)pCommand.get("table"), 
-                                    (String)pCommand.get("record key"));
-                pCommand.put("table", model.getCustomers());
-                pCommand.setMessage("display customers");
-                break;
-                
-            case "delete customer":
-                model.deleteCustomer((String)pCommand.get("record key"));
-                pCommand.put("table", model.getCustomers());
-                pCommand.setMessage("display customers");
-                break;
-                
-            case "get customers":
-                pCommand.put("table", model.getCustomers());
-                pCommand.setMessage("display customers");
-                break;
-                
-            case "update customer":
-                model.updateCustomer((Table)pCommand.get("table"), 
-                                    (String)pCommand.get("record key"));
-                pCommand.put("table", model.getCustomers());
-                pCommand.setMessage("display customers");
-                break;
-                
-            //descriptor actions
-            case "add customer descriptor":
-                Descriptor desc = (Descriptor)pCommand.get("descriptor");
-                model.addCustomerDescriptor(desc);
-                pCommand.setMessage("display descriptors");
-                pCommand.put("descriptors", model.getCustomerDescriptors());
-                break;
-                
-            case "delete customer descriptor":
-                model.deleteCustomerDescriptor((Descriptor)pCommand
-                                                            .get("descriptor"));
-                pCommand.setMessage("display descriptors");
-                pCommand.put("descriptors", model.getCustomerDescriptors());
-                break;
-                
-            case "get customer descriptors":
-                pCommand.setMessage("display descriptors");
-                pCommand.put("descriptors", model.getCustomerDescriptors());
-                break;
-                
-            case "update customer descriptor":
-                model.updateCustomerDescriptor((Descriptor)pCommand
-                                                            .get("descriptor"));
-                pCommand.setMessage("display descriptors");
-                pCommand.put("descriptors", model.getCustomerDescriptors());
-                break;
-                
-        }
+        //pass the command to model -- if he doesn't need to do anything
+        //then he won't
+        model.handleCommand(pCommand);
         
         //pass the command down the stream to view
         downStream.handleCommand(pCommand);
 
     }//end of MainController::commandPerformed
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::run
-    //
-    // This is the part which runs as a separate thread.  The actions of 
-    // accessing remote devices occur here.  If they are done in a timer call 
-    // instead, then buttons and displays get frozen during the sometimes 
-    // lengthy calls to access the network.
-    //
-    // NOTE:  All functions called by this thread must wrap calls to alter GUI
-    // components in the invokeLater function to be thread safe.
-    //
-
-    @Override
-    public void run()
-    {
-
-        //call the control method repeatedly
-        while(true){
-
-            control();
-
-            //sleep for 2 seconds -- all timing is based on this period
-            threadSleep(2000);
-
-        }
-
-    }//end of MainController::run
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // MainController::control
-    //
-    // Performs all display and control.  Call this from a thread.
-    //
-
-    public void control()
-    {
-
-        //update the display every 30 seconds
-        if (displayUpdateTimer++ == 14){
-            displayUpdateTimer = 0;
-            //call function to update stuff here
-        }
-
-        //If a shut down is initiated, clean up and exit the program.
-
-        if(shutDown){
-            //exit the program
-            System.exit(0);
-        }
-
-    }//end of MainController::control
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -354,38 +222,6 @@ public class MainController implements CommandHandler, Runnable
         catch(IOException e){ }
 
     }//end of MainController::setupJavaLogger
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::shutDown
-    //
-    // Performs appropriate shut down operations.
-    //
-    // This is done by setting a flag so that this class's thread can do the
-    // actual work, thus avoiding thread contention.
-    //
-
-    public void shutDown()
-    {
-
-        shutDown = true;
-
-    }//end of MainController::shutDown
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // MainController::threadSleep
-    //
-    // Calls the Thread.sleep function. Placed in a function to avoid the
-    // "Thread.sleep called in a loop" warning -- yeah, it's cheezy.
-    //
-
-    public void threadSleep(int pSleepTime)
-    {
-
-        try {Thread.sleep(pSleepTime);} catch (InterruptedException e) { }
-
-    }//end of MainController::threadSleep
     //--------------------------------------------------------------------------
     
 }//end of class MainController
