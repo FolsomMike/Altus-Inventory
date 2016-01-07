@@ -63,6 +63,7 @@ import toolkit.Tools;
 public class EditRecordWindow extends AltusJDialog implements CommandHandler
 {
     
+    private final RecordsWindow recordsWindow;
     private final RecordWindowInfo info;
     
     private final Table table;
@@ -84,11 +85,14 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
 
     public EditRecordWindow(String pTitle, Window pParent, 
                                 ActionListener pListener, 
+                                RecordsWindow pRecordsWindow,
                                 RecordWindowInfo pInfo, Table pTable, 
                                 String pRecordSkoonieKey)
     {
 
         super(pTitle, pParent, pListener);
+        
+        recordsWindow = pRecordsWindow;
         
         info = pInfo;
         
@@ -225,6 +229,9 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         command.put(Command.RECORD_KEY, record.getSkoonieKey());
         
         command.perform();
+        
+        //tell the records window that he needs to show he's loading
+        recordsWindow.setLoading(true);
         
         //dispose of this the window
         dispose();

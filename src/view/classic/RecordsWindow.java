@@ -219,8 +219,8 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         
         String key = rec.getSkoonieKey();
         downStream = new EditRecordWindow(info.getEditRecordWindowTitle(), this, 
-                                                getActionListener(),
-                                                info, records, key);
+                                            getActionListener(), this, info,
+                                            records, key);
         ((EditRecordWindow)downStream).init();
         
     }// end of RecordsWindow::editSelectedRecord
@@ -259,7 +259,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         //return if the user closed window or selected no
         if (verify == no || verify == JOptionPane.CLOSED_OPTION) { return; }
         
-        
+        setLoading(true);
         Command command = new Command(info.getDeleteCommandMessage());
         String key = rec.getSkoonieKey();
         command.put(Command.SKOONIE_KEY, key);
@@ -278,8 +278,8 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     {
         
         downStream = new EditRecordWindow(info.getAddRecordWindowTitle(), this, 
-                                                getActionListener(),
-                                                info, records, null);
+                                            getActionListener(), this, info,
+                                            records, null);
         ((EditRecordWindow)downStream).init();
         
     }// end of RecordsWindow::displayAddRecordWindow
