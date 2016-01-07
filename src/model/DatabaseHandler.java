@@ -107,7 +107,7 @@ public class DatabaseHandler implements CommandHandler
                     break;
                     
                 case Command.EDIT_CUSTOMER:
-                    editCustomer((Table)pCommand.get(Command.CUSTOMER),
+                    editCustomer((Table)pCommand.get(Command.TABLE),
                                     (String)pCommand.get(Command.RECORD_KEY));
                     break;
                     
@@ -134,7 +134,11 @@ public class DatabaseHandler implements CommandHandler
         throws DatabaseError
     {
         
-        addRecord(TableName.customers, pCustomers, pCustomerKey);
+        addRecord(TableName.customers, pCustomers, pCustomerKey, false);
+        
+        //get the customers from the database again now that things have
+        //changed there
+        getCustomers();
 
     }//end of DatabaseHandler::addCustomer
     //--------------------------------------------------------------------------
@@ -198,7 +202,8 @@ public class DatabaseHandler implements CommandHandler
     // Adds the record in pTable associated with pRecordKey to the database.
     //
 
-    private void addRecord(String pTableName, Table pTable, String pRecordKey)
+    private void addRecord(String pTableName, Table pTable, String pRecordKey,
+                            boolean pDisconnectWhenDone)
         throws DatabaseError
     {
         
@@ -219,9 +224,67 @@ public class DatabaseHandler implements CommandHandler
         
         db.insertEntry(entry, pTableName);
         
-        db.disconnectFromDatabase();
+        //only disconnect if directed to do so -- allows for this to
+        //be used in a series of database operations
+        if (pDisconnectWhenDone) { db.disconnectFromDatabase(); }
 
     }//end of DatabaseHandler::addRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::editCustomer
+    //
+    // Updates the customer in pTable associated with pCustomerKey in the 
+    // database.
+    //
+
+    private void editCustomer(Table pTable, String pCustomerKey)
+        throws DatabaseError
+    {
+        
+        editRecord(TableName.customers, pTable, pCustomerKey, false);
+        
+        //get the customers from the database again now that things have
+        //changed there
+        getCustomers();
+        
+    }//end of DatabaseHandler::editCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::editRecord
+    //
+    // Updates the record in pTable associated with pKey to the table in the
+    // database with pTableName.
+
+    private void editRecord(String pTableName, Table pTable,  String pKey,
+                            boolean pDisconnectWhenDone)
+        throws DatabaseError
+    {
+        
+        db.connectToDatabase();
+        
+        //get the proper record from pTable
+        Record record = pTable.getRecord(pKey);
+        
+        //add the customer to the database
+        DatabaseEntry entry = new DatabaseEntry();
+        entry.storeColumn("skoonie_key", record.getSkoonieKey());
+        for (Descriptor d : pTable.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            
+             //store the value for the descriptor
+            String value = record.getValue(descKey);
+            if (value != null) { entry.storeColumn(descKey, value); }
+        }
+        
+        db.updateEntry(entry, pTableName);
+        
+        //only disconnect if directed to do so -- allows for this to
+        //be used in a series of database operations
+        if (pDisconnectWhenDone) { db.disconnectFromDatabase(); }
+        
+    }//end of DatabaseHandler::editRecord
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -236,7 +299,11 @@ public class DatabaseHandler implements CommandHandler
         
         //WIP HSS// -- perform check to see if he can be deleted
         
-        deleteRecord(TableName.customers, pSkoonieKey);
+        deleteRecord(TableName.customers, pSkoonieKey, false);
+        
+        //get the customers from the database again now that things have
+        //changed there
+        getCustomers();
 
     }//end of DatabaseHandler::deleteCustomer
     //--------------------------------------------------------------------------
@@ -287,7 +354,8 @@ public class DatabaseHandler implements CommandHandler
     // Deletes the entry associated with pSkoonieKey from pTableName.
     //
 
-    private void deleteRecord(String pTableName, String pSkoonieKey)
+    private void deleteRecord(String pTableName, String pSkoonieKey,
+                                boolean pDisconnectWhenDone)
         throws DatabaseError
     {
         
@@ -297,8 +365,10 @@ public class DatabaseHandler implements CommandHandler
         //              Maybe pass in a list of tables to check in?
         
         db.deleteEntry(pTableName, pSkoonieKey);
-       
-        db.disconnectFromDatabase();
+
+        //only disconnect if directed to do so -- allows for this to
+        //be used in a series of database operations
+        if (pDisconnectWhenDone) { db.disconnectFromDatabase(); }
         
     }//end of DatabaseHandler::deleteRecord
     //--------------------------------------------------------------------------
@@ -489,22 +559,6 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DatabaseHandler::editCustomer
-    //
-    // Updates the customer in pTable associated with pCustomerKey in the 
-    // database.
-    //
-
-    private void editCustomer(Table pTable, String pCustomerKey)
-        throws DatabaseError
-    {
-        
-        updateRecord(TableName.customers, pTable, pCustomerKey);
-        
-    }//end of DatabaseHandler::editCustomer
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
     // DatabaseHandler::updateCustomerDescriptor
     //
     // Updates pDescriptor in the customers table.
@@ -554,39 +608,6 @@ public class DatabaseHandler implements CommandHandler
         db.disconnectFromDatabase();
 
     }//end of DatabaseHandler::updateDescriptor
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // DatabaseHandler::updateRecord
-    //
-    // Updates the record in pTable associated with pKey to the table in the
-    // database with pTableName.
-
-    private void updateRecord(String pTableName, Table pTable,  String pKey)
-        throws DatabaseError
-    {
-        
-        db.connectToDatabase();
-        
-        //get the proper record from pTable
-        Record record = pTable.getRecord(pKey);
-        
-        //add the customer to the database
-        DatabaseEntry entry = new DatabaseEntry();
-        entry.storeColumn("skoonie_key", record.getSkoonieKey());
-        for (Descriptor d : pTable.getDescriptors()) {
-            String descKey = d.getSkoonieKey();
-            
-             //store the value for the descriptor
-            String value = record.getValue(descKey);
-            if (value != null) { entry.storeColumn(descKey, value); }
-        }
-        
-        db.updateEntry(entry, pTableName);
-        
-        db.disconnectFromDatabase();
-        
-    }//end of DatabaseHandler::updateRecord
     //--------------------------------------------------------------------------
     
 }//end of class DatabaseHandler
