@@ -185,7 +185,7 @@ public class MySQLDatabase
             
             stmt.setString(1, pValue);
             
-            ResultSet set = stmt.executeQuery();;
+            ResultSet set = stmt.executeQuery();
             
             //extract the count from the ResultSet
             while (set.next()) { count = set.getInt(1); }
