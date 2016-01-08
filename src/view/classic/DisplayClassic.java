@@ -119,6 +119,11 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                 displayCustomersFrame();
                 break;
                 
+            //rack display actions
+            case "display racks window":
+                displayRacksWindow();
+                break;
+                
             //settings display actions
             case "display customer descriptors window":
                 displayCustomerDescriptorsFrame();
@@ -380,6 +385,29 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //DEBUG HSS//
 
     }//end of DisplayClassic::displayDatabaseConnectionErrorWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayRacksWindow
+    //
+    // Displays the Racks window and sets it to the downstream.
+    //
+    
+    private void displayRacksWindow()
+    {
+        
+        RecordWindowInfo info = new RecordWindowInfo("Add Rack", 
+                                "Edit Rack", "rack", "racks", 
+                                Command.ADD_RACK, Command.DELETE_RACK,
+                                Command.EDIT_RACK, Command.GET_RACKS, 
+                                Command.RACK, Command.RACKS);
+        downStream = new RecordsWindow("Racks", this, this, info);
+        ((RecordsWindow)downStream).init();
+        
+        //this will not be called until after the customers window closes
+        downStream = null;
+
+    }//end of DisplayClassic::displayRacksWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
