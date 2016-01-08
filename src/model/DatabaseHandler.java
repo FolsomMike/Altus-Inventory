@@ -57,6 +57,7 @@ public class DatabaseHandler implements CommandHandler
         public static final String batches = "BATCHES";
         public static final String customers = "CUSTOMERS";
         public static final String descriptors = "DESCRIPTORS";
+        public static final String racks = "RACKS";
         public static final String receivements = "RECEIVEMENTS";
     }
 
@@ -86,6 +87,10 @@ public class DatabaseHandler implements CommandHandler
         handledCommands.add(Command.DELETE_CUSTOMER);
         handledCommands.add(Command.EDIT_CUSTOMER);
         handledCommands.add(Command.GET_CUSTOMERS);
+        handledCommands.add(Command.ADD_RACK);
+        handledCommands.add(Command.DELETE_RACK);
+        handledCommands.add(Command.EDIT_RACK);
+        handledCommands.add(Command.GET_RACKS);
 
     }// end of DatabaseHandler::init
     //--------------------------------------------------------------------------
@@ -124,6 +129,24 @@ public class DatabaseHandler implements CommandHandler
                     
                 case Command.GET_CUSTOMERS:
                     getCustomers();
+                    break;
+                    
+                case Command.ADD_RACK:
+                    addRack((Table)pCommand.get(Command.TABLE),
+                                (String)pCommand.get(Command.RECORD_KEY));
+                    break;
+                    
+                case Command.DELETE_RACK:
+                    deleteRack((String)pCommand.get(Command.SKOONIE_KEY));
+                    break;
+                    
+                case Command.EDIT_RACK:
+                    editRack((Table)pCommand.get(Command.TABLE),
+                                    (String)pCommand.get(Command.RECORD_KEY));
+                    break;
+                    
+                case Command.GET_RACKS:
+                    getRacks();
                     break;
 
             }
@@ -208,6 +231,25 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DatabaseHandler::addRack
+    //
+    // Adds the rack in pRacks associated with pRackKey to the database.
+    //
+
+    private void addRack(Table pRacks, String pRackKey)
+        throws DatabaseError
+    {
+        
+        addRecord(TableName.racks, pRacks, pRackKey, false);
+        
+        //get the racks from the database again now that things have
+        //changed there
+        getRacks();
+
+    }//end of DatabaseHandler::addRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DatabaseHandler::addRecord
     //
     // Adds the record in pTable associated with pRecordKey to the database.
@@ -260,6 +302,26 @@ public class DatabaseHandler implements CommandHandler
         getCustomers();
         
     }//end of DatabaseHandler::editCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::editCustomer
+    //
+    // Updates the rack in pTable associated with pRackKey in the 
+    // database.
+    //
+
+    private void editRack(Table pTable, String pCustomerKey)
+        throws DatabaseError
+    {
+        
+        editRecord(TableName.racks, pTable, pCustomerKey, false);
+        
+        //get the racks from the database again now that things have
+        //changed there
+        getRacks();
+        
+    }//end of DatabaseHandler::editRack
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -389,6 +451,27 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DatabaseHandler::deleteRack
+    //
+    // Deletes the rack associated with pSkoonieKey from the database.
+    //
+
+    private void deleteRack(String pSkoonieKey)
+        throws DatabaseError
+    {
+        
+        //WIP HSS// -- perform check to see if he can be deleted
+        
+        deleteRecord(TableName.racks, pSkoonieKey, false);
+        
+        //get the rack from the database again now that things have
+        //changed there
+        getRacks();
+
+    }//end of DatabaseHandler::deleteRack
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DatabaseHandler::deleteRecord
     //
     // Deletes the entry associated with pSkoonieKey from pTableName.
@@ -495,6 +578,27 @@ public class DatabaseHandler implements CommandHandler
         return descriptors;
 
     }//end of DatabaseHandler::getDescriptors
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::getRacks
+    //
+    // Gets all of the racks from the database and sticks them into a command
+    // to be performed in the main thread.
+    //
+
+    private void getRacks()
+        throws DatabaseError
+    {
+        
+        Table racks = getTable(TableName.racks);
+        
+        Command c = new Command(Command.RACKS);
+        c.put(Command.TABLE, racks);
+        
+        performCommandInMainThread(c);
+
+    }//end of DatabaseHandler::getRacks
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
