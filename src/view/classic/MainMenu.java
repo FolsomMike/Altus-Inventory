@@ -37,6 +37,7 @@ class MainMenu extends JMenuBar
     
     JMenu viewMenu;
     JMenuItem customersMenuItem;
+    JMenuItem racksMenuItem;
     
     JMenu settingsMenu;
     JMenuItem settingsCustomerDescriptorsMenuItem;
@@ -170,6 +171,14 @@ class MainMenu extends JMenuBar
         customersMenuItem.setActionCommand("display customers window");
         customersMenuItem.addActionListener(actionListener);
         viewMenu.add(customersMenuItem);
+        
+        //View/Racks menu item
+        racksMenuItem = new JMenuItem("Racks");
+        racksMenuItem.setMnemonic(KeyEvent.VK_R);
+        racksMenuItem.setToolTipText("View, edit, and delete racks.");
+        racksMenuItem.setActionCommand("display racks window");
+        racksMenuItem.addActionListener(actionListener);
+        viewMenu.add(racksMenuItem);
 
     }//end of MainMenu::createViewMenu
     //--------------------------------------------------------------------------
