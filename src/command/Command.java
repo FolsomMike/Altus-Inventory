@@ -46,6 +46,13 @@ public class Command {
     public final static String EDIT_CUSTOMER = "EDIT_CUSTOMER";
     public final static String GET_CUSTOMERS = "GET_CUSTOMERS";
     
+    public final static String RACK = "RACK";
+    public final static String RACKS = "RACKS";
+    public final static String ADD_RACK = "ADD_RACK";
+    public final static String DELETE_RACK = "DELETE_RACK";
+    public final static String EDIT_RACK = "EDIT_RACK";
+    public final static String GET_RACKS = "GET_RACKS";
+    
     private final static List<CommandHandler> commandHandlers = new ArrayList<>();
     
     private String message;
