@@ -77,10 +77,11 @@ public class MainModel implements CommandHandler, Runnable
     {
         
         //set the command if it's handled by the database handler
-        if (dbHandler.handlesCommand(pCommand)) { setCommand(pCommand); }
-        
-        //notify the thread to stop waiting
-        synchronized(thread) { thread.notify(); }
+        if (dbHandler.handlesCommand(pCommand)) { 
+            setCommand(pCommand);
+            //notify the thread to stop waiting
+            synchronized(thread) { thread.notify(); }
+        }
 
     }//end of MainModel::handleCommand
     //--------------------------------------------------------------------------
@@ -108,11 +109,8 @@ public class MainModel implements CommandHandler, Runnable
             //handle the commmand if there is one or just check the database
             //connection if this is just a scheduled loop through
             Command c = copyCommand();
-            if (c!=null) { dbHandler.handleCommand(c); }
+            if (c!=null) { dbHandler.handleCommand(c); setCommand(null); }
             else { dbHandler.checkDatabaseConnection(); }
-            
-            //set the command to null so that it is not handled more than once
-            setCommand(null);
             
             //WIP HSS// -- add a function to check the database for changes
             
