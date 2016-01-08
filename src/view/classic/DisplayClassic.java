@@ -51,6 +51,8 @@ public class DisplayClassic extends JFrame implements CommandHandler,
     private final JPanel mainPanel;
     
     private CommandHandler downStream;
+    
+    private DatabaseErrorWindow dbErrorWindow;
 
     //--------------------------------------------------------------------------
     // DisplayClassic::DisplayClassic (constructor)
@@ -84,6 +86,10 @@ public class DisplayClassic extends JFrame implements CommandHandler,
 
         //display the frame
         setVisible(true);
+        
+        //set up the database error window
+        dbErrorWindow = new DatabaseErrorWindow(this, this);
+        dbErrorWindow.init();
 
     }// end of DisplayClassic::init
     //--------------------------------------------------------------------------
@@ -100,6 +106,14 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         
         switch (pCommand.getMessage()) {
             
+            case Command.DB_CONNECTION_ERROR:
+                dbErrorWindow.displayNoDatabaseConnection();
+                break;
+            
+            case Command.DB_CONNECTION_FIXED:
+                dbErrorWindow.setVisible(false);
+                break;
+                
             //customer display actions
             case "display customers window":
                 displayCustomersFrame();
@@ -349,6 +363,23 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         downStream = null;
 
     }//end of DisplayClassic::displayCustomerDescriptorsFrame
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayDatabaseConnectionErrorWindow
+    //
+    // Displays the database connection error window to the user depending on
+    // pDisplay.
+    //
+    // If pDisplay is true, then window is displayed; hidden if not.
+    //
+    
+    private void displayDatabaseConnectionErrorWindow(boolean pDisplay)
+    {
+        
+        //DEBUG HSS//
+
+    }//end of DisplayClassic::displayDatabaseConnectionErrorWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

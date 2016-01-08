@@ -27,9 +27,12 @@ import java.util.Map;
 public class Command {
     
     //messages and keys used throuhout the program for commands
-    public final static String SUCCESS = "SUCCESS";
-    public final static String FAILURE = "FAILURE";
+    public final static String EXIT_PROGRAM = "EXIT_PROGRAM";
+    
+    public final static String DB_SUCCESS = "DB_SUCCESS";
+    public final static String DB_FAILURE = "DB_FAILURE";
     public final static String DB_CONNECTION_ERROR = "DB_CONNECTION_ERROR";
+    public final static String DB_CONNECTION_FIXED = "DB_CONNECTION_FIXED";
     
     public final static String RECORD_KEY = "RECORD_KEY";
     public final static String SKOONIE_KEY = "SKOONIE_KEY";

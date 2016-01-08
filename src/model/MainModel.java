@@ -33,7 +33,9 @@ public class MainModel implements CommandHandler, Runnable
     private Command command;
     synchronized public void setCommand(Command pC) { command = pC; }
     synchronized public Command getCommand() { return command; }
-    synchronized public Command copyCommand() { return command.copy(); }
+    synchronized public Command copyCommand() { 
+        return command==null ? null:command.copy();
+    }
 
     //--------------------------------------------------------------------------
     // MainModel::MainModel (constructor)
@@ -74,8 +76,8 @@ public class MainModel implements CommandHandler, Runnable
     public void handleCommand(Command pCommand)
     {
         
-        //set the command
-        setCommand(pCommand);
+        //set the command if it's handled by the database handler
+        if (dbHandler.handlesCommand(pCommand)) { setCommand(pCommand); }
         
         //notify the thread to stop waiting
         synchronized(thread) { thread.notify(); }
@@ -100,20 +102,23 @@ public class MainModel implements CommandHandler, Runnable
         //run through these actions continuously
         while (true) {
             
-            //handle the stored command -- a copy is created so
-            //that this thread can have his own instance of the
-            //command that is guaranteed to not be affected by
-            //other threads
-            if (getCommand()!=null) { dbHandler.handleCommand(copyCommand()); }
+            //check the database connection every time the
+            //thread loops throug            
+
+            //handle the commmand if there is one or just check the database
+            //connection if this is just a scheduled loop through
+            Command c = copyCommand();
+            if (c!=null) { dbHandler.handleCommand(c); }
+            else { dbHandler.checkDatabaseConnection(); }
             
             //set the command to null so that it is not handled more than once
             setCommand(null);
             
             //WIP HSS// -- add a function to check the database for changes
             
-            //this will cause to wait for 30 seconds or until notified before
+            //this will cause to wait for 5 seconds or until notified before
             //looping through again
-            makeThreadWait(30000);
+            makeThreadWait(5000);
         
         }
 

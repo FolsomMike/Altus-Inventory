@@ -109,6 +109,11 @@ public class MainController implements CommandHandler
     public void handleCommand(Command pCommand)
     {
         
+        //exit the program if necessary
+        if (pCommand.getMessage().equals(Command.EXIT_PROGRAM)) { 
+            System.exit(0);
+        }
+        
         //pass the command to model -- if he doesn't need to do anything
         //then he won't
         model.handleCommand(pCommand);

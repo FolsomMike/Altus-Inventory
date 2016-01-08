@@ -46,7 +46,11 @@ import shared.Record;
 public class DatabaseHandler implements CommandHandler
 {
     
+    private final List<String> handledCommands = new ArrayList<>();
+    
     private final MySQLDatabase db = new MySQLDatabase();
+    
+    private boolean waitingForFixedConnection = false;
     
     //class to hold names of tables in the database
     private class TableName {
@@ -77,6 +81,11 @@ public class DatabaseHandler implements CommandHandler
         
         //initialize the database
         db.init();
+        
+        handledCommands.add(Command.ADD_CUSTOMER);
+        handledCommands.add(Command.DELETE_CUSTOMER);
+        handledCommands.add(Command.EDIT_CUSTOMER);
+        handledCommands.add(Command.GET_CUSTOMERS);
 
     }// end of DatabaseHandler::init
     //--------------------------------------------------------------------------
@@ -96,6 +105,8 @@ public class DatabaseHandler implements CommandHandler
         try {
         
             switch (pCommand.getMessage()) {
+                
+                //all commands added here need to be added to init()
                 
                 case Command.ADD_CUSTOMER:
                     addCustomer((Table)pCommand.get(Command.TABLE),
@@ -285,6 +296,35 @@ public class DatabaseHandler implements CommandHandler
         if (pDisconnectWhenDone) { db.disconnectFromDatabase(); }
         
     }//end of DatabaseHandler::editRecord
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::checkDatabaseConnection
+    //
+    // Checks the database connection. If the connection was previously bad but
+    // is now good, a command is performed saying that the connection is good
+    // now. If the connection is bad, a command saying that it's bad is 
+    // performed.
+    //
+
+    public void checkDatabaseConnection()
+    {
+        
+        try { 
+            db.connectToDatabase();
+            db.disconnectFromDatabase();
+            
+            //we made it to here so inform everybody that the
+            //connection is fixed if it was broken before
+            if(waitingForFixedConnection) {
+                waitingForFixedConnection = false;
+                Command c = new Command(Command.DB_CONNECTION_FIXED);
+                performCommandInMainThread(c);
+            }
+        } 
+        catch (DatabaseError e) { handleConnectionError(); }
+
+    }//end of DatabaseHandler::checkDatabaseConnection
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -516,6 +556,23 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DatabaseHandler::handleConnectionError
+    //
+    // Sets the waiting for fixed connection boolean to true and performs a
+    // command telling everybody that the database can't be connected to.
+    //
+
+    public void handleConnectionError()
+    {
+        
+        waitingForFixedConnection = true;
+        
+        performCommandInMainThread(new Command(Command.DB_CONNECTION_ERROR));
+
+    }//end of DatabaseHandler::handleConnectionError
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DatabaseHandler::handleDatabaseError
     //
     // Takes different actions depending on the message of pError.
@@ -526,19 +583,33 @@ public class DatabaseHandler implements CommandHandler
         
         if (pError==null) { return; }
         
-        String msg = Command.DB_CONNECTION_ERROR;
-        
-        //if the error was not a connection error and the connection to
-        //the database seems fine, then just send a message saying that
-        //we failed to do the last sent command
-        if (!pError.getMessage().equals(DatabaseError.CONNECTION_ERROR)
-                && db.checkConnection()) {
-            msg = Command.FAILURE;
+        if (pError.getMessage().equals(DatabaseError.CONNECTION_ERROR)
+                || !db.checkConnection()) {
+            handleConnectionError();
         }
-
-        performCommandInMainThread(new Command(msg));
+        else { performCommandInMainThread(new Command(Command.DB_FAILURE)); }
 
     }//end of DatabaseHandler::handleDatabaseError
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::handlesCommand
+    //
+    // Returns true if the command is handled by this class; false if not.
+    //
+
+    public boolean handlesCommand(Command pCommand)
+    {
+        
+        String msg = pCommand.getMessage();
+        
+        for (String cmd : handledCommands) {
+            if (msg.equals(cmd)) { return true; }
+        }
+        
+        return false;
+
+    }//end of DatabaseHandler::handlesCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
