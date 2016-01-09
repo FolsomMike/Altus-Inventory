@@ -25,7 +25,10 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -51,9 +54,10 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     
     private CommandHandler downStream;
     
+    private final List<JButton> buttons = new ArrayList<>();
+    
     private Image loadingImage;
-    private boolean paintLoadingImage = false;
-    public void setLoading(boolean pLoading) { paintLoadingImage = pLoading; }
+    private boolean loading = false;
 
     //--------------------------------------------------------------------------
     // RecordsWindow::RecordsWindow (constructor)
@@ -179,23 +183,30 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         String recordName = info.getRecordNameSingular();
         
         //Add Record button
-        panel.add(createButton( "Add", 
+        JButton addButton = createButton( "Add", 
                                 "Add a new " + recordName + ".", 
-                                "display add record window"));
+                                "display add record window");
+        buttons.add(addButton);
+        panel.add(addButton);
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Edit Record button
-        panel.add(createButton( "Edit", 
+        JButton editButton = createButton( "Edit", 
                                 "Edit information about the selected " 
                                     + recordName + ".", 
-                                "edit selected record"));
+                                "edit selected record");
+        buttons.add(editButton);
+        panel.add(editButton);
         
         panel.add(Tools.createVerticalSpacer(buttonSpacer));
         
         //Delete Record button
-        panel.add(createButton("Delete", "Delete the selected "+recordName+".", 
-                                "delete selected record"));
+        JButton deleteButton = createButton("Delete", 
+                                    "Delete the selected "+recordName+".", 
+                                    "delete selected record");
+        buttons.add(deleteButton);
+        panel.add(deleteButton);
         
         return panel;
         
@@ -342,6 +353,22 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // RecordsWindow::setLoading
+    //
+    // Sets the window to loading or not loading, depending on pLoading
+    //
+    
+    public void setLoading(boolean pLoading) 
+    {
+        
+        loading = pLoading;
+        
+        for(JButton b : buttons) { b.setEnabled(!loading); }
+        
+    }// end of RecordsWindow::setLoading
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // RecordsWindow::setUpScrollPane
     //
     // Sets up the scroll pane, putting the table inside of it. The 
@@ -359,7 +386,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
                 super.paintComponent(g);
 
                 //paint the loading image if necessary
-                if (paintLoadingImage) {
+                if (loading) {
                     int x = getWidth()/2 - loadingImage.getWidth(null)/2;
                     int y = getHeight()/2 - loadingImage.getHeight(null)/2;
                     g.drawImage(loadingImage, x, y, this);
