@@ -129,6 +129,11 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                 displayCustomerDescriptorsFrame();
                 break;
                 
+            //display receive material window
+            case "display receive window":
+                displayRecieveMaterialWindow();
+                break;
+                
         }
         
         //pass the command downstream
@@ -420,6 +425,24 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         downStream = null;
 
     }//end of DisplayClassic::displayRacksWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayRecieveMaterialWindow
+    //
+    // Displays the Receive Material window and sets it to the downstream.
+    //
+    
+    private void displayRecieveMaterialWindow()
+    {
+        
+        downStream = new ReceiveMaterialWindow(this, this);
+        ((ReceiveMaterialWindow)downStream).init();
+        
+        //this will not be called until after the window closes
+        downStream = null;
+
+    }//end of DisplayClassic::displayRecieveMaterialWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
