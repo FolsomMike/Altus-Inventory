@@ -174,6 +174,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Receive Material button
         panel.add(createControlPanelButton("Receive<br>Material", 
                                             "images/receiveMaterial.png",
+                                            "display receive window",
                                             "Receive material into the yard."));
         
         //horizontal spacer
@@ -182,6 +183,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Ship Material button
         panel.add(createControlPanelButton("Ship<br>Material", 
                                             "images/shipMaterial.png",
+                                            "display ship window",
                                             "Ship material from the yard."));
         
         //horizontal spacer
@@ -190,6 +192,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Move Material button
         panel.add(createControlPanelButton("Move<br>Material", 
                                             "images/moveMaterial.png",
+                                            "display move window",
                                             "Move the selected material to a "
                                                 + "different rack."));
         
@@ -199,6 +202,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Transfer Material button
         panel.add(createControlPanelButton("Transfer<br>Material", 
                                             "images/transferMaterial.png",
+                                            "display transfer window",
                                             "Transfer the selected material to "
                                                 + "a different customer."));
         
@@ -208,6 +212,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Reserve Material button
         panel.add(createControlPanelButton("Reserve<br>Material", 
                                             "images/reserveMaterial.png",
+                                            "display reserve window",
                                             "Reserve the selected material for "
                                                 + "future use."));
         
@@ -217,6 +222,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Material Info button
         panel.add(createControlPanelButton("Material<br>Info", 
                                             "images/materialInfo.png",
+                                            "display material info window",
                                             "View and edit information about "
                                                 + "the selected material."));
         
@@ -226,6 +232,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Create Report button
         panel.add(createControlPanelButton("Create<br>Report", 
                                             "images/createReport.png",
+                                            "display create report window",
                                             "Create a report."));
 
         //horizontal spacer
@@ -234,6 +241,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Create Invoice button
         panel.add(createControlPanelButton("Create<br>Invoice", 
                                             "images/createInvoice.png",
+                                            "display create invoice window",
                                             "Create an invoice."));
 
         //horizontal spacer
@@ -242,6 +250,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //add Make Payment button
         panel.add(createControlPanelButton("Make<br>Payment", 
                                             "images/makePayment.png",
+                                            "display make payment window",
                                             "Record payment from a customer."));
 
         return panel;
@@ -257,6 +266,7 @@ public class DisplayClassic extends JFrame implements CommandHandler,
     //
 
     private JButton createControlPanelButton(String pText, String pImagePath,
+                                                String pActionCommand,
                                                 String pTip)
     {
 
@@ -264,6 +274,8 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         JButton btn = new JButton("<html><center>" + pText + "</center></html>", 
                                         createImageIcon(pImagePath));
         btn.setAlignmentX(LEFT_ALIGNMENT);
+        btn.addActionListener(this);
+        btn.setActionCommand(pActionCommand);
         btn.setFocusPainted(false);
         btn.setHorizontalTextPosition(SwingConstants.CENTER);
         btn.setMargin(new Insets(0,0,0,0));
