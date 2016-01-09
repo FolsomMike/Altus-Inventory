@@ -41,7 +41,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 import shared.Descriptor;
 import shared.Record;
@@ -207,6 +206,9 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     //
     // Creates and returns a panel containing the Cancel and OK buttons.
     //
+    // NOTE:    The OK button is added to the list of buttons to disable while
+    //          loading, but the Cancel button is not.
+    //
 
     private JPanel createCancelConfirmPanel()
     {
@@ -241,7 +243,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         //add the OK button
         JButton ok = createButton("OK", "" , 
                                         "ReceiveMaterialWindow -- confirm");
-        buttonsToDisable.add(ok);
+        buttonsToDisable.add(ok); //will be disabled while loading
         buttonsPanel.add(ok);
         
         //horizontal center 
