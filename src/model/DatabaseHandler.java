@@ -563,8 +563,7 @@ public class DatabaseHandler implements CommandHandler
         List<Descriptor> descriptors = new ArrayList<>();
         
         //retrieve the entries from the database and put them into descriptors
-        List<DatabaseEntry> entries = db.getEntries(pDescriptorsTableName);
-        for (DatabaseEntry e : entries) {
+        for (DatabaseEntry e : db.getEntries(pDescriptorsTableName)) {
             
             Descriptor d = new Descriptor();
             d.setSkoonieKey(e.getValue("skoonie_key"));
