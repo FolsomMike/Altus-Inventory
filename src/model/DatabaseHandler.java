@@ -55,10 +55,13 @@ public class DatabaseHandler implements CommandHandler
     //class to hold names of tables in the database
     private class TableName {
         public static final String batches = "BATCHES";
+        public static final String batchesDescriptors = "BATCHES_DESCRIPTORS";
         public static final String customers = "CUSTOMERS";
-        public static final String descriptors = "DESCRIPTORS";
+        public static final String customersDescriptors = "CUSTOMERS_DESCRIPTORS";
         public static final String racks = "RACKS";
+        public static final String racksDescriptors = "RACKS_DESCRIPTORS";
         public static final String receivements = "RECEIVEMENTS";
+        public static final String receivementsDescriptors = "RECEIVEMENTS_DESCRIPTORS";
     }
 
     //--------------------------------------------------------------------------
@@ -83,6 +86,7 @@ public class DatabaseHandler implements CommandHandler
         //initialize the database
         db.init();
         
+        handledCommands.add(Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS);
         handledCommands.add(Command.ADD_CUSTOMER);
         handledCommands.add(Command.DELETE_CUSTOMER);
         handledCommands.add(Command.EDIT_CUSTOMER);
@@ -112,6 +116,10 @@ public class DatabaseHandler implements CommandHandler
             switch (pCommand.getMessage()) {
                 
                 //all commands added here need to be added to init()
+                
+                case Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS:
+                    getReceivementAndBatchDescriptors();
+                    break;
                 
                 case Command.ADD_CUSTOMER:
                     addCustomer((Table)pCommand.get(Command.TABLE),
@@ -201,8 +209,10 @@ public class DatabaseHandler implements CommandHandler
     private void addDescriptor(String pTableName, Descriptor pDescriptor)
         throws DatabaseError
     {
+       
+        //wip hss// -- needs to do this properly
         
-        db.connectToDatabase();
+        /*db.connectToDatabase();
         
         //entry for the descriptor
         DatabaseEntry descriptorEntry = new DatabaseEntry();
@@ -225,7 +235,7 @@ public class DatabaseHandler implements CommandHandler
         //add the descriptor key to the table as a column
         db.addColumn(pTableName, "`" + key + "` VARCHAR(2000) NULL");
         
-        db.disconnectFromDatabase();
+        db.disconnectFromDatabase();*/
 
     }//end of DatabaseHandler::addDescriptor
     //--------------------------------------------------------------------------
@@ -435,7 +445,9 @@ public class DatabaseHandler implements CommandHandler
         throws DatabaseError
     {
         
-        db.connectToDatabase();
+        //WIP HSS// -- needs to do this properly
+        
+        /*db.connectToDatabase();
         
         String key = pDescriptor.getSkoonieKey();
         
@@ -445,7 +457,7 @@ public class DatabaseHandler implements CommandHandler
         //delete the descriptor entry from the descriptors table
         db.deleteEntry(TableName.descriptors, key);
         
-        db.disconnectFromDatabase();
+        db.disconnectFromDatabase();*/
 
     }//end of DatabaseHandler::deleteDescriptor
     //--------------------------------------------------------------------------
@@ -507,7 +519,8 @@ public class DatabaseHandler implements CommandHandler
         throws DatabaseError
     {
         
-        Table customers = getTable(TableName.customers);
+        Table customers = getTable(TableName.customers, 
+                                    TableName.customersDescriptors);
         
         Command c = new Command(Command.CUSTOMERS);
         c.put(Command.TABLE, customers);
@@ -535,33 +548,22 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::getDescriptors
     //
-    // Gets and returns all of the descriptors with skoonie keys matching pKeys
-    // from the descriptors table.
+    // Gets and returns all of the descriptors from pDescriptorsTable.
     //
     // NOTE: Only disconnects from database if pCloseConnection is true.
     //
 
-    private List<Descriptor> getDescriptors(String pTableName, 
+    private List<Descriptor> getDescriptors(String pDescriptorsTableName, 
                                             boolean pCloseConnection)
         throws DatabaseError
     {
         
         db.connectToDatabase();
         
-        //this list will contain the skoonie keys of all
-        //the descriptors that need to be retrieved from
-        //the database
-        List<String> descKeys = new ArrayList<>();
-        
-        //get the descriptor keys for pTableName from the database
-        for (String columnName : db.getColumnNames(pTableName)) {
-            if (!columnName.equals("skoonie_key")) { descKeys.add(columnName); }
-        }
-        
         List<Descriptor> descriptors = new ArrayList<>();
         
-        List<DatabaseEntry> entries = db.getEntries(TableName.descriptors,
-                                                                    descKeys);
+        //retrieve the entries from the database and put them into descriptors
+        List<DatabaseEntry> entries = db.getEntries(pDescriptorsTableName);
         for (DatabaseEntry e : entries) {
             
             Descriptor d = new Descriptor();
@@ -571,6 +573,7 @@ public class DatabaseHandler implements CommandHandler
             d.setRequired(e.getValue("required").equals("1"));
             
             descriptors.add(d);
+            
         }
         
         if (pCloseConnection) { db.disconnectFromDatabase();}
@@ -591,7 +594,7 @@ public class DatabaseHandler implements CommandHandler
         throws DatabaseError
     {
         
-        Table racks = getTable(TableName.racks);
+        Table racks = getTable(TableName.racks, TableName.racksDescriptors);
         
         Command c = new Command(Command.RACKS);
         c.put(Command.TABLE, racks);
@@ -602,13 +605,44 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DatabaseHandler::getReceivementAndBatchDescriptors
+    //
+    // Gets all of the receivement descriptors and the batch descriptors from 
+    // the database and sticks them into a command  to be performed in the main 
+    // thread.
+    //
+
+    private void getReceivementAndBatchDescriptors()
+        throws DatabaseError
+    {
+        
+        db.connectToDatabase();
+        
+        Command c = new Command(Command.RECIEVEMENT_AND_BATCH_DESCRIPTORS);
+       
+        //get and store the receivement descriptors in the command
+        c.put(Command.RECIEVEMENT_DESCRIPTORS, 
+                 getDescriptors(TableName.receivementsDescriptors, false));
+
+        //get and store the batch descriptors in the command
+        c.put(Command.BATCH_DESCRIPTORS, 
+                 getDescriptors(TableName.batchesDescriptors, false));
+        
+        db.disconnectFromDatabase();
+
+        performCommandInMainThread(c);
+
+    }//end of DatabaseHandler::getReceivementAndBatchDescriptors
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DatabaseHandler::getTable
     //
     // Gets the entries and descriptors for the table in the database with 
     // pTableName and puts them into a Table object.
     //
 
-    private Table getTable(String pTableName)
+    private Table getTable(String pTableName, String pDescriptorsTableName)
         throws DatabaseError
     {
         
@@ -617,7 +651,7 @@ public class DatabaseHandler implements CommandHandler
         Table table = new Table();
         
         //get and store the descriptors for the table
-        table.setDescriptors(getDescriptors(pTableName, false));
+        table.setDescriptors(getDescriptors(pDescriptorsTableName, false));
         
         //get the table entries from the database
         List<DatabaseEntry> entries = db.getEntries(pTableName);
@@ -758,7 +792,9 @@ public class DatabaseHandler implements CommandHandler
         throws DatabaseError
     {
         
-        db.connectToDatabase();
+        //WIP HSS// -- needs to be done properly
+        
+        /*db.connectToDatabase();
         
         //entry for the descriptor
         DatabaseEntry descriptorEntry = new DatabaseEntry();
@@ -780,7 +816,7 @@ public class DatabaseHandler implements CommandHandler
         //update the descriptor in the database
         db.updateEntry(descriptorEntry, TableName.descriptors);
         
-        db.disconnectFromDatabase();
+        db.disconnectFromDatabase();*/
 
     }//end of DatabaseHandler::updateDescriptor
     //--------------------------------------------------------------------------
