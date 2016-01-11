@@ -44,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import shared.Descriptor;
 import shared.Record;
+import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -54,15 +55,18 @@ import toolkit.Tools;
 public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandler
 {
     
-    private List<Descriptor> receivementDescriptors;
-    private Record receivement;
+    private Table receivementsTable;
     private JPanel receivementPanel;
     
-    private List<Descriptor> batchDescriptors;
-    private Record batch;
+    private Table batchesTable;
     private JPanel batchPanel;
     
-    private final Map<String, JTextField> inputs = new HashMap<>();
+    //this is used for the skoonie keys of the batch and receivement records
+    //created using the user input
+    private final String newRecordKey = "new";
+    
+    private final Map<String, JTextField> receivementInputs = new HashMap<>();
+    private final Map<String, JTextField> batchInputs = new HashMap<>();
     private final List<JButton> buttonsToDisable = new ArrayList<>();
     
     private final int inputPanelWidth = 200;
@@ -169,8 +173,8 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     // them to pPanel.
     //
     
-    private void addInputsToPanel(JPanel pPanel,
-                                                List<Descriptor> pDescriptors) 
+    private void addInputsToPanel(JPanel pPanel, List<Descriptor> pDescriptors, 
+                                    Map<String, JTextField> pInputs) 
     {
         
         int count = pDescriptors.size();
@@ -181,7 +185,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<count; i++) {
             
-            row.add(createInputPanel(pDescriptors.get(i)));
+            row.add(createInputPanel(pDescriptors.get(i), pInputs));
             
             //if we've reached the number of panels
             //allowed per row, or the end of the
@@ -215,6 +219,20 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         //return if user input is bad
         if (!getUserInput()) { return; }
+        
+        //create the command
+        Command command = new Command(Command.RECEIVE_BATCH);
+        
+        //put the receivements table into the command
+        command.put(Command.RECEIVEMENT, receivementsTable);
+        
+        //put the batches table into the command
+        command.put(Command.BATCH, batchesTable);
+        
+        //put the skoonie key of the records into the command
+        command.put(Command.RECORD_KEY, newRecordKey);
+        
+        command.perform();
         
         //dispose of this the window
         dispose();
@@ -303,11 +321,12 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     // Creates and returns an input panel containing a JLabel and a JTextField
     // using the information in pDescriptor.
     //
-    // The JTextField contained in this input panel is stored in the inputs
+    // The JTextField contained in this input panel is stored in the pInputs
     // map, using pDescriptor.getSkoonie() as the key.
     //
 
-    private JPanel createInputPanel(Descriptor pDescriptor)
+    private JPanel createInputPanel(Descriptor pDescriptor, 
+                                        Map<String, JTextField> pInputs)
     {
 
         JPanel panel = new JPanel();
@@ -324,7 +343,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         Tools.setSizes(field, inputPanelWidth, 25);
         
         //store the input field
-        inputs.put(pDescriptor.getSkoonieKey(), field);
+        pInputs.put(pDescriptor.getSkoonieKey(), field);
         
         //add the field to the panel
         panel.add(field);
@@ -442,13 +461,18 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         setLoading(false);
         
-        receivementDescriptors = (List<Descriptor>)pCommand
-                                        .get(Command.RECIEVEMENT_DESCRIPTORS);
-        addInputsToPanel(receivementPanel, receivementDescriptors);
+        //set up the receivement table using the descriptors
+        receivementsTable = new Table();
+        receivementsTable.setDescriptors((List<Descriptor>)pCommand
+                                        .get(Command.RECIEVEMENT_DESCRIPTORS));
+        addInputsToPanel(receivementPanel, receivementsTable.getDescriptors(),
+                            receivementInputs);
         
-        batchDescriptors = (List<Descriptor>)pCommand
-                                        .get(Command.BATCH_DESCRIPTORS);
-        addInputsToPanel(batchPanel, batchDescriptors);
+        batchesTable = new Table();
+        batchesTable.setDescriptors((List<Descriptor>)pCommand
+                                        .get(Command.BATCH_DESCRIPTORS));
+        addInputsToPanel(batchPanel, batchesTable.getDescriptors(),
+                            batchInputs);
         
         //repack
         pack();
@@ -473,6 +497,50 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         //names of all the descriptors whose inputs can't be empty, but are
         List<String> badInputs = new ArrayList<>();
+        
+        //get user input for the receivement
+        Record receivement = new Record();
+        receivement.setSkoonieKey(newRecordKey);
+        for (Descriptor d : receivementsTable.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            String input = receivementInputs.get(descKey).getText();
+            
+            boolean empty = input.isEmpty();
+            
+            //if input is empty but can't be, add desriptor name to list
+            if (d.getRequired() && empty) { badInputs.add(d.getName()); }
+            
+            //only add value if its not empty or the empty value replaces a
+            //previous value
+            String oldValue = receivement.getValue(descKey);
+            if (!empty || (oldValue!=null && !oldValue.equals(input))) { 
+                receivement.addValue(descKey, input);
+            }
+        }
+        //store the receivement record in the proper table
+        receivementsTable.addRecord(receivement);
+        
+        //get user input for the receivement
+        Record batch = new Record();
+        batch.setSkoonieKey(newRecordKey);
+        for (Descriptor d : batchesTable.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            String input = batchInputs.get(descKey).getText();
+            
+            boolean empty = input.isEmpty();
+            
+            //if input is empty but can't be, add desriptor name to list
+            if (d.getRequired() && empty) { badInputs.add(d.getName()); }
+            
+            //only add value if its not empty or the empty value replaces a
+            //previous value
+            String oldValue = batch.getValue(descKey);
+            if (!empty || (oldValue!=null && !oldValue.equals(input))) { 
+                batch.addValue(descKey, input);
+            }
+        }
+        //store the batch record in the proper table
+        batchesTable.addRecord(batch);
         
         //if there are any bad inputs, display a message to the user and set
         //good to false
