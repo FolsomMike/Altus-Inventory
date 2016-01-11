@@ -44,7 +44,6 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import shared.Descriptor;
 import shared.Record;
-import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -55,11 +54,11 @@ import toolkit.Tools;
 public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandler
 {
     
-    private Table receivements;
+    private List<Descriptor> receivementDescriptors;
     private Record receivement;
     private JPanel receivementPanel;
     
-    private Table batches;
+    private List<Descriptor> batchDescriptors;
     private Record batch;
     private JPanel batchPanel;
     
@@ -101,7 +100,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         //set loading
         setLoading(true);
-        //WIP HSS// -- add command call to get receivement and batch descriptors
+        (new Command(Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS)).perform();
         
         //repack gui components since we changed stuff
         pack();
@@ -146,6 +145,10 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         switch (pCommand.getMessage()) {
             
+            case Command.RECIEVEMENT_AND_BATCH_DESCRIPTORS:
+                displayReceivementAndBatchInputs(pCommand);
+                break;
+            
             case "ReceiveMaterialWindow -- cancel":
                 dispose();
                 break;
@@ -157,6 +160,43 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         }
         
     }//end of ReceiveMaterialWindow::handleCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::addInputsToPanel
+    //
+    // Creates input fields for all of the descriptors in pDescriptors and adds
+    // them to pPanel.
+    //
+    
+    private void addInputsToPanel(JPanel pPanel,
+                                                List<Descriptor> pDescriptors) 
+    {
+        
+        int count = pDescriptors.size();
+        
+        int panelsPerRow = 3;
+        int panelSpacer = 10;
+        
+        List<JPanel> row = new ArrayList<>();
+        for (int i=0; i<count; i++) {
+            
+            row.add(createInputPanel(pDescriptors.get(i)));
+            
+            //if we've reached the number of panels
+            //allowed per row, or the end of the
+            //descriptors, create a row panel from
+            //the input panels in the row list, and
+            //empty the list to start a new row
+            if (row.size()>=panelsPerRow || i>=(count-1)) {
+                pPanel.add(createRow(row, panelSpacer));
+                pPanel.add(Tools.createVerticalSpacer(10));
+                row.clear();
+            }
+            
+        }
+        
+    }//end of ReceiveMaterialWindow::addInputsToPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -388,6 +428,32 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         return panel;
 
     }// end of ReceiveMaterialWindow::createRow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::displayReceivementAndBatchInputs
+    //
+    // Displays the receivement and batch inputs using the descriptors extracted
+    // from pCommand and then tells the window that we're done loading.
+    //
+    
+    private void displayReceivementAndBatchInputs(Command pCommand) 
+    {
+        
+        setLoading(false);
+        
+        receivementDescriptors = (List<Descriptor>)pCommand
+                                        .get(Command.RECIEVEMENT_DESCRIPTORS);
+        addInputsToPanel(receivementPanel, receivementDescriptors);
+        
+        batchDescriptors = (List<Descriptor>)pCommand
+                                        .get(Command.BATCH_DESCRIPTORS);
+        addInputsToPanel(batchPanel, batchDescriptors);
+        
+        //repack
+        pack();
+        
+    }//end of ReceiveMaterialWindow::displayReceivementAndBatchInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
