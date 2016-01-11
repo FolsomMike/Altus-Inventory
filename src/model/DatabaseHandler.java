@@ -86,6 +86,7 @@ public class DatabaseHandler implements CommandHandler
         //initialize the database
         db.init();
         
+        handledCommands.add(Command.RECEIVE_BATCH);
         handledCommands.add(Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS);
         handledCommands.add(Command.ADD_CUSTOMER);
         handledCommands.add(Command.DELETE_CUSTOMER);
@@ -116,6 +117,12 @@ public class DatabaseHandler implements CommandHandler
             switch (pCommand.getMessage()) {
                 
                 //all commands added here need to be added to init()
+                
+                case Command.RECEIVE_BATCH:
+                    receiveBatch((Table)pCommand.get(Command.RECEIVEMENT),
+                                    (Table)pCommand.get(Command.BATCH),
+                                    (String)pCommand.get(Command.RECORD_KEY));
+                    break;
                 
                 case Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS:
                     getReceivementAndBatchDescriptors();
@@ -262,10 +269,11 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::addRecord
     //
-    // Adds the record in pTable associated with pRecordKey to the database.
+    // Adds the record in pTable associated with pRecordKey to the database and
+    // returns the key generated when this is done.
     //
 
-    private void addRecord(String pTableName, Table pTable, String pRecordKey,
+    private int addRecord(String pTableName, Table pTable, String pRecordKey,
                             boolean pDisconnectWhenDone)
         throws DatabaseError
     {
@@ -285,11 +293,13 @@ public class DatabaseHandler implements CommandHandler
             if (value != null) { entry.storeColumn(descKey, value); }
         }
         
-        db.insertEntry(entry, pTableName);
+        int generatedKey = db.insertEntry(entry, pTableName);
         
         //only disconnect if directed to do so -- allows for this to
         //be used in a series of database operations
         if (pDisconnectWhenDone) { db.disconnectFromDatabase(); }
+        
+        return generatedKey;
 
     }//end of DatabaseHandler::addRecord
     //--------------------------------------------------------------------------
@@ -747,6 +757,44 @@ public class DatabaseHandler implements CommandHandler
         return false;
 
     }//end of DatabaseHandler::handlesCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::receiveBatch
+    //
+    // //WIP HSS// -- receive batch
+    //
+
+    private void receiveBatch(Table pReceivements, Table pBatches, 
+                                String pRecordKey)
+        throws DatabaseError
+    {
+        
+        int batchKey = addRecord(TableName.batches, pBatches, pRecordKey,
+                                                                        false);
+        
+        //extract the data from the receivement record into a DatabaseEntry object
+        Record record = pReceivements.getRecord(pRecordKey);
+        DatabaseEntry recEntry = new DatabaseEntry();
+        for (Descriptor d : pReceivements.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            
+            //store the value for the descriptor
+            String value = record.getValue(descKey);
+            if (value != null) { recEntry.storeColumn(descKey, value); }
+        }
+        
+        //store the batch key in the receivement entry
+        recEntry.storeColumn("batch_key", Integer.toString(batchKey));
+        
+        //inert the receivement entry into the database
+        db.insertEntry(recEntry, TableName.receivements);
+
+        db.disconnectFromDatabase();
+        
+        //WIP HSS// -- get batches again now that stuff has changed there
+
+    }//end of DatabaseHandler::addCustomer
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
