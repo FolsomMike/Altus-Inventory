@@ -46,6 +46,12 @@ public class Descriptor
     public boolean getRequired() { return required; }
     public void setRequired(boolean pRequired) { required = pRequired; }
     
+    //if a descriptor uses preset values, it means that the descriptor can only
+    //use predefined values
+    private boolean usesPresetValues;
+    public boolean getUsesPresetValues() { return usesPresetValues; }
+    public void setUsesPresetValues(boolean pBool) { usesPresetValues = pBool; }
+    
     //--------------------------------------------------------------------------
     // Descriptor::Descriptor (constructor)
     //
