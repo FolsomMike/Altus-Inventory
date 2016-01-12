@@ -71,7 +71,7 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     
     private Record record;
     
-    private final Map<String, JTextField> inputs = new HashMap<>();
+    private final List<DescriptorInput> inputs = new ArrayList<>();
     
     JScrollPane inputsScrollPane;
     
@@ -303,17 +303,29 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
-        //get the descriptors from the table
-        List<Descriptor> descriptors = table.getDescriptors();
-        int count = descriptors.size();
+        //create a DescriptorInput object for each of the Descriptors
+        for (Descriptor d : table.getDescriptors()) {
+            String descKey = d.getSkoonieKey();
+            String val = "";
+            if (recordSkoonieKey != null ) {
+                Record r = table.getRecord(recordSkoonieKey);
+                val = (val=r.getValue(descKey))!=null ? val : "";
+            }
         
+            DescriptorInput input = new DescriptorInput(d, val);
+            input.init();
+            inputs.add(input);
+        }
+        
+        //add the inputs to the GUI
+        int count = inputs.size();
         int panelsPerRow = 3;
         int panelSpacer = 10;
         
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<count; i++) {
             
-            row.add(createInputPanel(descriptors.get(i)));
+            row.add(inputs.get(i));
             
             //if we've reached the number of panels
             //allowed per row, or the end of the
@@ -340,49 +352,6 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         return inputsScrollPane;
 
     }// end of EditRecordWindow::createDescriptorInputsPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // EditRecordWindow::createInputPanel
-    //
-    // Creates and returns an input panel containing a JLabel and a JTextField
-    // using the information in pDescriptor.
-    //
-    // The JTextField contained in this input panel is stored in the inputs
-    // map, using pDescriptor.getSkoonie() as the key.
-    //
-
-    private JPanel createInputPanel(Descriptor pDescriptor)
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel(pDescriptor.getName());
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(label);
-        
-        JTextField field = new JTextField();
-        field.setAlignmentX(LEFT_ALIGNMENT);
-        Tools.setSizes(field, inputPanelWidth, 25);
-        
-        String descKey = pDescriptor.getSkoonieKey();
-        //set the text of the input field to the text for the record, if one
-        //is specified
-        if (recordSkoonieKey != null) {
-            field.setText(table.getRecord(recordSkoonieKey).getValue(descKey));
-        }
-        //store the input field
-        inputs.put(descKey, field);
-        
-        //add the field to the panel
-        panel.add(field);
-
-        return panel;
-
-    }// end of EditRecordWindow::createInputPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -428,20 +397,21 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         //names of all the descriptors whose inputs can't be empty, but are
         List<String> badInputs = new ArrayList<>();
         
-        for (Descriptor d : table.getDescriptors()) {
+        for (DescriptorInput descriptorInput : inputs) {
+            
+            Descriptor d = descriptorInput.getDescriptor();
             String descKey = d.getSkoonieKey();
-            String input = inputs.get(descKey).getText();
+            String newValue = descriptorInput.getUserInput();
+            boolean empty = newValue.isEmpty();
             
-            boolean empty = input.isEmpty();
-            
-            //if input is empty but can't be, add desriptor name to list
+            //if input is empty but can't be, add desriptor name to bad list
             if (d.getRequired() && empty) { badInputs.add(d.getName()); }
             
             //only add value if its not empty or the empty value replaces a
             //previous value
             String oldValue = record.getValue(descKey);
-            if (!empty || (oldValue!=null && !oldValue.equals(input))) { 
-                record.addValue(descKey, input);
+            if (!empty || (oldValue!=null && !oldValue.equals(newValue))) { 
+                record.addValue(descKey, newValue);
             }
         }
         
