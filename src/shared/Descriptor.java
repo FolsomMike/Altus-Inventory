@@ -20,6 +20,10 @@
 package shared;
 
 //------------------------------------------------------------------------------
+
+import java.util.HashMap;
+import java.util.Map;
+
 //------------------------------------------------------------------------------
 // class Descriptor
 //
@@ -51,6 +55,13 @@ public class Descriptor
     private boolean usesPresetValues;
     public boolean getUsesPresetValues() { return usesPresetValues; }
     public void setUsesPresetValues(boolean pBool) { usesPresetValues = pBool; }
+    
+    //this map will only contain values if usesPresetValues is true
+    //key=skoonie key of entry; value=display name for that entry
+    private final Map<String, String> presetValues = new HashMap<>();
+    public void addPresetValue(String pKey, String pDisplayName) 
+        { presetValues.put(pKey, pDisplayName); }
+    public Map<String, String> getPresetValues() { return presetValues; }
     
     //--------------------------------------------------------------------------
     // Descriptor::Descriptor (constructor)
