@@ -18,7 +18,6 @@ package view.classic;
 
 import command.Command;
 import command.CommandHandler;
-import java.awt.Color;
 import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
@@ -70,7 +69,6 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     private final int inputPanelWidth = 200;
     private final int inputPanelsPerRow = 3;
     private final int inputPanelSpacer = 10;
-    private final int scrollBarWidth = 10;
     
     //key=Input Name; value=text field for the input
     private final Map<String, JTextField> inputs = new HashMap<>();
