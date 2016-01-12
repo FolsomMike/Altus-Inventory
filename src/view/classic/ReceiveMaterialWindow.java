@@ -41,7 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
+import javax.swing.ScrollPaneConstants;
 import shared.Descriptor;
 import shared.Record;
 import shared.Table;
@@ -66,8 +66,11 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     private final String keyForNew = "new";
     
     private JPanel inputsPanel;
+    private final int padding = 10;
     private final int inputPanelWidth = 200;
-    private final List<JPanel> inputPanels = new ArrayList<>();
+    private final int inputPanelsPerRow = 3;
+    private final int inputPanelSpacer = 10;
+    private final int scrollBarWidth = 10;
     
     //key=Input Name; value=text field for the input
     private final Map<String, JTextField> inputs = new HashMap<>();
@@ -276,7 +279,6 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(BOTTOM_ALIGNMENT);
-        panel.setBorder(BorderFactory.createMatteBorder(1,0,0,0, Color.GRAY));
         
         //vertical spacer
         panel.add(Tools.createVerticalSpacer(10));
@@ -434,6 +436,9 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         inputsPanel.setLayout(new BoxLayout(inputsPanel, BoxLayout.Y_AXIS));
         inputsPanel.setAlignmentX(LEFT_ALIGNMENT);
         inputsPanel.setAlignmentY(TOP_ALIGNMENT);
+        //add padding to the inputsPanel
+        inputsPanel.setBorder(BorderFactory.createEmptyBorder
+                                        (padding, padding, padding, padding));
         
         //put the inputsPanel into a scroll pane, overriding paintComponent to
         //paint the loading image when necessary
@@ -453,9 +458,20 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
 
             }
         };
+        
         sp.setAlignmentX(LEFT_ALIGNMENT);
         sp.setAlignmentY(TOP_ALIGNMENT);
-        Tools.setSizes(sp, 400, 300);
+        
+        //make sure that the horizontal scroll bar never appears
+        int policy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+        sp.setHorizontalScrollBarPolicy(policy);
+        
+        //calculate and set the width of the scroll pane
+        int width = padding*2 
+                        + inputPanelsPerRow*inputPanelWidth 
+                        + inputPanelSpacer*(inputPanelsPerRow-1) 
+                        + 20; //20 is added in to account for the scroll bar
+        Tools.setSizes(sp, width, 300);
         
         return sp;
 
@@ -477,10 +493,28 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         panel.setAlignmentX(LEFT_ALIGNMENT);
         panel.setAlignmentY(TOP_ALIGNMENT);
         
-        for (int i=0; i<pPanels.size(); i++) {
+        //horizontal center 
+        //-- only works to "push" to the center if another glue is used
+        panel.add(Box.createHorizontalGlue());
+        
+        //add the input panels in pPanels to the panel until the number of 
+        //panels allowed per row is reached or until there are no more input
+        //panels to add. If the number of number of input panels to add falls
+        //short of the number allowed per row, then spacers the same size as 
+        //the inputs are added in place of the missing panels. This is to ensure
+        //that the horizontal center works right
+        for (int i=0; i<inputPanelsPerRow; i++) {
+        
             if (i>0) { panel.add(Tools.createHorizontalSpacer(pSpacer)); }
-            panel.add(pPanels.get(i));
+            
+            if (i<pPanels.size()) { panel.add(pPanels.get(i)); }
+            else { panel.add(Tools.createHorizontalSpacer(inputPanelWidth)); }
+        
         }
+        
+        //horizontal center 
+        //-- only works to "push" to the center if another glue is used
+        panel.add(Box.createHorizontalGlue());
         
         return panel;
 
@@ -516,8 +550,6 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
                                             batchesTable.getDescriptors());
         
         //add the individual panels to the inputsPanel
-        int panelsPerRow = 3;
-        int panelSpacer = 10;
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<panels.size(); i++) {
             
@@ -529,8 +561,8 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
             //panels, create a row from the input 
             //panels in the row list, and empty the
             //list to start a new row
-            if (row.size()>=panelsPerRow || i>=(panels.size()-1)) {
-                inputsPanel.add(createRow(row, panelSpacer));
+            if (row.size()>=inputPanelsPerRow || i>=(panels.size()-1)) {
+                inputsPanel.add(createRow(row, inputPanelSpacer));
                 inputsPanel.add(Tools.createVerticalSpacer(10));
                 row.clear();
             }
