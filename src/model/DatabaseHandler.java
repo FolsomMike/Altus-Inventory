@@ -580,6 +580,7 @@ public class DatabaseHandler implements CommandHandler
             d.setName(e.getValue("name"));
             d.setOrderNumber(e.getValue("order_number"));
             d.setRequired(e.getValue("required").equals("1"));
+            d.setUsesPresetValues(e.getValue("uses_preset_values").equals("1"));
             
             descriptors.add(d);
             
