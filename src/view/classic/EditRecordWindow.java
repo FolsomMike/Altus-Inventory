@@ -72,8 +72,6 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     JScrollPane inputsScrollPane;
     
     private final int maxHeight = 350;
-    
-    private final int inputPanelWidth = 200;
 
     //--------------------------------------------------------------------------
     // EditRecordWindow::EditRecordWindow (constructor)
