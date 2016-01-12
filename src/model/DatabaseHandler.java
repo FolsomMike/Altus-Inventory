@@ -582,6 +582,30 @@ public class DatabaseHandler implements CommandHandler
             d.setRequired(e.getValue("required").equals("1"));
             d.setUsesPresetValues(e.getValue("uses_preset_values").equals("1"));
             
+            //only add the preset values to the descriptor if necessary and the
+            //value retrieved the from the "preset_values" column splits
+            //properly
+            String[] v;
+            if (d.getUsesPresetValues()
+                && (v=e.getValue("preset_values").split("\\.")).length == 2) 
+            {
+                
+                //after the split:
+                //  v[0] = the table to get the values from
+                //  v[1] = the column that has the display name of each value
+                String table = v[0];
+                String displayColumn = v[1];
+                
+                //for every preset value retrieved, store its key and the
+                //display name to be used with that value
+                for (DatabaseEntry preset : db.getEntries(table)) {
+                    String key = preset.getValue("skoonie_key");
+                    String display = preset.getValue(displayColumn);
+                    d.addPresetValue(key, display);
+                }
+                
+            }
+            
             descriptors.add(d);
             
         }
