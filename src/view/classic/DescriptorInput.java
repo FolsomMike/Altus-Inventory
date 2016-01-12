@@ -38,7 +38,9 @@ public class DescriptorInput extends JPanel
 {
     
     private final Descriptor descriptor;
+    public Descriptor getDescriptor() { return descriptor; }
     private final String originalValue;
+    public String getOriginalValue() { return originalValue; }
     
     private JTextField jTextFieldInput;
     private JComboBox<PresetValue> jComboBoxInput;
