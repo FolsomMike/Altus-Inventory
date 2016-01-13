@@ -44,9 +44,9 @@ public class DescriptorInput extends JPanel
     
     //this should only be set if the name inside the Descriptor is not
     //sufficient enough
-    private String alternateDisplayName;
-    public void setAlternateDisplayName(String pName) 
-        { alternateDisplayName = pName; }
+    private String displayName;
+    public String getDisplayName() { return displayName; }
+    public void setDisplayName(String pName) { displayName = pName; }
     
     private JTextField jTextFieldInput;
     private JComboBox<PresetValue> jComboBoxInput;
@@ -124,11 +124,10 @@ public class DescriptorInput extends JPanel
     private JLabel createNameLabel()
     {
         
-        //use the alternate display name or the one found in the descriptor
-        String name = alternateDisplayName==null 
-                            ? descriptor.getName() : alternateDisplayName;
+        //if the display name is null, then use the one from the descriptor
+        displayName = displayName==null ? descriptor.getName() : displayName;
         
-        JLabel label = new JLabel(name);
+        JLabel label = new JLabel(displayName);
         label.setAlignmentX(LEFT_ALIGNMENT);
         
         return label;

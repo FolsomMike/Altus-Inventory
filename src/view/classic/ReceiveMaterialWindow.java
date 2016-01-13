@@ -274,7 +274,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
 
         //create and store a DescriptorInput for the Descriptor
         DescriptorInput input = new DescriptorInput(pDescriptor, "");
-        input.setAlternateDisplayName(pName);
+        input.setDisplayName(pName);
         input.init();
         inputs.add(input);
 
@@ -516,6 +516,9 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         createInputs(batchesTable.getDescriptors(), names, 
                                                 batchIdDescriptorName);
         
+        //make sure the inputs list in the right order
+        reorderDescriptorInputs(inputs);
+        
         //add the DescriptorInput objects to the inputsPanel
         List<JPanel> row = new ArrayList<>();
         for (int i=0; i<inputs.size(); i++) {
@@ -640,6 +643,53 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         return true; //DEBUG HSS//
         
     }//end of ReceiveMaterialWindow::getUserInput
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::reorderDescriptorInputs
+    //
+    // Reorders the DescriptorInputs found in pDescriptorInputs by making sure
+    // that the input representing the receivement id is always first, that the
+    // input representing the batch id is always second, and that the input
+    // representing the date is always third.
+    //
+    
+    private void reorderDescriptorInputs(List<DescriptorInput> pDescriptorInputs) 
+    {
+        
+        //we only need to ensure that 3 inputs are moved to the top
+        //of the list, so we only need an array with a size of 3
+        DescriptorInput[] firstInputs = new DescriptorInput[3];
+        
+        for (DescriptorInput input : pDescriptorInputs) {
+            switch (input.getDisplayName()) {
+                
+                //make sure receivement id is first input
+                case receivementIdDescriptorName:
+                    firstInputs[2] = input;
+                    break;
+                    
+                //make sure batch id is second input
+                case batchIdDescriptorName:
+                    firstInputs[1] = input;
+                    break;
+                
+                //make sure date is input
+                case dateDescriptorName:
+                    firstInputs[0] = input;
+                    break;
+            
+            }
+        }
+        
+        //remove the DescriptorInputs in the firstInputs array from wherever
+        //they are in the inputs list and add them to the beggining
+        for (DescriptorInput d : firstInputs) { 
+            pDescriptorInputs.remove(d);
+            pDescriptorInputs.add(0, d);
+        }
+        
+    }// end of ReceiveMaterialWindow::reorderDescriptorInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
