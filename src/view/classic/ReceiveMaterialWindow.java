@@ -27,6 +27,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -557,7 +558,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     
     private boolean getUserInput() 
     {
-        /*//DEBUG HSS//
+        
         //used to mark whether the user input was good or bad
         boolean good = true;
         
@@ -570,57 +571,53 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         //for every stored input, decide whether to add it to the list of bad
         //inputs or to store it in the batch or receivement records (or both)
-        //key=Name; value=input field
-        for (Map.Entry<String, JTextField> i : inputs.entrySet()) {
-            
-            String name = i.getKey();
-            String inputText = i.getValue().getText();
+        for (DescriptorInput input : inputs) {
             
             //holds the records that the user input needs to be stored in,
             //mapped to the descriptors that the input is for
             Map<Record, Descriptor> records = new HashMap<>();
             
+            String name = input.getDisplayName();
+            String inputText = input.getUserInput();
+            
             //store in the receivement record if it's the receivement Id
-            if (name.equals(receivementIdDescriptorName)) {
+            String key;
+            switch (name) {
                 
-                String key = receivementsTable
+                //descriptor is the receivement id
+                case receivementIdDescriptorName:
+                    key = receivementsTable
                                     .getDescriptorKeyByName(idDescriptorName);
-                
-                records.put(receivement, receivementsTable.getDescriptor(key));
-                
-            }
-            //store in the receivement record if it's the Date
-            else if (name.equals(dateDescriptorName)) {
-            
-                String key = receivementsTable
+                    records.put(receivement, 
+                                        receivementsTable.getDescriptor(key));
+                    break;
+                    
+                //descriptor is the receivement date
+                case dateDescriptorName:
+                    key = receivementsTable
                                     .getDescriptorKeyByName(dateDescriptorName);
-                
-                records.put(receivement, receivementsTable.getDescriptor(key));
-            
-            }
-            //store in the batch record if it's the batch Id
-            else if (name.equals(batchIdDescriptorName)) {
-                
-                String key = batchesTable
+                    records.put(receivement,
+                                        receivementsTable.getDescriptor(key));
+                    break;
+                    
+                //descriptor is the batch id
+                case batchIdDescriptorName:
+                    key = batchesTable
                                     .getDescriptorKeyByName(idDescriptorName);
-                
-                records.put(batch, batchesTable.getDescriptor(key));
-                
-            }
-            //if it didn't match any of the special cases, then add the input to
-            //both the batch and receivement records
-            else {
-                
-                //for receivement
-                String recTableKey = receivementsTable
+                    records.put(batch, batchesTable.getDescriptor(key));
+                    break;
+                    
+                //descriptor is for both the batch and the receivement
+                default:
+                    //for receivement
+                    String recTableKey = receivementsTable
                                                 .getDescriptorKeyByName(name);
-                records.put(receivement, 
+                    records.put(receivement, 
                                 receivementsTable.getDescriptor(recTableKey));
-                
-                //for batch
-                String batchTableKey = batchesTable.getDescriptorKeyByName(name);
-                records.put(batch, batchesTable.getDescriptor(batchTableKey));
-            
+                    //for batch
+                    String batchTableKey = batchesTable.getDescriptorKeyByName(name);
+                    records.put(batch, batchesTable.getDescriptor(batchTableKey));
+                    break;
             }
             
             storeInput(name, inputText, records, badInputs);
@@ -638,9 +635,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
             batchesTable.addRecord(batch);
         }
         
-        return good;*/ //DEBUG HSS//
-        
-        return true; //DEBUG HSS//
+        return good;
         
     }//end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
