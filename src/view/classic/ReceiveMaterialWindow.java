@@ -739,8 +739,10 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
             Record r = e.getKey();
             Descriptor d = e.getValue();
             
-            //bad input
-            if (d.getRequired() && empty) { pBadInputs.add(pName); }
+            //bad input -- add pName to pBadInputs if its not already in there
+            if (d.getRequired() && empty && !pBadInputs.contains(pName)) {
+                pBadInputs.add(pName);
+            }
             
             //good input, but only store if not empty
             else if (!empty) { r.addValue(d.getSkoonieKey(), pInputText); }
