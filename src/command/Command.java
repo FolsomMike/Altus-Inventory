@@ -39,9 +39,11 @@ public class Command {
     
     public final static String TABLE = "TABLE";
     
+    public final static String BATCH = "BATCH";
     public final static String RECEIVE_BATCH = "RECEIVE_BATCH";
     public final static String RECEIVEMENT = "RECEIVEMENT";
-    public final static String BATCH = "BATCH";
+    public final static String MOVE_BATCH = "MOVE_BATCH";
+    public final static String MOVEMENT = "MOVEMENT";
     
     public final static String RECIEVEMENT_AND_BATCH_DESCRIPTORS = "RECIEVEMENT_AND_BATCH_DESCRIPTORS";
     public final static String GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS = "GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS";
