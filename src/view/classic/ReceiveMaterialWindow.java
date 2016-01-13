@@ -64,14 +64,13 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     //created using the user input
     private final String keyForNew = "new";
     
+    private final List<DescriptorInput> inputs = new ArrayList<>();
+    
     private JPanel inputsPanel;
     private final int padding = 10;
     private final int inputPanelWidth = 200;
     private final int inputPanelsPerRow = 3;
     private final int inputPanelSpacer = 10;
-    
-    //key=Input Name; value=text field for the input
-    private final Map<String, JTextField> inputs = new HashMap<>();
     
     //Names of descriptors that aren't in the descriptors themselves
     //For example, both batch and receivement have Id in their descriptors. To
@@ -261,6 +260,35 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // ReceiveMaterialWindow::createAndStoreDescriptorInput
+    //
+    // Creates and stores a DescriptorInput object for pDescriptor if pName is
+    // not already in pNames. If pName is found in pNames, then pDescriptor is
+    // considered to already be represented and this function does nothing.
+    //
+
+    private void createAndStoreDescriptorInput(Descriptor pDescriptor,
+                                                String pName, 
+                                                List<String> pNames)
+    {
+            
+        //don't do anything if this descriptor is already being represented
+        if (pNames.contains(pName)) { return; }
+
+        //create and store a DescriptorInput for the Descriptor
+        DescriptorInput input = new DescriptorInput(pDescriptor, "");
+        input.setAlternateDisplayName(pName);
+        input.init();
+        inputs.add(input);
+
+        //store the name so that we can remember
+        //that this descriptor is being represented
+        pNames.add(pName);
+
+    }// end of ReceiveMaterialWindow::createAndStoreDescriptorInput
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::createCancelConfirmPanel
     //
     // Creates and returns a panel containing the Cancel and OK buttons.
@@ -316,103 +344,45 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::createInputPanel
+    // ReceiveMaterialWindow::createInputs
     //
-    // Creates and returns an input panel containing a JLabel and a JTextField
-    // using pName.
-    //
-    // The JTextField contained in this input panel is stored in the pInputs
-    // map, using pName as the key.
-    //
-
-    private JPanel createInputPanel(String pName,
-                                        Map<String, JTextField> pInputs)
-    {
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(LEFT_ALIGNMENT);
-        panel.setAlignmentY(TOP_ALIGNMENT);
-        
-        JLabel label = new JLabel(pName);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(label);
-        
-        JTextField field = new JTextField();
-        field.setAlignmentX(LEFT_ALIGNMENT);
-        Tools.setSizes(field, inputPanelWidth, 25);
-        
-        //store the input field
-        pInputs.put(pName, field);
-        
-        //add the field to the panel
-        panel.add(field);
-
-        return panel;
-
-    }// end of ReceiveMaterialWindow::createInputPanel
-    //--------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::createInputPanel
-    //
-    // Creates and returns an input panel containing a JLabel and a JTextField
-    // using the information in pDescriptor.
-    //
-    // The JTextField contained in this input panel is stored in the pInputs
-    // map, using pDescriptor.getSkoonie() as the key.
+    // Creates DescriptorInput objects for all of the descriptors in 
+    // pDescriptors, unless the descriptor is already represented.
+    // 
+    // If the name of one of the descriptors in pDescriptors is already stored
+    // in pNames, then that descriptor is considered to already by represented.
+    // In such a case, the descriptor is just skipped over.
     //
 
-    private List<JPanel> createInputPanels(
-                                    List<Descriptor> pReceivementsDescriptors, 
-                                    List<Descriptor> pBatchesDescriptors)
+    private void createInputs(List<Descriptor> pDescriptors, 
+                                            List<String> pNames, 
+                                            String pSpecialIdName)
     {
         
-        List<JPanel> panels = new ArrayList<>();
-        
-        //we know that Receivement Id and Batch Id and Date are always there and
-        //always need to go first
-        panels.add(createInputPanel(receivementIdDescriptorName, inputs));
-        panels.add(createInputPanel(batchIdDescriptorName, inputs));
-        panels.add(createInputPanel(dateDescriptorName, inputs));
-        
-        //add inputs for all of the batch descriptors, avoiding duplicates or 
-        //those already stored
-        for (Descriptor d : pBatchesDescriptors) {
+        for (Descriptor d : pDescriptors) {
             
-            String name = d.getName();
+            String name;
             
-            //skip this descriptor if one with a similar name has already been
-            //stored or if it is "Id" or "Date"
-            if (inputs.get(name)!=null || name.equals(idDescriptorName) || 
-                    name.equals(dateDescriptorName)) {
-                continue;
+            switch (d.getName()) {
+            
+                //descriptor is the id
+                case idDescriptorName:
+                    name = pSpecialIdName;
+                    break;
+                    
+                default:
+                    name = d.getName();
+                    break;
+                    
             }
             
-            panels.add(createInputPanel(name, inputs));
+            //create and store a DescriptorInput for this
+            //Descriptor if necessary
+            createAndStoreDescriptorInput(d, name, pNames);
             
         }
 
-        //add inputs for all of the receivement descriptors, avoiding duplicates
-        //or those already stored
-        for (Descriptor d : pReceivementsDescriptors) {
-            
-            String name = d.getName();
-            
-            //skip this descriptor if one with a similar name has already been
-            //stored or if it is "Id" or "Date"
-            if (inputs.get(name)!=null || name.equals(idDescriptorName) || 
-                    name.equals(dateDescriptorName)) {
-                continue;
-            }
-            
-            panels.add(createInputPanel(name, inputs));
-            
-        }
-
-        return panels;
-
-    }// end of ReceiveMaterialWindow::createInputPanels
+    }// end of ReceiveMaterialWindow::createInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -542,24 +512,26 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
                                         .get(Command.BATCH_DESCRIPTORS));
         
         
-        //create the input panels for the receivement and batch descriptors
-        List<JPanel> panels = createInputPanels(
-                                            receivementsTable.getDescriptors(), 
-                                            batchesTable.getDescriptors());
+        //create the inputs for the receivement and batch descriptors
+        List<String> names = new ArrayList<>();
+        createInputs(receivementsTable.getDescriptors(), names, 
+                                                receivementIdDescriptorName);
+        createInputs(batchesTable.getDescriptors(), names, 
+                                                batchIdDescriptorName);
         
-        //add the individual panels to the inputsPanel
+        //add the DescriptorInput objects to the inputsPanel
         List<JPanel> row = new ArrayList<>();
-        for (int i=0; i<panels.size(); i++) {
+        for (int i=0; i<inputs.size(); i++) {
             
             //add the next panel to the row
-            row.add(panels.get(i));
+            row.add(inputs.get(i));
             
             //if we've reached the number of panels
             //allowed per row, or the end of the
             //panels, create a row from the input 
             //panels in the row list, and empty the
             //list to start a new row
-            if (row.size()>=inputPanelsPerRow || i>=(panels.size()-1)) {
+            if (row.size()>=inputPanelsPerRow || i>=(inputs.size()-1)) {
                 inputsPanel.add(createRow(row, inputPanelSpacer));
                 inputsPanel.add(Tools.createVerticalSpacer(10));
                 row.clear();
@@ -585,7 +557,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     
     private boolean getUserInput() 
     {
-        
+        /*//DEBUG HSS//
         //used to mark whether the user input was good or bad
         boolean good = true;
         
@@ -666,7 +638,9 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
             batchesTable.addRecord(batch);
         }
         
-        return good;
+        return good;*/ //DEBUG HSS//
+        
+        return true; //DEBUG HSS//
         
     }//end of ReceiveMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
