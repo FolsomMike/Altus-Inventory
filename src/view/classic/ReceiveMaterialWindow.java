@@ -18,7 +18,6 @@ package view.classic;
 
 import command.Command;
 import command.CommandHandler;
-import java.awt.Component;
 import static java.awt.Component.LEFT_ALIGNMENT;
 import static java.awt.Component.TOP_ALIGNMENT;
 import java.awt.Font;
@@ -28,7 +27,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -39,7 +37,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import shared.Descriptor;
 import shared.Record;
@@ -705,7 +702,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         }
         
-    }// end of ReceiveMaterialWindow::setLoading
+    }// end of ReceiveMaterialWindow::storeInput
     //--------------------------------------------------------------------------
 
 }//end of class ReceiveMaterialWindow
