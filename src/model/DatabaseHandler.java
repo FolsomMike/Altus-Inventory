@@ -90,6 +90,7 @@ public class DatabaseHandler implements CommandHandler
         
         handledCommands.add(Command.RECEIVE_BATCH);
         handledCommands.add(Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS);
+        handledCommands.add(Command.GET_MOVEMENT_DESCRIPTORS);
         handledCommands.add(Command.ADD_CUSTOMER);
         handledCommands.add(Command.DELETE_CUSTOMER);
         handledCommands.add(Command.EDIT_CUSTOMER);
@@ -128,6 +129,10 @@ public class DatabaseHandler implements CommandHandler
                 
                 case Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS:
                     getReceivementAndBatchDescriptors();
+                    break;
+                
+                case Command.GET_MOVEMENT_DESCRIPTORS:
+                    getMovementDescriptors();
                     break;
                 
                 case Command.ADD_CUSTOMER:
@@ -617,6 +622,32 @@ public class DatabaseHandler implements CommandHandler
         return descriptors;
 
     }//end of DatabaseHandler::getDescriptors
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::getMovementDescriptors
+    //
+    // Gets all of the movement descriptors from the database and sticks them
+    // into a command  to be performed in the main thread.
+    //
+
+    private void getMovementDescriptors()
+        throws DatabaseError
+    {
+        
+        db.connectToDatabase();
+        
+        Command c = new Command(Command.MOVEMENT_DESCRIPTORS);
+       
+        //get and store the movement descriptors in the command
+        c.put(Command.MOVEMENT_DESCRIPTORS, 
+                 getDescriptors(TableName.movementsDescriptors, false));
+        
+        db.disconnectFromDatabase();
+
+        performCommandInMainThread(c);
+
+    }//end of DatabaseHandler::getMovementDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
