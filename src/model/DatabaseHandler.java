@@ -58,6 +58,8 @@ public class DatabaseHandler implements CommandHandler
         public static final String batchesDescriptors = "BATCHES_DESCRIPTORS";
         public static final String customers = "CUSTOMERS";
         public static final String customersDescriptors = "CUSTOMERS_DESCRIPTORS";
+        public static final String movements = "MOVEMENTS";
+        public static final String movementsDescriptors = "MOVEMENTS_DESCRIPTORS";
         public static final String racks = "RACKS";
         public static final String racksDescriptors = "RACKS_DESCRIPTORS";
         public static final String receivements = "RECEIVEMENTS";
