@@ -149,7 +149,8 @@ public class DescriptorInput extends JPanel
         if (jTextFieldInput!=null) { 
             return jTextFieldInput.getText();
         }
-        else if (jComboBoxInput!=null) { 
+        else if (jComboBoxInput!=null && jComboBoxInput.getSelectedItem()!=null)
+        { 
             return ((PresetValue)jComboBoxInput.getSelectedItem()).getKey();
         }
         else { return ""; }
@@ -171,6 +172,10 @@ public class DescriptorInput extends JPanel
         jComboBoxInput = new JComboBox<>();
         jComboBoxInput.setAlignmentX(LEFT_ALIGNMENT);
         Tools.setSizes(jComboBoxInput, inputFieldWidth, 25);
+        
+        //add a null item to the combo box to
+        //serve as a default empty item
+        jComboBoxInput.addItem(null);
         
         //put all of the preset values for the descriptor into the combo box
         for (Map.Entry<String, String> p : descriptor.getPresetValues()
