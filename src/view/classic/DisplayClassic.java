@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import shared.Record;
 import toolkit.Tools;
 import view.MainView;
 
@@ -132,6 +133,11 @@ public class DisplayClassic extends JFrame implements CommandHandler,
             //display receive material window
             case "display receive window":
                 displayRecieveMaterialWindow();
+                break;
+                
+            //display move material window
+            case "display move window":
+                displayMoveMaterialWindow();
                 break;
                 
         }
@@ -403,6 +409,29 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         //DEBUG HSS//
 
     }//end of DisplayClassic::displayDatabaseConnectionErrorWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayMoveMaterialWindow
+    //
+    // Displays the Move Material window and sets it to the downstream.
+    //
+    
+    private void displayMoveMaterialWindow()
+    {
+        
+        //WIP HSS// -- batch should actually be selected from table. this is
+        //              just for testing
+        Record batch = new Record();
+        batch.setSkoonieKey("1");
+        
+        downStream = new MoveMaterialWindow(this, this, batch);
+        ((MoveMaterialWindow)downStream).init();
+        
+        //this will not be called until after the window closes
+        downStream = null;
+
+    }//end of DisplayClassic::displayMoveMaterialWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

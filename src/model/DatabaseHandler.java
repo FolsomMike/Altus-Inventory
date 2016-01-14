@@ -88,6 +88,7 @@ public class DatabaseHandler implements CommandHandler
         db.init();
         
         handledCommands.add(Command.RECEIVE_BATCH);
+        handledCommands.add(Command.MOVE_BATCH);
         handledCommands.add(Command.GET_RECEIVEMENT_DESCRIPTORS);
         handledCommands.add(Command.GET_MOVEMENT_DESCRIPTORS);
         handledCommands.add(Command.ADD_CUSTOMER);
@@ -130,6 +131,10 @@ public class DatabaseHandler implements CommandHandler
                 
                 case Command.GET_MOVEMENT_DESCRIPTORS:
                     getMovementDescriptors();
+                    break;
+                    
+                case Command.MOVE_BATCH:
+                    moveBatch(pCommand);
                     break;
                 
                 case Command.ADD_CUSTOMER:
@@ -878,6 +883,68 @@ public class DatabaseHandler implements CommandHandler
         return false;
 
     }//end of DatabaseHandler::handlesCommand
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::moveBatch
+    //
+    // Moves a batch by extracting and using objects that it knows are in
+    // pCommand.
+    //
+
+    private void moveBatch(Command pCommand)
+        throws DatabaseError
+    {
+        
+        //get the movement record and movement descriptors
+        Record movement = (Record)pCommand.get(Command.MOVEMENT);
+        List<?> movementDescriptors = (List<?>)pCommand
+                                            .get(Command.MOVEMENT_DESCRIPTORS);
+        
+        //get the batch record and batch descriptors
+        Record batch = (Record)pCommand.get(Command.BATCH);
+        
+        //create database entries for the batch and receivement
+        DatabaseEntry moveEntry = new DatabaseEntry();
+        DatabaseEntry batchEntry = new DatabaseEntry();
+        
+        //add the batch key to the move and batch entries
+        moveEntry.storeColumn("batch_key", batch.getSkoonieKey());
+        batchEntry.storeColumn("skoonie_key", batch.getSkoonieKey());
+        
+        //extract data from the movement
+        for (Object o : movementDescriptors) {
+            Descriptor d = (Descriptor)o;
+            
+            String key = d.getSkoonieKey();
+            String name = d.getName();
+            String value = movement.getValue(key);
+            
+            switch (name) {
+                
+                //Descriptor is the movement To Rack
+                case "To Rack":
+                    batchEntry.storeColumn("4", value);
+                   
+                default:
+                    moveEntry.storeColumn(key, value);
+                    break;
+                    
+            }
+            
+        }
+        
+        db.connectToDatabase();
+        
+        //update the batch in the database
+        db.updateEntry(batchEntry, TableName.batches);
+        
+        //inert the movement entry into the database
+        db.insertEntry(moveEntry, TableName.movements);
+
+        db.disconnectFromDatabase();
+
+    }//end of DatabaseHandler::moveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
