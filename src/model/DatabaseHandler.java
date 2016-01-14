@@ -63,6 +63,8 @@ public class DatabaseHandler implements CommandHandler
         public static final String racksDescriptors = "RACKS_DESCRIPTORS";
         public static final String receivements = "RECEIVEMENTS";
         public static final String receivementsDescriptors = "RECEIVEMENTS_DESCRIPTORS";
+        public static final String transfers = "TRANSFERS";
+        public static final String transfersDescriptors = "TRANSFERS_DESCRIPTORS";
     }
 
     //--------------------------------------------------------------------------
@@ -89,8 +91,10 @@ public class DatabaseHandler implements CommandHandler
         
         handledCommands.add(Command.RECEIVE_BATCH);
         handledCommands.add(Command.MOVE_BATCH);
+        handledCommands.add(Command.TRANSFER_BATCH);
         handledCommands.add(Command.GET_RECEIVEMENT_DESCRIPTORS);
         handledCommands.add(Command.GET_MOVEMENT_DESCRIPTORS);
+        handledCommands.add(Command.GET_TRANSFER_DESCRIPTORS);
         handledCommands.add(Command.ADD_CUSTOMER);
         handledCommands.add(Command.DELETE_CUSTOMER);
         handledCommands.add(Command.EDIT_CUSTOMER);
@@ -128,13 +132,21 @@ public class DatabaseHandler implements CommandHandler
                 case Command.GET_RECEIVEMENT_DESCRIPTORS:
                     getReceivementDescriptors();
                     break;
+                    
+                case Command.MOVE_BATCH:
+                    moveBatch(pCommand);
+                    break;
                 
                 case Command.GET_MOVEMENT_DESCRIPTORS:
                     getMovementDescriptors();
                     break;
                     
-                case Command.MOVE_BATCH:
-                    moveBatch(pCommand);
+                case Command.TRANSFER_BATCH:
+                    transferBatch(pCommand);
+                    break;
+                
+                case Command.GET_TRANSFER_DESCRIPTORS:
+                    getTransferDescriptors();
                     break;
                 
                 case Command.ADD_CUSTOMER:
@@ -775,6 +787,32 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
+    // DatabaseHandler::getTransferDescriptors
+    //
+    // Gets all of the transfer descriptors from the database and sticks them
+    // into a command  to be performed in the main thread.
+    //
+
+    private void getTransferDescriptors()
+        throws DatabaseError
+    {
+        
+        db.connectToDatabase();
+        
+        Command c = new Command(Command.TRANSFER_DESCRIPTORS);
+       
+        //get and store the movement descriptors in the command
+        c.put(Command.TRANSFER_DESCRIPTORS, 
+                 getDescriptors(TableName.transfersDescriptors, false));
+        
+        db.disconnectFromDatabase();
+
+        performCommandInMainThread(c);
+
+    }//end of DatabaseHandler::getTransferDescriptors
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
     // DatabaseHandler::extractDescriptorValuesFromEntries
     //
     // For all of the descriptors in pDescriptors that match columns in 
@@ -1011,6 +1049,69 @@ public class DatabaseHandler implements CommandHandler
         db.disconnectFromDatabase();
 
     }//end of DatabaseHandler::receiveBatch
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DatabaseHandler::transferBatch
+    //
+    // Transfers a batch by extracting and using objects that it knows are in
+    // pCommand.
+    //
+
+    private void transferBatch(Command pCommand)
+        throws DatabaseError
+    {
+        
+        //get the transfer record and transfer descriptors
+        Record transfer = (Record)pCommand.get(Command.TRANSFER);
+        List<?> transferDescriptors = (List<?>)pCommand
+                                            .get(Command.TRANSFER_DESCRIPTORS);
+        
+        //get the batch record
+        Record batch = (Record)pCommand.get(Command.BATCH);
+        
+        //create database entries for the batch and transfer
+        DatabaseEntry transferEntry = new DatabaseEntry();
+        DatabaseEntry batchEntry = new DatabaseEntry();
+        
+        //add the batch key to the transfer and batch entries
+        transferEntry.storeColumn("batch_key", batch.getSkoonieKey());
+        batchEntry.storeColumn("skoonie_key", batch.getSkoonieKey());
+        
+        //extract data from the movement
+        for (Object o : transferDescriptors) {
+            Descriptor d = (Descriptor)o;
+            
+            String key = d.getSkoonieKey();
+            String name = d.getName();
+            String value = transfer.getValue(key);
+            
+            switch (name) {
+                
+                //Descriptor is the transfer's To Customer
+                case "To Customer":
+                    //WIP HSS// -- this uses hardcoded descriptor key -- very bad
+                    batchEntry.storeColumn("3", value); 
+                   
+                default:
+                    transferEntry.storeColumn(key, value);
+                    break;
+                    
+            }
+            
+        }
+        
+        db.connectToDatabase();
+        
+        //update the batch in the database
+        db.updateEntry(batchEntry, TableName.batches);
+        
+        //inert the transfer entry into the database
+        db.insertEntry(transferEntry, TableName.transfers);
+
+        db.disconnectFromDatabase();
+
+    }//end of DatabaseHandler::transferBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

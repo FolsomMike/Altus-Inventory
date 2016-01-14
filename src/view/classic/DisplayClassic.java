@@ -140,6 +140,11 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                 displayMoveMaterialWindow();
                 break;
                 
+            //display transfer material window
+            case "display transfer window":
+                displayTransferMaterialWindow();
+                break;
+                
         }
         
         //pass the command downstream
@@ -474,6 +479,29 @@ public class DisplayClassic extends JFrame implements CommandHandler,
         downStream = null;
 
     }//end of DisplayClassic::displayRecieveMaterialWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // DisplayClassic::displayTransferMaterialWindow
+    //
+    // Displays the Transfer Material window and sets it to the downstream.
+    //
+    
+    private void displayTransferMaterialWindow()
+    {
+        
+        //WIP HSS// -- batch should actually be selected from table. this is
+        //              just for testing
+        Record batch = new Record();
+        batch.setSkoonieKey("1");
+        
+        downStream = new TransferMaterialWindow(this, this, batch);
+        ((TransferMaterialWindow)downStream).init();
+        
+        //this will not be called until after the window closes
+        downStream = null;
+
+    }//end of DisplayClassic::displayTransferMaterialWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

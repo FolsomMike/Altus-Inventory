@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Title: MoveMaterialWindow.java
+* Title: TransferMaterialWindow.java
 * Author: Hunter Schoonover
 * Date: 01/13/16
 *
 * Purpose:
 *
-* This class displays the Move Material window to the user, providing a GUI
-* for move a material.
+* This class displays the Transfer Material window to the user, providing a GUI
+* for transferring a material.
 *
 */
 
@@ -43,15 +43,15 @@ import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class MoveMaterialWindow
+// class TransferMaterialWindow
 //
 
-public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
+public class TransferMaterialWindow extends AltusJDialog implements CommandHandler
 {
     
     private final Record batch;
     
-    private Record movement;
+    private Record transfer;
     
     private List<?> descriptors;
     
@@ -69,22 +69,22 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
     private boolean loading = false;
 
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::MoveMaterialWindow (constructor)
+    // TransferMaterialWindow::TransferMaterialWindow (constructor)
     //
 
-    public MoveMaterialWindow(Window pParent, ActionListener pListener, 
+    public TransferMaterialWindow(Window pParent, ActionListener pListener, 
                                 Record pBatch)
     {
 
-        super("Move Material", pParent, pListener);
+        super("Transfer Material", pParent, pListener);
         
         batch = pBatch;
 
-    }//end of MoveMaterialWindow::MoveMaterialWindow (constructor)
+    }//end of TransferMaterialWindow::TransferMaterialWindow (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::init
+    // TransferMaterialWindow::init
     //
     // Initializes the object. Must be called immediately after instantiation.
     //
@@ -101,7 +101,7 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         //set loading
         setLoading(true);
-        (new Command(Command.GET_MOVEMENT_DESCRIPTORS)).perform();
+        (new Command(Command.GET_TRANSFER_DESCRIPTORS)).perform();
         
         //repack gui components since we changed stuff
         pack();
@@ -109,11 +109,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         //center and make visible
         setVisible();
         
-    }// end of MoveMaterialWindow::init
+    }// end of TransferMaterialWindow::init
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createGui
+    // TransferMaterialWindow::createGui
     //
     // Creates and adds the GUI to the window.
     //
@@ -131,11 +131,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         //add the cancel confirm panel
         addToMainPanel(createCancelConfirmPanel());
         
-    }// end of MoveMaterialWindow::createGui
+    }// end of TransferMaterialWindow::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::handleCommand
+    // TransferMaterialWindow::handleCommand
     //
     // Performs different actions depending on pCommand.
     //
@@ -146,25 +146,25 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         switch (pCommand.getMessage()) {
             
-            case Command.MOVEMENT_DESCRIPTORS:
-                displayMovementInputs(pCommand);
+            case Command.TRANSFER_DESCRIPTORS:
+                displayTransferInputs(pCommand);
                 break;
             
-            case "MoveMaterialWindow -- cancel":
+            case "TransferMaterialWindow -- cancel":
                 dispose();
                 break;
                 
-            case "MoveMaterialWindow -- confirm":
+            case "TransferMaterialWindow -- confirm":
                 confirm();
                 break;
                 
         }
         
-    }//end of MoveMaterialWindow::handleCommand
+    }//end of TransferMaterialWindow::handleCommand
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::checkBadInputs
+    // TransferMaterialWindow::checkBadInputs
     //
     // If there are no bad inputs in pBadInputs, the function just returns true.
     //
@@ -204,11 +204,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         return good;
         
-    }// end of MoveMaterialWindow::checkBadInputs
+    }// end of TransferMaterialWindow::checkBadInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::confirm
+    // TransferMaterialWindow::confirm
     //
     // Confirms that the user wants to use their inputs to either create or edit
     // a Record, depending on whether or not the Skoonie Key passed in upon 
@@ -225,13 +225,13 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         if (!getUserInput()) { return; }
         
         //create the command
-        Command command = new Command(Command.MOVE_BATCH);
+        Command command = new Command(Command.TRANSFER_BATCH);
         
-        //put the movements table into the command
-        command.put(Command.MOVEMENT, movement);
+        //put the transfer into the command
+        command.put(Command.TRANSFER, transfer);
         
         //put the descriptors into the command
-        command.put(Command.MOVEMENT_DESCRIPTORS, descriptors);
+        command.put(Command.TRANSFER_DESCRIPTORS, descriptors);
         
         //put the batch into the command
         command.put(Command.BATCH, batch);
@@ -241,11 +241,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         //dispose of this the window
         dispose();
         
-    }//end of MoveMaterialWindow::confirm
+    }//end of TransferMaterialWindow::confirm
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createAndStoreDescriptorInput
+    // TransferMaterialWindow::createAndStoreDescriptorInput
     //
     // Creates and stores a DescriptorInput object for pDescriptor.
     //
@@ -260,11 +260,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         input.init();
         inputs.add(input);
 
-    }// end of MoveMaterialWindow::createAndStoreDescriptorInput
+    }// end of TransferMaterialWindow::createAndStoreDescriptorInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createCancelConfirmPanel
+    // TransferMaterialWindow::createCancelConfirmPanel
     //
     // Creates and returns a panel containing the Cancel and OK buttons.
     //
@@ -296,14 +296,14 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         //add the Cancel button
         buttonsPanel.add(createButton("Cancel", "" , 
-                                        "MoveMaterialWindow -- cancel"));
+                                        "TransferMaterialWindow -- cancel"));
         
         //horizontal spacer
         buttonsPanel.add(Tools.createHorizontalSpacer(20));
         
         //add the OK button
         JButton ok = createButton("OK", "" , 
-                                        "MoveMaterialWindow -- confirm");
+                                        "TransferMaterialWindow -- confirm");
         buttonsToDisable.add(ok); //will be disabled while loading
         buttonsPanel.add(ok);
         
@@ -315,11 +315,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
 
         return panel;
 
-    }// end of MoveMaterialWindow::createCancelConfirmPanel
+    }// end of TransferMaterialWindow::createCancelConfirmPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createInputs
+    // TransferMaterialWindow::createInputs
     //
     // Creates DescriptorInput objects for all of the descriptors in 
     // pDescriptors.
@@ -337,11 +337,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
 
         }
 
-    }// end of MoveMaterialWindow::createInputs
+    }// end of TransferMaterialWindow::createInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createInputsPanel
+    // TransferMaterialWindow::createInputsPanel
     //
     // Creates and returns a scrollpane to hold the inputs for the Receivement
     // and Batch, overriding the paintComponent() function to paint the loading 
@@ -398,11 +398,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         return sp;
 
-    }// end of MoveMaterialWindow::createInputsPanel
+    }// end of TransferMaterialWindow::createInputsPanel
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::createRow
+    // TransferMaterialWindow::createRow
     //
     // Creates and returns a row of JPanels using pPanels, using pSpacer as the
     // spacing between the panels.
@@ -441,21 +441,21 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         return panel;
 
-    }// end of MoveMaterialWindow::createRow
+    }// end of TransferMaterialWindow::createRow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::displayMovementInputs
+    // TransferMaterialWindow::displayTransferInputs
     //
-    // Displays the movement inputs using the descriptors extracted from 
+    // Displays the transfer inputs using the descriptors extracted from 
     // pCommand and then tells the window that we're done loading.
     //
     
-    private void displayMovementInputs(Command pCommand) 
+    private void displayTransferInputs(Command pCommand) 
     {
         
         //set up the movements table using the descriptors
-        descriptors = (List<?>)pCommand.get(Command.MOVEMENT_DESCRIPTORS);
+        descriptors = (List<?>)pCommand.get(Command.TRANSFER_DESCRIPTORS);
 
         createInputs(descriptors);
         
@@ -484,11 +484,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         //repack
         pack();
         
-    }//end of MoveMaterialWindow::displayMovementInputs
+    }//end of TransferMaterialWindow::displayTransferInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::getUserInput
+    // TransferMaterialWindow::getUserInput
     //
     // Gets and checks the user input. If Descriptor.getRequired() is true, then
     // the input tied to that descriptor cannot be empty. If any are empty, the
@@ -506,7 +506,7 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         //names of all the descriptors whose inputs are empty but shouldn't be
         List<String> badInputs = new ArrayList<>();
         
-        movement = new Record();
+        transfer = new Record();
         
         //for every stored input, decide whether to add it to the list of bad
         //inputs or to store it in the receivement record
@@ -523,7 +523,7 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
             
             //only add if it's not empty
             else if (!text.isEmpty()) {
-                movement.addValue(input.getDescriptor().getSkoonieKey(), text);
+                transfer.addValue(input.getDescriptor().getSkoonieKey(), text);
             }
             
         }
@@ -534,11 +534,11 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         return good;
         
-    }//end of MoveMaterialWindow::getUserInput
+    }//end of TransferMaterialWindow::getUserInput
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // MoveMaterialWindow::setLoading
+    // TransferMaterialWindow::setLoading
     //
     // Sets the window to loading or not loading, depending on pLoading
     //
@@ -550,9 +550,9 @@ public class MoveMaterialWindow extends AltusJDialog implements CommandHandler
         
         for (JButton b : buttonsToDisable) { b.setEnabled(!loading); }
         
-    }// end of MoveMaterialWindow::setLoading
+    }// end of TransferMaterialWindow::setLoading
     //--------------------------------------------------------------------------
 
-}//end of class MoveMaterialWindow
+}//end of class TransferMaterialWindow
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
