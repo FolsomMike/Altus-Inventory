@@ -49,6 +49,7 @@ public class Command {
     public final static String GET_MOVEMENT_DESCRIPTORS = "GET_MOVEMENT_DESCRIPTORS";
     public final static String GET_RACKS = "GET_RACKS";
     public final static String GET_RECEIVEMENT_DESCRIPTORS = "GET_RECIEVEMENT_DESCRIPTORS";
+    public final static String GET_TRANSFER_DESCRIPTORS = "GET_TRANSFER_DESCRIPTORS";
     public final static String MOVE_BATCH = "MOVE_BATCH";
     public final static String MOVEMENT = "MOVEMENT";
     public final static String MOVEMENT_DESCRIPTORS = "MOVEMENT_DESCRIPTORS";
@@ -60,6 +61,9 @@ public class Command {
     public final static String RECIEVEMENT_AND_BATCH_DESCRIPTORS = "RECIEVEMENT_AND_BATCH_DESCRIPTORS";
     public final static String RECIEVEMENT_DESCRIPTORS = "RECIEVEMENT_DESCRIPTORS";
     public final static String SKOONIE_KEY = "SKOONIE_KEY";
+    public final static String TRANSFER = "TRANSFER";
+    public final static String TRANSFER_BATCH = "TRANSFER_BATCH";
+    public final static String TRANSFER_DESCRIPTORS = "TRANSFER_DESCRIPTORS";
     
     private final static List<CommandHandler> commandHandlers = new ArrayList<>();
     
