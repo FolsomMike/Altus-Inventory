@@ -34,37 +34,32 @@ public class Command {
     public final static String DB_CONNECTION_ERROR = "DB_CONNECTION_ERROR";
     public final static String DB_CONNECTION_FIXED = "DB_CONNECTION_FIXED";
     
-    public final static String RECORD_KEY = "RECORD_KEY";
-    public final static String SKOONIE_KEY = "SKOONIE_KEY";
-    
-    public final static String TABLE = "TABLE";
-    
+    public final static String ADD_CUSTOMER = "ADD_CUSTOMER";
+    public final static String ADD_RACK = "ADD_RACK";
     public final static String BATCH = "BATCH";
-    public final static String RECEIVE_BATCH = "RECEIVE_BATCH";
-    public final static String RECEIVEMENT = "RECEIVEMENT";
+    public final static String BATCH_DESCRIPTORS = "BATCH_DESCRIPTORS";
+    public final static String CUSTOMER = "CUSTOMER";
+    public final static String CUSTOMER_DESCRIPTORS = "CUSTOMER_DESCRIPTORS";
+    public final static String CUSTOMERS = "CUSTOMERS";
+    public final static String DELETE_CUSTOMER = "DELETE_CUSTOMER";
+    public final static String DELETE_RACK = "DELETE_RACK";
+    public final static String EDIT_CUSTOMER = "EDIT_CUSTOMER";
+    public final static String EDIT_RACK = "EDIT_RACK";
+    public final static String GET_CUSTOMERS = "GET_CUSTOMERS";
+    public final static String GET_MOVEMENT_DESCRIPTORS = "GET_MOVEMENT_DESCRIPTORS";
+    public final static String GET_RACKS = "GET_RACKS";
+    public final static String GET_RECEIVEMENT_DESCRIPTORS = "GET_RECIEVEMENT_DESCRIPTORS";
     public final static String MOVE_BATCH = "MOVE_BATCH";
     public final static String MOVEMENT = "MOVEMENT";
-    
-    public final static String BATCH_DESCRIPTORS = "BATCH_DESCRIPTORS";
-    public final static String RECIEVEMENT_AND_BATCH_DESCRIPTORS = "RECIEVEMENT_AND_BATCH_DESCRIPTORS";
-    public final static String GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS = "GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS";
-    public final static String RECIEVEMENT_DESCRIPTORS = "RECIEVEMENT_DESCRIPTORS";
     public final static String MOVEMENT_DESCRIPTORS = "MOVEMENT_DESCRIPTORS";
-    public final static String GET_MOVEMENT_DESCRIPTORS = "GET_MOVEMENT_DESCRIPTORS";
-    
-    public final static String CUSTOMER = "CUSTOMER";
-    public final static String CUSTOMERS = "CUSTOMERS";
-    public final static String ADD_CUSTOMER = "ADD_CUSTOMER";
-    public final static String DELETE_CUSTOMER = "DELETE_CUSTOMER";
-    public final static String EDIT_CUSTOMER = "EDIT_CUSTOMER";
-    public final static String GET_CUSTOMERS = "GET_CUSTOMERS";
-    
     public final static String RACK = "RACK";
+    public final static String RACK_DESCRIPTORS = "RACK_DESCRIPTORS";
     public final static String RACKS = "RACKS";
-    public final static String ADD_RACK = "ADD_RACK";
-    public final static String DELETE_RACK = "DELETE_RACK";
-    public final static String EDIT_RACK = "EDIT_RACK";
-    public final static String GET_RACKS = "GET_RACKS";
+    public final static String RECEIVE_BATCH = "RECEIVE_BATCH";
+    public final static String RECEIVEMENT = "RECEIVEMENT";
+    public final static String RECIEVEMENT_AND_BATCH_DESCRIPTORS = "RECIEVEMENT_AND_BATCH_DESCRIPTORS";
+    public final static String RECIEVEMENT_DESCRIPTORS = "RECIEVEMENT_DESCRIPTORS";
+    public final static String SKOONIE_KEY = "SKOONIE_KEY";
     
     private final static List<CommandHandler> commandHandlers = new ArrayList<>();
     

@@ -50,8 +50,13 @@ public class RecordWindowInfo
     private final String typeSingluarCommandMessage;
     public String getTypeSingluarCommandMessage() { return typeSingluarCommandMessage; }
     
+    //CUSTOMERS, BATCHES, etc.
     private final String typePluralCommandMessage;
     public String getTypePluralCommandMessage() { return typePluralCommandMessage; }
+    
+    //CUSTOMER_DESCRIPTORS, BATCH_DESCRIPTORS, etc.
+    private final String descriptorsCommandMessage;
+    public String getDescriptorsCommandMessage() { return descriptorsCommandMessage; }
     
     //--------------------------------------------------------------------------
     // RecordWindowInfo::RecordWindowInfo (constructor)
@@ -66,7 +71,8 @@ public class RecordWindowInfo
                             String pEditCommandMessage, 
                             String pGetCommandMessage, 
                             String pTypeSingluarCommandMessage,
-                            String pTypePluralCommandMessage)
+                            String pTypePluralCommandMessage,
+                            String pDescriptorsCommandMessage)
     {
         
         addRecordWindowTitle = pAddRecordWindowTitle;
@@ -79,6 +85,7 @@ public class RecordWindowInfo
         getCommandMessage = pGetCommandMessage;
         typeSingluarCommandMessage = pTypeSingluarCommandMessage;
         typePluralCommandMessage = pTypePluralCommandMessage;
+        descriptorsCommandMessage = pDescriptorsCommandMessage;
 
     }//end of RecordWindowInfo::RecordWindowInfo (constructor)
     //--------------------------------------------------------------------------

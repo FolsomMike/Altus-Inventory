@@ -33,8 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+import shared.Descriptor;
 import shared.Record;
-import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -50,7 +50,8 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     private CustomTable table;
     private DefaultTableModel model;
     
-    private Table records;
+    private List<?> records;
+    private List<?> descriptors;
     
     private CommandHandler downStream;
     
@@ -145,7 +146,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         String msg = pCommand.getMessage();
             
         if (msg.equals(info.getTypePluralCommandMessage())) {
-            displayRecords((Table)pCommand.get(Command.TABLE));
+            displayRecords(pCommand);
         }
 
         else if (msg.equals("display add record window")) {
@@ -228,10 +229,9 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         //return if there was a problem when getting the selected record
         if ((rec=getSelectedRecord())==null) { return; }
         
-        String key = rec.getSkoonieKey();
         downStream = new EditRecordWindow(info.getEditRecordWindowTitle(), this, 
                                             getActionListener(), this, info,
-                                            records, key);
+                                            rec, descriptors);
         ((EditRecordWindow)downStream).init();
         
     }// end of RecordsWindow::editSelectedRecord
@@ -253,8 +253,9 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         
         String recordName = info.getRecordNameSingular();
         
+        String val = rec.getValue(getDescriptorKeyByName(descriptors, "Name"));
         String msg = "Are you sure you want to delete " + recordName + " \"" 
-                        + rec.getValue(records.getDescriptorKeyByName("Name"))
+                        + val
                         + "\"? This cannot be undone.";
 
         //verify the delete action
@@ -290,7 +291,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         
         downStream = new EditRecordWindow(info.getAddRecordWindowTitle(), this, 
                                             getActionListener(), this, info,
-                                            records, null);
+                                            new Record(), descriptors);
         ((EditRecordWindow)downStream).init();
         
     }// end of RecordsWindow::displayAddRecordWindow
@@ -302,32 +303,61 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
     // Adds the records in pRecords to the table.
     //
     
-    private void displayRecords(Table pRecords) 
+    private void displayRecords(Command pCommand) 
     {
         
         //store the records
-        records = pRecords;
+        records = (List<?>)pCommand.get(info.getTypePluralCommandMessage());
+        
+        //store the descriptors
+        descriptors =(List<?>)pCommand.get(info.getDescriptorsCommandMessage());
         
         //remove all of the data already in the model
         int rowCount = model.getRowCount();
         //Remove rows one by one from the end of the table
         for (int i=rowCount-1; i>=0; i--) { model.removeRow(i); }
         
-        //everything sent here should ALWAYS have Id and Name
-        String idKey = records.getDescriptorKeyByName("Id");
-        String nameKey = records.getDescriptorKeyByName("Name");
-        
         //we are about to add the rows, so tell it we're done loading
         setLoading(false);
         
+        //everything sent here should ALWAYS have Id and Name
+        String idKey = getDescriptorKeyByName(descriptors, "Id");
+        String nameKey = getDescriptorKeyByName(descriptors, "Name");
+        
         //add the ids and names of the records to the table
-        for (Record rec : records.getRecords()) {
-            String id = rec.getValue(idKey);
-            String name = rec.getValue(nameKey);
+        for (Object o : records) {
+            Record r = (Record)o;
+            String id = r.getValue(idKey);
+            String name = r.getValue(nameKey);
             model.addRow( new String[] { id, name });
         }
         
     }// end of RecordsWindow::displayRecords
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // RecordsWindow::getDescriptorKeyByName
+    //
+    // Returns the skoonie key of the descriptor in pDescriptor who has the same
+    // name as pName. Returns null if none of the descriptors have pName.
+    //
+    // NOTE:    If there are multiple descriptors that match the constraint, 
+    //          then the skoonie key of the one found first is returned.
+    //
+
+    public String getDescriptorKeyByName(List<?> pDescriptors, String pName)
+    {
+
+        String key = null;
+
+        for (Object o : pDescriptors) {
+            Descriptor d = (Descriptor)o;
+            if(d.getName().equals(pName)) { key = d.getSkoonieKey(); }
+        }
+
+        return key;
+     
+    }//end of RecordsWindow::getDescriptorKeyByName
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -345,7 +375,7 @@ public class RecordsWindow extends AltusJDialog implements CommandHandler
         if (row==-1) {
             JOptionPane.showMessageDialog(this, "Nothing is selected.");
         }
-        else { rec = records.getRecords().get(row); }
+        else { rec = (Record)records.get(row); }
         
         return rec;
         

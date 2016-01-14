@@ -48,7 +48,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import shared.Descriptor;
 import shared.Record;
-import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -62,10 +61,8 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     private final RecordsWindow recordsWindow;
     private final RecordWindowInfo info;
     
-    private final Table table;
-    private final String recordSkoonieKey;
-    
-    private Record record;
+    private final List<?> descriptors;
+    private final Record record;
     
     private final List<DescriptorInput> inputs = new ArrayList<>();
     
@@ -80,8 +77,8 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     public EditRecordWindow(String pTitle, Window pParent, 
                                 ActionListener pListener, 
                                 RecordsWindow pRecordsWindow,
-                                RecordWindowInfo pInfo, Table pTable, 
-                                String pRecordSkoonieKey)
+                                RecordWindowInfo pInfo, Record pRecord, 
+                                List<?> pDescriptors)
     {
 
         super(pTitle, pParent, pListener);
@@ -90,9 +87,9 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         
         info = pInfo;
         
-        table = pTable;
+        record = pRecord;
         
-        recordSkoonieKey = pRecordSkoonieKey;
+        descriptors = pDescriptors;
 
     }//end of EditRecordWindow::EditRecordWindow (constructor)
     //--------------------------------------------------------------------------
@@ -106,15 +103,6 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
     @Override
     public void init() 
     {
-        
-        //get the record from the table, or create a new one
-        if (recordSkoonieKey != null) { //edit mode
-            record = table.getRecord(recordSkoonieKey);
-        }
-        else { //add new mode
-            record = new Record();
-            table.addRecord(record);
-        }
         
         super.init();
         
@@ -204,9 +192,8 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         String message;
         
         //adding new record
-        if (recordSkoonieKey == null ) { 
+        if (record.getSkoonieKey() == null ) { 
             message = info.getAddCommandMessage(); 
-            record.setSkoonieKey("new");
         }
         //editing existing record
         else { 
@@ -216,11 +203,11 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         //create the command
         Command command = new Command(message);
         
-        //put the table into the command
-        command.put(Command.TABLE, table);
+        //put the record into the command
+        command.put(info.getTypeSingluarCommandMessage(), record);
         
-        //put the skoonie key of the record into the command
-        command.put(Command.RECORD_KEY, record.getSkoonieKey());
+        //put the descriptors into the command
+        command.put(info.getDescriptorsCommandMessage(), descriptors);
         
         command.perform();
         
@@ -298,12 +285,14 @@ public class EditRecordWindow extends AltusJDialog implements CommandHandler
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
         //create a DescriptorInput object for each of the Descriptors
-        for (Descriptor d : table.getDescriptors()) {
+        for (Object o : descriptors) {
+            
+            Descriptor d = (Descriptor)o;
+            
             String descKey = d.getSkoonieKey();
             String val = "";
-            if (recordSkoonieKey != null ) {
-                Record r = table.getRecord(recordSkoonieKey);
-                val = (val=r.getValue(descKey))!=null ? val : "";
+            if (record.getSkoonieKey() != null ) {
+                val = (val=record.getValue(descKey))!=null ? val : "";
             }
         
             DescriptorInput input = new DescriptorInput(d, val);

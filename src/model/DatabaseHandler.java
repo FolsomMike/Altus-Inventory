@@ -27,7 +27,6 @@ package model;
 
 import command.Command;
 import command.CommandHandler;
-import shared.Table;
 import shared.Descriptor;
 import model.database.DatabaseEntry;
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public class DatabaseHandler implements CommandHandler
         db.init();
         
         handledCommands.add(Command.RECEIVE_BATCH);
-        handledCommands.add(Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS);
+        handledCommands.add(Command.GET_RECEIVEMENT_DESCRIPTORS);
         handledCommands.add(Command.GET_MOVEMENT_DESCRIPTORS);
         handledCommands.add(Command.ADD_CUSTOMER);
         handledCommands.add(Command.DELETE_CUSTOMER);
@@ -122,13 +121,11 @@ public class DatabaseHandler implements CommandHandler
                 //all commands added here need to be added to init()
                 
                 case Command.RECEIVE_BATCH:
-                    receiveBatch((Table)pCommand.get(Command.RECEIVEMENT),
-                                    (Table)pCommand.get(Command.BATCH),
-                                    (String)pCommand.get(Command.RECORD_KEY));
+                    receiveBatch(pCommand);
                     break;
                 
-                case Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS:
-                    getReceivementAndBatchDescriptors();
+                case Command.GET_RECEIVEMENT_DESCRIPTORS:
+                    getReceivementDescriptors();
                     break;
                 
                 case Command.GET_MOVEMENT_DESCRIPTORS:
@@ -136,8 +133,7 @@ public class DatabaseHandler implements CommandHandler
                     break;
                 
                 case Command.ADD_CUSTOMER:
-                    addCustomer((Table)pCommand.get(Command.TABLE),
-                                (String)pCommand.get(Command.RECORD_KEY));
+                    addCustomer(pCommand);
                     break;
                     
                 case Command.DELETE_CUSTOMER:
@@ -145,8 +141,7 @@ public class DatabaseHandler implements CommandHandler
                     break;
                     
                 case Command.EDIT_CUSTOMER:
-                    editCustomer((Table)pCommand.get(Command.TABLE),
-                                    (String)pCommand.get(Command.RECORD_KEY));
+                    editCustomer(pCommand);
                     break;
                     
                 case Command.GET_CUSTOMERS:
@@ -154,8 +149,7 @@ public class DatabaseHandler implements CommandHandler
                     break;
                     
                 case Command.ADD_RACK:
-                    addRack((Table)pCommand.get(Command.TABLE),
-                                (String)pCommand.get(Command.RECORD_KEY));
+                    addRack(pCommand);
                     break;
                     
                 case Command.DELETE_RACK:
@@ -163,8 +157,7 @@ public class DatabaseHandler implements CommandHandler
                     break;
                     
                 case Command.EDIT_RACK:
-                    editRack((Table)pCommand.get(Command.TABLE),
-                                    (String)pCommand.get(Command.RECORD_KEY));
+                    editRack(pCommand);
                     break;
                     
                 case Command.GET_RACKS:
@@ -182,15 +175,20 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::addCustomer
     //
-    // Adds the customer in pCustomers associated with pCustomerKey to the
-    // database.
+    // Adds a customer by extracting and using objects that it knows are in
+    // pCommand.
     //
 
-    private void addCustomer(Table pCustomers, String pCustomerKey)
+    private void addCustomer(Command pCommand)
         throws DatabaseError
     {
         
-        addRecord(TableName.customers, pCustomers, pCustomerKey, false);
+        Record customer = (Record)pCommand.get(Command.CUSTOMER);
+        
+        List<?> descriptors
+                        = (List<?>)pCommand.get(Command.CUSTOMER_DESCRIPTORS);
+        
+        addRecord(TableName.customers, customer, descriptors, false);
         
         //get the customers from the database again now that things have
         //changed there
@@ -257,14 +255,20 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::addRack
     //
-    // Adds the rack in pRacks associated with pRackKey to the database.
+    // Adds a racks by extracting and using objects that are known to be in
+    // pCommand.
     //
 
-    private void addRack(Table pRacks, String pRackKey)
+    private void addRack(Command pCommand)
         throws DatabaseError
     {
         
-        addRecord(TableName.racks, pRacks, pRackKey, false);
+        Record rack = (Record)pCommand.get(Command.RACK);
+        
+        List<?> descriptors
+                        = (List<?>)pCommand.get(Command.RACK_DESCRIPTORS);
+        
+        addRecord(TableName.racks, rack, descriptors, false);
         
         //get the racks from the database again now that things have
         //changed there
@@ -276,27 +280,30 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::addRecord
     //
-    // Adds the record in pTable associated with pRecordKey to the database and
-    // returns the key generated when this is done.
+    // Addds pRecord to pTableName in the database using pDescriptors.
+    // 
+    // This function will only disconnect from the database after it's done if 
+    // pDisconnectWhenDone is true.
     //
 
-    private int addRecord(String pTableName, Table pTable, String pRecordKey,
+    private int addRecord(String pTableName, Record pRecord, 
+                            List<?> pDescriptors, 
                             boolean pDisconnectWhenDone)
         throws DatabaseError
     {
         
         db.connectToDatabase();
         
-        //get the proper record from pTable
-        Record record = pTable.getRecord(pRecordKey);
-        
         //add the customer to the database
         DatabaseEntry entry = new DatabaseEntry();
-        for (Descriptor d : pTable.getDescriptors()) {
+        for (Object o : pDescriptors) {
+            
+            Descriptor d = (Descriptor)o;
+            
             String descKey = d.getSkoonieKey();
             
-             //store the value for the descriptor
-            String value = record.getValue(descKey);
+            //store the value for the descriptor
+            String value = pRecord.getValue(descKey);
             if (value != null) { entry.storeColumn(descKey, value); }
         }
         
@@ -314,15 +321,20 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::editCustomer
     //
-    // Updates the customer in pTable associated with pCustomerKey in the 
-    // database.
+    // Updates a customer by extracting and using objects that are known to be
+    // in pCommand.
     //
 
-    private void editCustomer(Table pTable, String pCustomerKey)
+    private void editCustomer(Command pCommand)
         throws DatabaseError
     {
         
-        editRecord(TableName.customers, pTable, pCustomerKey, false);
+        Record customer = (Record)pCommand.get(Command.CUSTOMER);
+        
+        List<?> descriptors
+                        = (List<?>)pCommand.get(Command.CUSTOMER_DESCRIPTORS);
+        
+        editRecord(TableName.customers, customer, descriptors, false);
         
         //get the customers from the database again now that things have
         //changed there
@@ -332,17 +344,22 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DatabaseHandler::editCustomer
+    // DatabaseHandler::editRack
     //
-    // Updates the rack in pTable associated with pRackKey in the 
-    // database.
+    // Updates a rack by extracting and using objects that are known to be in 
+    // pCommand.
     //
 
-    private void editRack(Table pTable, String pCustomerKey)
+    private void editRack(Command pCommand)
         throws DatabaseError
     {
         
-        editRecord(TableName.racks, pTable, pCustomerKey, false);
+        Record rack = (Record)pCommand.get(Command.RACK);
+        
+        List<?> descriptors
+                        = (List<?>)pCommand.get(Command.RACK_DESCRIPTORS);
+        
+        editRecord(TableName.racks, rack, descriptors, false);
         
         //get the racks from the database again now that things have
         //changed there
@@ -357,24 +374,25 @@ public class DatabaseHandler implements CommandHandler
     // Updates the record in pTable associated with pKey to the table in the
     // database with pTableName.
 
-    private void editRecord(String pTableName, Table pTable,  String pKey,
+    private void editRecord(String pTableName, Record pRecord, 
+                            List<?> pDescriptors, 
                             boolean pDisconnectWhenDone)
         throws DatabaseError
     {
         
         db.connectToDatabase();
         
-        //get the proper record from pTable
-        Record record = pTable.getRecord(pKey);
-        
-        //add the customer to the database
+        //update the customer in the database
         DatabaseEntry entry = new DatabaseEntry();
-        entry.storeColumn("skoonie_key", record.getSkoonieKey());
-        for (Descriptor d : pTable.getDescriptors()) {
+        entry.storeColumn("skoonie_key", pRecord.getSkoonieKey());
+        for (Object o : pDescriptors) {
+            
+            Descriptor d = (Descriptor)o;
+            
             String descKey = d.getSkoonieKey();
             
-             //store the value for the descriptor
-            String value = record.getValue(descKey);
+            //store the value for the descriptor
+            String value = pRecord.getValue(descKey);
             if (value != null) { entry.storeColumn(descKey, value); }
         }
         
@@ -528,19 +546,34 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::getCustomers
     //
-    // Gets all of the customers from the database and stick them into a command
-    // to be performed in the main thread.
+    // Gets all of the customers from the database and sticks them into a
+    // command to be performed in the main thread.
     //
 
     private void getCustomers()
         throws DatabaseError
     {
         
-        Table customers = getTable(TableName.customers, 
-                                    TableName.customersDescriptors);
+        db.connectToDatabase();
+        
+        //get all of the entries from the customers table
+        List<DatabaseEntry> entries = db.getEntries(TableName.customers);
+        
+        //get all of the descriptors for the customers table
+        List<Descriptor> descriptors 
+                        = getDescriptors(TableName.customersDescriptors, true);
+        
+        //list to hold all of the customer records
+        List<Record> records = new ArrayList<>();
+        
+        //extract all of the descriptor values from the entries and put them
+        //into the custmer records
+        extractDescriptorValuesFromEntries(records, descriptors, entries);
         
         Command c = new Command(Command.CUSTOMERS);
-        c.put(Command.TABLE, customers);
+        
+        c.put(Command.CUSTOMERS, records);
+        c.put(Command.CUSTOMER_DESCRIPTORS, descriptors);
         
         performCommandInMainThread(c);
 
@@ -661,70 +694,99 @@ public class DatabaseHandler implements CommandHandler
         throws DatabaseError
     {
         
-        Table racks = getTable(TableName.racks, TableName.racksDescriptors);
+        db.connectToDatabase();
+        
+        //get all of the entries from the racks table
+        List<DatabaseEntry> entries = db.getEntries(TableName.racks);
+        
+        //get all of the descriptors for the racks table
+        List<Descriptor> descriptors 
+                        = getDescriptors(TableName.racksDescriptors, true);
+        
+        //list to hold all of the rack records
+        List<Record> records = new ArrayList<>();
+        
+        //extract all of the descriptor values from the entries and put them
+        //into the rack records
+        extractDescriptorValuesFromEntries(records, descriptors, entries);
         
         Command c = new Command(Command.RACKS);
-        c.put(Command.TABLE, racks);
+        
+        c.put(Command.RACKS, records);
+        c.put(Command.RACK_DESCRIPTORS, descriptors);
         
         performCommandInMainThread(c);
-
+        
     }//end of DatabaseHandler::getRacks
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DatabaseHandler::getReceivementAndBatchDescriptors
+    // DatabaseHandler::getReceivementDescriptors
+    //
+    // //WIP HSS// -- describe function
     //
     // Gets all of the receivement descriptors and the batch descriptors from 
     // the database and sticks them into a command  to be performed in the main 
     // thread.
     //
 
-    private void getReceivementAndBatchDescriptors()
+    private void getReceivementDescriptors()
         throws DatabaseError
     {
         
         db.connectToDatabase();
         
-        Command c = new Command(Command.RECIEVEMENT_AND_BATCH_DESCRIPTORS);
+        Command c = new Command(Command.RECIEVEMENT_DESCRIPTORS);
+        
+        List<Descriptor> descriptors 
+                        = getDescriptors(TableName.batchesDescriptors, false);
+        
+        //column "id" in the receivements table is not
+        //a descriptor. We know it will always exist
+        Descriptor receivementId = new Descriptor();
+        receivementId.setSkoonieKey("receivement id");
+        receivementId.setName("Receivement Id");
+        receivementId.setRequired(true);
+        receivementId.setUsesPresetValues(false);
+        descriptors.add(receivementId);
+        
+        //column "date" in the receivements table is not
+        //a descriptor. We know it will always exist
+        Descriptor receivementDate = new Descriptor();
+        receivementDate.setSkoonieKey("date");
+        receivementDate.setName("Date");
+        receivementDate.setRequired(true);
+        receivementDate.setUsesPresetValues(false);
+        descriptors.add(receivementDate);
        
         //get and store the receivement descriptors in the command
-        c.put(Command.RECIEVEMENT_DESCRIPTORS, 
-                 getDescriptors(TableName.receivementsDescriptors, false));
-
-        //get and store the batch descriptors in the command
-        c.put(Command.BATCH_DESCRIPTORS, 
-                 getDescriptors(TableName.batchesDescriptors, false));
+        c.put(Command.RECIEVEMENT_DESCRIPTORS, descriptors);
         
         db.disconnectFromDatabase();
 
         performCommandInMainThread(c);
 
-    }//end of DatabaseHandler::getReceivementAndBatchDescriptors
+    }//end of DatabaseHandler::getReceivementDescriptors
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // DatabaseHandler::getTable
+    // DatabaseHandler::extractDescriptorValuesFromEntries
     //
-    // Gets the entries and descriptors for the table in the database with 
-    // pTableName and puts them into a Table object.
+    // For all of the descriptors in pDescriptors that match columns in 
+    // pEntries, the values of those descriptors are extracted from pEntries and
+    // put into pRecords. This also handles skoonie keys.
     //
 
-    private Table getTable(String pTableName, String pDescriptorsTableName)
+    private void extractDescriptorValuesFromEntries(List<Record> pRecords,
+                                                List<Descriptor> pDescriptors, 
+                                                List<DatabaseEntry> pEntries)
         throws DatabaseError
     {
         
         db.connectToDatabase();
         
-        Table table = new Table();
-        
-        //get and store the descriptors for the table
-        table.setDescriptors(getDescriptors(pDescriptorsTableName, false));
-        
-        //get the table entries from the database
-        List<DatabaseEntry> entries = db.getEntries(pTableName);
-        
         //iterate through through the entries
-        for (DatabaseEntry e : entries) {
+        for (DatabaseEntry e : pEntries) {
             
             Record r = new Record();
             
@@ -737,27 +799,28 @@ public class DatabaseHandler implements CommandHandler
                 
                 //if the column is the skoonie_key,
                 //store it and continue to next one
-                if(name.equals("skoonie_key")) { r.setSkoonieKey(value); }
+                if(name.equals("skoonie_key")) { 
+                    r.setSkoonieKey(value);
+                    continue;
+                }
                 
                 //if the column name matches a descriptor key, store the column
                 //value in the record, using the skoonie key of the descriptor
                 //it belongs to as the key
-                else if (table.getDescriptor(name) != null) {
-                    r.addValue(name, value);
+                for (Descriptor d : pDescriptors) {
+                    if (name.equals(d.getSkoonieKey())) { 
+                        r.addValue(name, value); 
+                    }
                 }
             
             }
             
             //store the record
-            table.addRecord(r);
+            pRecords.add(r);
             
         }
-        
-        db.disconnectFromDatabase();
-        
-        return table;
 
-    }//end of DatabaseHandler::getTable
+    }//end of DatabaseHandler::extractDescriptorValuesFromEntries
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -820,27 +883,57 @@ public class DatabaseHandler implements CommandHandler
     //--------------------------------------------------------------------------
     // DatabaseHandler::receiveBatch
     //
-    // //WIP HSS// -- receive batch
+    // Receives a batch by extracting and using objects that it knows are in
+    // pCommand.
     //
 
-    private void receiveBatch(Table pReceivements, Table pBatches, 
-                                String pRecordKey)
+    private void receiveBatch(Command pCommand)
         throws DatabaseError
     {
         
-        int batchKey = addRecord(TableName.batches, pBatches, pRecordKey,
-                                                                        false);
+        //get the receivement record and receivement descriptors
+        Record receivement = (Record)pCommand.get(Command.RECEIVEMENT);
+        List<?> descriptors = (List<?>)pCommand
+                                        .get(Command.RECIEVEMENT_DESCRIPTORS);
         
-        //extract the data from the receivement record into a DatabaseEntry object
-        Record record = pReceivements.getRecord(pRecordKey);
+        //create database entries for the batch and receivement
         DatabaseEntry recEntry = new DatabaseEntry();
-        for (Descriptor d : pReceivements.getDescriptors()) {
-            String descKey = d.getSkoonieKey();
+        DatabaseEntry batchEntry = new DatabaseEntry();
+        
+        //extract data from the descriptors
+        for (Object o : descriptors) {
+            Descriptor d = (Descriptor)o;
             
-            //store the value for the descriptor
-            String value = record.getValue(descKey);
-            if (value != null) { recEntry.storeColumn(descKey, value); }
+            String key = d.getSkoonieKey();
+            String name = d.getName();
+            String value = receivement.getValue(key);
+            
+            switch (name) {
+                
+                //Descriptor is the receivement id
+                case "Receivement Id":
+                    recEntry.storeColumn("id", value);
+                    break;
+                    
+                //Descriptor is the date
+                case "Date":
+                    recEntry.storeColumn(key, value);
+                    break;
+                   
+                //Descriptor is just an ordinary batch descriptor
+                default:
+                    recEntry.storeColumn(key, value);
+                    batchEntry.storeColumn(key, value);
+                    break;
+                    
+            }
+            
         }
+        
+        db.connectToDatabase();
+        
+        //insert the batch into database and get the generated key
+        int batchKey = db.insertEntry(batchEntry, TableName.batches);
         
         //store the batch key in the receivement entry
         recEntry.storeColumn("batch_key", Integer.toString(batchKey));
@@ -849,10 +942,8 @@ public class DatabaseHandler implements CommandHandler
         db.insertEntry(recEntry, TableName.receivements);
 
         db.disconnectFromDatabase();
-        
-        //WIP HSS// -- get batches again now that stuff has changed there
 
-    }//end of DatabaseHandler::addCustomer
+    }//end of DatabaseHandler::receiveBatch
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------

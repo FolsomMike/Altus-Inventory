@@ -357,7 +357,8 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                                 "Edit Customer", "customer", "customers", 
                                 Command.ADD_CUSTOMER, Command.DELETE_CUSTOMER,
                                 Command.EDIT_CUSTOMER, Command.GET_CUSTOMERS, 
-                                Command.CUSTOMER, Command.CUSTOMERS);
+                                Command.CUSTOMER, Command.CUSTOMERS, 
+                                Command.CUSTOMER_DESCRIPTORS);
         downStream = new RecordsWindow("Customers", this, this, info);
         ((RecordsWindow)downStream).init();
         
@@ -417,7 +418,8 @@ public class DisplayClassic extends JFrame implements CommandHandler,
                                 "Edit Rack", "rack", "racks", 
                                 Command.ADD_RACK, Command.DELETE_RACK,
                                 Command.EDIT_RACK, Command.GET_RACKS, 
-                                Command.RACK, Command.RACKS);
+                                Command.RACK, Command.RACKS, 
+                                Command.RACK_DESCRIPTORS);
         downStream = new RecordsWindow("Racks", this, this, info);
         ((RecordsWindow)downStream).init();
         

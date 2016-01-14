@@ -27,7 +27,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -41,7 +40,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import shared.Descriptor;
 import shared.Record;
-import shared.Table;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -52,15 +50,9 @@ import toolkit.Tools;
 public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandler
 {
     
-    private Table receivementsTable;
-    private JPanel receivementPanel;
+    private Record receivement;
     
-    private Table batchesTable;
-    private JPanel batchPanel;
-    
-    //this is used for the skoonie keys of the batch and receivement records
-    //created using the user input
-    private final String keyForNew = "new";
+    private List<?> descriptors;
     
     private final List<DescriptorInput> inputs = new ArrayList<>();
     
@@ -114,7 +106,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         //set loading
         setLoading(true);
-        (new Command(Command.GET_RECIEVEMENT_AND_BATCH_DESCRIPTORS)).perform();
+        (new Command(Command.GET_RECEIVEMENT_DESCRIPTORS)).perform();
         
         //repack gui components since we changed stuff
         pack();
@@ -159,8 +151,8 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         
         switch (pCommand.getMessage()) {
             
-            case Command.RECIEVEMENT_AND_BATCH_DESCRIPTORS:
-                displayReceivementAndBatchInputs(pCommand);
+            case Command.RECIEVEMENT_DESCRIPTORS:
+                displayReceivementInputs(pCommand);
                 break;
             
             case "ReceiveMaterialWindow -- cancel":
@@ -241,13 +233,10 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         Command command = new Command(Command.RECEIVE_BATCH);
         
         //put the receivements table into the command
-        command.put(Command.RECEIVEMENT, receivementsTable);
+        command.put(Command.RECEIVEMENT, receivement);
         
-        //put the batches table into the command
-        command.put(Command.BATCH, batchesTable);
-        
-        //put the skoonie key of the records into the command
-        command.put(Command.RECORD_KEY, keyForNew);
+        //put the descriptors into the command
+        command.put(Command.RECIEVEMENT_DESCRIPTORS, descriptors);
         
         command.perform();
         
@@ -260,28 +249,18 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     //--------------------------------------------------------------------------
     // ReceiveMaterialWindow::createAndStoreDescriptorInput
     //
-    // Creates and stores a DescriptorInput object for pDescriptor if pName is
-    // not already in pNames. If pName is found in pNames, then pDescriptor is
-    // considered to already be represented and this function does nothing.
+    // Creates and stores a DescriptorInput object for pDescriptor.
     //
 
     private void createAndStoreDescriptorInput(Descriptor pDescriptor,
-                                                String pName, 
-                                                List<String> pNames)
+                                                String pName)
     {
-            
-        //don't do anything if this descriptor is already being represented
-        if (pNames.contains(pName)) { return; }
 
         //create and store a DescriptorInput for the Descriptor
         DescriptorInput input = new DescriptorInput(pDescriptor, "");
         input.setDisplayName(pName);
         input.init();
         inputs.add(input);
-
-        //store the name so that we can remember
-        //that this descriptor is being represented
-        pNames.add(pName);
 
     }// end of ReceiveMaterialWindow::createAndStoreDescriptorInput
     //--------------------------------------------------------------------------
@@ -345,27 +324,23 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     // ReceiveMaterialWindow::createInputs
     //
     // Creates DescriptorInput objects for all of the descriptors in 
-    // pDescriptors, unless the descriptor is already represented.
-    // 
-    // If the name of one of the descriptors in pDescriptors is already stored
-    // in pNames, then that descriptor is considered to already by represented.
-    // In such a case, the descriptor is just skipped over.
+    // pDescriptors.
     //
 
-    private void createInputs(List<Descriptor> pDescriptors, 
-                                            List<String> pNames, 
-                                            String pSpecialIdName)
+    private void createInputs(List<?> pDescriptors)
     {
         
-        for (Descriptor d : pDescriptors) {
+        for (Object o : pDescriptors) {
+            
+            Descriptor d = (Descriptor)o;
             
             String name;
             
             switch (d.getName()) {
             
-                //descriptor is the id
+                //descriptor is the batch id
                 case idDescriptorName:
-                    name = pSpecialIdName;
+                    name = "Batch Id";
                     break;
                     
                 default:
@@ -374,10 +349,9 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
                     
             }
             
-            //create and store a DescriptorInput for this
-            //Descriptor if necessary
-            createAndStoreDescriptorInput(d, name, pNames);
-            
+            //create and store a DescriptorInput for this Descriptor
+            createAndStoreDescriptorInput(d, name);
+
         }
 
     }// end of ReceiveMaterialWindow::createInputs
@@ -488,37 +462,24 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // ReceiveMaterialWindow::displayReceivementAndBatchInputs
+    // ReceiveMaterialWindow::displayReceivementInputs
     //
-    // Displays the receivement and batch inputs using the descriptors extracted
+    // Displays the receivement inputs using the descriptors extracted
     // from pCommand and then tells the window that we're done loading.
     //
     
-    private void displayReceivementAndBatchInputs(Command pCommand) 
+    private void displayReceivementInputs(Command pCommand) 
     {
         
-        setLoading(false);
-        
         //set up the receivements table using the descriptors
-        receivementsTable = new Table();
-        receivementsTable.setDescriptors((List<Descriptor>)pCommand
-                                        .get(Command.RECIEVEMENT_DESCRIPTORS));
-        
-        //set up the batches table using the descriptors
-        batchesTable = new Table();
-        batchesTable.setDescriptors((List<Descriptor>)pCommand
-                                        .get(Command.BATCH_DESCRIPTORS));
-        
-        
-        //create the inputs for the receivement and batch descriptors
-        List<String> names = new ArrayList<>();
-        createInputs(receivementsTable.getDescriptors(), names, 
-                                                receivementIdDescriptorName);
-        createInputs(batchesTable.getDescriptors(), names, 
-                                                batchIdDescriptorName);
+        descriptors = (List<?>)pCommand.get(Command.RECIEVEMENT_DESCRIPTORS);
+
+        createInputs(descriptors);
         
         //make sure the inputs list in the right order
         reorderDescriptorInputs(inputs);
+        
+        setLoading(false);
         
         //add the DescriptorInput objects to the inputsPanel
         List<JPanel> row = new ArrayList<>();
@@ -543,7 +504,7 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         //repack
         pack();
         
-    }//end of ReceiveMaterialWindow::displayReceivementAndBatchInputs
+    }//end of ReceiveMaterialWindow::displayReceivementInputs
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -565,75 +526,32 @@ public class ReceiveMaterialWindow extends AltusJDialog implements CommandHandle
         //names of all the descriptors whose inputs are empty but shouldn't be
         List<String> badInputs = new ArrayList<>();
         
-        //records for the batch and receivement
-        Record receivement = new Record(); receivement.setSkoonieKey(keyForNew);
-        Record batch = new Record(); batch.setSkoonieKey(keyForNew);
+        receivement = new Record();
         
         //for every stored input, decide whether to add it to the list of bad
-        //inputs or to store it in the batch or receivement records (or both)
+        //inputs or to store it in the receivement record
         for (DescriptorInput input : inputs) {
             
-            //holds the records that the user input needs to be stored in,
-            //mapped to the descriptors that the input is for
-            Map<Record, Descriptor> records = new HashMap<>();
-            
             String name = input.getDisplayName();
-            String inputText = input.getUserInput();
+            String text = input.getUserInput();
+            boolean required = input.getDescriptor().getRequired();
             
-            //store in the receivement record if it's the receivement Id
-            String key;
-            switch (name) {
-                
-                //descriptor is the receivement id
-                case receivementIdDescriptorName:
-                    key = receivementsTable
-                                    .getDescriptorKeyByName(idDescriptorName);
-                    records.put(receivement, 
-                                        receivementsTable.getDescriptor(key));
-                    break;
-                    
-                //descriptor is the receivement date
-                case dateDescriptorName:
-                    key = receivementsTable
-                                    .getDescriptorKeyByName(dateDescriptorName);
-                    records.put(receivement,
-                                        receivementsTable.getDescriptor(key));
-                    break;
-                    
-                //descriptor is the batch id
-                case batchIdDescriptorName:
-                    key = batchesTable
-                                    .getDescriptorKeyByName(idDescriptorName);
-                    records.put(batch, batchesTable.getDescriptor(key));
-                    break;
-                    
-                //descriptor is for both the batch and the receivement
-                default:
-                    //for receivement
-                    String recTableKey = receivementsTable
-                                                .getDescriptorKeyByName(name);
-                    records.put(receivement, 
-                                receivementsTable.getDescriptor(recTableKey));
-                    //for batch
-                    String batchTableKey = batchesTable.getDescriptorKeyByName(name);
-                    records.put(batch, batchesTable.getDescriptor(batchTableKey));
-                    break;
+            //this is a bad input if the there is no text, but there should be
+            if (text.isEmpty() && required) {
+                badInputs.add(name);
             }
             
-            storeInput(name, inputText, records, badInputs);
+            //only add if it's not empty
+            else if (!text.isEmpty()) {
+                receivement.addValue(input.getDescriptor().getSkoonieKey(), 
+                                        text);
+            }
             
-        }//end of for loop
-        
+        }
+                
         //check to see if there if were any bad inputs. If there were, then the
         //user input is bad
         if (!checkBadInputs(badInputs)) { good = false; }
-        
-        //if all the inputs are good, then store the records will be used and
-        //need to be stored in their respective tables
-        else { 
-            receivementsTable.addRecord(receivement); 
-            batchesTable.addRecord(batch);
-        }
         
         return good;
         
