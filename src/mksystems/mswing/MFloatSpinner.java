@@ -231,6 +231,25 @@ public MFloatSpinner(double pValue, double pMin, double pMax,
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// MFloatSpinner::centerText
+//
+// Centers the text of the spinner if called.
+//
+
+public void centerText()
+{
+
+    JComponent editor = getEditor();
+    
+    if (editor instanceof JSpinner.DefaultEditor) {
+        JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor)editor;
+        spinnerEditor.getTextField().setHorizontalAlignment(JTextField.CENTER);
+    }
+
+}//end of MFloatSpinner::centerText
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 // MFloatSpinner::getDoubleValue
 //
 // Returns the value in the spinner as a double.

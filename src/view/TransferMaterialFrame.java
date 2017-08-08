@@ -15,26 +15,16 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 // class  TransferMaterialFrame
 //
 
-public class  TransferMaterialFrame extends JFrame
+public class  TransferMaterialFrame extends ActionFrame
 {
-    
-    private final MainView mainView;
-    private JPanel mainPanel;
-
-    private GuiUpdater guiUpdater;
 
     //--------------------------------------------------------------------------
     //  TransferMaterialFrame:: TransferMaterialFrame (constructor)
@@ -43,106 +33,59 @@ public class  TransferMaterialFrame extends JFrame
     public  TransferMaterialFrame(MainView pMainView)
     {
 
-        mainView = pMainView;
+        super("Transfer Material", "TransferMaterialFrame", pMainView);
 
     }//end of  TransferMaterialFrame:: TransferMaterialFrame (constructor)
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    //  TransferMaterialFrame::init
+    // TransferMaterialFrame::createGui
     //
-    // Initializes the object. Must be called immediately after instantiation.
+    // Creates and adds the GUI to the mainPanel.
     //
-
-    public void init()
+    
+    @Override
+    protected void createGui() 
     {
-
-        setUpFrame();
-
-        //create an object to handle thread safe updates of GUI components
-        guiUpdater = new GuiUpdater(this);
-        guiUpdater.init();
-
-        //create user interface: buttons, displays, etc.
-        setupGui();
-
-        //arrange all the GUI items
-        pack();
-
-        //display the main frame
-        setVisible(true);
         
-        centerJFrame(this);
-
-    }// end of  TransferMaterialFrame::init
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        
+        //vertical spacer
+        mainPanel.add(createVerticalSpacer(20));
+        
+        //add Row 1
+        mainPanel.add(createRow1());
+        
+        //vertical spacer
+        mainPanel.add(createVerticalSpacer(30));
+        
+        //add the Cancel/Confirm panel
+        mainPanel.add(createCancelConfirmPanel("Transfer", 
+                                                "Transfer the material."));
+        
+    }// end of TransferMaterialFrame::createGui
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    //  TransferMaterialFrame::centerJFrame
+    // TransferMaterialFrame::createRow1
     //
-    // Centers a passed in JFrame according its size and the available screen
-    // size.
+    // Creates and returns a JPanel containing the Quantity and Customer input 
+    // panels.
     //
-
-    public void centerJFrame(JFrame pFrame)
-    {
+    
+    private JPanel createRow1() {
         
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, 
-                            dim.height/2-this.getSize().height/2);
+        String tip = "How many pieces of material would you like to transfer?";
+        JPanel input1 = createQuantityInputPanel(tip);
+        
+        JPanel input2 
+                    = createInputPanel("Customer", 
+                        "What customer is the material being transferred to?", 
+                        TEXT_FIELD_WIDTH_ONE_THIRD, textFieldHeight);
 
-    }// end of  TransferMaterialFrame::centerJFrame
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    //  TransferMaterialFrame::setUpFrame
-    //
-    // Sets up the JFrame by setting various options and styles.
-    //
-
-    private void setUpFrame()
-    {
-
-        //set the title of the frame
-        setTitle("Transfer Material");
-
-        //turn off default bold for Metal look and feel
-        UIManager.put("swing.boldMetal", Boolean.FALSE);
-
-        //force "look and feel" to Java style
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException | UnsupportedLookAndFeelException e) {
-            System.out.println("Could not set Look and Feel");
-        }
-
-        //add the mainView as a window listener
-        addWindowListener(mainView);
-
-        //release the window's resources when it is closed
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        //add a JPanel to the frame to provide a familiar container
-        mainPanel = new JPanel();
-        Tools.setSizes(mainPanel, 300, 90);
-        setContentPane(mainPanel);
-
-    }// end of  TransferMaterialFrame::setUpFrame
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    //  TransferMaterialFrame::setupGUI
-    //
-    // Sets up the user interface on the mainPanel: buttons, displays, etc.
-    //
-
-    private void setupGui()
-    {
-
-    }// end of  TransferMaterialFrame::setupGui
+        return createRow(new JPanel[]{input1, input2});
+        
+    }// end of TransferMaterialFrame::createRow1
     //--------------------------------------------------------------------------
 
 }//end of class  TransferMaterialFrame

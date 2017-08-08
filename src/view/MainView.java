@@ -36,6 +36,8 @@ import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
@@ -44,10 +46,11 @@ import toolkit.Tools;
 //
 
 public class MainView implements ActionListener, WindowListener, ChangeListener,
-        SplitButtonActionListener
+        SplitButtonActionListener, TableModelListener
 {
 
     private MainFrame mainFrame;
+    private CustomersFrame customersFrame;
 
     private GuiUpdater guiUpdater;
 
@@ -133,6 +136,18 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }//end of MainView::stateChanged
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::tableChanged
+    //
+    
+    @Override
+    public void tableChanged(TableModelEvent tme) {
+        
+        eventHandler.tableChanged(tme);
+        
+    }//end of MainView::tableChanged
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // MainView::windowClosing
@@ -146,7 +161,49 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         eventHandler.windowClosing(e);
 
-    }//end of Controller::windowClosing
+    }//end of MainView::windowClosing
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::cancelCreateCustomer
+    //
+    // Cancels the create customer process.
+    //
+
+    public void cancelCreateCustomer()
+    {
+
+        customersFrame.cancelCreateCustomer();
+
+    }//end of MainView::cancelCreateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::cancelEditCustomer
+    //
+    // Cancels the changes made in the Edit Customer window.
+    //
+
+    public void cancelEditCustomer()
+    {
+
+        customersFrame.cancelEditCustomer();
+
+    }//end of MainView::cancelEditCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::checkBoxChanged
+    //
+    // Calls a handling function in MainFrame.
+    //
+
+    public void checkBoxChanged(int pRow)
+    {
+
+        mainFrame.checkBoxChanged(pRow);
+
+    }//end of MainView::checkBoxChanged
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -183,9 +240,38 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
     }// end of MainView::createFonts
     //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::confirmCreateCustomer
+    //
+    // Confirms that the user wants to use the inputs in the Create Customer
+    // window to create a new customer.
+    //
+
+    public void confirmCreateCustomer()
+    {
+
+        customersFrame.confirmCreateCustomer();
+
+    }//end of MainView::confirmCreateCustomer
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::confirmEditCustomer
+    //
+    // Confirms the changes made in the Edit Customer window.
+    //
+
+    public void confirmEditCustomer()
+    {
+
+        customersFrame.confirmEditCustomer();
+
+    }//end of MainView::confirmEditCustomer
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
-    // MainFrame::displayAbout
+    // MainView::displayAbout
     //
     // Displays about information.
     //
@@ -195,7 +281,21 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         mainFrame.displayAbout();
 
-    }//end of MainFrame::displayAbout
+    }//end of MainView::displayAbout
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCreateCustomerWindow
+    //
+    // Displays the Create Customer dialog.
+    //
+
+    public void displayCreateCustomerWindow()
+    {
+
+        customersFrame.displayCreateCustomerDialog();
+
+    }//end of MainView::displayCreateCustomerWindow
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -226,6 +326,35 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
         frame.init();
 
     }//end of MainView::displayCreateReportWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayCustomersWindow
+    //
+    // Displays the Customers window.
+    //
+
+    public void displayCustomersWindow()
+    {
+
+        customersFrame = new CustomersFrame(this);
+        customersFrame.init();
+
+    }//end of MainView::displayCustomersWindow
+    //--------------------------------------------------------------------------
+    
+    //--------------------------------------------------------------------------
+    // MainView::displayEditCustomerWindow
+    //
+    // Displays the Edit Customer dialog.
+    //
+
+    public void displayEditCustomerWindow()
+    {
+
+        customersFrame.displayEditCustomerDialog();
+
+    }//end of MainView::displayEditCustomerWindow
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -372,7 +501,7 @@ public class MainView implements ActionListener, WindowListener, ChangeListener,
 
         //main timer has 2 second period
         mainTimer = new javax.swing.Timer (2000, this);
-        mainTimer.setActionCommand ("MainView::Timer");
+        mainTimer.setActionCommand("MainView::Timer");
         mainTimer.start();
 
     }// end of MainView::setupAndStartMainTimer

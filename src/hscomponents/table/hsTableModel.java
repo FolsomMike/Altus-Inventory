@@ -27,7 +27,7 @@ import javax.swing.table.AbstractTableModel;
 public class hsTableModel extends AbstractTableModel 
 {
     
-    List<Object> columnNames = new ArrayList<>();
+    List<String> columnNames = new ArrayList<>();
     
     //row by column (outer list is rows, inner list is columns)
     List<List<Object>> tableData = new ArrayList<>();
@@ -67,11 +67,12 @@ public class hsTableModel extends AbstractTableModel
     @Override
     public Class<?> getColumnClass(int pCol)
     {
+        
         if (tableData.isEmpty()) { return Object.class; }
         
         return tableData.get(0).get(pCol).getClass();
         
-    }//end of hsTableModel::getColumnCount
+    }//end of hsTableModel::getColumnClass
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
@@ -99,8 +100,7 @@ public class hsTableModel extends AbstractTableModel
     public String getColumnName(int pCol)
     {
         
-        //WIP HSS// -- you need to fix this
-        return columnNames.get(pCol).toString();
+        return columnNames.get(pCol);
         
     }//end of hsTableModel::getColumnName
     //--------------------------------------------------------------------------
@@ -174,7 +174,7 @@ public class hsTableModel extends AbstractTableModel
     // Adds a column to the model, with the passed in object as the header.
     //
 
-    public void addColumn(Object pName) 
+    public void addColumn(String pName) 
     {
         
         columnNames.add(pName);
@@ -191,7 +191,7 @@ public class hsTableModel extends AbstractTableModel
     // object as the header.
     //
 
-    public void addColumn(int pPos, Object pName) 
+    public void addColumn(int pPos, String pName) 
     {
         
         columnNames.add(pPos, pName);
