@@ -461,7 +461,7 @@ public class JSplitButton extends JButton implements MouseMotionListener,
         
         if (image != null) { return image; } 
         else {
-            Graphics2D g = null;
+            Graphics2D g;
             BufferedImage img = new BufferedImage(arrowSize, arrowSize, 
                                                     BufferedImage.TYPE_INT_RGB);
             g = (Graphics2D) img.createGraphics();

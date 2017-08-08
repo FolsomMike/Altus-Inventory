@@ -183,7 +183,7 @@ public class hsTable extends JTable
     // Adds a column to the table, with the passed in object as the header.
     //
 
-    public void addColumn(Object pCol)
+    public void addColumn(String pCol)
     {
         
         model.addColumn(pCol);
@@ -198,7 +198,7 @@ public class hsTable extends JTable
     // in object as the header.
     //
 
-    public void addColumn(int pPos, Object pCol)
+    public void addColumn(int pPos, String pCol)
     {
         
         model.addColumn(pPos, pCol);

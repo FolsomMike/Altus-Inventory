@@ -1,11 +1,11 @@
 /*******************************************************************************
-* Title: TransferMaterialFrame.java
+* Title: ReserveMaterialFrame.java
 * Author: Hunter Schoonover
 * Date: 07/25/15
 *
 * Purpose:
 *
-* This class is the Transfer Material window.
+* This class is the Reserve Material window.
 *
 */
 
@@ -15,151 +15,119 @@ package view;
 
 //------------------------------------------------------------------------------
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.Component;
+import static java.awt.Component.LEFT_ALIGNMENT;
+import static java.awt.Component.TOP_ALIGNMENT;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import toolkit.Tools;
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-// class TransferMaterialFrame
+// class ReserveMaterialFrame
 //
 
-public class ReserveMaterialFrame extends JFrame
+public class ReserveMaterialFrame extends ActionFrame
 {
-    
-    private final MainView mainView;
-    private JPanel mainPanel;
-
-    private GuiUpdater guiUpdater;
 
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::TransferMaterialFrame (constructor)
+    // ReserveMaterialFrame::ReserveMaterialFrame (constructor)
     //
 
     public ReserveMaterialFrame(MainView pMainView)
     {
 
-        mainView = pMainView;
+        super("Reserve Material", "ReserveMaterialFrame", pMainView);
 
-    }//end of TransferMaterialFrame::TransferMaterialFrame (constructor)
-    //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
-    // TransferMaterialFrame::init
-    //
-    // Initializes the object. Must be called immediately after instantiation.
-    //
-
-    public void init()
-    {
-
-        setUpFrame();
-
-        //create an object to handle thread safe updates of GUI components
-        guiUpdater = new GuiUpdater(this);
-        guiUpdater.init();
-
-        //create user interface: buttons, displays, etc.
-        setupGui();
-
-        //arrange all the GUI items
-        pack();
-
-        //display the main frame
-        setVisible(true);
-        
-        centerJFrame(this);
-
-    }// end of TransferMaterialFrame::init
+    }//end of ReserveMaterialFrame::ReserveMaterialFrame (constructor)
     //--------------------------------------------------------------------------
     
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::centerJFrame
+    // ReserveMaterialFrame::createGui
     //
-    // Centers a passed in JFrame according its size and the available screen
-    // size.
+    // Creates and adds the GUI to the mainPanel.
     //
-
-    public void centerJFrame(JFrame pFrame)
+    
+    @Override
+    protected void createGui() 
     {
-
-        int screenWidth = 
-                    java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-        int screenHalfWidth = (int)screenWidth/2;
-
-        int screenHeight = 
-                    java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-        int screenHalfHeight = (int)screenHeight/2;
-
-        int frameWidthCenter = (int)pFrame.getWidth()/2;
-        int frameHeightCenter = (int)pFrame.getHeight()/2;
-
-        int xPos = screenHalfWidth - frameWidthCenter;
-        int yPos  = screenHalfHeight - frameHeightCenter;
-
-        //DEBUG HSS//pFrame.setLocation(xPos, yPos);
         
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-
-    }// end of TransferMaterialFrame::centerJFrame
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        
+        //vertical spacer
+        mainPanel.add(createVerticalSpacer(20));
+        
+        //add Row 1
+        mainPanel.add(createRow1());
+        
+        //vertical spacer
+        mainPanel.add(createVerticalSpacer(30));
+        
+        //add the Cancel/Confirm panel
+        mainPanel.add(createCancelConfirmPanel("Reserve", 
+                                                    "Reserve the material."));
+        
+    }// end of ReserveMaterialFrame::createGui
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::setUpFrame
+    // ReserveMaterialFrame::creatReserveForPanel
     //
-    // Sets up the JFrame by setting various options and styles.
+    // Creates and returns the "Reserve for" panel.
     //
 
-    private void setUpFrame()
+    private JPanel createReserveForPanel()
     {
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        panel.setAlignmentY(TOP_ALIGNMENT);
+        
+        JLabel label = new JLabel("Reserve for");
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentY(TOP_ALIGNMENT);
+        panel.add(label);
+        
+        //populate an array of strings with items for a combo box
+        String[] strings = { "--Select--", "Shipment", "Move", "Transfer" };
+        //Create the combo box, select item at index 0
+        JComboBox combo = new JComboBox(strings);
+        combo.addActionListener(mainView);     
+        combo.setActionCommand("ReserveMaterialFrame::Reserve for");
+        combo.setAlignmentX(LEFT_ALIGNMENT);
+        combo.setAlignmentY(TOP_ALIGNMENT);
+        combo.setSelectedIndex(0);
+        combo.setBackground(Color.white);
+        Tools.setSizes(combo, 135, textFieldHeight);
+        panel.add(combo);
+        
+        return panel;
 
-        //set the title of the frame
-        setTitle("Reserve Material");
-
-        //turn off default bold for Metal look and feel
-        UIManager.put("swing.boldMetal", Boolean.FALSE);
-
-        //force "look and feel" to Java style
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getCrossPlatformLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException | InstantiationException |
-                IllegalAccessException | UnsupportedLookAndFeelException e) {
-            System.out.println("Could not set Look and Feel");
-        }
-
-        //add the mainView as a window listener
-        addWindowListener(mainView);
-
-        //release the window's resources when it is closed
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        //add a JPanel to the frame to provide a familiar container
-        mainPanel = new JPanel();
-        Tools.setSizes(mainPanel, 300, 90);
-        setContentPane(mainPanel);
-
-    }// end of TransferMaterialFrame::setUpFrame
+    }// end of ReserveMaterialFrame::createReserveForPanel
     //--------------------------------------------------------------------------
-
+    
     //--------------------------------------------------------------------------
-    // TransferMaterialFrame::setupGUI
+    // ReserveMaterialFrame::createRow1
     //
-    // Sets up the user interface on the mainPanel: buttons, displays, etc.
+    // Creates and returns Row 1.
     //
+    
+    private JPanel createRow1() {
+        
+        String tip = "How many pieces of material would you like to reserve?";
+        JPanel input1 = createQuantityInputPanel(tip);
+        
+        JPanel input2 = createReserveForPanel();
 
-    private void setupGui()
-    {
-
-    }// end of TransferMaterialFrame::setupGui
+        return createRow(new JPanel[]{input1, input2});
+        
+    }// end of ReserveMaterialFrame::createRow1
     //--------------------------------------------------------------------------
 
-}//end of class TransferMaterialFrame
+}// end of class ReserveMaterialFrame
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
