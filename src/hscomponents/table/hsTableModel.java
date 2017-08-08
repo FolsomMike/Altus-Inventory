@@ -246,7 +246,7 @@ public class hsTableModel extends AbstractTableModel
         
         editableRow.add(editableDefault);
         
-        List<Boolean> cols = new ArrayList();
+        List<Boolean> cols = new ArrayList<>();
         for (Boolean b : editableColumn) { cols.add(b); }
         editableCell.add(cols);
 

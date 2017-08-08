@@ -42,7 +42,8 @@ public abstract class SkoonieFrame extends JFrame {
     private SkoonieGuiUpdater guiUpdater;
     
     protected final String frameTitle;
-    protected final String actionId;
+    static private final String actionId = "SkoonieFrame";
+    static public String getActionId() { return actionId; }
     protected final ActionListener actionListener;
     protected final WindowListener windowListener;
     
@@ -58,12 +59,10 @@ public abstract class SkoonieFrame extends JFrame {
     // SkoonieFrame::SkoonieFrame (constructor)
     //
 
-    public SkoonieFrame(String pTitle, String pActionId, 
-                            ActionListener pAl, WindowListener pWl)
+    public SkoonieFrame(String pTitle, ActionListener pAl, WindowListener pWl)
     {
 
         frameTitle = pTitle;
-        actionId = pActionId;
         actionListener = pAl;
         windowListener = pWl;
 
