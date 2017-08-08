@@ -20,6 +20,7 @@ package toolkit;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 import javax.swing.Box;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -103,17 +104,17 @@ public class Tools extends Object{
     // Tools::centerJDialog
     //
     // Centers a passed in JDialog according to the location and size of the 
-    // passed in parent frame and the JDialog's size.
+    // passed in parent dialog and the JDialog's size.
     //
 
-    static public void centerJDialog(JDialog pDialog, JFrame pParentFrame)
+    static public void centerJDialog(JDialog pDialog, Window pParent)
     {
 
-        int parentFrameXPos = (int)pParentFrame.getX();
-        int parentFrameHalfWidth = (int)pParentFrame.getWidth()/2;
+        int parentFrameXPos = (int)pParent.getX();
+        int parentFrameHalfWidth = (int)pParent.getWidth()/2;
 
-        int parentFrameYPos = (int)pParentFrame.getY();
-        int parentFrameHalfHeight = (int)pParentFrame.getHeight()/2;
+        int parentFrameYPos = (int)pParent.getY();
+        int parentFrameHalfHeight = (int)pParent.getHeight()/2;
 
         int parentFrameXCenter = parentFrameXPos + parentFrameHalfWidth;
         int parentFrameYCenter = parentFrameYPos + parentFrameHalfHeight;
